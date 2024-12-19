@@ -4,6 +4,10 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
+console.log('USER:', process.env.USER);
+console.log('APP_PASSWORD:', process.env.APP_PASSWORD);
+console.log('EMAIL:', process.env.EMAIL);
+
 // Create transporter
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -19,7 +23,7 @@ const transporter = nodemailer.createTransport({
 const mailOptions = {
   from: {
     name: "Carl Matthew",
-    address: process.env.USER,
+    address: process.env.EMAIL,
   },
   to: ["cmfernandez.0209@gmail.com"], // list of receivers
   subject: "Test Email", // Subject line
