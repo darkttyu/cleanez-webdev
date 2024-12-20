@@ -1,45 +1,85 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+import nodemailer from "nodemailer";
+import dotenv from 'dotenv'
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL } from "./emailTemplates.js";
 
-// Load environment variables
-dotenv.config();
+dotenv.config({path: './.env' });
+
+console.log('Current working directory:', process.cwd());
 
 console.log('USER:', process.env.USER);
 console.log('APP_PASSWORD:', process.env.APP_PASSWORD);
-console.log('EMAIL:', process.env.EMAIL);
 
-// Create transporter
+// Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465, // Use 465 for secure connections
-  secure: true, // true for port 465
+  port: 465,
+  secure: true, 
   auth: {
     user: process.env.USER,
     pass: process.env.APP_PASSWORD,
   },
 });
 
-// Mail options
-const mailOptions = {
-  from: {
-    name: "Carl Matthew",
-    address: process.env.EMAIL,
-  },
-  to: ["cmfernandez.0209@gmail.com"], // list of receivers
-  subject: "Test Email", // Subject line
-  text: "Test test", // plain text body
-  html: "<b>Cute q</b>", // html body
-};
+const sender = '"CleanEZ" <no-reply@cleanez.com>'; // Sender address
 
-// Function to send email
-const sendMail = async (transporter, mailOptions) => {
+export const sendVerificationEmail = async (firstName, email, verificationToken) => {
   try {
-    await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully");
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email], // Recipient email
+      subject: "Verify your Email",
+      html: VERIFICATION_EMAIL_TEMPLATE.replace("{verificationCode}", verificationToken).replace("{firstName}", firstName),
+    });
+
+    console.log("Verification email sent successfully:", info.messageId);
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error sending verification email:", error);
   }
 };
 
-// Call the function
-sendMail(transporter, mailOptions);
+export const sendWelcomeEmail = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "Welcome to CleanEZ",
+      html: WELCOMING_EMAIL.replace("{firstName}", firstName),
+    });
+
+    console.log("Welcome email sent successfully:", info.messageId);
+  } catch (error) {
+    console.error("Error sending welcome email:", error);
+  }
+};
+
+export const sendPasswordResetEmail = async (firstName, email, resetURL) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "Reset your Password",
+      html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{firstName}", firstName).replace("{resetURL}", resetURL),
+    });
+
+    console.log("Password reset email sent successfully:", info.messageId);
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
+    throw new Error(`Error sending password reset email: ${error}`);
+  }
+};
+
+export const sendResetSuccessEmail = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "Password Reset Successful",
+      html: PASSWORD_RESET_SUCCESS_TEMPLATE.replace("{firstName}", firstName),
+    });
+
+    console.log("Password reset success email sent successfully:", info.messageId);
+  } catch (error) {
+    console.error("Error sending password reset success email:", error);
+    throw new Error(`Error sending password reset success email: ${error}`);
+  }
+};
