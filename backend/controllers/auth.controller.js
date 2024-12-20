@@ -2,7 +2,7 @@ import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
 import { User } from "../models/user.model.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
-import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail} from "../mailtrap/emails.js";
+import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail} from "../nodemailer/sendMail.js";
 
 export const signup = async (req, res) => {
   const {firstName, lastName, email, phoneNumber, password, birthDate, gender, address} = req.body;
@@ -22,7 +22,6 @@ export const signup = async (req, res) => {
 
     const user = new User({
       email,
-      username,
       password: hashedPassword,
       firstName,
       lastName,
