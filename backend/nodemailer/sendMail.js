@@ -4,10 +4,10 @@ import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIF
 
 dotenv.config({path: './.env' });
 
-console.log('Current working directory:', process.cwd());
-
-console.log('USER:', process.env.USER);
-console.log('APP_PASSWORD:', process.env.APP_PASSWORD);
+// Backend Testing for Email 
+//console.log('Current working directory:', process.cwd());
+//console.log('USER:', process.env.USER);
+//console.log('APP_PASSWORD:', process.env.APP_PASSWORD);
 
 // Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({

@@ -139,7 +139,7 @@ export const WELCOMING_EMAIL = `
       <li style="font-weight: bold;">Flexibility and Choice: <span style="font-weight: 100;">Select the service type, date, and time that works for you.</span></li>
     </ul>
     <p style="font-weight: bold;">Ready to book your first clean?</p>
-    <p>Visit our website <i>cleanez.net</i> or contact us at info@cleanez.com to schedule a service.</p>
+    <p>Visit our website <i>cleanez.net</i> or contact us at info.cleanez24@gmail.com to schedule a service.</p>
     <p>We’re here to make your life easier – one clean space at a time! If you have any questions or need assistance, feel free to reach out.</p>
     <p>Thank you for choosing CleanEZ. We look forward to sparkling up your space! ✨</p>
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
