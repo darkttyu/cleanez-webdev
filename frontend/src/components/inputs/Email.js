@@ -1,4 +1,4 @@
-const InputEmail = () => {
+const InputEmail = ({value, onChange}) => {
     return (  
         <div className="text-container">
             {/* INPUT HERE */}
@@ -6,7 +6,9 @@ const InputEmail = () => {
             className="input" 
             type="email" 
             placeholder="Email" 
-            name="mail-input" 
+            name="email" 
+            value={value}
+            onChange={onChange}
             id="mail-input"/>
             {/* LABEL HERE */}
             <label 

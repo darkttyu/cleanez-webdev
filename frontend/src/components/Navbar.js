@@ -3,7 +3,7 @@ import NavLogo from '../images/logos/nav-logo.png'
 
 const Navbar = () => {
      // Change later to a more dynamic way to check if a user is logged in or not.
-     const isLoggedIn = true;
+     const isLoggedIn = false;
 
      return ( 
           <nav className="navbar">

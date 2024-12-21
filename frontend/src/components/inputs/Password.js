@@ -1,4 +1,4 @@
-const InputPassword = () => {
+const InputPassword = ({value, onChange}) => {
     return (  
         <div className="text-container">
             {/* INPUT HERE */}
@@ -6,7 +6,9 @@ const InputPassword = () => {
             className="input" 
             type="password" 
             placeholder="Password" 
-            name="password-input" 
+            name="password"
+            value={value}
+            onChange= {onChange}
             id="password-input" />
             {/* LABEL HERE */}
             <label 

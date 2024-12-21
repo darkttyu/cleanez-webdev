@@ -1,17 +1,23 @@
-const InputMunicipality = ({data, selection}) => {
+const InputMunicipality = ({value, data, selection, onChange}) => {
     return(
         <div className="text-container">
             {/* INPUT HERE */}
             <select 
-            className="input" 
-            type="text" 
-            name="municipality-input" 
-            id="municipality-input"
-            onChange={(e) => selection(e.target.value)}>
+                className="input" 
+                type="text" 
+                name="municipal"
+                value={value}
+                id="municipality-input"
+                onChange={(e) => {
+                    const selectedMunicipal = e.target.value;
+                    selection(selectedMunicipal);  
+                    onChange(e);  
+                }}
+            >
                 {/* SELECT OPTIONS */}
                 <option value="0">Select Municipality</option>
                 {data.map((m, index) => (
-                    <option key={index} value={m.city_code}>{m.city_name}</option>
+                    <option key={index} value={m.city_code + m.city_name }>{m.city_name}</option>
                 ))}
             </select>
             {/* LABEL HERE */}

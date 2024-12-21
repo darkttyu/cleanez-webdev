@@ -1,27 +1,28 @@
-const InputProvince = ({data, selection}) => {
+const InputProvince = ({ value, data, selection, onChange }) => {
     return (  
         <div className="text-container">
-            {/* INPUT HERE */}
             <select 
-            className="input" 
-            type="text" 
-            name="province-input" 
-            id="address-input" 
-            onChange={(e) => selection(e.target.value)}>
+                className="input" 
+                name="province" 
+                value={value}  
+                id="address-input" 
+                onChange={(e) => {
+                    const selectedProvince = e.target.value;
+                    selection(selectedProvince);  
+                    onChange(e);  
+                }}
+            >
                 {/* SELECT OPTIONS */}
                 <option value="0">Select Province</option>
                 {data.map((p, index) => (
-                    <option key={index} value={p.province_code}>{p.province_name}</option>
+                    <option key={index} value={p.province_code + p.province_name}>{p.province_name}</option>
                 ))}
             </select>
-            {/* LABEL HERE */}
-            <label 
-            className="text-label" 
-            htmlFor="address-input">
+            <label className="text-label" htmlFor="address-input">
                 Province
             </label>
         </div> 
     );
 }
- 
 export default InputProvince;
+

@@ -7,9 +7,10 @@ import Test from './Test';
 function App() {
   return (
     <div className="App">
-      <HomePage />
+      {/*<HomePage />*/}
+      {/*<LoginPage/>*/}
       {/* <FindAccountPage/> */}
-      {/* <SignupPage /> */}
+      <SignupPage /> 
       {/* <Test /> */}
     </div>
   );

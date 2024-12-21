@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ['Male', 'Female', 'Other'],
+    enum: ['Male', 'Female', 'disclosed'],
     required: true,
   },
   address: {
@@ -59,7 +59,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["User", "Worker", "Admin"],
     default: "User",
-    required: true,
   },
   isVerified: {
     type: Boolean,

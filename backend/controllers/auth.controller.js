@@ -5,8 +5,10 @@ import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js
 import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail} from "../nodemailer/sendMail.js";
 
 export const signup = async (req, res) => {
-  const {firstName, lastName, email, phoneNumber, password, birthDate, gender, address} = req.body;
+  const {email, password, firstName, lastName, phoneNumber, birthDate, gender, address} = req.body;
 
+  console.log("Received request body:", req.body); 
+  
   try {
     if(!firstName || !lastName || !email || !phoneNumber || !password || !birthDate || !gender || !address) {
       throw new Error("All fields are required.");

@@ -1,4 +1,4 @@
-const InputLastName = () => {
+const InputLastName = ({value, onChange}) => {
     return (  
         <div className="text-container">
             {/* INPUT HERE */}
@@ -6,7 +6,9 @@ const InputLastName = () => {
             className="input" 
             type="text" 
             placeholder="Last Name" 
-            name="lasttname-input" 
+            name="lastName" 
+            value={value}
+            onChange={onChange}
             id="lasttname-input"/>
             {/* LABEL HERE */}
             <label 

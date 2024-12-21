@@ -1,4 +1,4 @@
-const InputAddress = () => {
+const InputAddress = ({value, onChange}) => {
     return (  
         <div className="text-container">
             {/* INPUT HERE */}
@@ -6,7 +6,9 @@ const InputAddress = () => {
             className="input" 
             type="text" 
             placeholder="Block / No. / Street" 
-            name="address-input" 
+            name="block"
+            value={value} 
+            onChange={onChange}
             id="address-input" />
             {/* LABEL HERE */}
             <label 
