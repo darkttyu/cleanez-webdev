@@ -1,5 +1,6 @@
 import '../styles/Navbar.css'
 import NavLogo from '../images/logos/nav-logo.png'
+import {Link} from 'react-router-dom';
 
 const Navbar = () => {
      // Change later to a more dynamic way to check if a user is logged in or not.
@@ -25,7 +26,7 @@ const Navbar = () => {
                               </div>
                          </button>
                     ) : (
-                         <a className="nav-link" href="">Login</a>
+                         <p className="nav-link"><Link to="/login">Login</Link></p>
                     )}
 
                     <a className="nav-link book-btn" href="">Book Now</a>

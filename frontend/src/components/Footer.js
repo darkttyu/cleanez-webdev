@@ -1,9 +1,11 @@
+import "../styles/Footer.css"
 import SVG from "../SVGIcons";
+import logo from "../images/logos/foot-logo.svg"
 
 const Footer = () => {
      return (  
           <footer className="footer">
-               <img className="footer-logo" src={process.env.PUBLIC_URL + '/images/logos/Logo-3-1.svg'} alt="" />
+               <img className="footer-logo" src={logo} alt="" />
                <div className="footer-content">
                     <div className="footer-menu">
                          <a href="#home" className="">Home</a>
@@ -30,7 +32,7 @@ const Footer = () => {
                     </div>
                     <div className="email other-contacts">
                          <SVG selected="mail" size="24px" color="#222222"/>
-                         <p>info@cleanez.com</p>
+                         <p>info.cleanez2024@gmail.com</p>
                     </div>
                </div>
           </footer>
