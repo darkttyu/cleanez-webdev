@@ -8,6 +8,5 @@ yarn-error.log*
 Thumbs.db
 
 # Environment files
-.env
 *.gitignore text eol=lf
 
