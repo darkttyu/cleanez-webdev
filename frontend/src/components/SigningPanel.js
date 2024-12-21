@@ -1,5 +1,7 @@
 import '../styles/UserSigning.css';
 import bg from "../images/assets/bg-signing-nograin.svg";
+import logoIcon from "../images/logos/Logo-1-2.svg";
+import logoText from "../images/logos/Logo-4-1.svg";
 
 const SigningPanel = ({inputPanel}) => {
     return (  
@@ -8,16 +10,11 @@ const SigningPanel = ({inputPanel}) => {
                 <div className="branding">
                         <img 
                         className="logo" 
-                        src={process.env.PUBLIC_URL + '/images/logos/Logo-1-2.svg'} alt="" />
+                        src={logoIcon} alt="" />
                         <img 
                         className="text" 
-                        src={process.env.PUBLIC_URL + '/images/logos/Logo-4-1.svg'} alt="" />
+                        src={logoText} alt="" />
                 </div>
-                {/* <LoginPanel /> */}
-                {/* <FindAccPanel1 /> */}
-                {/* <FindAccPanel2 /> */}
-                {/* <FindAccPanel3 /> */}
-                {/* <SignUpPanel /> */}
                 {inputPanel}
             </div>
             <figure className="background">

@@ -1,6 +1,7 @@
 import SigningPanel from "../../components/SigningPanel";
 import MailAndPhone from "../../components/inputs/EmailAndPhone";
 import Password from "../../components/inputs/Password";
+import { Link } from "react-router-dom";
 
 const LoginPanel = () => {
     return (  
@@ -29,7 +30,8 @@ const LoginPanel = () => {
             {/* BOTTOM HALF PROMPT/S */}
             <div className="external-prompt">
                 <p className="description">
-                    Don't have an account yet? <a className="prompt-link" href="">Sign Up.</a>
+                    Don't have an account yet? <a className="prompt-link" href="">
+                    <Link to="/signup">Sign Up.</Link></a>
                 </p>
             </div>
         </form>

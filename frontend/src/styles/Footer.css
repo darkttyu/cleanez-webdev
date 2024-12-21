@@ -1,0 +1,58 @@
+@import "../index.css";
+
+/* =================== FOOTER =================== */
+footer {
+    display        : flex;
+    align-items    : center;
+    justify-content: space-around;
+    height         : 180px;
+    width          : 100%;
+    font-family    : var(--font2);
+}
+
+.footer-logo {
+    height: 70%;
+}
+
+.footer-content {
+    justify-self  : center;
+    text-align    : center;
+    display       : flex;
+    flex-direction: column;
+    align-items   : center;
+    gap           : 30px;
+}
+
+.footer-menu {
+    display    : flex;
+    gap        : 16px;
+    font-weight: 500;
+    font-size  : 16px;
+}
+
+.footer-misc {
+    display       : flex;
+    flex-direction: column;
+    gap           : 12px;
+}
+
+.footer-misc .register {
+    font-weight: 500;
+}
+
+.footer-misc .copyright {
+    font-size: 14px;
+}
+
+.footer-contacts {
+    display       : flex;
+    flex-direction: column;
+    gap           : 20px;
+}
+
+.footer-contacts .links,
+.footer-contacts .other-contacts {
+    display        : flex;
+    justify-content: flex-end;
+    gap            : 16px;
+}

@@ -4,16 +4,20 @@ import SignupPage from './pages/UserSigningPages/SignupPage';
 import FindAccountPage from './pages/UserSigningPages/FindAccountPage3';
 import Test from './Test';
 
+import { BrowserRouter as Router, Route, Switch, Routes } from 'react-router-dom';
+
 function App() {
-  return (
-    <div className="App">
-      {/*<HomePage />*/}
-      {/*<LoginPage/>*/}
-      {/* <FindAccountPage/> */}
-      <SignupPage /> 
-      {/* <Test /> */}
-    </div>
-  );
+    return (
+        <Router>
+        <div className="App">
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+            </Routes>
+        </div>
+        </Router>
+    );
 }
 
 export default App;
