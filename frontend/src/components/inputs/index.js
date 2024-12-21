@@ -1,0 +1,11 @@
+export { default as FirstName } from "./FirstName";
+export { default as LastName } from "./LastName";
+export { default as Email } from "./Email";
+export { default as Phone } from "./Phone";
+export { default as Password } from "./Password";
+export { default as Birthdate } from "./Birthdate";
+export { default as Gender } from "./Gender";
+export { default as Address } from "./Address";
+export { default as Province } from "./Province";
+export { default as Municipality } from "./Municipality";
+export { default as Barangay } from "./Barangay";
