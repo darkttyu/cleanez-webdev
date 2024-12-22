@@ -1,6 +1,7 @@
 import '../styles/Navbar.css'
 import NavLogo from '../images/logos/nav-logo.png'
 import {Link} from 'react-router-dom';
+import {HashLink} from 'react-router-hash-link';
 
 const Navbar = () => {
      // Change later to a more dynamic way to check if a user is logged in or not.
@@ -10,10 +11,10 @@ const Navbar = () => {
           <nav className="navbar">
                <img className="nav-logo" src={NavLogo} alt="CleanEZ Logo" />
                <div className="nav-links">
-                    <a className="nav-link" href="#home">Home</a>
-                    <a className="nav-link" href="#services">Services</a>
-                    <a className="nav-link" href="">FAQs</a>
-                    <a className="nav-link" href="#about-us">About Us</a>
+                    <HashLink to="/home#home" className='nav-link'>Home</HashLink>
+                    <HashLink to="/home#services" className='nav-link'>Services</HashLink>
+                    <Link to="/frequently-asked-questions" className='nav-link'>FAQs</Link>
+                    <HashLink to="/home#about-us" className='nav-link'>About Us</HashLink>
                     
                     {isLoggedIn ? (
                          <button 
