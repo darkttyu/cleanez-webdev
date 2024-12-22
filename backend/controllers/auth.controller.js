@@ -72,6 +72,7 @@ export const verifyEmail = async (req, res) => {
       }
 
       user.isVerified = true;
+      user.status = "Active";
       user.verificationToken = undefined;
       user.verificationTokenExpiresAt = undefined;
 

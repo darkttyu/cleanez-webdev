@@ -18,4 +18,5 @@ router.post("/reset-password/:token", resetPassword);
 //Admin Auth Routes
 router.post("/adminLogin", adminLogin);
 router.post("/adminLogout", adminLogout);
+
 export default router;
