@@ -102,7 +102,7 @@ export const login = async (req, res) => {
     
     try {
       // Checks the database for the email / password
-      const user = await User.findOne(isEmail ? { email: login} : { username: login});
+      const user = await User.findOne(isEmail ? { email: login} : { phoneNumber: login});
 
       if(!user) {
         return res.status(400).json({succes: false, message: "Invalid Credentials"});

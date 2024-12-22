@@ -30,7 +30,7 @@ const SignupPanel = () => {
             try {
                 const response = await regions();
                 setRegionData(response);
-                console.log(setRegionData);
+                // console.log(setRegionData);
             } catch (error) {
                 console.error("Error fetching data", error);
             }
@@ -64,7 +64,7 @@ const SignupPanel = () => {
     //Fetches Municipality based on Province
     const listMunicipalities = (province) => {
         const code = province.slice(0,4)
-        console.log(code);
+        // console.log(code);
         cities(code).then((res) => {
             setMunicipalData(res);
         });
@@ -73,7 +73,7 @@ const SignupPanel = () => {
     //Fetches Barangay based on Municipality
     const listBarangays = (municipal) => {
         const code = municipal.slice(0,6)
-        console.log(code);
+        // console.log(code);
         barangays(code).then((res) => {
             setBarangayData(res);
         });
