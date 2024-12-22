@@ -16,6 +16,7 @@ import {
     Municipality,
     Barangay,
 } from "../../components/inputs";
+import { Link } from "react-router-dom";
 
 const SignupPanel = () => {
     const [regionData, setRegionData] = useState([]);
@@ -214,7 +215,7 @@ const SignupPanel = () => {
             </div>
             {/* BOTTOM HALF PROMPTS */}
             <div className="external-prompt">
-                <p className="description">Already have an account? <a className="prompt-link" href="">Login.</a></p>
+                <p className="description">Already have an account? <Link to="/login" className="prompt-link">Login.</Link></p>
             </div>
             
         </form>

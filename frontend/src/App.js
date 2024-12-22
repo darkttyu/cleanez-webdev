@@ -1,4 +1,4 @@
-import HomePage from './pages/HomePage/HomePage';
+import HomePage from './pages/HomePage';
 import LoginPage from './pages/UserSigningPages/LoginPage';
 import SignupPage from './pages/UserSigningPages/SignupPage';
 import FindAccountPage from './pages/UserSigningPages/FindAccountPage3';

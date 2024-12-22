@@ -30,8 +30,8 @@ const LoginPanel = () => {
             {/* BOTTOM HALF PROMPT/S */}
             <div className="external-prompt">
                 <p className="description">
-                    Don't have an account yet? <a className="prompt-link" href="">
-                    <Link to="/signup">Sign Up.</Link></a>
+                    Don't have an account yet? <Link to="/signup" className="prompt-link">
+                    Sign Up.</Link>
                 </p>
             </div>
         </form>
