@@ -33,10 +33,10 @@ const LoginPanel = () => {
             const response = await axios.post('http://localhost:5000/api/auth/login', loginCredentials, {
                 headers: { 'Content-Type': 'application/json' }
               });
-
-            const result = await response.json();
+            
+            // For Data Checking, Comment when Deploying
             console.log("Passed Data: ", loginCredentials); // Data Checker
-            console.log("Login Completed:", result);
+            console.log("Login Completed:", response.data);
         } catch (error) {
             console.error('Error:', error.response ? error.response.data : error.message);
         }

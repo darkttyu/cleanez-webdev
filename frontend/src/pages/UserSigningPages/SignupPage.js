@@ -139,9 +139,9 @@ const SignupPanel = () => {
                 headers: { 'Content-Type': 'application/json' }
               });
 
-            const result = await response.json();
-            console.log("Passed Data: ", signUpData);
-            console.log("SignUp Completed:", result);
+            // For Data Checking, Comment when Deploying
+            console.log("Passed Data: ", signUpData); 
+            console.log("SignUp Completed:", response.data);
         } catch (error) {
             console.error('Error:', error.response ? error.response.data : error.message);
         }
