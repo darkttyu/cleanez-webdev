@@ -1,9 +1,12 @@
 import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
 import { User } from "../models/user.model.js";
+import { Admin } from '../models/admin.model.js';
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail} from "../nodemailer/sendMail.js";
 
+
+// USER AUTHENTICATION
 export const signup = async (req, res) => {
   const {email, password, firstName, lastName, phoneNumber, birthDate, gender, address} = req.body;
 
@@ -218,4 +221,61 @@ export const checkAuth = async (req, res) => {
     console.log("Error in checkAuth ", error);
     res.status(400).json({success:false, message: error.message});
   }
+};
+
+// ADMIN AUTHENTICATION 
+export const adminLogin = async (req, res) => {
+  const { login, password } = req.body;
+
+  try {
+    if(!login || !password) {
+      return res.status(400).json({success: false, message: "All fields are required"});
+    }
+    
+    console.log(login);
+    try {
+      // Checks the database for the username of the admin
+      const admin = await Admin.findOne({username: login});
+
+      console.log(admin);
+
+      if(!admin) {
+        return res.status(400).json({succes: false, message: "Invalid Credentials"});
+      }
+      
+      // Hashes password from db, di kasi naka hash yung ininsert ko sa db
+      const hashedAdminPassword = await bcryptjs.hash(admin.password, 10);
+      
+      // Checks if the password is the same as in the database
+      const isPasswordValid = await bcryptjs.compare(password, hashedAdminPassword);
+
+      if(!isPasswordValid) {
+        return res.status(400).json({succes: false, message: "Invalid Credentials"});
+      }
+
+      generateTokenAndSetCookie(res, admin._id);
+
+      admin.lastLogin = new Date();
+      await admin.save();
+
+      res.status(200).json({
+        success:true, 
+        message: "Logged In Successfully.",
+        admin: {
+          ...admin._doc, 
+          password: undefined,
+        },
+      });
+    } catch (error) {
+      console.log("Error Logging In.")
+    }
+
+  } catch (error) {
+    console.log("Server Error,");
+  }
+};
+
+export const adminLogout = async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({sucess: true, message: "Logged out Successfully."});
 };
