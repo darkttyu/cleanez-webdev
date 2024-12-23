@@ -4,12 +4,17 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --color1a  : #c2f9BB;
   --color1b  : #9ad1d4;
   --color1c  : #e3feff;
   --color1d  : #60c36f;
   --color1e  : #069E4D;
+  --color1f  : #9cfaaa;
   --color2a  : #cc3363;
   --color2b  : #22063b;
   --monoc1   : #ffffff;
