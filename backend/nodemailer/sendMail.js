@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv'
-import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL } from "./emailTemplates.js";
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL} from "./emailTemplates.js";
 
 dotenv.config({path: './.env' });
 
@@ -52,6 +52,19 @@ export const sendWelcomeEmail = async (firstName, email) => {
   }
 };
 
+export const adminWelcomeEmail = async(firstName, email, phoneNumber, password) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "Welcome to CleanEZ",
+      html: ADMIN_WELCOMING_EMAIL.replace("{firstName}", firstName).replace("{email}", email).replace("{phoneNumber}", phoneNumber).replace("{generatedPassword}", password)
+    });
+
+  } catch (error) {
+    console.error("Error sending welcome email", error);
+  }
+}
 export const sendPasswordResetEmail = async (firstName, email, resetURL) => {
   try {
     const info = await transporter.sendMail({

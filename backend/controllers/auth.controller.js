@@ -5,12 +5,11 @@ import { Admin } from '../models/admin.model.js';
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail} from "../nodemailer/sendMail.js";
 
-
 // USER AUTHENTICATION
 export const signup = async (req, res) => {
   const {email, password, firstName, lastName, phoneNumber, birthDate, gender, address} = req.body;
 
-  console.log("Received request body:", req.body); 
+  console.log("Received request body:", req.body); // Data Checker
   
   try {
     if(!firstName || !lastName || !email || !phoneNumber || !password || !birthDate || !gender || !address) {
@@ -101,7 +100,7 @@ export const login = async (req, res) => {
       return res.status(400).json({success: false, message: "All fields are required"});
     }
 
-    // Checks if login is an email / password
+    // Checks if login is an email
     const isEmail = login.includes("@") && login.includes(".");
     
     try {

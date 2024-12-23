@@ -1,4 +1,7 @@
 import { User } from "../models/user.model.js";
+import bcryptjs from 'bcryptjs';
+import { adminWelcomeEmail } from "../nodemailer/sendMail.js";
+import * as generator from 'generate-password';
 
 export const findAllUsers = async (req, res) => {
 
@@ -16,17 +19,85 @@ export const findAllUsers = async (req, res) => {
       isVerified: user.isVerified,
       lastLogin: user.lastLogin
     }));
+    
+    const updatedUserInfo = filteredUserInfo.map(user => {
+      const lastLogin = new Date(user.lastLogin);
+
+      const updatedLoginTime = lastLogin.toLocaleString("en-US", {
+        timeZone: "Asia/Manila",
+        dateStyle: "short",
+        timeStyle: "short",
+        hour12: false
+      });
+
+      return {
+        ...user, 
+        lastLogin: updatedLoginTime
+      }
+    })
 
       if(filteredUserInfo) {
         res.status(200).json({
           success: true,
           message: "Fetched All User Information",
         });
-        console.log(filteredUserInfo) // Pang check sa console ng nafetch na info
+        console.log(updatedUserInfo) // Pang check sa console ng nafetch na info
       } 
   } catch (error) {
     console.log("Error in Fetching Users", error);
     res.status(500).json({success:false, message:"Server Error"});
   }
   
+};
+
+export const addUser = async (req, res) => {
+  const {email, firstName, lastName, phoneNumber, birthDate, gender, address} = req.body;
+
+  console.log("Received request body:", req.body); // Data Checker
+  
+  try {
+    if(!firstName || !lastName || !email || !phoneNumber || !birthDate || !gender || !address) {
+      throw new Error("All fields are required.");
+    }
+    
+    const userAlreadyExists = await User.findOne({email});
+    if(userAlreadyExists) {
+      return res.status(400).json({success:false, message: "User already exists"});
+    }
+
+    // Generates a Random Password for the User
+    const userGeneratedPassword = generator.generate({
+      length: 12,
+      numbers: true,
+    })
+
+    const hashedPassword = await bcryptjs.hash(userGeneratedPassword, 10);
+
+    const user = new User({
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+      phoneNumber, 
+      birthDate,
+      gender,
+      address,
+    })
+
+    await user.save();
+
+    adminWelcomeEmail(user.firstName, user.email, user.phoneNumber, userGeneratedPassword);
+
+    res.status(201).json({
+      success: true,
+      message: "User Created Successfully",
+      user: {
+        ...user._doc,
+        password:undefined,
+      },
+    })
+
+  } catch (error) {
+    return res.status(400).json({success:false, message: error.message});
+  }
 };
