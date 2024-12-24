@@ -147,6 +147,10 @@ export const login = async (req, res) => {
         return res.status(400).json({ success: false, message: "Invalid Credentials" });
       }
 
+      if(!user.isVerified) {
+        return res.status(400).json({ success: false, message: "Account not Verified"});
+      }
+
       // Generate token and set cookie
       generateTokenAndSetCookie(res, user._id);
 

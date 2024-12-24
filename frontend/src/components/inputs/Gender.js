@@ -3,15 +3,15 @@ const InputGender = ({value, onChange}) => {
         <div className="radio-container">
             {/* RADIO OPTIONS */}
             <div className="radio-line">
-                <input className="radio-input" type="radio" name="gender" onChange={onChange} id="gender-input1" value="male"/>
+                <input className="radio-input" type="radio" name="gender" onChange={onChange} id="gender-input1" value="Male"/>
                 <label className="radio-label" htmlFor="gender-input1">Male</label>
             </div>
             <div className="radio-line">
-                <input className="radio-input" type="radio" name="gender" onChange={onChange} id="gender-input2" value="female"/>
+                <input className="radio-input" type="radio" name="gender" onChange={onChange} id="gender-input2" value="Female"/>
                 <label className="radio-label" htmlFor="gender-input2">Female</label>
             </div>
             <div className="radio-line">
-                <input className="radio-input" type="radio" name="gender" onChange={onChange} id="gender-input3" value="disclosed"/>
+                <input className="radio-input" type="radio" name="gender" onChange={onChange} id="gender-input3" value="Disclosed"/>
                 <label className="radio-label" htmlFor="gender-input3">Rather Not Say</label>
             </div>
       </div> 

@@ -140,6 +140,61 @@ export const clickedUser = async(req, res) => {
 };
 
 export const editUserInfo = async(req, res) => {
+  const userId = req.params.id;
   const { firstName, lastName, birthDate, gender, phoneNumber, email, address} = req.body;
-  
+
+    try {
+      const currentUser = await User.findOne({_id: new Object(userId)})
+      if(!currentUser) {
+        res.status(404).json({success:false, message:"User does not exist"});
+      }
+
+      const updatedUserInfo = await User.findByIdAndUpdate(
+        userId, 
+        {
+          email,
+          firstName,
+          lastName,
+          birthDate,
+          gender,
+          phoneNumber, 
+          address
+        },
+        { new: true}
+      );
+    
+        if(!updatedUserInfo) {
+          return res.status(400).json({success: false, message: "Failed to update user."})
+        }
+    
+        res.status(200).json({success: true, message: "Successfully Updated User Information!"})
+
+    } catch (error) {
+      res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+    }
+};
+
+export const deleteUser = async(req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const deleteUser = await User.findByIdAndDelete(userId)
+
+    if(!deleteUser) {
+      return res.status(500).json({ success: false, message: "User not Found."});
+    }
+
+    res.status(200).json({
+      success: true, 
+      message: "User Deleted Successfully."
+    })
+
+  } catch (error) {
+    console.log("Error in deleting user.", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const softDeleteUser = async(req, res) => {
+
 };
