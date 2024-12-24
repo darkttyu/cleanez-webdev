@@ -196,5 +196,30 @@ export const deleteUser = async(req, res) => {
 };
 
 export const softDeleteUser = async(req, res) => {
+  const userId = req.params.id;
 
+    try {
+      const currentUser = await User.findOne({_id: new Object(userId)})
+      
+      if(!currentUser) {
+        res.status(404).json({success:false, message:"User does not exist"});
+      }
+
+      const updatedUserInfo = await User.findByIdAndUpdate(
+        userId, 
+        {
+          status: "Inactive"
+        },
+        { new: true}
+      );
+    
+        if(!updatedUserInfo) {
+          return res.status(400).json({success: false, message: "Failed to Soft Delete User."})
+        }
+    
+        res.status(200).json({success: true, message: "Successfully Soft Deleted User"})
+
+    } catch (error) {
+      res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+    }
 };
