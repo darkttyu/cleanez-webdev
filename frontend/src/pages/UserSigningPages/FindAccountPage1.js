@@ -1,5 +1,10 @@
+// Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+// --- Component Import/s
 import SigningPanel from "../../components/SigningPanel";
 import MailAndPhone from "../../components/inputs/EmailAndPhone";
+// --- Other/React Import/s
+import { Link } from "react-router-dom";
+
 
 const FindAccountPanel = () => {
     return ( 
@@ -17,8 +22,8 @@ const FindAccountPanel = () => {
                         </div>
                         {/* BUTTON HERE */}
                         <div className="buttons">
-                            <a className="prompt-btn cancel">Cancel</a>
-                            <a className="prompt-btn" type="submit">Login</a>
+                            <Link to="/login" className="prompt-btn cancel">Cancel</Link>
+                            <a className="prompt-btn" type="submit">Verify</a>
                         </div>
                     </div>
                 </div>

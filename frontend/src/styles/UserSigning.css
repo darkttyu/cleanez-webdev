@@ -268,6 +268,7 @@ p {
 }
 
 .buttons {
+     position : relative;
      max-width: 350px;
      width    : 100%;
      display  : flex;
@@ -286,6 +287,7 @@ p {
      text-align      : center;
      max-width       : 350px;
      flex            : 1 1 calc(50% - 0.5rem);
+     transition      : all 0.2s ease-in-out;
 }
 
 .prompt-btn:not(:disabled):hover {
@@ -312,4 +314,56 @@ p {
 .bottom-p {
      position: absolute;
      bottom  : 48px;
+}
+
+.error-message {
+     display : none;
+     color   : red;
+     margin  : -1rem 0;
+     overflow: hidden;
+}
+
+@keyframes show-error {
+     0% {
+          opacity: 0%;
+          height : 0%;
+     }
+
+     100% {
+          opacity: 100%;
+          height : 100%;
+     }
+}
+
+.error-message.show-error {
+     display  : inline;
+     animation: show-error 0.4s;
+}
+
+.empty-box {
+     position        : absolute;
+     bottom          : calc(100% + 16px);
+     background-color: #fff;
+     border          : 1px solid black;
+     border-radius   : 8px;
+     padding         : 12px;
+     display         : none;
+     font-family     : var(--font2);
+     box-shadow      : 0 4px 4px var(--monoc4-50);
+     min-width       : 100%;
+}
+
+.empty-box p:first-of-type {
+     color         : var(--monoc3);
+     font-weight   : 700;
+     padding-bottom: 0.6em;
+}
+
+.empty-box p:last-of-type {
+     text-align: justify;
+}
+
+.sign-up:disabled:hover+.empty-box {
+     display: block;
+     opacity: 100%;
 }

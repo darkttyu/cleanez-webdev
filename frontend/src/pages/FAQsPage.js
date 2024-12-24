@@ -1,10 +1,18 @@
+// Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+// --- Styling Import/s
 import "../styles/FAQsPage.css"
+// --- Component Import/s
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import FAQuestionBox from "../components/FAQuestionBox";
+// --- React Import/s
 import { useState,useEffect } from "react";
 
+
+// Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const FAQsPage = () => {
+    // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- FAQ List
     const details = [
         {questions:{
                 eng: "How long is each cleaning session?",
@@ -182,18 +190,24 @@ const FAQsPage = () => {
                 fil: "Oo, may customer support team kami na pwede mong ma-contact sa app para sa anumang tanong, isyu, o feedback."
         }},    
     ]
-
+    // --- Searchbar Value
     const [searchWords, setSearchWords] = useState([]);
+    // --- FAQ List compared to Searchbar Value
     const [filteredDetails, setFilteredDetails] = useState([]);
 
+
+    // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Extracts Searchbar Value
     const handleSearch = (value) => {
         setSearchWords((value.trim()).split(' '));
     }
-
+    // --- Filters the FAQ List                                 { FIX THIS }
     useEffect(() => {
         console.log(searchWords)
     }, [searchWords])
 
+    
+    // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <div>
             <Navbar />

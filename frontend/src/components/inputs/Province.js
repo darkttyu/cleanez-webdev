@@ -5,7 +5,7 @@ const InputProvince = ({ value, data, selection, onChange }) => {
                 className="input" 
                 name="province" 
                 value={value}  
-                id="address-input" 
+                id="province-input" 
                 onChange={(e) => {
                     const selectedProvince = e.target.value;
                     selection(selectedProvince);  
