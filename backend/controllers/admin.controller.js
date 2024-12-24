@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js";
 import bcryptjs from 'bcryptjs';
 import { adminWelcomeEmail } from "../nodemailer/sendMail.js";
+import { format } from 'date-fns';
 import * as generator from 'generate-password';
 
 export const findAllUsers = async (req, res) => {
@@ -11,6 +12,7 @@ export const findAllUsers = async (req, res) => {
     
     // Map allows us to manipulate arrays and transforming them into a new array.
     const filteredUserInfo = userList.map(user => ({
+      userId: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       address: user.address,
@@ -100,4 +102,44 @@ export const addUser = async (req, res) => {
   } catch (error) {
     return res.status(400).json({success:false, message: error.message});
   }
+};
+
+export const clickedUser = async(req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Gets specific user info based on id sent 
+    const specificUser = await User.findOne({_id: new Object(userId)});
+
+    const filteredUserInfo = {
+      userId: specificUser._id,
+      email: specificUser.email,
+      firstName: specificUser.firstName,
+      lastName: specificUser.lastName,
+      address: specificUser.address,
+      phoneNumber: specificUser.phoneNumber,
+      gender: specificUser.gender,
+      birthDate: specificUser.birthDate,
+    };
+
+    const formattedBirthDate = format(new Date(specificUser.birthDate), "dd/mm/yyyy");
+    
+    const updatedUserInfo = {
+        ...filteredUserInfo, 
+        birthDate: formattedBirthDate
+      }
+    
+    console.log(updatedUserInfo);
+    res.status(200).json({success: true, message:"Successfully Fetched User Information"});
+
+  } catch (error) {
+    console.log("Error in Fetching Specific User", error);
+    res.status(500).json({success:false, message:"Server Error"});
+  }
+  
+};
+
+export const editUserInfo = async(req, res) => {
+  const { firstName, lastName, birthDate, gender, phoneNumber, email, address} = req.body;
+  
 };
