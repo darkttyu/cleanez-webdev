@@ -100,8 +100,8 @@ const servicesContent = [
         <section className="main-section services" id="services">
             <h3>Our Services</h3>
             <div className="service-items">
-            {servicesContent.map((service) => (
-                    <div className="service-item">
+            {servicesContent.map((service, index) => (
+                    <div className="service-item" key={index}>
                         <img className="service-image" src={service.image} alt="" /> 
                         <div className="service-details">
                             <div className="information">
@@ -187,8 +187,8 @@ const Founders = () => {
          <section className="main-section founders dark-bg" id="founders">
               <h3>Meet the Founders</h3>
               <div className="founder-items">
-              {founders.map((founder) => (
-                   <div className="founder-item">
+              {founders.map((founder, index) => (
+                   <div className="founder-item" key={index}>
                         <img className="founder-image" src={founder.image} alt=""/>
                         <div className="founder-label">
                              <p className="founder-name">{founder.name}</p>

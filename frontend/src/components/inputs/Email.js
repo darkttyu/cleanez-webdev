@@ -4,7 +4,7 @@ const InputEmail = ({value, onChange}) => {
             {/* INPUT HERE */}
             <input 
             className="input" 
-            type="email" 
+            type="text" 
             placeholder="Email" 
             name="email" 
             value={value}

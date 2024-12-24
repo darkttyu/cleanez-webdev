@@ -1,47 +1,93 @@
-import { useState } from "react";
+// Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+// --- Component Import/s
 import SigningPanel from "../../components/SigningPanel";
 import MailAndPhone from "../../components/inputs/EmailAndPhone";
 import Password from "../../components/inputs/Password";
-import { Link } from "react-router-dom";
+// --- Other/React Import/s
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../AuthContext";
 import axios from "axios";
 
-const LoginPanel = () => {
 
+// Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+const LoginPanel = ({route}) => {
+    // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Context Authenticator
+    const {login} = useAuth();   
+    // --- Navigation Variable 
+    const navigate = useNavigate();
+    // --- Login Data Credentials
     const [loginCredentials, setLogInData] = useState({
         login: '',
         password: ''
     });
+    // --- Submit Button Disabler
+    const [isDisabled, setIsDisabled] = useState(true);
+    // --- Error Message Shower
+    const [showError, setShowError] = useState("");
 
+
+    // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Checks Email/Phone Format Validity
+    const isEmailPhoneValid = (value) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^[0-9]{11}$/;
+        return emailRegex.test(value) || (phoneRegex.test(value))
+    }
+    // --- Checks both Email/Phone and Password Format Validity in each Input
+    useEffect(() => {
+        const isLoginValid = isEmailPhoneValid(loginCredentials.login) && loginCredentials.login.trim() !== '';
+        const isPasswordValid = loginCredentials.password.trim() !== '';
+        setIsDisabled(!(isLoginValid && isPasswordValid));
+    }, [loginCredentials]);
+    // --- Saves Login Data in each Input
     const handleLogInData = (e) => {
         const {name, value} = e.target;
-
         try {
+            setShowError("");
             setLogInData({
                 ...loginCredentials,
                 [name]: value
             });
         } catch (error) {
             console.error("Error in Logging In", error);
-        }
-        
+        }     
     }
-
+    // --- Verifies Login Data after Submission
     const handleLogInSubmission = async (e) => {
+        console.log(loginCredentials);
         e.preventDefault();
-
+        // --- --- Successfull Login
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', loginCredentials, {
+            const response = await axios.post(`http://localhost:5000/api/auth/${route}`, loginCredentials, {
                 headers: { 'Content-Type': 'application/json' }
               });
             
             // For Data Checking, Comment when Deploying
             console.log("Passed Data: ", loginCredentials); // Data Checker
             console.log("Login Completed:", response.data);
+
+            if (response.status === 200) {
+                if (route === "login") {
+                    login(response.data.user)
+                    navigate(`/home/${response.data.user._id}`);
+                } else if (route === "adminLogin") {
+                    login(response.data.admin)
+                    navigate(`/admin/${response.data.admin._id}`)
+                }
+            }
+        // --- --- Failed Login
         } catch (error) {
             console.error('Error:', error.response ? error.response.data : error.message);
+            if (error.response.status === 400) {
+                setShowError("show-error");
+            }  
         }
     }
 
+
+    // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <form className="prompt" method="POST" onSubmit={handleLogInSubmission}>
             {/* TOP HALF PROMPT/S */}
@@ -54,13 +100,18 @@ const LoginPanel = () => {
                             <MailAndPhone value={loginCredentials.login} onChange={handleLogInData}/>
                             <Password value={loginCredentials.password} onChange={handleLogInData}/>
                         </div>
+                        <p className={`error-message ${showError}`}>Login failed. Please check your email/phone and password.</p>
                         {/* BUTTON HERE */}
                         <div className="buttons">
-                            <button className="prompt-btn" type="submit">Login</button>
+                            {(route === "adminLogin") ? 
+                                (<button className="prompt-btn" type="submit">Login</button>)
+                                :
+                                (<button className="prompt-btn" type="submit" disabled={isDisabled}>Login</button>)
+                            }   
                         </div>
                         {/* OTHERS HERE */}
                         <p>
-                            <a className="forgot-pass" href="">Forgot Password?</a>
+                            <Link to="/forgot-password" className="forgot-pass">Forgot Password?</Link>
                         </p>
                     </div>
                 </div>
@@ -76,9 +127,9 @@ const LoginPanel = () => {
     );
 }
 
-const LoginPage = () => {
+const LoginPage = ({route}) => {
     return (  
-        <SigningPanel inputPanel={<LoginPanel/>}/>
+        <SigningPanel inputPanel={<LoginPanel route={route}/>}/>
     );
 }
  

@@ -284,7 +284,6 @@ export const checkAuth = async (req, res) => {
  */
 export const adminLogin = async (req, res) => {
   const { login, password } = req.body;
-
   try {
     if (!login || !password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
