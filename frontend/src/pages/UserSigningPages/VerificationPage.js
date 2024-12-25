@@ -5,7 +5,7 @@ import SecurityCode from "../../components/inputs/SecurityCode";
 // --- Other/React Import/s
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../AuthContext";
-
+import axios from "axios";
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const FindAccountPanel = () => {
@@ -30,13 +30,37 @@ const FindAccountPanel = () => {
     }, [code]);
     // --- Joins all digit of [code] inputs in each box
     const passCode = () => {
-        console.log(code.join(""));
+        return code.join();
     };
 
+    const handleVerificationEmail = async (e) => {
+        e.preventDefault();
+    
+        // Joins all digit of [code inputs in each box]
+        const verificationCode = code.join("");
+    
+        try {
+            const response = await axios.post(
+                'http://localhost:5000/api/auth/verify-email', 
+                { code: verificationCode }, 
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+    
+            console.log(response.data);
+    
+            /*
+            if (response.status === 201) {
+                // for handling and navigation after verification email
+            }
+            */
+        } catch (error) {
+            console.error("Error verifying email:", error.response?.data || error.message);
+        }
+    };
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (
-        <form className="prompt" method="POST" action="">
+        <form className="prompt" method="POST" onSubmit={handleVerificationEmail}>
             {/* TOP HALF PROMPT/S */}
             <div className="main-prompt">
                 <div className="prompt-pages">
