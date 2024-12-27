@@ -151,6 +151,10 @@ export const login = async (req, res) => {
         return res.status(400).json({ success: false, message: "Account not Verified"});
       }
 
+      if(user.status == "Inactive") {
+        return res.status(400).json({success: false, message: "Login Failed. Account Inactive."});
+      }
+
       // Generate token and set cookie
       generateTokenAndSetCookie(res, user._id);
 
