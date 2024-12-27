@@ -1,6 +1,6 @@
 import { User } from "../models/user.model.js";
 import bcryptjs from 'bcryptjs';
-import { adminWelcomeEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, sendAccountDeletion } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import * as generator from 'generate-password';
 
@@ -84,7 +84,8 @@ export const addUser = async (req, res) => {
       birthDate,
       gender,
       address,
-    })
+      isVerified: true
+    });
 
     await user.save();
 
@@ -184,6 +185,9 @@ export const deleteUser = async(req, res) => {
       return res.status(500).json({ success: false, message: "User not Found."});
     }
 
+    
+    sendAccountDeletion(deleteUser.firstName, deleteUser.email);
+    
     res.status(200).json({
       success: true, 
       message: "User Deleted Successfully."

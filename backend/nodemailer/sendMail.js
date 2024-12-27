@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv'
-import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL} from "./emailTemplates.js";
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT} from "./emailTemplates.js";
 
 dotenv.config({path: './.env' });
 
@@ -96,3 +96,19 @@ export const sendResetSuccessEmail = async (firstName, email) => {
     throw new Error(`Error sending password reset success email: ${error}`);
   }
 };
+
+export const sendAccountDeletion = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "Account Deletion",
+      html: DELETE_ACCOUNT.replace("{firstName}", firstName).replace("{email}", email)
+    })
+
+    console.log("Deletion Email Sent Successfully.")
+  } catch (error) {
+    console.error("Error sending account deletion email:", error);
+    throw new Error(`Error sending account deletion email: ${error}`);
+  }
+}

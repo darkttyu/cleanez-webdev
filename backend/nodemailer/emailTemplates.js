@@ -200,3 +200,42 @@ export const ADMIN_WELCOMING_EMAIL = `
 </body>
 </html>
 `;
+
+export const DELETE_ACCOUNT = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Deletion Notice</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">ACCOUNT DELETED</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName}!</span></p>
+    <p style="text-align: justify;">This email is to notify you that your CleanEZ account has been successfully deleted. We're sorry to see you go, but we respect your decision to leave.</p>
+    <p style="text-align: justify;">If you did not request this deletion or believe this was done in error, please contact us immediately at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>. Your security is our top priority, and we’ll do our best to assist you.</p>
+    <p style="font-weight: bold;">What this means:</p>
+    <ul>
+      <li style="font-weight: bold;">Account Data: <span style="font-weight: 100;">All your personal data and booking history associated with CleanEZ have been permanently removed from our system.</span></li>
+      <li style="font-weight: bold;">Services Access: <span style="font-weight: 100;">You will no longer have access to our platform or services under this account.</span></li>
+    </ul>
+    <p style="text-align: justify;">If you ever wish to return, we’d be delighted to welcome you back! You can always create a new account by visiting our website.</p>
+    <p>Visit us at <a href="https://cleanez.net" style="color: #4CAF50;">cleanez.net</a> for more information about our services or future updates.</p>
+    <p>Thank you for your time with CleanEZ. We wish you the best in all your endeavors!</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;

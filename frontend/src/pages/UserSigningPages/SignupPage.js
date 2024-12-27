@@ -208,7 +208,7 @@ const SignupPanel = () => {
             // For Data Checking, Comment when Deploying
             console.log("Passed Data: ", signUpData); 
             console.log("SignUp Completed:", response.data);
-            if (response.status == 201)  {
+            if (response.status === 201)  {
                 login(response.data.user)
                 navigate(`/signup/verify-email`);
             }    
