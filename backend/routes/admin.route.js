@@ -1,9 +1,20 @@
 import express from 'express';
-import { addUser, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser } from '../controllers/admin.controller.js';
+import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser } from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
-//Admin Routes
+
+// Dashboard Tab
+
+// Appointments Tab
+
+// Applicants Tab
+
+// Worker Tab
+router.get("/findAllWorkers", findAllUsers);
+router.post("/addWorker", addWorker);
+
+// User Tab
 router.get("/findAllUsers", findAllUsers); // Retrieves all user information
 router.post("/addUser", addUser); // Directly Creates a new user
 router.get("/clickedUser/:id", clickedUser); // Reads and Retrieves specific user data upon profile clicking
