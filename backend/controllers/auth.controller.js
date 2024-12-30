@@ -152,7 +152,7 @@ export const login = async (req, res) => {
       }
 
       if(user.status == "Inactive") {
-        return res.status(400).json({success: false, message: "Login Failed. Account Inactive."});
+        return res.status(400).json({success: false, message: "Login Failed. Account Inactive. Contact Admin for Account Reactivation"});
       }
 
       // Generate token and set cookie

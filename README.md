@@ -10,7 +10,8 @@ Here lies all the struggles and suffering that Rein and Carl went through.
 -- Admin Side
 [/] User CRUD [USER TAB]
 [/] Add Worker [WORKER TAB]
-[] View Worker Information [WORKER TAB]
+[/] View All Workers [WORKER TAB]
+[] View A Specific Worker [WORKER TAB]
 [] Update Worker Information [WORKER TAB]
 [] Delete Worker / Set Role to User Again [WORKER TAB]
 

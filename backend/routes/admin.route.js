@@ -1,5 +1,5 @@
 import express from 'express';
-import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser } from '../controllers/admin.controller.js';
+import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser, findAllWorkers } from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ const router = express.Router();
 // Applicants Tab
 
 // Worker Tab
-router.get("/findAllWorkers", findAllUsers);
+router.get("/findAllWorkers", findAllWorkers);
 router.post("/addWorker", addWorker);
 
 // User Tab

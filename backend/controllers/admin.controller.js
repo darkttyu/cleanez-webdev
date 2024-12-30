@@ -9,46 +9,19 @@ import * as generator from 'generate-password';
 export const findAllWorkers = async (req, res) => {
 
   try {
-    // Gets all the User information and stores it in an array of objects
-    const userList = await User.find();
+    // Gets all the Worker Information and is Stored in an Array of Objects
+    const workerList = await Worker.find()
+      .populate({
+        path: "userId",
+        select: "firstName lastName address status"
+      })
+      .select('serviceCategory totalEarnings')
     
-    // Map allows us to manipulate arrays and transforming them into a new array.
-    const filteredUserInfo = userList.map(user => ({
-      userId: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      address: user.address,
-      phoneNumber: user.phoneNumber,
-      status: user.status,
-      isVerified: user.isVerified,
-      lastLogin: user.lastLogin
-    }));
+    console.log(JSON.stringify(workerList, null, 2)); // Used for readability of the address since only [Object] is displayed without it
     
-    const updatedUserInfo = filteredUserInfo.map(user => {
-      const lastLogin = new Date(user.lastLogin);
-
-      const updatedLoginTime = lastLogin.toLocaleString("en-US", {
-        timeZone: "Asia/Manila",
-        dateStyle: "short",
-        timeStyle: "short",
-        hour12: false
-      });
-
-      return {
-        ...user, 
-        lastLogin: updatedLoginTime
-      }
-    })
-
-      if(filteredUserInfo) {
-        res.status(200).json({
-          success: true,
-          message: "Fetched All User Information",
-        });
-        console.log(updatedUserInfo) // Pang check sa console ng nafetch na info
-      } 
+    res.status(200).json({success: true, message: "Successfully Fetched Worker List"});
   } catch (error) {
-    console.log("Error in Fetching Users", error);
+    console.log("Error in Fetching Workers", error);
     res.status(500).json({success:false, message:"Server Error"});
   }
   
@@ -102,8 +75,14 @@ export const addWorker = async (req, res) => {
   }
 };
 
+export const editWorkerSchedule = async (req, res) => {
+  
 
+};
 
+export const deleteWorker = async (req, res) => {
+
+};
 
 
 
