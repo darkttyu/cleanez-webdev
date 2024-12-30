@@ -1,5 +1,5 @@
 import express from 'express';
-import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser, findAllWorkers } from '../controllers/admin.controller.js';
+import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, deleteWorker, softDeleteWorker, setWorkerToActive, setUserToActive } from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
@@ -13,6 +13,11 @@ const router = express.Router();
 // Worker Tab
 router.get("/findAllWorkers", findAllWorkers);
 router.post("/addWorker", addWorker);
+router.get("/clickedWorker/:id", clickedWorker);
+router.put("/editWorkerSchedule/:id", editWorkerSchedule);
+router.delete("/deleteWorker/:id", deleteWorker);
+router.put("/softDeleteWorker/:id", softDeleteWorker);
+router.put("/setWorkertoActive/:id", setWorkerToActive);
 
 // User Tab
 router.get("/findAllUsers", findAllUsers); // Retrieves all user information
@@ -21,5 +26,6 @@ router.get("/clickedUser/:id", clickedUser); // Reads and Retrieves specific use
 router.put("/editUserInfo/:id", editUserInfo); // Updates User Information
 router.delete("/deleteUser/:id", deleteUser); // Deletes User Entirely from the Database
 router.put("/softDeleteUser/:id", softDeleteUser); // Sets Status of User to Inactive
+router.put("/setUserToActive/:id", setUserToActive);
 
 export default router;

@@ -7,10 +7,9 @@ import * as generator from 'generate-password';
 
 // Worker Controllers
 export const findAllWorkers = async (req, res) => {
-
   try {
     // Gets all the Worker Information and is Stored in an Array of Objects
-    const workerList = await Worker.find()
+    const workerList = await Worker.findOne()
       .populate({
         path: "userId",
         select: "firstName lastName address status"
@@ -19,7 +18,7 @@ export const findAllWorkers = async (req, res) => {
     
     console.log(JSON.stringify(workerList, null, 2)); // Used for readability of the address since only [Object] is displayed without it
     
-    res.status(200).json({success: true, message: "Successfully Fetched Worker List"});
+    return res.status(200).json({success: true, message: "Successfully Fetched Worker List"});
   } catch (error) {
     console.log("Error in Fetching Workers", error);
     res.status(500).json({success:false, message:"Server Error"});
@@ -75,16 +74,145 @@ export const addWorker = async (req, res) => {
   }
 };
 
-export const editWorkerSchedule = async (req, res) => {
-  
+export const clickedWorker = async(req, res) => {
+  const userId = req.params.id;
 
+  try {
+    // Gets all the Worker Information and is Stored in an Array of Objects
+    const worker = await Worker.findOne({ userId })
+      .populate({
+        path: "userId",
+        select: "firstName lastName"
+      })
+      .select('workSchedule serviceCategory timeRange')
+    
+    console.log(JSON.stringify(worker, null, 2)); // Used for readability of the address since only [Object] is displayed without it
+    
+    return res.status(200).json({success: true, message: "Successfully Fetched Worker"});
+
+  } catch (error) {
+    console.log("Error in Fetching Workers", error);
+    res.status(500).json({success:false, message:"Server Error"});
+  }
+};
+
+export const editWorkerSchedule = async (req, res) => {
+  const userId = req.params.id;
+  const { serviceCategory, workSchedule, timeRange } = req.body;
+
+    try {
+      const currentWorker = await Worker.findOne({userId})
+      if(!currentWorker) {
+        return res.status(404).json({success:false, message:"Worker does not exist"});
+      }
+
+      const updatedWorkerInfo = await Worker.findByIdAndUpdate(
+        currentWorker._id, 
+        {
+          serviceCategory,
+          workSchedule,
+          timeRange
+        },
+        { new: true}
+      );
+    
+        if(!updatedWorkerInfo) {
+          return res.status(400).json({success: false, message: "Failed to update worker."})
+        }
+    
+        return res.status(200).json({success: true, message: "Successfully Updated User Information!"})
+
+    } catch (error) {
+      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+    }
+};
+
+export const setWorkerToActive = async (req, res) => {
+  const userId = req.params.id;
+
+    try {
+      const currentWorker = await Worker.findOne({userId})
+      
+      if(!currentWorker) {
+        res.status(404).json({success:false, message:"Worker does not exist"});
+      }
+
+      const updatedWorkerInfo = await User.findByIdAndUpdate(
+        userId, 
+        {
+          status: "Active"
+        },
+        { new: true}
+      );
+    
+        if(!updatedWorkerInfo) {
+          return res.status(400).json({success: false, message: "Failed to set worker status to Active."})
+        }
+    
+        return res.status(200).json({success: true, message: "Worker Status set to Active"})
+
+    } catch (error) {
+      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+    }
+};
+
+export const softDeleteWorker = async (req, res) => {
+  const userId = req.params.id;
+
+    try {
+      const currentWorker = await Worker.findOne({userId})
+      
+      if(!currentWorker) {
+        res.status(404).json({success:false, message:"Worker does not exist"});
+      }
+
+      const updatedWorkerInfo = await User.findByIdAndUpdate(
+        userId, 
+        {
+          status: "Inactive"
+        },
+        { new: true}
+      );
+    
+        if(!updatedWorkerInfo) {
+          return res.status(400).json({success: false, message: "Failed to Soft Delete Worker."})
+        }
+    
+        return res.status(200).json({success: true, message: "Successfully Soft Deleted User"})
+
+    } catch (error) {
+      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+    }
 };
 
 export const deleteWorker = async (req, res) => {
+  const userId = req.params.id;
 
+  try {
+    const deleteUser = await Worker.findOneAndDelete({userId})
+
+    if(!deleteUser) {
+      return res.status(500).json({ success: false, message: "User not Found."});
+    }
+
+    const updateUser = await User.findByIdAndUpdate(userId, {role: "User"});
+
+    if(!updateUser) {
+      return res.status(400).json({ success: false, message: "Error in Updating user role."});
+    }
+
+    // sendAccountDeletion(deleteUser.firstName, deleteUser.email);
+    
+    return res.status(200).json({
+      success: true, 
+      message: "Worker Information Deleted Successfully."
+    })
+
+  } catch (error) {
+    console.log("Error in deleting user.", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
 };
-
-
 
 // User Controllers
 export const findAllUsers = async (req, res) => {
@@ -194,6 +322,10 @@ export const clickedUser = async(req, res) => {
     // Gets specific user info based on id sent 
     const specificUser = await User.findOne({_id: new Object(userId)});
 
+    if(!specificUser) {
+      return res.status(404).json({success: false, message: "User does not exist."});
+    }
+
     const filteredUserInfo = {
       userId: specificUser._id,
       email: specificUser.email,
@@ -267,7 +399,6 @@ export const deleteUser = async(req, res) => {
       return res.status(500).json({ success: false, message: "User not Found."});
     }
 
-    
     sendAccountDeletion(deleteUser.firstName, deleteUser.email);
     
     res.status(200).json({
@@ -303,9 +434,38 @@ export const softDeleteUser = async(req, res) => {
           return res.status(400).json({success: false, message: "Failed to Soft Delete User."})
         }
     
-        res.status(200).json({success: true, message: "Successfully Soft Deleted User"})
+        return res.status(200).json({success: true, message: "Successfully Soft Deleted User"})
 
     } catch (error) {
-      res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+    }
+};
+
+export const setUserToActive = async (req,res) => {
+  const userId = req.params.id;
+
+    try {
+      const currentUser = await User.findOne({_id: new Object(userId)})
+      
+      if(!currentUser) {
+        res.status(404).json({success:false, message:"User does not exist"});
+      }
+
+      const updatedUserInfo = await User.findByIdAndUpdate(
+        userId, 
+        {
+          status: "Active"
+        },
+        { new: true}
+      );
+    
+        if(!updatedUserInfo) {
+          return res.status(400).json({success: false, message: "Failed to set user status to Active."})
+        }
+    
+        return res.status(200).json({success: true, message: "User status set to Active."})
+
+    } catch (error) {
+      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
     }
 };
