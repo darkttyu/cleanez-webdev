@@ -20,6 +20,8 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 - [x] Delete Worker / Set Role to User Again [WORKER TAB]
 - [x] Set User / Worker Status to Active [USER/WORKER TAB]
 
+### User - Appointments
+
 ---
 
 ## Frontend To-Do List (Rein)

@@ -1,5 +1,5 @@
 import express from 'express';
-import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, deleteWorker, softDeleteWorker, setWorkerToActive, setUserToActive } from '../controllers/admin.controller.js';
+import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, deleteWorker, softDeleteWorker, setWorkerToActive, setUserToActive, insertService } from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
@@ -28,4 +28,6 @@ router.delete("/deleteUser/:id", deleteUser); // Deletes User Entirely from the 
 router.put("/softDeleteUser/:id", softDeleteUser); // Sets Status of User to Inactive
 router.put("/setUserToActive/:id", setUserToActive);
 
+// Service 
+router.post("/insertService", insertService);
 export default router;

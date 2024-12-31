@@ -1,7 +1,8 @@
 import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
+import { Service } from "../models/service.model.js";
 import bcryptjs from 'bcryptjs';
-import { adminWelcomeEmail, sendAccountDeletion } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import * as generator from 'generate-password';
 
@@ -59,7 +60,8 @@ export const addWorker = async (req, res) => {
       if(!updateUserRole) {
         return res.status(400).json({success: false, message: "Failed to Update User Role."})
       }
-    // adminWelcomeWorkerEmail();
+    
+    adminWelcomeWorkerEmail(updateUserRole.firstName, updateUserRole.email);
 
     res.status(201).json({
       success: true,
@@ -148,7 +150,8 @@ export const setWorkerToActive = async (req, res) => {
         if(!updatedWorkerInfo) {
           return res.status(400).json({success: false, message: "Failed to set worker status to Active."})
         }
-    
+        
+        sendWorkerActivationEmail(updatedWorkerInfo.firstName, updatedWorkerInfo.email);
         return res.status(200).json({success: true, message: "Worker Status set to Active"})
 
     } catch (error) {
@@ -177,8 +180,9 @@ export const softDeleteWorker = async (req, res) => {
         if(!updatedWorkerInfo) {
           return res.status(400).json({success: false, message: "Failed to Soft Delete Worker."})
         }
-    
-        return res.status(200).json({success: true, message: "Successfully Soft Deleted User"})
+        
+        sendWorkerDeactivationEmail(updatedWorkerInfo.firstName, updatedWorkerInfo.email);
+        return res.status(200).json({success: true, message: "Successfully Soft Deleted Worker"})
 
     } catch (error) {
       return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
@@ -433,7 +437,8 @@ export const softDeleteUser = async(req, res) => {
         if(!updatedUserInfo) {
           return res.status(400).json({success: false, message: "Failed to Soft Delete User."})
         }
-    
+        
+        sendUserDeactivationEmail(updatedUserInfo.firstName, updatedUserInfo.email);
         return res.status(200).json({success: true, message: "Successfully Soft Deleted User"})
 
     } catch (error) {
@@ -441,7 +446,7 @@ export const softDeleteUser = async(req, res) => {
     }
 };
 
-export const setUserToActive = async (req,res) => {
+export const setUserToActive = async (req, res) => {
   const userId = req.params.id;
 
     try {
@@ -458,14 +463,53 @@ export const setUserToActive = async (req,res) => {
         },
         { new: true}
       );
-    
+      
         if(!updatedUserInfo) {
           return res.status(400).json({success: false, message: "Failed to set user status to Active."})
         }
-    
+        
+        sendUserActivationEmail(updatedUserInfo.firstName, updatedUserInfo.email);
         return res.status(200).json({success: true, message: "User status set to Active."})
 
     } catch (error) {
       return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
     }
+};
+
+// Service Controllers
+export const insertService = async (req, res) => {
+  const { serviceName, sizeOfArea, numberOfWorkers, price} = req.body;
+
+  console.log("Received request body:", req.body); // Data Checker
+  
+  try {
+    if(!serviceName || !sizeOfArea || !numberOfWorkers || !price) {
+      throw new Error("All fields are required.");
+    }
+    
+    const serviceAlreadyExists = await Service.findOne({ serviceName });
+    if(serviceAlreadyExists) {
+      return res.status(400).json({success:false, message: "Service already exists"});
+    }
+
+    const service = new Service({
+      serviceName,
+      sizeOfArea,
+      numberOfWorkers, 
+      price
+    });
+
+    await service.save();
+    
+    res.status(201).json({
+      success: true,
+      message: "Service Created Successfully",
+      service: {
+        ...service._doc,
+      },
+    })
+    
+  } catch (error) {
+    return res.status(400).json({success:false, message: error.message});
+  }
 };

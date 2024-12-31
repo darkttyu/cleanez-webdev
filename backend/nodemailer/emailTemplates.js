@@ -239,3 +239,205 @@ export const DELETE_ACCOUNT = `
 </body>
 </html>
 `;
+
+export const ACTIVATE_USER = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Activation Notice</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">ACCOUNT ACTIVATION NOTICE</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName}!</span></p>
+    <p style="text-align: justify;">We are excited to inform you that your CleanEZ account is now set to active status! You can now fully access our platform and enjoy all the services we offer.</p>
+    <p style="text-align: justify;">As an active user, you’ll be able to explore our wide network of cleaning professionals, schedule services at your convenience, and enjoy the seamless experience CleanEZ provides.</p>
+    <p style="font-weight: bold;">What’s next?</p>
+    <ul>
+      <li style="font-weight: bold;">Full Access: <span style="font-weight: 100;">You can now login to your account and use all available features.</span></li>
+      <li style="font-weight: bold;">Service Bookings: <span style="font-weight: 100;">Browse and book cleaning services that fit your needs.</span></li>
+      <li style="font-weight: bold;">Profile Management: <span style="font-weight: 100;">Update your account details and preferences to enhance your experience.</span></li>
+    </ul>
+    <p style="text-align: justify;">We’re thrilled to have you as an active member of the CleanEZ community. If you have any questions or need assistance, please don’t hesitate to contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>
+    <p>Visit us at <a href="https://cleanez.net" style="color: #4CAF50;">cleanez.net</a> to get started and make the most of your active account.</p>
+    <p>Thank you for choosing CleanEZ. We look forward to serving you!</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;
+
+export const DEACTIVATE_USER = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Inactivity Notice</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">ACCOUNT INACTIVITY NOTICE</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName}!</span></p>
+    <p style="text-align: justify;">We are writing to inform you that your CleanEZ account is scheduled to be set to inactive status in 7 days due to prolonged inactivity. While your account will remain secure, you will lose access to our services until reactivation.</p>
+    <p style="text-align: justify;">If you wish to keep your account active, please log in to your CleanEZ account or contact us before the scheduled inactivity date. This will ensure uninterrupted access to our platform and services.</p>
+    <p style="font-weight: bold;">What happens when your account becomes inactive?</p>
+    <ul>
+      <li style="font-weight: bold;">Limited Access: <span style="font-weight: 100;">You will not be able to book services or access your account features.</span></li>
+      <li style="font-weight: bold;">Data Retention: <span style="font-weight: 100;">Your account data will remain stored securely, and you can reactivate at any time.</span></li>
+    </ul>
+    <p style="text-align: justify;">To reactivate your account, simply log in or contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>. We’re here to assist you with any concerns or questions.</p>
+    <p>Visit us at <a href="https://cleanez.net" style="color: #4CAF50;">cleanez.net</a> for more information about our services and updates.</p>
+    <p>Thank you for choosing CleanEZ. We hope to continue serving you in the future!</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;
+
+export const WELCOME_WORKER = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to CleanEZ</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="header.png" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">WELCOME TO CLEAN<span style="font-weight: bold; color: #4CAF50;">EZ</span></span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName}!</span></p>
+    <p style="text-align: justify;">Welcome to CleanEZ! We’re thrilled to have you onboard as part of our dedicated team of professional cleaners. Together, we’re making spaces shine and providing exceptional service to our valued clients.</p>
+    <p style="font-weight: bold;">Why CleanEZ is the right platform for you:</p>
+    <ul>
+      <li style="font-weight: bold;">Flexible Opportunities: <span style="font-weight: 100;">Choose schedules and jobs that suit your availability.</span></li>
+      <li style="font-weight: bold;">Supportive Team: <span style="font-weight: 100;">We’re here to assist you every step of the way.</span></li>
+      <li style="font-weight: bold;">Competitive Pay: <span style="font-weight: 100;">Earn fair compensation for your hard work.</span></li>
+      <li style="font-weight: bold;">Reliable Platform: <span style="font-weight: 100;">Our system ensures secure and seamless connections with clients.</span></li>
+    </ul>
+    <p>Here’s your login information to access the worker portal:</p>
+    <ul>
+        <li><strong>Email:</strong> <span style="font-weight: bold; color: #4CAF50;">{workerEmail}</span></li>
+        <li><strong>Password:</strong> <span style="font-weight: bold; color: #4CAF50;">{workerPassword}</span></li>
+    </ul>
+    <p style="text-align: justify;">We recommend logging in immediately and updating your password for security purposes. Through the portal, you can manage your tasks, track earnings, and stay updated on upcoming opportunities.</p>
+    <p>Visit our website <a href="https://cleanez.net" style="color: #4CAF50;">cleanez.net</a> or contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a> for any questions or assistance.</p>
+    <p>Thank you for joining CleanEZ. Together, we’ll create spotless spaces and happy clients!</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="footer.png" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;
+export const ACTIVATE_WORKER = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Activation Notice</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">WORKER ACCOUNT ACTIVATION NOTICE</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName}!</span></p>
+    <p style="text-align: justify;">We are excited to inform you that your CleanEZ worker account has been successfully activated! You are now fully equipped to access the platform and start connecting with clients.</p>
+    <p style="text-align: justify;">As an active worker, you can now explore job opportunities, manage your profile, and utilize all the tools and features available to streamline your workflow and provide top-notch cleaning services.</p>
+    <p style="font-weight: bold;">What’s next?</p>
+    <ul>
+      <li style="font-weight: bold;">Job Opportunities: <span style="font-weight: 100;">Browse and accept job postings that match your skills and availability.</span></li>
+      <li style="font-weight: bold;">Profile Visibility: <span style="font-weight: 100;">Your profile is now visible to clients, increasing your chances of getting hired.</span></li>
+    </ul>
+    <p style="text-align: justify;">If you have any questions or need assistance, please don’t hesitate to contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>. We’re here to support you every step of the way.</p>
+    <p>Visit us at <a href="https://cleanez.net" style="color: #4CAF50;">cleanez.net</a> to get started and take full advantage of your active account.</p>
+    <p>Thank you for being a part of the CleanEZ team. We look forward to seeing your success on our platform!</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;
+
+export const DEACTIVATE_WORKER = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Inactivity Notice</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">WORKER ACCOUNT INACTIVITY NOTICE</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName}!</span></p>
+    <p style="text-align: justify;">We are writing to inform you that your CleanEZ worker account is scheduled to be set to inactive status in 7 days due to prolonged inactivity. While your account will remain secure, you will lose access to job opportunities and other platform features until reactivation.</p>
+    <p style="text-align: justify;">If you wish to keep your account active, please log in to your CleanEZ account or contact us before the scheduled inactivity date. This will ensure uninterrupted access to job listings and other resources.</p>
+    <p style="font-weight: bold;">What happens when your account becomes inactive?</p>
+    <ul>
+      <li style="font-weight: bold;">Job Access: <span style="font-weight: 100;">You will not be able to accept or view new job postings.</span></li>
+      <li style="font-weight: bold;">Profile Visibility: <span style="font-weight: 100;">Your profile will no longer be visible to clients on the platform.</span></li>
+      <li style="font-weight: bold;">Data Retention: <span style="font-weight: 100;">Your account data will remain stored securely, and you can reactivate at any time.</span></li>
+    </ul>
+    <p style="text-align: justify;">To reactivate your account, simply log in or contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>. We’re here to assist you with any concerns or questions.</p>
+    <p>Visit us at <a href="https://cleanez.net" style="color: #4CAF50;">cleanez.net</a> for more information about our platform and updates.</p>
+    <p>Thank you for being a part of the CleanEZ team. We hope to continue supporting you in your professional journey!</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;

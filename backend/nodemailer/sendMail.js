@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv'
-import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT} from "./emailTemplates.js";
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT, ACTIVATE_USER, DEACTIVATE_USER, DEACTIVATE_WORKER, ACTIVATE_WORKER, WELCOME_WORKER } from "./emailTemplates.js";
 
 dotenv.config({path: './.env' });
 
@@ -61,10 +61,27 @@ export const adminWelcomeEmail = async(firstName, email, phoneNumber, password) 
       html: ADMIN_WELCOMING_EMAIL.replace("{firstName}", firstName).replace("{email}", email).replace("{phoneNumber}", phoneNumber).replace("{generatedPassword}", password)
     });
 
+    console.log("User Welcoming Email sent Successfully:", info.messageId);
+  } catch (error) {
+    console.error("Error sending welcome email", error);
+  }
+};
+
+export const adminWelcomeWorkerEmail = async(firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "Welcome to CleanEZ",
+      html: ADMIN_WELCOMING_EMAIL.replace("{firstName}", firstName)
+    });
+
+    console.log("Worker Welcoming Email sent Successfully:", info.messageId);
   } catch (error) {
     console.error("Error sending welcome email", error);
   }
 }
+
 export const sendPasswordResetEmail = async (firstName, email, resetURL) => {
   try {
     const info = await transporter.sendMail({
@@ -110,5 +127,81 @@ export const sendAccountDeletion = async (firstName, email) => {
   } catch (error) {
     console.error("Error sending account deletion email:", error);
     throw new Error(`Error sending account deletion email: ${error}`);
+  }
+};
+
+export const sendUserActivationEmail = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "User Account Activation",
+      html: ACTIVATE_USER.replace("{firstName}", firstName),
+    });
+
+    console.log("Email Activation Sent Successfully", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+
+export const sendUserDeactivationEmail = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender, 
+      to: [email],
+      subject: "User Account Deactivation",
+      html: DEACTIVATE_USER.replace("{firstName}", firstName)
+    })
+
+    console.log("Deactivation Email sent Successfully: ", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+}
+
+export const sendWorkerWelcomeEmail = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender, 
+      to: [email],
+      subject: "Welcome to CleanEZ!",
+      html: WELCOME_WORKER.replace("{firstName", firstName)
+    })
+
+    console.log("Worker Welcoming Email sent Successfully: ", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    
+  }
+};
+
+export const sendWorkerActivationEmail = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "Worker Account Activation",
+      html: ACTIVATE_WORKER.replace("{firstName}", firstName),
+    });
+
+    console.log("Email Activation Sent Successfully", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+
+export const sendWorkerDeactivationEmail = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender, 
+      to: [email],
+      subject: "Worker Account Deactivation",
+      html: DEACTIVATE_WORKER.replace("{firstName}", firstName)
+    })
+
+    console.log("Deactivation Email sent Successfully: ", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
   }
 }
