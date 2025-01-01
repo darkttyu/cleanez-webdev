@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
 import bcryptjs from 'bcryptjs';
-import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import * as generator from 'generate-password';
 
@@ -10,7 +10,7 @@ import * as generator from 'generate-password';
 export const findAllWorkers = async (req, res) => {
   try {
     // Gets all the Worker Information and is Stored in an Array of Objects
-    const workerList = await Worker.findOne()
+    const workerList = await Worker.find()
       .populate({
         path: "userId",
         select: "firstName lastName address status"
@@ -28,12 +28,12 @@ export const findAllWorkers = async (req, res) => {
 };
 
 export const addWorker = async (req, res) => {
-  const { userId, serviceCategory, workSchedule, timeRange } = req.body;
+  const { userId, serviceCategory, workerAvailability } = req.body;
 
   console.log("Received request body:", req.body); // Data Checker
   
   try {
-    if(!userId || !serviceCategory || !workSchedule || !timeRange) {
+    if(!userId || !serviceCategory || !workerAvailability) {
       throw new Error("All fields are required.");
     }
     
@@ -46,8 +46,7 @@ export const addWorker = async (req, res) => {
       userId,
       serviceCategory, 
       isApplicantVerified: 'Verified',
-      workSchedule,
-      timeRange
+      workerAvailability
     });
 
     await worker.save();
@@ -86,7 +85,7 @@ export const clickedWorker = async(req, res) => {
         path: "userId",
         select: "firstName lastName"
       })
-      .select('workSchedule serviceCategory timeRange')
+      .select('serviceCategory workerAvailability')
     
     console.log(JSON.stringify(worker, null, 2)); // Used for readability of the address since only [Object] is displayed without it
     
@@ -100,7 +99,7 @@ export const clickedWorker = async(req, res) => {
 
 export const editWorkerSchedule = async (req, res) => {
   const userId = req.params.id;
-  const { serviceCategory, workSchedule, timeRange } = req.body;
+  const { serviceCategory, workerAvailability } = req.body;
 
     try {
       const currentWorker = await Worker.findOne({userId})
@@ -112,8 +111,7 @@ export const editWorkerSchedule = async (req, res) => {
         currentWorker._id, 
         {
           serviceCategory,
-          workSchedule,
-          timeRange
+          workerAvailability
         },
         { new: true}
       );
@@ -478,12 +476,12 @@ export const setUserToActive = async (req, res) => {
 
 // Service Controllers
 export const insertService = async (req, res) => {
-  const { serviceName, sizeOfArea, numberOfWorkers, price} = req.body;
+  const { serviceName, areaDetails, numberOfWorkers, price} = req.body;
 
   console.log("Received request body:", req.body); // Data Checker
   
   try {
-    if(!serviceName || !sizeOfArea || !numberOfWorkers || !price) {
+    if(!serviceName || !areaDetails || !numberOfWorkers || !price) {
       throw new Error("All fields are required.");
     }
     
@@ -494,7 +492,7 @@ export const insertService = async (req, res) => {
 
     const service = new Service({
       serviceName,
-      sizeOfArea,
+      areaDetails,
       numberOfWorkers, 
       price
     });
@@ -513,3 +511,4 @@ export const insertService = async (req, res) => {
     return res.status(400).json({success:false, message: error.message});
   }
 };
+

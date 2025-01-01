@@ -21,7 +21,7 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 - [x] Set User / Worker Status to Active [USER/WORKER TAB]
 
 ### User - Appointments
-
+- [x] Set Appointment in User POV
 ---
 
 ## Frontend To-Do List (Rein)
@@ -34,6 +34,11 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 - [ ] **Search and Filter**: Implement search and filter functionality.  
   [Tutorial](https://www.youtube.com/watch?v=xAqCEBFGdYk)
 
+### User Appointments
+- [ ] Route a Specific Service to their Specific Forms. Example Frontend Route: /book-appointment?serviceId=677308b87666bcfcbd5de926
+
+## Worker Creation
+- [ ] Time Availability is Based on Worker Service Category when Adding a Worker (nasa gdocs yung time availability)
 ---
 
 ## Backend / Frontend Connection To-Do List (Carl / Rein)
@@ -46,6 +51,7 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 - [ ] **Connection on Updating Specific User Data** (ADMIN)
 - [ ] **Connection on Deleting User** (ADMIN)
 - [ ] **Connection on Soft Deleting of User** (ADMIN)
+- [ ] **Connection on Getting Services List and Assigning their Services IDs** (ADMIN)
 
 ---
 

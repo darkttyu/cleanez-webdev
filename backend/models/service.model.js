@@ -7,7 +7,7 @@ const serviceSchema = new mongoose.Schema(
       enum: [
         'Residential Cleaning',
         'Deep Cleaning',
-        'Move In/Out Cleaning',
+        'Move In / Out Cleaning',
         'Post-Renovation Cleaning',
         'Office Cleaning',
         'Window Cleaning'
@@ -15,21 +15,16 @@ const serviceSchema = new mongoose.Schema(
       unique: true,
       required: true
     },
-    sizeOfArea: {
-      type: [String],
-      enum: [
-        'Small Apartment',
-        'Medium House',
-        'Large House',
-        'Small Office', 
-        'Medium Office',
-        'Large Office',
-        'Full House',
-        'Interior Window',
-        'Exterior Window'
-      ],
-      required: true
-    },
+    areaDetails: [{
+      sizeOfArea: {
+        type: String,
+        required: true,
+      },
+      timeIntervals: {
+        type: [String],  // Use an array to store multiple time intervals
+        required: true
+      }
+    }],
     numberOfWorkers: {
       type: [Number], 
       required: true

@@ -35,18 +35,29 @@ const appointmentSchema = new mongoose.Schema(
         required: true,
       },
     },
-    serviceId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Service", // References the `Service` model
-      required: true,
+    serviceDetails: {
+      serviceCategory: {
+        type: String, 
+        required: true
+      },
+      sizeOfArea: {
+        type: String, 
+        required: true
+      },
+      numberOfWorkers: {
+        type: Number, 
+        required: true
+      }
     },
-    dateOfAppointment: {
-      type: Date,
-      required: true,
-    },
-    timeOfAppointment: {
-      type: String,
-      required: true,
+    scheduleDetails: {
+      date: {
+        type: Date, 
+        required: true
+      },
+      time: {
+        type: String, 
+        required: true
+      }
     },
     assignedWorkers: [
       {
@@ -55,7 +66,7 @@ const appointmentSchema = new mongoose.Schema(
         required: true,
       },
     ],
-    totalCost: {
+    serviceCost: {
       type: Number,
       required: true,
     },
