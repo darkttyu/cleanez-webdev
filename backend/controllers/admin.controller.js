@@ -76,11 +76,7 @@ export const addWorker = async (req, res) => {
       userId,
       serviceCategory,
       isApplicantVerified: "Verified",
-      assignedAppointments: {
-        appointmentId: [],
-        date: [],
-        startTime: [],
-      },
+
       workerAvailability: {
         ...workerAvailability, 
         startTime: startTime

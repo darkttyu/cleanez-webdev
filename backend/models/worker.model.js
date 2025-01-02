@@ -17,21 +17,18 @@ const workerSchema = new mongoose.Schema({
     default: "Pending", 
     required: true 
   },
-  assignedAppointments: {
+  assignedAppointments: [{
     appointmentId: { 
-      type: [mongoose.Schema.Types.ObjectId], 
+      type: mongoose.Schema.Types.ObjectId, 
       ref: 'Appointment', 
-      default: []
     },
     date: {
-      type: [Date], 
-      default: []
+      type: Date, 
     },
     startTime: {
-      type: [String],
-      default: []
+      type: String,
     }
-  },
+  }],
   workerAvailability: {
     areaAssigned: {
       type: String, 

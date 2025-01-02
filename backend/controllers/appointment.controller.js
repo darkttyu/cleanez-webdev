@@ -41,31 +41,31 @@ export const getSpecificService = async (req, res) => {
   }
 }
 
-export const getAssignedWorkers = async (req, res) => {
-  const { assignedWorkers } = req.body;
-
-  try {
-    const workers = await Worker.find({ _id: { $in: assignedWorkers}});
-
-    if(!workers) {
-      return res.status(404).json({ success: false, message: "Workers not found" });
-    }
-    
-    console.log("Assigned Worker Details: ", JSON.stringify(workersz, null, 2));
-    return res.status(200).json({ success: true, message: "Successfully Fetched Worker Information", workers: workers });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
-  }
-};
-
 export const setAppointment = async (req, res) => {
   const { customerFirstName, customerLastName, phoneNumber, 
     address, serviceDetails, scheduleDetails, 
     assignedWorkers, serviceCost} = req.body;
 
     // console.log("Received request Body: ", req.body);
-  
-  // Fetching all Assigned Workers
+     // Fetching all Assigned Workers
+    for (const workerId of assignedWorkers) {
+      const worker = await Worker.findById(workerId).lean(); // Retrieve worker by ID
+    
+      if (!worker || !worker.assignedAppointments) {
+        continue; // Skip if no assigned appointments found
+      }
+    
+      // Check for appointment conflicts
+      const isConflict = worker.assignedAppointments.some(appointment => 
+        new Date(appointment.date).toISOString() === new Date(scheduleDetails.date).toISOString() && 
+        appointment.startTime === scheduleDetails.startTime
+      );
+    
+      if (isConflict) {
+        return res.status(400).json({ message: "Worker is already assigned to an appointment at this time" });
+      }
+    }
+    
   try {
     if(!customerFirstName || !customerLastName || !phoneNumber || !address || !serviceDetails || !scheduleDetails || !assignedWorkers || !serviceCost){
       return res.status(400).json({ message: "Please fill up all fields" });
@@ -89,16 +89,20 @@ export const setAppointment = async (req, res) => {
 
     for (const workerId of assignedWorkers) {
       await Worker.findByIdAndUpdate(
-        workerId, {
+        workerId, 
+        {
           $push: {
-            'assignedAppointments.appointmentId': savedAppointment._id, 
-            'assignedAppointments.date': scheduleDetails.date,
-            'assignedAppointments.startTime': scheduleDetails.startTime
+            assignedAppointments: {
+              appointmentId: savedAppointment._id, 
+              date: scheduleDetails.date,
+              startTime: scheduleDetails.startTime
+            }
           }
         },
-          { new: true }
-      )
-    };
+        { new: true }
+      );
+    }
+    
 
 
     return res.status(201).json({ success: true, message: "Appointment has been booked successfully!" });
