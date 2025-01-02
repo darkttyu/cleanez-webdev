@@ -444,8 +444,9 @@ export const DEACTIVATE_WORKER = `
 `;
 
 export const SEND_USER_BOOKING_CONFIRMATION = `
-
+Test
 `;
 
 export const SEND_WORKER_BOOKING_CONFIRMATION =  `
+Test
 `;

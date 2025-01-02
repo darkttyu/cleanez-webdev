@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv'
-import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT, ACTIVATE_USER, DEACTIVATE_USER, DEACTIVATE_WORKER, ACTIVATE_WORKER, WELCOME_WORKER } from "./emailTemplates.js";
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT, ACTIVATE_USER, DEACTIVATE_USER, DEACTIVATE_WORKER, ACTIVATE_WORKER, WELCOME_WORKER, SEND_USER_BOOKING_CONFIRMATION, SEND_WORKER_BOOKING_CONFIRMATION } from "./emailTemplates.js";
+import { response } from "express";
 
 dotenv.config({path: './.env' });
 
@@ -203,5 +204,33 @@ export const sendWorkerDeactivationEmail = async (firstName, email) => {
     console.log("Deactivation Email sent Successfully: ", info.messageId);
   } catch (error) {
     console.error("Error sending email:", error);
+  }
+}
+
+export const sendUserAppointmentConfirmation = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender, 
+      to: [email], 
+      subject: "Appointment Confirmed!",
+      html: SEND_USER_BOOKING_CONFIRMATION.replace("{firstName}", firstName)
+    })
+    console.log("User Appointment Confirmation Sent Successfully: ", info.messageId);
+  } catch (error) {
+    console.log("Error sending email:", error);
+  }
+}
+
+export const sendWorkerAppointmentConfirmation = async (firstName, email) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender, 
+      to: [email], 
+      subject: "You have been Booked!",
+      html: SEND_WORKER_BOOKING_CONFIRMATION.replace("{firstName}", firstName)
+    })
+    console.log("Worker Appointment Confirmation Sent Successfully: ", info.messageId);
+  } catch (error) {
+    console.log("Error sending email:", error);
   }
 }

@@ -3,7 +3,7 @@ import { Service } from "../models/service.model.js";
 import { Worker } from "../models/worker.model.js";
 import { User } from "../models/user.model.js";
 import { Appointment } from "../models/appointment.model.js";
-
+import { sendUserAppointmentConfirmation, sendWorkerAppointmentConfirmation } from "../nodemailer/sendMail.js";
 /**
  * Fetches all the available services from the database.
  * This function is executed when the user requests to view all services.
@@ -131,6 +131,36 @@ export const setAppointment = async (req, res) => {
       );
     }
 
+    try {
+      // Used for sending emails to the assigned workers for the appointment.
+      for (const workerId of assignedWorkers) {
+        const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
+        
+        if (!worker) {
+          throw new Error(`Worker with ID ${workerId} not found`);
+        }
+        
+        const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
+
+        if (!user) {
+          throw new Error(`User with ID ${worker.userId} not found`);
+        }
+        sendWorkerAppointmentConfirmation(user.firstName, user.email); // Sends the appointment confirmation email to the worker
+        console.log("Successfully Sent Worker Confirmation"); 
+      }
+    } catch (error) {
+      console.error("Error during email sending:", error);
+      return res.status(500).json({ success: false, message: error.message });
+    }
+    
+    const user = await User.findById(userId); // Retrieves user information for the customer
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+  
+    sendUserAppointmentConfirmation(user.firstName, user.email); // Sends the appointment confirmation email to the customer
+    console.log("Successfully Sent User Confirmation");
+
     // Responds with a 201 status and a success message if the appointment is booked successfully.
     return res.status(201).json({ success: true, message: "Appointment has been booked successfully!" });
 
@@ -139,3 +169,20 @@ export const setAppointment = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// Testing Controllers 
+// This function is used for testing purposes only and sends an email to the assigned workers for the appointment.
+export const testEmailBooking = async (req, res) => {
+  const { assignedWorkers } = req.body; 
+
+  // Used for sending emails to the assigned workers for the appointment. 
+  for (const workerId of assignedWorkers) {
+    const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database. 
+    const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
+
+    sendWorkerAppointmentConfirmation(user.firstName, user.email);
+  }
+
+  
+  return res.status(200).json({ message: "Request Success" });
+}
