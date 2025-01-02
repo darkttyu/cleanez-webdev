@@ -363,6 +363,7 @@ export const WELCOME_WORKER = `
 </body>
 </html>
 `;
+
 export const ACTIVATE_WORKER = `
 <!DOCTYPE html>
 <html lang="en">
@@ -440,4 +441,11 @@ export const DEACTIVATE_WORKER = `
   </div>
 </body>
 </html>
+`;
+
+export const SEND_USER_BOOKING_CONFIRMATION = `
+
+`;
+
+export const SEND_WORKER_BOOKING_CONFIRMATION =  `
 `;
