@@ -63,13 +63,15 @@ const LoginPanel = ({route}) => {
             const response = await axios.post(`http://localhost:5000/api/auth/${route}`, loginCredentials, {
                 headers: { 'Content-Type': 'application/json' }
               });
-            
+
             // For Data Checking, Comment when Deploying
             console.log("Passed Data: ", loginCredentials); // Data Checker
             console.log("Login Completed:", response.data);
 
             if (response.status === 200) {
                 if (route === "login") {
+                    const token = response.data.token; // Token from the response
+                    localStorage.setItem("token", token); // Token saved in Local Storage
                     login(response.data.user)
                     navigate(`/home/${response.data.user._id}`);
                 } else if (route === "adminLogin") {

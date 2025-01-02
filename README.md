@@ -21,7 +21,7 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 - [x] Set User / Worker Status to Active [USER/WORKER TAB]
 
 ### User - Appointments
-- [x] Set Appointment in User POV
+- [x] Complete Backend Logic for Booking User
 ---
 
 ## Frontend To-Do List (Rein)

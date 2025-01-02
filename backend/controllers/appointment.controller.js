@@ -41,18 +41,40 @@ export const getSpecificService = async (req, res) => {
   }
 }
 
+export const getAssignedWorkers = async (req, res) => {
+  const { assignedWorkers } = req.body;
+
+  try {
+    const workers = await Worker.find({ _id: { $in: assignedWorkers}});
+
+    if(!workers) {
+      return res.status(404).json({ success: false, message: "Workers not found" });
+    }
+    
+    console.log("Assigned Worker Details: ", JSON.stringify(workersz, null, 2));
+    return res.status(200).json({ success: true, message: "Successfully Fetched Worker Information", workers: workers });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const setAppointment = async (req, res) => {
   const { customerFirstName, customerLastName, phoneNumber, 
     address, serviceDetails, scheduleDetails, 
     assignedWorkers, serviceCost} = req.body;
 
-    console.log("Received request Body: ", req.body);
+    // console.log("Received request Body: ", req.body);
+  
+  // Fetching all Assigned Workers
   try {
     if(!customerFirstName || !customerLastName || !phoneNumber || !address || !serviceDetails || !scheduleDetails || !assignedWorkers || !serviceCost){
       return res.status(400).json({ message: "Please fill up all fields" });
     }
 
+    const userId = req.userId; // Extracting the userId from the request object
+
     const newAppointment = new Appointment({
+      userId,
       customerFirstName,
       customerLastName,
       phoneNumber,
@@ -71,12 +93,13 @@ export const setAppointment = async (req, res) => {
           $push: {
             'assignedAppointments.appointmentId': savedAppointment._id, 
             'assignedAppointments.date': scheduleDetails.date,
-            'assignedAppointments.timeSlot': scheduleDetails.time
+            'assignedAppointments.startTime': scheduleDetails.startTime
           }
         },
           { new: true }
       )
     };
+
 
     return res.status(201).json({ success: true, message: "Appointment has been booked successfully!" });
 

@@ -27,20 +27,25 @@ const workerSchema = new mongoose.Schema({
       type: [Date], 
       default: []
     },
-    timeSlot: {
+    startTime: {
       type: [String],
       default: []
     }
   },
   workerAvailability: {
+    areaAssigned: {
+      type: String, 
+      required: true,
+    },
     day: {
       type: [String],
       enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       required: true
     },
-    timeSlot: {
+    startTime: {
       type: [String],
-      required: true
+      required: true, 
+      default: []
     }
   },
   totalEarnings: { 

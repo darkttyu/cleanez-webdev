@@ -20,11 +20,15 @@ const serviceSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
-      timeIntervals: {
+      startTime: {
         type: [String],  // Use an array to store multiple time intervals
         required: true
       }
     }],
+    serviceDuration: {
+      type: [Number], 
+      required: true
+    },
     numberOfWorkers: {
       type: [Number], 
       required: true

@@ -9,91 +9,130 @@ import * as generator from 'generate-password';
 // Worker Controllers
 export const findAllWorkers = async (req, res) => {
   try {
-    // Gets all the Worker Information and is Stored in an Array of Objects
     const workerList = await Worker.find()
       .populate({
-        path: "userId",
-        select: "firstName lastName address status"
+        path: "userId", // Populates user data (firstName, lastName, address, status).
+        select: "firstName lastName address status",
       })
-      .select('serviceCategory totalEarnings')
-    
-    console.log(JSON.stringify(workerList, null, 2)); // Used for readability of the address since only [Object] is displayed without it
-    
-    return res.status(200).json({success: true, message: "Successfully Fetched Worker List"});
+      .select("serviceCategory totalEarnings"); // Selects only specified fields from Worker.
+
+    console.log(JSON.stringify(workerList, null, 2)); // Debugging: Print worker list for readability.
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Successfully Fetched Worker List" });
   } catch (error) {
-    console.log("Error in Fetching Workers", error);
-    res.status(500).json({success:false, message:"Server Error"});
+    console.log("Error in Fetching Workers", error); // Logs errors for debugging.
+    res.status(500).json({ success: false, message: "Server Error" });
   }
-  
 };
 
 export const addWorker = async (req, res) => {
   const { userId, serviceCategory, workerAvailability } = req.body;
 
-  console.log("Received request body:", req.body); // Data Checker
-  
+  console.log("Received request body:", req.body); // Debugging: Logs incoming request body.
+
   try {
-    if(!userId || !serviceCategory || !workerAvailability) {
+    // Validates required fields.
+    if (!userId || !serviceCategory || !workerAvailability) {
       throw new Error("All fields are required.");
     }
-    
-    const workerAlreadyExists = await User.findOne({_id: userId, role: "Worker", isVerified: true});
-    if(workerAlreadyExists) {
-      return res.status(400).json({success:false, message: "Worker already exists"});
+
+    // Checks if the user is already a verified worker.
+    const workerAlreadyExists = await User.findOne({
+      _id: userId,
+      role: "Worker",
+      isVerified: true,
+    });
+    if (workerAlreadyExists) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Worker already exists" });
     }
 
+    // gets service details based on the service category
+    const getServiceDetails = await Service.findOne({ serviceName: serviceCategory });
+
+    if (!getServiceDetails) { 
+      return res
+        .status(404)
+        .json({ success: false, message: "Service Category does not exist." });
+    }
+
+    // gets area details based on the worker's assigned area    
+    const getAreaDetail = getServiceDetails.areaDetails.find((area) => area.sizeOfArea === workerAvailability.areaAssigned);
+
+    if (!getAreaDetail) { 
+      return res
+        .status(404)
+        .json({ success: false, message: "Area Assigned does not exist." });
+    }
+
+    // gets the start time based on the worker's assigned area
+    const startTime = getAreaDetail.startTime;
+
+    // Creates a new worker document.
     const worker = new Worker({
       userId,
-      serviceCategory, 
-      isApplicantVerified: 'Verified',
-      workerAvailability
+      serviceCategory,
+      isApplicantVerified: "Verified",
+      assignedAppointments: {
+        appointmentId: [],
+        date: [],
+        startTime: [],
+      },
+      workerAvailability: {
+        ...workerAvailability, 
+        startTime: startTime
+      }
     });
 
-    await worker.save();
+    await worker.save(); // Saves the worker to the database.
 
-    const updateUserRole = await User.findByIdAndUpdate(
-      userId, 
-      {role: "Worker"},
-    );
-  
-      if(!updateUserRole) {
-        return res.status(400).json({success: false, message: "Failed to Update User Role."})
-      }
-    
-    adminWelcomeWorkerEmail(updateUserRole.firstName, updateUserRole.email);
+    // Updates the user's role to "Worker".
+    const updateUserRole = await User.findByIdAndUpdate(userId, {
+      role: "Worker",
+    });
+
+    if (!updateUserRole) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Failed to Update User Role." });
+    }
+
+    adminWelcomeWorkerEmail(updateUserRole.firstName, updateUserRole.email); // Sends welcome email.
 
     res.status(201).json({
       success: true,
       message: "Worker Created Successfully",
       worker: {
-        ...worker._doc,
+        ...worker._doc, // Sends worker data as part of the response.
       },
-    })
-
+    });
   } catch (error) {
-    return res.status(400).json({success:false, message: error.message});
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
-export const clickedWorker = async(req, res) => {
+export const clickedWorker = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    // Gets all the Worker Information and is Stored in an Array of Objects
     const worker = await Worker.findOne({ userId })
       .populate({
-        path: "userId",
-        select: "firstName lastName"
+        path: "userId", // Populates user data (firstName, lastName).
+        select: "firstName lastName",
       })
-      .select('serviceCategory workerAvailability')
-    
-    console.log(JSON.stringify(worker, null, 2)); // Used for readability of the address since only [Object] is displayed without it
-    
-    return res.status(200).json({success: true, message: "Successfully Fetched Worker"});
+      .select("serviceCategory workerAvailability"); // Selects specific worker fields.
 
+    console.log(JSON.stringify(worker, null, 2)); // Debugging: Prints worker details.
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Successfully Fetched Worker" });
   } catch (error) {
-    console.log("Error in Fetching Workers", error);
-    res.status(500).json({success:false, message:"Server Error"});
+    console.log("Error in Fetching Worker", error); // Logs errors for debugging.
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
@@ -101,117 +140,153 @@ export const editWorkerSchedule = async (req, res) => {
   const userId = req.params.id;
   const { serviceCategory, workerAvailability } = req.body;
 
-    try {
-      const currentWorker = await Worker.findOne({userId})
-      if(!currentWorker) {
-        return res.status(404).json({success:false, message:"Worker does not exist"});
-      }
-
-      const updatedWorkerInfo = await Worker.findByIdAndUpdate(
-        currentWorker._id, 
-        {
-          serviceCategory,
-          workerAvailability
-        },
-        { new: true}
-      );
-    
-        if(!updatedWorkerInfo) {
-          return res.status(400).json({success: false, message: "Failed to update worker."})
-        }
-    
-        return res.status(200).json({success: true, message: "Successfully Updated User Information!"})
-
-    } catch (error) {
-      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+  try {
+    // Checks if the worker exists.
+    const currentWorker = await Worker.findOne({ userId });
+    if (!currentWorker) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Worker does not exist" });
     }
+
+    // Updates the worker's schedule information.
+    const updatedWorkerInfo = await Worker.findByIdAndUpdate(
+      currentWorker._id,
+      {
+        serviceCategory,
+        workerAvailability,
+      },
+      { new: true } // Ensures the updated document is returned.
+    );
+
+    if (!updatedWorkerInfo) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Failed to update worker." });
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Successfully Updated User Information!" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Server Error", error: error.message });
+  }
 };
 
 export const setWorkerToActive = async (req, res) => {
   const userId = req.params.id;
 
-    try {
-      const currentWorker = await Worker.findOne({userId})
-      
-      if(!currentWorker) {
-        res.status(404).json({success:false, message:"Worker does not exist"});
-      }
+  try {
+    const currentWorker = await Worker.findOne({ userId });
 
-      const updatedWorkerInfo = await User.findByIdAndUpdate(
-        userId, 
-        {
-          status: "Active"
-        },
-        { new: true}
-      );
-    
-        if(!updatedWorkerInfo) {
-          return res.status(400).json({success: false, message: "Failed to set worker status to Active."})
-        }
-        
-        sendWorkerActivationEmail(updatedWorkerInfo.firstName, updatedWorkerInfo.email);
-        return res.status(200).json({success: true, message: "Worker Status set to Active"})
-
-    } catch (error) {
-      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+    if (!currentWorker) {
+      res
+        .status(404)
+        .json({ success: false, message: "Worker does not exist" });
     }
+
+    const updatedWorkerInfo = await User.findByIdAndUpdate(
+      userId,
+      {
+        status: "Active", // Updates worker status to Active.
+      },
+      { new: true }
+    );
+
+    if (!updatedWorkerInfo) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Failed to set worker status to Active." });
+    }
+
+    sendWorkerActivationEmail(
+      updatedWorkerInfo.firstName,
+      updatedWorkerInfo.email
+    ); // Sends activation email.
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Worker Status set to Active" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Server Error", error: error.message });
+  }
 };
 
 export const softDeleteWorker = async (req, res) => {
   const userId = req.params.id;
 
-    try {
-      const currentWorker = await Worker.findOne({userId})
-      
-      if(!currentWorker) {
-        res.status(404).json({success:false, message:"Worker does not exist"});
-      }
+  try {
+    const currentWorker = await Worker.findOne({ userId });
 
-      const updatedWorkerInfo = await User.findByIdAndUpdate(
-        userId, 
-        {
-          status: "Inactive"
-        },
-        { new: true}
-      );
-    
-        if(!updatedWorkerInfo) {
-          return res.status(400).json({success: false, message: "Failed to Soft Delete Worker."})
-        }
-        
-        sendWorkerDeactivationEmail(updatedWorkerInfo.firstName, updatedWorkerInfo.email);
-        return res.status(200).json({success: true, message: "Successfully Soft Deleted Worker"})
-
-    } catch (error) {
-      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+    if (!currentWorker) {
+      res
+        .status(404)
+        .json({ success: false, message: "Worker does not exist" });
     }
+
+    const updatedWorkerInfo = await User.findByIdAndUpdate(
+      userId,
+      {
+        status: "Inactive", // Updates worker status to Inactive.
+      },
+      { new: true }
+    );
+
+    if (!updatedWorkerInfo) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Failed to Soft Delete Worker." });
+    }
+
+    sendWorkerDeactivationEmail(
+      updatedWorkerInfo.firstName,
+      updatedWorkerInfo.email
+    ); // Sends deactivation email.
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Successfully Soft Deleted Worker" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Server Error", error: error.message });
+  }
 };
 
 export const deleteWorker = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const deleteUser = await Worker.findOneAndDelete({userId})
+    const deleteUser = await Worker.findOneAndDelete({ userId }); // Removes the worker record.
 
-    if(!deleteUser) {
-      return res.status(500).json({ success: false, message: "User not Found."});
+    if (!deleteUser) {
+      return res
+        .status(500)
+        .json({ success: false, message: "User not Found." });
     }
 
-    const updateUser = await User.findByIdAndUpdate(userId, {role: "User"});
+    const updateUser = await User.findByIdAndUpdate(userId, {
+      role: "User", // Resets user role to "User".
+    });
 
-    if(!updateUser) {
-      return res.status(400).json({ success: false, message: "Error in Updating user role."});
+    if (!updateUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Error in Updating user role." });
     }
 
-    // sendAccountDeletion(deleteUser.firstName, deleteUser.email);
+    sendAccountDeletion(deleteUser.firstName, deleteUser.email); // Sends account deletion email.
     
     return res.status(200).json({
-      success: true, 
-      message: "Worker Information Deleted Successfully."
-    })
-
+      success: true,
+      message: "Worker Information Deleted Successfully.",
+    });
   } catch (error) {
-    console.log("Error in deleting user.", error);
+    console.log("Error in deleting user.", error); // Logs errors for debugging.
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
@@ -234,16 +309,19 @@ export const findAllUsers = async (req, res) => {
       lastLogin: user.lastLogin
     }));
     
+    // Formats the last login time to a more readable format
     const updatedUserInfo = filteredUserInfo.map(user => {
       const lastLogin = new Date(user.lastLogin);
 
+      // Formats the date and time to a more readable format
       const updatedLoginTime = lastLogin.toLocaleString("en-US", {
         timeZone: "Asia/Manila",
         dateStyle: "short",
         timeStyle: "short",
         hour12: false
       });
-
+      
+      // Returns the updated user info with the formatted last login time
       return {
         ...user, 
         lastLogin: updatedLoginTime
@@ -270,10 +348,12 @@ export const addUser = async (req, res) => {
   console.log("Received request body:", req.body); // Data Checker
   
   try {
+    // Checks if all fields are filled out
     if(!firstName || !lastName || !email || !phoneNumber || !birthDate || !gender || !address) {
       throw new Error("All fields are required.");
     }
     
+    // Checks if the user already exists in the database
     const userAlreadyExists = await User.findOne({email});
     if(userAlreadyExists) {
       return res.status(400).json({success:false, message: "User already exists"});
@@ -284,9 +364,11 @@ export const addUser = async (req, res) => {
       length: 12,
       numbers: true,
     })
-
+    
+    // Hashes the generated password
     const hashedPassword = await bcryptjs.hash(userGeneratedPassword, 10);
 
+    // Creates a new User
     const user = new User({
       email,
       password: hashedPassword,
@@ -303,6 +385,7 @@ export const addUser = async (req, res) => {
 
     adminWelcomeEmail(user.firstName, user.email, user.phoneNumber, userGeneratedPassword);
 
+    // Returns the user information without the password for security
     res.status(201).json({
       success: true,
       message: "User Created Successfully",
@@ -319,7 +402,7 @@ export const addUser = async (req, res) => {
 
 export const clickedUser = async(req, res) => {
   const userId = req.params.id;
-
+  
   try {
     // Gets specific user info based on id sent 
     const specificUser = await User.findOne({_id: new Object(userId)});
@@ -328,6 +411,7 @@ export const clickedUser = async(req, res) => {
       return res.status(404).json({success: false, message: "User does not exist."});
     }
 
+    // Filters the user info to only show the necessary fields
     const filteredUserInfo = {
       userId: specificUser._id,
       email: specificUser.email,
@@ -339,8 +423,10 @@ export const clickedUser = async(req, res) => {
       birthDate: specificUser.birthDate,
     };
 
+    // Formats the birthdate to a more readable format
     const formattedBirthDate = format(new Date(specificUser.birthDate), "dd/mm/yyyy");
     
+    // Returns the updated user info with the formatted birthdate
     const updatedUserInfo = {
         ...filteredUserInfo, 
         birthDate: formattedBirthDate
@@ -357,15 +443,18 @@ export const clickedUser = async(req, res) => {
 };
 
 export const editUserInfo = async(req, res) => {
+  // Gets the user id from the params and the updated user info from the body
   const userId = req.params.id;
   const { firstName, lastName, birthDate, gender, phoneNumber, email, address} = req.body;
 
     try {
+      // Checks if the user exists
       const currentUser = await User.findOne({_id: new Object(userId)})
       if(!currentUser) {
         res.status(404).json({success:false, message:"User does not exist"});
       }
-
+      
+      // Updates the user info based on the id and the updated user info
       const updatedUserInfo = await User.findByIdAndUpdate(
         userId, 
         {
@@ -383,7 +472,8 @@ export const editUserInfo = async(req, res) => {
         if(!updatedUserInfo) {
           return res.status(400).json({success: false, message: "Failed to update user."})
         }
-    
+        
+        // Returns a success message if the user info is updated
         res.status(200).json({success: true, message: "Successfully Updated User Information!"})
 
     } catch (error) {
@@ -395,35 +485,42 @@ export const deleteUser = async(req, res) => {
   const userId = req.params.id;
 
   try {
+    // Deletes the user based on the id sent
     const deleteUser = await User.findByIdAndDelete(userId)
 
     if(!deleteUser) {
       return res.status(500).json({ success: false, message: "User not Found."});
     }
 
+    // Sends an account deletion email to the user
     sendAccountDeletion(deleteUser.firstName, deleteUser.email);
     
-    res.status(200).json({
+    // Returns a success message if the user is deleted
+    return res.status(200).json({
       success: true, 
       message: "User Deleted Successfully."
     })
 
   } catch (error) {
+    // Logs the error if there is an error in deleting the user
     console.log("Error in deleting user.", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    return res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
 export const softDeleteUser = async(req, res) => {
+  // Gets the user id from the params
   const userId = req.params.id;
 
     try {
+      //  Checks if the user exists
       const currentUser = await User.findOne({_id: new Object(userId)})
       
       if(!currentUser) {
         res.status(404).json({success:false, message:"User does not exist"});
       }
 
+      // Updates the user status to Inactive and sends an email
       const updatedUserInfo = await User.findByIdAndUpdate(
         userId, 
         {
@@ -453,7 +550,8 @@ export const setUserToActive = async (req, res) => {
       if(!currentUser) {
         res.status(404).json({success:false, message:"User does not exist"});
       }
-
+      
+      // Updates the user status to Active and sends an email
       const updatedUserInfo = await User.findByIdAndUpdate(
         userId, 
         {
@@ -476,29 +574,34 @@ export const setUserToActive = async (req, res) => {
 
 // Service Controllers
 export const insertService = async (req, res) => {
-  const { serviceName, areaDetails, numberOfWorkers, price} = req.body;
-
+  // Gets the service name, area details, number of workers, and price from the body
+  const { serviceName, areaDetails, serviceDuration, numberOfWorkers, price} = req.body;
   console.log("Received request body:", req.body); // Data Checker
   
   try {
-    if(!serviceName || !areaDetails || !numberOfWorkers || !price) {
+    if(!serviceName || !areaDetails || !serviceDuration || !numberOfWorkers || !price) {
       throw new Error("All fields are required.");
     }
     
+    // Checks if the service already exists in the database
     const serviceAlreadyExists = await Service.findOne({ serviceName });
     if(serviceAlreadyExists) {
       return res.status(400).json({success:false, message: "Service already exists"});
     }
 
+    // Creates a new Service
     const service = new Service({
       serviceName,
       areaDetails,
+      serviceDuration,
       numberOfWorkers, 
       price
     });
 
+    // Saves the service to the database
     await service.save();
-    
+    console.log(JSON.stringify(service, null, 2));
+
     res.status(201).json({
       success: true,
       message: "Service Created Successfully",

@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const appointmentSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // References the `User` model
+      required: true,
+    },
     customerFirstName: {
       type: String,
       required: true,
@@ -54,14 +59,14 @@ const appointmentSchema = new mongoose.Schema(
         type: Date, 
         required: true
       },
-      time: {
+      startTime: {
         type: String, 
         required: true
       }
     },
     assignedWorkers: [
       {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId], 
         ref: "Worker", // References the `Worker` model
         required: true,
       },
@@ -76,6 +81,12 @@ const appointmentSchema = new mongoose.Schema(
       default: "Scheduled",
       required: true,
     },
+    paymentStatus: {
+      type: String,
+      enum: ["Pending", "Paid"],
+      default: "Pending",
+      required: true
+    }
   },
   { timestamps: true }
 );
