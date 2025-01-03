@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import dotenv from 'dotenv'
 import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT, ACTIVATE_USER, DEACTIVATE_USER, DEACTIVATE_WORKER, ACTIVATE_WORKER, WELCOME_WORKER, SEND_USER_BOOKING_CONFIRMATION, SEND_WORKER_BOOKING_CONFIRMATION } from "./emailTemplates.js";
 import { response } from "express";
+import { assign } from "nodemailer/lib/shared/index.js";
 
 dotenv.config({path: './.env' });
 
@@ -205,32 +206,43 @@ export const sendWorkerDeactivationEmail = async (firstName, email) => {
   } catch (error) {
     console.error("Error sending email:", error);
   }
-}
+};
 
-export const sendUserAppointmentConfirmation = async (firstName, email) => {
+export const sendUserAppointmentConfirmation = async (firstName, email, custFName, custLName, block, province, municipal, barangay, serviceType, sizeOfArea, date, time, serviceCost) => {
   try {
     const info = await transporter.sendMail({
       from: sender, 
       to: [email], 
       subject: "Appointment Confirmed!",
-      html: SEND_USER_BOOKING_CONFIRMATION.replace("{firstName}", firstName)
+      html: SEND_USER_BOOKING_CONFIRMATION.replace("{clientName}", firstName)
+      .replace("{customerFirstName}", custFName).replace("{customerLastName}", custLName)
+      .replace("{block}", block).replace("{province}", province)
+      .replace("{municipal}", municipal).replace("{barangay}", barangay)
+      .replace("{serviceType}", serviceType).replace("{sizeOfArea}", sizeOfArea)
+      .replace("{bookingDate}", date).replace("{bookingTime}", time).replace("{serviceCost}", serviceCost)
     })
     console.log("User Appointment Confirmation Sent Successfully: ", info.messageId);
   } catch (error) {
     console.log("Error sending email:", error);
   }
-}
+};
 
-export const sendWorkerAppointmentConfirmation = async (firstName, email) => {
+export const sendWorkerAppointmentConfirmation = async (firstName, email, custFName, custLName, block, municipal, province, barangay
+  , serviceType, sizeOfArea, date, time, assignedWorkers) => {
   try {
     const info = await transporter.sendMail({
       from: sender, 
       to: [email], 
       subject: "You have been Booked!",
-      html: SEND_WORKER_BOOKING_CONFIRMATION.replace("{firstName}", firstName)
+      html: SEND_WORKER_BOOKING_CONFIRMATION.replace("{workerFirstName}", firstName).replace("{custFName}", custFName)
+      .replace("{custLName}", custLName).replace("{block}", block).replace("{barangay}", barangay)
+      .replace("{municipal}", municipal).replace("{province}", province).replace("{serviceType}", serviceType)
+      .replace("{sizeOfArea}", sizeOfArea).replace("{bookingDate}", date).replace("{bookingTime}", time)
+      .replace("{workerList}", assignedWorkers.join(', '))
     })
     console.log("Worker Appointment Confirmation Sent Successfully: ", info.messageId);
   } catch (error) {
     console.log("Error sending email:", error);
   }
 }
+

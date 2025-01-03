@@ -374,6 +374,7 @@ export const addUser = async (req, res) => {
       birthDate,
       gender,
       address,
+      status: "Active",
       isVerified: true
     });
 

@@ -63,6 +63,22 @@ export const getSpecificService = async (req, res) => {
  * Creates a new appointment in the system by validating the schedule details and assigning workers.
  * This function is triggered when a user books an appointment.
  */
+
+const formatTime = (time) => {
+  // Extract hours and minutes from the input time
+  let hours = parseInt(time.substring(0, 2), 10); // First two characters are hours
+  let minutes = time.substring(2, 4); // Last two characters are minutes
+
+  // Determine AM or PM
+  const period = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  hours = hours % 12 || 12;
+
+  // Format the time string
+  return `${hours.toString().padStart(2, '0')}:${minutes} ${period}`;
+};
+
 export const setAppointment = async (req, res) => {
   // Destructures the required fields from the request body.
   const { customerFirstName, customerLastName, phoneNumber, address, serviceDetails, scheduleDetails, assignedWorkers, serviceCost } = req.body;
@@ -77,16 +93,16 @@ export const setAppointment = async (req, res) => {
       continue;
     }
 
-    // Checks if any appointment exists with the same date and start time as the new schedule.
-    const isConflict = worker.assignedAppointments.some(appointment => 
-      new Date(appointment.date).toISOString() === new Date(scheduleDetails.date).toISOString() && 
-      appointment.startTime === scheduleDetails.startTime
-    );
+      // Checks if any appointment exists with the same date and start time as the new schedule.
+      const isConflict = worker.assignedAppointments.some(appointment => 
+        new Date(appointment.date).toISOString() === new Date(scheduleDetails.date).toISOString() && 
+        appointment.startTime === scheduleDetails.startTime
+      );
 
-    // If there's a conflict, responds with a 400 status and a conflict message.
-    if (isConflict) {
-      return res.status(400).json({ message: "Worker is already assigned to an appointment at this time" });
-    }
+      // If there's a conflict, responds with a 400 status and a conflict message.
+      if (isConflict) {
+        return res.status(400).json({ message: "Worker is already assigned to an appointment at this time" });
+      }
   }
 
   try {
@@ -114,51 +130,85 @@ export const setAppointment = async (req, res) => {
     // Saves the appointment document to the database.
     const savedAppointment = await newAppointment.save();
 
-    // Updates each assigned worker with the new appointment ID.
-    for (const workerId of assignedWorkers) {
-      await Worker.findByIdAndUpdate(
-        workerId, 
-        {
-          $push: {
-            assignedAppointments: {
-              appointmentId: savedAppointment._id, // Associates the appointment with the worker
-              date: scheduleDetails.date, // The date of the appointment
-              startTime: scheduleDetails.startTime // The start time of the appointment
-            }
-          }
-        },
-        { new: true }
-      );
-    }
-
-    try {
-      // Used for sending emails to the assigned workers for the appointment.
+      // Updates each assigned worker with the new appointment ID.
       for (const workerId of assignedWorkers) {
-        const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
-        
-        if (!worker) {
-          throw new Error(`Worker with ID ${workerId} not found`);
-        }
-        
-        const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
-
-        if (!user) {
-          throw new Error(`User with ID ${worker.userId} not found`);
-        }
-        sendWorkerAppointmentConfirmation(user.firstName, user.email); // Sends the appointment confirmation email to the worker
-        console.log("Successfully Sent Worker Confirmation"); 
+        await Worker.findByIdAndUpdate(
+          workerId, 
+          {
+            $push: {
+              assignedAppointments: {
+                appointmentId: savedAppointment._id, // Associates the appointment with the worker
+                date: scheduleDetails.date, // The date of the appointment
+                startTime: scheduleDetails.startTime // The start time of the appointment
+              }
+            }
+          },
+          { new: true }
+        );
       }
-    } catch (error) {
-      console.error("Error during email sending:", error);
-      return res.status(500).json({ success: false, message: error.message });
-    }
+
+      try {
+        const assignedWorkersNames = [];
+
+        // Loops through each worker ID to retrieve the workers full names and returns it as an array.
+        for (const workerId of assignedWorkers) {
+          const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
+          
+          if (!worker) {
+            throw new Error(`Worker with ID ${workerId} not found`);
+          }
+          
+          const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
+
+          if (!user) {
+            throw new Error(`User with ID ${worker.userId} not found`);
+          }
+          
+          const { firstName, lastName } = user;
+          assignedWorkersNames.push(`${firstName} ${lastName}`);
+        }
+
+        // Loops through the workers and sends an email to them.
+        for (const workerId of assignedWorkers) {
+          const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
+          
+          if (!worker) {
+            throw new Error(`Worker with ID ${workerId} not found`);
+          }
+          
+          const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
+
+          if (!user) {
+            throw new Error(`User with ID ${worker.userId} not found`);
+          }
+          
+          const workerTime = formatTime(scheduleDetails.startTime);
+
+          // Sends the appointment confirmation email to the worker
+          sendWorkerAppointmentConfirmation(user.firstName, user.email, customerFirstName, 
+            customerLastName, address.block, address.municipal,
+            address.province, address.barangay, serviceDetails.serviceCategory,
+            serviceDetails.sizeOfArea, scheduleDetails.date, workerTime, assignedWorkersNames); 
+          console.log("Successfully Sent Worker Confirmation"); 
+        }
+
+      } catch (error) {
+          console.error("Error during email sending:", error);
+          return res.status(500).json({ success: false, message: error.message });
+      }
     
     const user = await User.findById(userId); // Retrieves user information for the customer
-    if (!user) {
-      throw new Error(`User with ID ${userId} not found`);
-    }
-  
-    sendUserAppointmentConfirmation(user.firstName, user.email); // Sends the appointment confirmation email to the customer
+      if (!user) {
+        throw new Error(`User with ID ${userId} not found`);
+      }
+      
+    const userTime = formatTime(scheduleDetails.startTime);
+    // Sends the appointment confirmation email to the customer
+    sendUserAppointmentConfirmation(user.firstName, user.email, customerFirstName, customerLastName, 
+      address.block, address.province, address.municipal, address.barangay, 
+      serviceDetails.serviceCategory, serviceDetails.sizeOfArea, scheduleDetails.date, 
+      userTime, serviceCost); 
+
     console.log("Successfully Sent User Confirmation");
 
     // Responds with a 201 status and a success message if the appointment is booked successfully.

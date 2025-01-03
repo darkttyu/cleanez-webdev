@@ -444,9 +444,89 @@ export const DEACTIVATE_WORKER = `
 `;
 
 export const SEND_USER_BOOKING_CONFIRMATION = `
-Test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmation</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">BOOKING CONFIRMED</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{clientName}!</span></p>
+    <p style="text-align: justify;">Thank you for choosing CleanEZ! We’re excited to inform you that your booking has been successfully confirmed.</p>
+    <p style="font-weight: bold;">Booking Details:</p>
+    <ul>
+      <li><strong>Name:</strong> <span style="font-weight: bold; color: #4CAF50;">{customerFirstName} {customerLastName}</span></li>
+      <li><strong>Address:</strong> <span style="font-weight: bold; color: #4CAF50;">{block} Brgy. {barangay} {municipal}, {province}</span></li>
+      <li><strong>Service:</strong> <span style="font-weight: bold; color: #4CAF50;">{serviceType}</span></li>
+      <li><strong>Size of Area:</strong> <span style="font-weight: bold; color: #4CAF50;">{sizeOfArea}</span></li>
+      <li><strong>Date:</strong> <span style="font-weight: bold; color: #4CAF50;">{bookingDate}</span></li>
+      <li><strong>Time:</strong> <span style="font-weight: bold; color: #4CAF50;">{bookingTime}</span></li>
+      <li><strong>Total Cost:</strong> <span style="font-weight: bold; color: #4CAF50;">₱ {serviceCost}.00</span></li>
+    </ul>
+    <p style="text-align: justify;">Our professional cleaning team is ready to provide you with excellent service. Please ensure someone is available at the location during the scheduled time to grant access and address any specific requirements you might have.</p>
+    <p>If you have any questions, need to make changes, or wish to cancel your booking, please contact us as soon as possible at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>
+    <p>Visit our website <a href="https://cleanez.net" style="color: #4CAF50;">cleanez.net</a> for more information or to manage your bookings.</p>
+    <p>We look forward to serving you and ensuring your space sparkles! ✨</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+
 `;
 
 export const SEND_WORKER_BOOKING_CONFIRMATION =  `
-Test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Booking Assigned</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">NEW BOOKING ASSIGNED</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{workerFirstName}!</span></p>
+    <p style="text-align: justify;">We’re excited to let you know that you have been assigned a new booking! Below are the details:</p>
+    <p style="font-weight: bold;">Booking Details:</p>
+    <ul>
+      <li><strong>Client Name:</strong> <span style="font-weight: bold; color: #4CAF50;">{custFName} {custLName}</span></li>
+      <li><strong>Address:</strong> <span style="font-weight: bold; color: #4CAF50;">{block} Brgy. {barangay} {municipal} {province}</span></li>
+      <li><strong>Service:</strong> <span style="font-weight: bold; color: #4CAF50;">{serviceType}</span></li>
+      <li><strong>Size of Area:</strong> <span style="font-weight: bold; color: #4CAF50;">{sizeOfArea}</span></li>
+      <li><strong>Date:</strong> <span style="font-weight: bold; color: #4CAF50;">{bookingDate}</span></li>
+      <li><strong>Time:</strong> <span style="font-weight: bold; color: #4CAF50;">{bookingTime}</span></li>
+      <li><strong>Assigned Team:</strong> <span style="font-weight: bold; color: #4CAF50;">{workerList}</span></li>
+    </ul>
+    <p style="text-align: justify;">Please ensure you arrive at the scheduled location on time and prepared to deliver the high-quality service CleanEZ is known for. If you encounter any issues or have questions regarding this booking, please contact us immediately at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>
+    <p>Visit your dashboard at <a href="https://cleanez.net" style="color: #4CAF50;">cleanez.net</a> to view or manage your bookings.</p>
+    <p>Thank you for being a valuable part of the CleanEZ team. Let’s make this a great experience for our client!</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
 `;
