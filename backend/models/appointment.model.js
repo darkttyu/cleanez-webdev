@@ -54,6 +54,10 @@ const appointmentSchema = new mongoose.Schema(
         required: true
       }
     },
+    numberOfWindows: {
+      type: Number, 
+      default: 0
+    },
     scheduleDetails: {
       date: {
         type: Date, 

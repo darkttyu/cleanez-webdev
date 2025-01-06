@@ -4,6 +4,34 @@ import { Worker } from "../models/worker.model.js";
 import { User } from "../models/user.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import { sendUserAppointmentConfirmation, sendWorkerAppointmentConfirmation } from "../nodemailer/sendMail.js";
+
+const formatTime = (time) => {
+  // Extract hours and minutes from the input time
+  let hours = parseInt(time.substring(0, 2), 10); // First two characters are hours
+  let minutes = time.substring(2, 4); // Last two characters are minutes
+
+  // Determine AM or PM
+  const period = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  hours = hours % 12 || 12;
+
+  // Format the time string
+  return `${hours.toString().padStart(2, '0')}:${minutes} ${period}`;
+};
+
+const formatDay = (date) => {
+  const stringDate = date;
+
+  const unformattedDate = new Date(stringDate);
+
+  const dayNumber = unformattedDate.getDay();
+
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
+  return `${daysOfWeek[dayNumber]}`;
+};
+
 /**
  * Fetches all the available services from the database.
  * This function is executed when the user requests to view all services.
@@ -63,21 +91,6 @@ export const getSpecificService = async (req, res) => {
  * Creates a new appointment in the system by validating the schedule details and assigning workers.
  * This function is triggered when a user books an appointment.
  */
-
-const formatTime = (time) => {
-  // Extract hours and minutes from the input time
-  let hours = parseInt(time.substring(0, 2), 10); // First two characters are hours
-  let minutes = time.substring(2, 4); // Last two characters are minutes
-
-  // Determine AM or PM
-  const period = hours >= 12 ? "PM" : "AM";
-
-  // Convert hours to 12-hour format
-  hours = hours % 12 || 12;
-
-  // Format the time string
-  return `${hours.toString().padStart(2, '0')}:${minutes} ${period}`;
-};
 
 export const setAppointment = async (req, res) => {
   // Destructures the required fields from the request body.
@@ -220,6 +233,45 @@ export const setAppointment = async (req, res) => {
   }
 };
 
+export const getAvailableWorkers = async (req, res) => {
+  const { serviceDetails, scheduleDetails } = req.body; 
+
+  // Extracts the service category and size of area from the service details.
+  const { serviceCategory, sizeOfArea } = serviceDetails;
+  const { date, startTime } = scheduleDetails; 
+  
+  // Formats the date to the day of the week.
+  const formatDate = formatDay(date);
+
+  let workers = [];
+
+  try {
+    // Retrieves all workers that match the service category, area assigned, day, and start time.
+    workers = await Worker.find({
+      "serviceCategory":serviceCategory, 
+      "workerAvailability.areaAssigned": sizeOfArea, 
+      "workerAvailability.day": { $in: [formatDate] },  
+      "workerAvailability.startTime": { $in: [startTime]}
+    });
+
+    if(workers.length === 0) {
+      return res.status(404).json({ message: "No available workers found" });
+    }
+
+    res.status(200).json({ message: "Successfully fetched available workers", workers });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+    }
+
+  try {
+    console.log("Successfully fetched available workers", workers);
+  } catch (error) {
+    console.log("Error in fetching available workers", error);
+  }
+  
+};
+
+
 // Testing Controllers 
 // This function is used for testing purposes only and sends an email to the assigned workers for the appointment.
 export const testEmailBooking = async (req, res) => {
@@ -228,11 +280,10 @@ export const testEmailBooking = async (req, res) => {
   // Used for sending emails to the assigned workers for the appointment. 
   for (const workerId of assignedWorkers) {
     const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database. 
+    console.log(worker);
     const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
 
-    sendWorkerAppointmentConfirmation(user.firstName, user.email);
+    //sendWorkerAppointmentConfirmation(user.firstName, user.email);
   }
-
-  
   return res.status(200).json({ message: "Request Success" });
-}
+}; 
