@@ -96,28 +96,6 @@ export const setAppointment = async (req, res) => {
   // Destructures the required fields from the request body.
   const { customerFirstName, customerLastName, phoneNumber, address, serviceDetails, scheduleDetails, assignedWorkers, serviceCost } = req.body;
 
-  // Loops through each worker ID to check if there are any scheduling conflicts.
-  for (const workerId of assignedWorkers) {
-    // Retrieves the worker document from the database using the worker ID.
-    const worker = await Worker.findById(workerId).lean();
-
-    // If the worker is not found or does not have assigned appointments, it skips the check.
-    if (!worker || !worker.assignedAppointments) {
-      continue;
-    }
-
-      // Checks if any appointment exists with the same date and start time as the new schedule.
-      const isConflict = worker.assignedAppointments.some(appointment => 
-        new Date(appointment.date).toISOString() === new Date(scheduleDetails.date).toISOString() && 
-        appointment.startTime === scheduleDetails.startTime
-      );
-
-      // If there's a conflict, responds with a 400 status and a conflict message.
-      if (isConflict) {
-        return res.status(400).json({ message: "Worker is already assigned to an appointment at this time" });
-      }
-  }
-
   try {
     // Validates if all required fields are provided in the request body.
     if (!customerFirstName || !customerLastName || !phoneNumber || !address || !serviceDetails || !scheduleDetails || !assignedWorkers || !serviceCost) {
@@ -243,33 +221,47 @@ export const getAvailableWorkers = async (req, res) => {
   // Formats the date to the day of the week.
   const formatDate = formatDay(date);
 
-  let workers = [];
-
   try {
     // Retrieves all workers that match the service category, area assigned, day, and start time.
-    workers = await Worker.find({
-      "serviceCategory":serviceCategory, 
+    let workers = await Worker.find({
+      "serviceCategory": serviceCategory, 
       "workerAvailability.areaAssigned": sizeOfArea, 
       "workerAvailability.day": { $in: [formatDate] },  
-      "workerAvailability.startTime": { $in: [startTime]}
+      "workerAvailability.startTime": { $in: [startTime] }
     });
 
-    if(workers.length === 0) {
+    // If no workers are found, respond with an error message.
+    if (workers.length === 0) {
       return res.status(404).json({ message: "No available workers found" });
     }
 
-    res.status(200).json({ message: "Successfully fetched available workers", workers });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    // Initialize an array to store available workers.
+    const availableWorkers = []
+
+    // Loops through each worker to check if they are available at the specified date and time.
+    workers.forEach(worker => {
+      const isConflict = worker.assignedAppointments.some(appointment => 
+        new Date(appointment.date).getTime() === new Date(date).getTime() 
+        && appointment.startTime === startTime
+      );
+
+      if(!isConflict) {
+        availableWorkers.push(worker);
+      }
+    });
+
+    // If no available workers are found, respond with an error message.
+    if (availableWorkers.length === 0) {
+      return res.status(400).json({ message: "No workers are available at this time" });
     }
 
-  try {
-    console.log("Successfully fetched available workers", workers);
+    // Successfully fetched available workers.
+    res.status(200).json({ message: "Successfully fetched available workers", workers: availableWorkers });
   } catch (error) {
-    console.log("Error in fetching available workers", error);
+    res.status(500).json({ message: error.message });
   }
-  
 };
+
 
 
 // Testing Controllers 
