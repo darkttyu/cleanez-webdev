@@ -256,7 +256,7 @@ export const getAvailableWorkers = async (req, res) => {
     }
 
     // Successfully fetched available workers.
-    res.status(200).json({ message: "Successfully fetched available workers", workers: availableWorkers });
+    return res.status(200).json({ message: "Successfully fetched available workers", workers: availableWorkers });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
