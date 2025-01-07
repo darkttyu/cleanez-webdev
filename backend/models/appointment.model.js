@@ -52,11 +52,11 @@ const appointmentSchema = new mongoose.Schema(
       numberOfWorkers: {
         type: Number, 
         required: true
+      },
+      numberOfWindows: {
+        type: Number, 
+        default: 0
       }
-    },
-    numberOfWindows: {
-      type: Number, 
-      default: 0
     },
     scheduleDetails: {
       date: {
