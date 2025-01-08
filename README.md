@@ -24,6 +24,10 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 - [x] Complete Backend Logic for Booking User
 - [x] Backend Validation for Getting Available Workers
 - [x] Backend Validation to Prevent Double Bookings
+
+### User - Worker Application 
+- [x] Complete Backend Logic for Application Submission
+
 ---
 
 ## Frontend To-Do List (Rein)
