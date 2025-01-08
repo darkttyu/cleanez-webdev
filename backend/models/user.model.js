@@ -78,17 +78,28 @@ const userSchema = new mongoose.Schema({
   verificationToken: String,
   verificationTokenExpiresAt: Date, 
 
-  applicationStatus: {
-    type: String, 
-    enum: ['Pending', 'Declined', 'Accepted'],
-    default: 'None'
-  },
-  resume: {
-    data: Buffer,
-    contentType: String,
-    default: null
+  applicationDetails: {
+    serviceCategory: {
+      type: String,
+      default: 'None'
+    },
+    areaAssigned: {
+      type: String,
+      default: 'None'
+    },
+    applicationStatus: {
+      type: String, 
+      default: 'None'
+    },
+    resume: {
+      data: { 
+        type: Buffer, 
+        default: null },
+      contentType: { 
+        type: String, 
+        default: null }
+    }
   }
-
 }, {timestamps: true});
 
 export const User = mongoose.model("User", userSchema);

@@ -1,10 +1,10 @@
 import { User } from "../models/user.model.js";
-import { verifyToken } from "../middleware/verifyToken.js";
 
 export const submitApplicationForm = async (req, res) => {
 
   const userId = req.userId;
-
+  const { serviceCategory, areaAssigned } = req.body;
+  
   if (!userId) {
     return res.status(401).json({ message: 'User is not authenticated' });
   }
@@ -15,10 +15,11 @@ export const submitApplicationForm = async (req, res) => {
     return res.status(404).json({success: false, message:""})
   }
 
-  const resume = req.file;
-
   user.role = "Applicant";
-  user.resume = {
+  user.applicationDetails.serviceCategory = serviceCategory;
+  user.applicationDetails.areaAssigned = areaAssigned
+  user.applicationDetails.applicationStatus = 'Pending';
+  user.applicationDetails.resume = {
     data: req.file.buffer,
     contentType: req.file.mimetype
   };
