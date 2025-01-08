@@ -612,6 +612,15 @@ export const insertService = async (req, res) => {
   }
 };
 
+// Dashboard Controllers 
+export const getWorkerCount = async (req, res) => {
+  try {
+    const activeWorkers = await User.countDocuments({role: "Worker", status: "Active"});
+    return res.status(200).json({success: true, count: activeWorkers})
+  } catch (error) {
+    return res.status(500).json({success: false, error: error});
+  }
+};
 
 /*
 export const addResumeField = async (req, res) => {

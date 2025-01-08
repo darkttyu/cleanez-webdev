@@ -1,11 +1,11 @@
 import express from 'express';
-import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, deleteWorker, softDeleteWorker, setWorkerToActive, setUserToActive, insertService } from '../controllers/admin.controller.js';
+import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, deleteWorker, softDeleteWorker, setWorkerToActive, setUserToActive, insertService, getWorkerCount } from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
 
 // Dashboard Tab
-
+router.get("/getWorkerCount", getWorkerCount);
 // Appointments Tab
 
 // Applicants Tab
