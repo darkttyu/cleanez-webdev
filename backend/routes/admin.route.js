@@ -28,6 +28,8 @@ router.delete("/deleteUser/:id", deleteUser); // Deletes User Entirely from the 
 router.put("/softDeleteUser/:id", softDeleteUser); // Sets Status of User to Inactive
 router.put("/setUserToActive/:id", setUserToActive);
 
+// router.put("/addResumeField", addResumeField);
+
 // Service 
 router.post("/insertService", insertService);
 

@@ -22,6 +22,7 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 
 ### User - Appointments
 - [x] Complete Backend Logic for Booking User
+- [x] Backend Validation for Getting Available Workers
 - [x] Backend Validation to Prevent Double Bookings
 ---
 

@@ -133,7 +133,6 @@ export const login = async (req, res) => {
     const isEmail = login.includes("@") && login.includes(".");
     
     try {
-
       // Find user by email or phone number
       const user = await User.findOne(isEmail ? { email: login } : { phoneNumber: login });
 
@@ -157,7 +156,7 @@ export const login = async (req, res) => {
       }
 
       // Generate token and set cookie
-      generateTokenAndSetCookie(res, user._id);
+      const token = generateTokenAndSetCookie(res, user._id);
 
       // Update last login date
       user.lastLogin = new Date();
@@ -167,6 +166,7 @@ export const login = async (req, res) => {
       res.status(200).json({
         success: true, 
         message: "Logged In Successfully.",
+        token: token,
         user: {
           ...user._doc, 
           password: undefined,
@@ -185,7 +185,7 @@ export const login = async (req, res) => {
  * Handles user logout by clearing the authentication token cookie.
  */
 export const logout = async (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie(res.token);
   res.status(200).json({ success: true, message: "Logged out Successfully." });
 };
 

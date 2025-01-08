@@ -3,9 +3,26 @@ import NavLogo from '../images/logos/nav-logo.png'
 import {Link, useParams} from 'react-router-dom';
 import {HashLink} from 'react-router-hash-link';
 import { useAuth } from '../AuthContext';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const { user, logout } = useAuth(); // Access user from context
+    const navigate = useNavigate();
+
+    const handleLogOut = async () => {
+        try {
+            const response = await axios.post(`http://localhost:5000/api/auth/logout`)
+            console.log(response);
+
+            localStorage.removeItem("token")
+            logout();
+            navigate('/home');
+        } catch (error) {
+            console.log('Logout Failed: ', error)
+        }
+    }
+    
     
     return (
         <nav className="navbar">
@@ -24,7 +41,7 @@ const Navbar = () => {
                     My Account
                         <div className='pop-up'>
                             <Link to={`/account/${user._id}`} className='sub-link'>My Account</Link>
-                            <Link to="/home" className='sub-link' onClick={logout}>Log Out</Link>
+                            <Link to="/home" className='sub-link' onClick={handleLogOut}>Log Out</Link>
                         </div>
                     </button>
                 ) : (
