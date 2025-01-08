@@ -174,13 +174,17 @@ export const setAppointment = async (req, res) => {
           }
           
           const workerTime = formatTime(scheduleDetails.startTime);
-
+          const earnings = serviceCost / serviceDetails.numberOfWorkers
+          
           // Sends the appointment confirmation email to the worker
-          sendWorkerAppointmentConfirmation(user.firstName, user.email, customerFirstName, 
+          sendWorkerAppointmentConfirmation(
+            user.firstName, user.email, customerFirstName, 
             customerLastName, address.block, address.municipal,
             address.province, address.barangay, serviceDetails.serviceCategory,
-            serviceDetails.sizeOfArea, scheduleDetails.date, workerTime, assignedWorkersNames); 
-          console.log("Successfully Sent Worker Confirmation"); 
+            serviceDetails.sizeOfArea, scheduleDetails.date, 
+            workerTime, assignedWorkersNames, earnings); 
+          
+            console.log("Successfully Sent Worker Confirmation"); 
         }
 
       } catch (error) {
@@ -211,6 +215,9 @@ export const setAppointment = async (req, res) => {
   }
 };
 
+/**
+ * Gets all available workers based on the user preference during appointments.
+ */
 export const getAvailableWorkers = async (req, res) => {
   const { serviceDetails, scheduleDetails } = req.body; 
 
