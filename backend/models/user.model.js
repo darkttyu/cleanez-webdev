@@ -94,10 +94,34 @@ const userSchema = new mongoose.Schema({
     resume: {
       data: { 
         type: Buffer, 
-        default: null },
+        default: null 
+      },
       contentType: { 
         type: String, 
-        default: null }
+        default: null 
+      }
+    },
+    validID: {
+      ID1: { 
+        data: {
+          type: Buffer,
+          default: null
+        }, 
+        contentType: {
+          type: String,
+          default: null
+        }
+      }, 
+      ID2: {
+        data: {
+          type: Buffer,
+          default: null
+        }, 
+        contentType: {
+          type: String,
+          default: null
+        }
+      }
     }
   }
 }, {timestamps: true});

@@ -10,6 +10,7 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 ### User Authentication
 - [x] User Authentication
 - [x] Admin Authentication
+- [] Validation for User Roles in Log In (checks if role is User / Applicant / Worker)
 
 ### Admin Side
 - [x] User CRUD [USER TAB]
