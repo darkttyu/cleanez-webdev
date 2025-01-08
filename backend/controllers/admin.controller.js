@@ -622,6 +622,78 @@ export const getWorkerCount = async (req, res) => {
   }
 };
 
+export const getYearlyEarnings = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getMonthlyEarnings = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getWeeklyEarnings = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getYearlyAppointments = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getMontlyAppointment = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getWeeklyAppointment = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getYearlyEarningsByService = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getMonthlyEarningsByService = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getWeeklyEarningsByService = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
 /*
 export const addResumeField = async (req, res) => {
   try {
