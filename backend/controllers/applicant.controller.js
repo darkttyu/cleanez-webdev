@@ -1,40 +1,53 @@
 import { User } from "../models/user.model.js";
 
 export const submitApplicationForm = async (req, res) => {
-
+  try {
+    // Retrieve the userId from the request object (set from the token after logging in)
   const userId = req.userId;
+  
+  // Retrieve files (resume, ID1, ID2) and fields (serviceCategory, areaAssigned) from the request
   const { resume, ID1, ID2 } = req.files;
   const { serviceCategory, areaAssigned } = req.body;
 
+  // Check if userId is present (user must be authenticated)
   if (!userId) {
     return res.status(401).json({ message: 'User is not authenticated' });
   }
 
+  // Fetch the user from the database using the provided userId
   const user = await User.findById(userId);
 
+  // If user is not found, respond with a 404 status
   if(!user) {
-    return res.status(404).json({success: false, message:""})
+    return res.status(404).json({success: false, message: "User not found"});
   }
 
+  // Update user's role to "Applicant" and set application details
   user.role = "Applicant";
-  user.applicationDetails.serviceCategory = serviceCategory;
-  user.applicationDetails.areaAssigned = areaAssigned
-  user.applicationDetails.applicationStatus = 'Pending';
+  user.applicationDetails.serviceCategory = serviceCategory; // Set the service category
+  user.applicationDetails.areaAssigned = areaAssigned; // Set the assigned area
+  user.applicationDetails.applicationStatus = 'Pending'; // Set application status as 'Pending'
+
+  // Store the resume, ID1, and ID2 files as Buffer objects in the applicationDetails field
   user.applicationDetails.resume = {
-    data: resume[0].buffer,
-    contentType: resume[0].mimetype
+    data: resume[0].buffer, // Store the resume file data as a Buffer
+    contentType: resume[0].mimetype // Store the resume's MIME type
   };
   user.applicationDetails.validID.ID1 = {
-    data: ID1[0].buffer,
-    contentType: ID1[0].mimetype
-  }
+    data: ID1[0].buffer, // Store ID1 file data as a Buffer
+    contentType: ID1[0].mimetype // Store ID1's MIME type
+  };
   user.applicationDetails.validID.ID2 = {
-    data: ID2[0].buffer,
-    contentType: ID2[0].mimetype
-  }
+    data: ID2[0].buffer, // Store ID2 file data as a Buffer
+    contentType: ID2[0].mimetype // Store ID2's MIME type
+  };
 
-
+  // Save the updated user object to the database
   await user.save();
 
+  // Respond with a success message upon successful submission
   res.status(200).json({success: true, message: "Application Form Submitted Successfully"});
+  } catch (error) {
+    res.status(500).json({success: false, message: "Error in Application Submission", error: error})
+  }
 }
