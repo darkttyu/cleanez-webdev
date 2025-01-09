@@ -5,8 +5,6 @@ import '../styles/HomePage.css'
 import {Header, Services, About, Founders} from '../components/HomeContent';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-// --- React Import/s
-import { Outlet } from 'react-router-dom';
 
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 

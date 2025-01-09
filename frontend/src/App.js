@@ -5,6 +5,7 @@ import FAQsPage from './pages/FAQsPage';
 import VerificationPage from './pages/UserSigningPages/VerificationPage'
 import FindAccountPage1 from './pages/UserSigningPages/FindAccountPage1';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import BookingPage from './pages/BookingPage';
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                     <Route path='/signup/verify-email' element={<VerificationPage/>} />
                     <Route path="/frequently-asked-questions" element={<FAQsPage />} />
                     <Route path="/forgot-password" element={<FindAccountPage1/>} />
+                    <Route path='/booking' element={<BookingPage/>}/>
                 </Routes>
             </div>
         </Router>

@@ -1,4 +1,5 @@
-const InputProvince = ({ value, data, selection, onChange }) => {
+const InputProvince = ({ value, data, selection, onChange, selected }) => {
+    
     return (  
         <div className="text-container">
             <select 
@@ -15,7 +16,10 @@ const InputProvince = ({ value, data, selection, onChange }) => {
                 {/* SELECT OPTIONS */}
                 <option value="0">Select Province</option>
                 {data.map((p, index) => (
-                    <option key={index} value={p.province_code + p.province_name}>{p.province_name}</option>
+                    (p.province_name == selected) ?
+                    (<option key={index} value={p.province_code + p.province_name} selected="selected">{p.province_name}</option>) 
+                    :
+                    (<option key={index} value={p.province_code + p.province_name}>{p.province_name}</option>) 
                 ))}
             </select>
             <label className="text-label" htmlFor="address-input">

@@ -9,10 +9,13 @@ button {
     display         : flex;
     padding         : 0px 42px;
     align-items     : center;
-    justify-content : space-between;
     background-color: var(--color1c);
     height          : 90px;
     width           : 100%;
+}
+
+.navbar.space-between {
+    justify-content: space-between;
 }
 
 .nav-logo {
@@ -89,4 +92,16 @@ button {
 /* Show the dropdown menu on hover */
 .my-account-container:hover .pop-up {
     display: block;
+}
+
+.nav-divider {
+    height          : 48px;
+    width           : 2px;
+    background-color: #000;
+    margin          : 0 48px;
+}
+
+.nav-title {
+    font-size  : 24px;
+    font-weight: 600px;
 }

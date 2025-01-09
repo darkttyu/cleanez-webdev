@@ -1,4 +1,4 @@
-const InputBarangay = ({value, data, onChange}) => {
+const InputBarangay = ({value, data, onChange, selected}) => {
     return(
         <div className="text-container">
             {/* INPUT HERE */}
@@ -13,7 +13,11 @@ const InputBarangay = ({value, data, onChange}) => {
                 {/* SELECT OPTIONS */}
                 <option value="0">Select Barangay</option>
                 {data.map((b, index) => (
-                    <option key={index} value={b.brgy_name}>{b.brgy_name}</option>
+                    (b.brgy_name == selected) ?
+                    (<option key={index} value={b.brgy_name} selected="selected">{b.brgy_name}</option>)
+                    :
+                    (<option key={index} value={b.brgy_name}>{b.brgy_name}</option>)
+                    
                 ))}
             </select>
             {/* LABEL HERE */}

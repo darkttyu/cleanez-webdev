@@ -25,7 +25,7 @@ const Navbar = () => {
     
     
     return (
-        <nav className="navbar">
+        <nav className="navbar space-between">
             <Link to={user ? `/home/${user._id}` : "/home"}>
                 <img className="nav-logo" src={NavLogo} alt="Logo" />
             </Link>
@@ -47,7 +47,7 @@ const Navbar = () => {
                 ) : (
                     <Link to="/login" className="nav-link">Login</Link>
                 )}
-                <a href="" className="nav-link book-btn">Book Now</a>
+                <Link to={user ? `/booking` : "/login"}className="nav-link book-btn">Book Now</Link>
             </div>
         </nav>
     );
