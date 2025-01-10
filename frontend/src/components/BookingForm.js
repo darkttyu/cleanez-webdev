@@ -5,11 +5,15 @@ import {
     Address,
     Province,
     Municipality,
-    Barangay
+    Barangay,
+    ServiceType,
+    AreaSize,
+    WorkerNumbers
 } from "../components/inputs/index"
 import { useState, useEffect } from "react";
 import { useAuth } from "../AuthContext";
 import {regions, provinces, cities, barangays} from "select-philippines-address";
+import axios from "axios";
 
 const PersonalInfo = () => {
     const {user} = useAuth();
@@ -119,10 +123,68 @@ const PersonalInfo = () => {
     );
 }
 
-const Service = () => {
+const ServiceBooking = () => {
+    const {user} = useAuth();
+
+    const [serviceData, setServiceData] = useState([]);
+    const [areaDetails, setAreaDetails] = useState([]);
+    const [workerNumbers, setWorkerNumbers] = useState([]);
+
+    // Fetches all Service Type Data
+    useEffect(() => {
+        const fetchServicesData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/appointment/getServices`, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                setServiceData(response.data.services);
+            // --- --- Failed Login
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchServicesData();
+    }, []);
+
+    // Sets Other Selection Options based on Service Type
+    const onServiceSelect = (serviceType) => {
+        if (serviceType == 0) {
+            setAreaDetails([]);
+            setWorkerNumbers([]);
+        }
+
+        serviceData.forEach((service) => {
+            if (service._id === serviceType) {
+                setAreaDetails(service.areaDetails);
+                setWorkerNumbers(service.numberOfWorkers);
+            }
+        })
+
+    }
+
     return (
-        <>
-        </>
+        <div className="booking-page">
+            <h2>Service</h2>
+            <div className="booking-grid col-three">
+                <ServiceType  
+                data={serviceData} 
+                selection={onServiceSelect}
+                onChange={e => {}}
+                />
+                <AreaSize  
+                data={areaDetails} 
+                selection={e => {}}
+                onChange={e => {}}
+                />
+                <WorkerNumbers  
+                data={workerNumbers} 
+                selection={e => {}}
+                onChange={e => {}}
+                />
+            </div>
+        </div>
     )
 }
  
@@ -148,4 +210,4 @@ const Billing = () => {
 }
  
 
-export {PersonalInfo, Service, Schedule, AvailableCleaners, Billing};
+export {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Billing};

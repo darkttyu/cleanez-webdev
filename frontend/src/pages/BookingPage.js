@@ -3,12 +3,13 @@ import { useAuth } from '../AuthContext';
 import NavLogo from '../images/logos/nav-logo.png'
 import '../styles/BookingPage.css';
 import SVGIcons from "../SVGIcons";
-import {PersonalInfo, Service, Schedule, AvailableCleaners, Billing} from "../components/BookingForm";
+import {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Billing} from "../components/BookingForm";
 
 const ContainerContent = () => {
     return (
         <>
-            <PersonalInfo />
+            {/* <PersonalInfo /> */}
+            <ServiceBooking />
         </>
     )
 }
