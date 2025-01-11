@@ -120,6 +120,7 @@ export const setAppointment = async (req, res) => {
 
     // Saves the appointment document to the database.
     const savedAppointment = await newAppointment.save();
+    const earnings = serviceCost / serviceDetails.numberOfWorkers
 
       // Updates each assigned worker with the new appointment ID.
       for (const workerId of assignedWorkers) {
@@ -130,7 +131,8 @@ export const setAppointment = async (req, res) => {
               assignedAppointments: {
                 appointmentId: savedAppointment._id, // Associates the appointment with the worker
                 date: scheduleDetails.date, // The date of the appointment
-                startTime: scheduleDetails.startTime // The start time of the appointment
+                startTime: scheduleDetails.startTime, // The start time of the appointment
+                estimatedEarnings: earnings // Computed estimated earnings of a worker 
               }
             }
           },
@@ -268,8 +270,6 @@ export const getAvailableWorkers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
 
 // Testing Controllers 
 // This function is used for testing purposes only and sends an email to the assigned workers for the appointment.

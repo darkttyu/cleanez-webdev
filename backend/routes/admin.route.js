@@ -1,5 +1,5 @@
 import express from 'express';
-import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, deleteWorker, softDeleteWorker, setWorkerToActive, setUserToActive, insertService, getWorkerCount } from '../controllers/admin.controller.js';
+import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, deleteWorker, softDeleteWorker, setWorkerToActive, setUserToActive, insertService, getWorkerCount, getAllApplicants, getClickedApplicant, acceptApplicant } from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
@@ -33,5 +33,9 @@ router.put("/setUserToActive/:id", setUserToActive);
 // Service 
 router.post("/insertService", insertService);
 
+// Applicants
+router.get("/getAllApplicants", getAllApplicants);
+router.get("/getApplicant/:id", getClickedApplicant);
+router.put("/acceptApplicant/:id", acceptApplicant);
 
 export default router;

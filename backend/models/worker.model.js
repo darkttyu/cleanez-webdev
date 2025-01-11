@@ -27,6 +27,9 @@ const workerSchema = new mongoose.Schema({
     },
     startTime: {
       type: String,
+    },
+    estimatedEarnings: {
+      type: Number,
     }
   }],
   workerAvailability: {
