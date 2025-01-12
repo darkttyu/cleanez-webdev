@@ -66,7 +66,7 @@ button {
     transform       : translateX(-50%);
     width           : calc(100% + 18px);
     background-color: var(--monoc1);
-    box-shadow      : 0 4px 4px rgba(0, 0, 0, 0.1);
+    box-shadow      : 0 4px 4px #0000001a;
     /* Optional shadow for style */
     border-radius   : 4px;
     z-index         : 1000;

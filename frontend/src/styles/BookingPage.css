@@ -1,13 +1,13 @@
 @import '../index.css';
 
 .booking-content {
-    display        : flex;
-    flex-direction : column;
-    justify-content: center;
-    align-items    : center;
-    height         : calc(100vh - 90px);
-    position       : relative;
-    gap            : 48px;
+    display       : flex;
+    flex-direction: column;
+    align-items   : center;
+    min-height    : calc(100vh - 90px);
+    position      : relative;
+    gap           : 48px;
+    padding       : 48px 0;
 }
 
 .booking-progress {
@@ -105,4 +105,42 @@
 .booking-page h2 {
     text-align: left;
     color     : var(--color2b);
+}
+
+.basic-label {
+    display    : block;
+    font-family: var(--font2);
+    font-size  : 16px;
+    color      : var(--monoc3);
+    text-align : left;
+    padding    : 20px;
+}
+
+.time-input-container {
+    grid-column: span 2;
+}
+
+.time-booking-container {
+    display              : grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-content      : space-between;
+    gap                  : 1em;
+}
+
+.time-booking-button {
+    padding         : 12px 20px;
+    background-color: #d9d9d9;
+    color           : #222222;
+    font-family     : var(--font1);
+    font-size       : 20px;
+    font-weight     : 600;
+    border-radius   : 16px;
+    box-shadow      : 0 4px 4px #00000040;
+    transition      : all 0.1s ease-in-out;
+    text-align      : center;
+}
+
+.time-booking-button.active {
+    background-color: var(--color1e);
+    color           : white;
 }

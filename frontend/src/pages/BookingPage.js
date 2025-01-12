@@ -1,23 +1,49 @@
+// Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 import {Link} from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import NavLogo from '../images/logos/nav-logo.png'
 import '../styles/BookingPage.css';
 import SVGIcons from "../SVGIcons";
 import {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Billing} from "../components/BookingForm";
-
-const ContainerContent = () => {
-    return (
-        <>
-            {/* <PersonalInfo /> */}
-            <ServiceBooking />
-        </>
-    )
-}
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const BookingPage = () => {
     const {user} = useAuth();
 
-    console.log(user);
+    const [serviceList, setServicesList] = useState([]);
+    const [serviceBookingInfo, setServiceBookingInfo] = useState({});
+    const [scheduleBookingInfo, setScheduleBookingInfo] = useState({});
+    
+    // --- Fetches all Service Type Data
+    useEffect(() => {
+        const fetchServicesList = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/appointment/getServices`, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                setServicesList(response.data.services);
+            // --- --- Failed Fetching
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchServicesList();
+    }, []);
+
+    const retrieveServiceBooking = (data) => {
+        setServiceBookingInfo(data);
+    }
+
+    const retrieveScheduleBooking = (data) => {
+        setScheduleBookingInfo(data);
+    }
+
+    useEffect(() => {
+        console.log(scheduleBookingInfo);
+    }, [scheduleBookingInfo])
+
     return (  
         <>
             <nav className="navbar">
@@ -44,7 +70,17 @@ const BookingPage = () => {
                 </header>
                 <section className='booking-container'>
                     <form className='booking-container-content'>
-                        <ContainerContent />
+                        <PersonalInfo 
+                        user={user}/>
+                        <ServiceBooking 
+                        retrieveServiceBooking={retrieveServiceBooking}
+                        serviceList={serviceList} 
+                        user={user}/>
+                        <Schedule 
+                        retrieveScheduleBooking={retrieveScheduleBooking}
+                        serviceBookingInfo={serviceBookingInfo}
+                        serviceList={serviceList} 
+                        user={user}/>
                     </form>
                     <div className='booking-navigation'>
                         <a

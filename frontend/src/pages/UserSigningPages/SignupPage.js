@@ -188,6 +188,7 @@ const SignupPanel = () => {
             });
         }
     }
+
     // --- Verifies Signup Data after Submission
     const handleSignUpSubmission = async (e) => {
         e.preventDefault();
@@ -277,17 +278,22 @@ const SignupPanel = () => {
                             <Province 
                                 value={signUpData.address.province}
                                 data={provinceData} 
-                                selection={listMunicipalities}
-                                onChange={handleSignUp}/>
+                                onChange={(e) => {
+                                    listMunicipalities(e.targe.value);
+                                    handleSignUp(e);
+                                }}/>
                             <Municipality 
                                 value={signUpData.address.municipal}
                                 data={municipalData} 
-                                selection={listBarangays}
-                                onChange={handleSignUp}/>
+                                onChange={(e) => {
+                                    listBarangays(e.targe.value);
+                                    handleSignUp(e);
+                                }}/>
                             <Barangay
                                 value={signUpData.address.barangay}
+                                data={barangayData}
                                 onChange={handleSignUp}
-                                data={barangayData}/>
+                                />
                         </div>
                         {/* BUTTONS HERE */}
                         <div className="buttons">

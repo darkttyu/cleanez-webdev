@@ -1,4 +1,4 @@
-const ServiceType = ({ value, data, selection, onChange, selected }) => {
+const ServiceType = ({ value, data, onChange }) => {
     return (  
         <div className="text-container">
             <select 
@@ -7,9 +7,7 @@ const ServiceType = ({ value, data, selection, onChange, selected }) => {
                 value={value}  
                 id="service-input" 
                 onChange={(e) => {
-                    const selectedService = e.target.value;
-                    selection(selectedService);  
-                    onChange(e);  
+                    onChange(e.target.value);  
                 }}
             >
                 {/* SELECT OPTIONS */}
@@ -25,7 +23,7 @@ const ServiceType = ({ value, data, selection, onChange, selected }) => {
     );
 }
 
-const AreaSize = ({ value, data, selection, onChange, selected }) => {
+const AreaSize = ({ value, data, onChange }) => {
     return (  
         <div className="text-container">
             <select 
@@ -34,9 +32,7 @@ const AreaSize = ({ value, data, selection, onChange, selected }) => {
                 value={value}  
                 id="area-size-input" 
                 onChange={(e) => {
-                    const selectedSize = e.target.value;
-                    selection(selectedSize);  
-                    onChange(e);  
+                    onChange(e.target.value);  
                 }}
             >
                 {/* SELECT OPTIONS */}
@@ -52,7 +48,7 @@ const AreaSize = ({ value, data, selection, onChange, selected }) => {
     );
 }
 
-const WorkerNumbers = ({ value, data, selection, onChange, selected }) => {
+const WorkerNumbers = ({ value, data, onChange }) => {
     return (  
         <div className="text-container">
             <select 
@@ -61,15 +57,13 @@ const WorkerNumbers = ({ value, data, selection, onChange, selected }) => {
                 value={value}  
                 id="worker-numbers-input" 
                 onChange={(e) => {
-                    const selectedSize = e.target.value;
-                    selection(selectedSize);  
-                    onChange(e);  
+                    onChange(e.target.value);  
                 }}
             >
                 {/* SELECT OPTIONS */}
                 <option value="0">Select No. of Workers</option>
                 {data.map((n, index) => (
-                    <option key={index} value={index}>{n}</option>
+                    <option key={index} value={n}>{n}</option>
                 ))}
             </select>
             <label className="text-label" htmlFor="worker-numbers-input">
