@@ -138,9 +138,122 @@
     box-shadow      : 0 4px 4px #00000040;
     transition      : all 0.1s ease-in-out;
     text-align      : center;
+    cursor          : pointer;
 }
 
 .time-booking-button.active {
     background-color: var(--color1e);
     color           : white;
+}
+
+
+#cleaners-booking-page,
+#service-booking-page {
+    gap: 24px;
+}
+
+.worker-number-prompt,
+.service-price-prompt {
+    text-align : left;
+    font-size  : 20px;
+    font-family: var(--font1);
+    color      : var(--color2b);
+    margin-top : -12px;
+}
+
+.avail-workers-list {
+    display       : flex;
+    flex-direction: column;
+    width         : 100%;
+    height        : 294px;
+    overflow-y    : overlay;
+    overflow-y    : auto;
+    position      : relative;
+}
+
+.avail-worker-container {
+    display         : flex;
+    justify-content : space-between;
+    align-items     : center;
+    padding         : 16px 40px;
+    min-height      : 80px;
+    background-color: white;
+    border-radius   : 8px;
+    cursor          : pointer;
+    border          : 3px solid white;
+    transition      : all 0.2s ease-out;
+    box-shadow      : 0px 4px 4px #00000014;
+    margin-bottom   : 24px;
+    transition      : all 0.2s ease-in-out;
+}
+
+.avail-worker-container:hover {
+    border    : 3px solid #dadada;
+    box-shadow: 0px 0px 0px #00000014;
+}
+
+.avail-worker-container.selected {
+    border: 3px solid #60c36f;
+}
+
+.avail-worker-container .information {
+    display        : flex;
+    flex-direction : column;
+    justify-content: space-between;
+    width          : 33%;
+    height         : 100%;
+}
+
+.avail-worker-container .information>* {
+    text-align: left;
+}
+
+.avail-worker-container .information .name {
+    font-family: var(--font2);
+    font-size  : 18px;
+    font-weight: 600;
+    color      : var(--monoc4);
+}
+
+.avail-worker-container .information .location {
+    font-family: var(--font1);
+    font-size  : 14px;
+    color      : var(--monoc4);
+}
+
+.avail-worker-container .rating {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+    gap            : 12px;
+}
+
+.avail-worker-container .rating .rating-number {
+    font-family: var(--font1);
+    font-size  : 20px;
+    font-weight: 600;
+    color      : var(--monoc4);
+}
+
+.avail-workers-list .worker-error-container {
+    width          : 100%;
+    height         : 100%;
+    display        : flex;
+    flex-direction : column;
+    justify-content: center;
+    align-items    : center;
+    gap            : 12px;
+}
+
+.worker-error-logo {
+    height : 126px;
+    width  : 126px;
+    opacity: 0.7;
+}
+
+.worker-error-message {
+    font-family: var(--font2);
+    font-size  : 24px;
+    font-weight: 500;
+    color      : #604c71;
 }

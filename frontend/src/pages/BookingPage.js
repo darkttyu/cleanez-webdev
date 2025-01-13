@@ -4,7 +4,7 @@ import { useAuth } from '../AuthContext';
 import NavLogo from '../images/logos/nav-logo.png'
 import '../styles/BookingPage.css';
 import SVGIcons from "../SVGIcons";
-import {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Billing} from "../components/BookingForm";
+import {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Review} from "../components/BookingForm";
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -12,8 +12,22 @@ const BookingPage = () => {
     const {user} = useAuth();
 
     const [serviceList, setServicesList] = useState([]);
+    const [personalInfo, setPersonalInfo] = useState({});
     const [serviceBookingInfo, setServiceBookingInfo] = useState({});
     const [scheduleBookingInfo, setScheduleBookingInfo] = useState({});
+    const [finalPrice, setFinalPrice] = useState(0);
+    const [selectedCleaners, setSelectedCleaners] = useState([]);
+    const [availWorkerIdentifier, setAvailWorkerIdentifier] = useState({
+        serviceDetails: {
+            serviceCategory: '',
+            sizeOfArea:  '',
+            numberOfWorkers: ''
+        },
+        scheduleDetails: {
+            date: '',
+            startTime: ''
+        }
+    })
     
     // --- Fetches all Service Type Data
     useEffect(() => {
@@ -32,6 +46,10 @@ const BookingPage = () => {
         fetchServicesList();
     }, []);
 
+    const retrievePersonalInfo = (data) => {
+        setPersonalInfo(data);
+    }
+
     const retrieveServiceBooking = (data) => {
         setServiceBookingInfo(data);
     }
@@ -40,8 +58,26 @@ const BookingPage = () => {
         setScheduleBookingInfo(data);
     }
 
+    const retrieveFinalPrice = (data) => {
+        setFinalPrice(data);
+    }
+
+    const retrieveCleanersBooking = (data) => {
+        setSelectedCleaners(data);
+    }
+
     useEffect(() => {
-        console.log(scheduleBookingInfo);
+        setAvailWorkerIdentifier({
+            serviceDetails: {
+                serviceCategory: serviceBookingInfo.serviceCategory,
+                sizeOfArea:  serviceBookingInfo.sizeOfArea,
+                numberOfWorkers: serviceBookingInfo.numberOfWorkers
+            },
+            scheduleDetails: {
+                date: scheduleBookingInfo.date,
+                startTime: scheduleBookingInfo.startTime
+            }
+        })
     }, [scheduleBookingInfo])
 
     return (  
@@ -65,15 +101,16 @@ const BookingPage = () => {
                         <div className='progress-number'><p>3</p></div>
                         <div className='progress-number'><p>4</p></div>
                         <div className='progress-number'><p>5</p></div>
-                        <div className='progress-number'><p>6</p></div>
                     </div>
                 </header>
                 <section className='booking-container'>
                     <form className='booking-container-content'>
                         <PersonalInfo 
+                        retrievePersonalInfo={retrievePersonalInfo}
                         user={user}/>
                         <ServiceBooking 
                         retrieveServiceBooking={retrieveServiceBooking}
+                        retrieveFinalPrice={retrieveFinalPrice}
                         serviceList={serviceList} 
                         user={user}/>
                         <Schedule 
@@ -81,6 +118,11 @@ const BookingPage = () => {
                         serviceBookingInfo={serviceBookingInfo}
                         serviceList={serviceList} 
                         user={user}/>
+                        <AvailableCleaners 
+                        retrieveCleanersBooking={retrieveCleanersBooking}
+                        availWorkerIdentifier={availWorkerIdentifier}
+                        user={user}/>
+                        <Review />
                     </form>
                     <div className='booking-navigation'>
                         <a

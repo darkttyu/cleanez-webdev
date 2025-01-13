@@ -13,7 +13,7 @@ const ServiceType = ({ value, data, onChange }) => {
                 {/* SELECT OPTIONS */}
                 <option value="0">Select Service</option>
                 {data.map((s, index) => (
-                    <option key={index} value={s._id}>{s.serviceName}</option>
+                    <option key={index} value={s.serviceName}>{s.serviceName}</option>
                 ))}
             </select>
             <label className="text-label" htmlFor="service-input">
@@ -38,7 +38,7 @@ const AreaSize = ({ value, data, onChange }) => {
                 {/* SELECT OPTIONS */}
                 <option value="0">Select Size of Area</option>
                 {data.map((s, index) => (
-                    <option key={index} value={s._id}>{s.sizeOfArea}</option>
+                    <option key={index} value={s.sizeOfArea}>{s.sizeOfArea}</option>
                 ))}
             </select>
             <label className="text-label" htmlFor="area-size-input">

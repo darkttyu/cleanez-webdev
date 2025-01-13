@@ -12,14 +12,17 @@ import {
     AreaSize,
     WorkerNumbers
 } from "../components/inputs/index"
+import SVGIcons from "../SVGIcons";
+import errorLogo from "../images/logos/Logo-Error.svg"
 // --- React Import/s
 import { useState, useEffect } from "react";
 // --- Other/React Import/s
 import {regions, provinces, cities, barangays} from "select-philippines-address";
+import axios from "axios";
 
 
 // Personal Info Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const PersonalInfo = ({user}) => {
+const PersonalInfo = ({retrievePersonalInfo, user}) => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Address Variables
     const [regionData, setRegionData] = useState([]);
@@ -123,12 +126,21 @@ const PersonalInfo = ({user}) => {
         })
     }, [barangayData]);
 
-
-    /* // Info Testing
     useEffect(() => {
-        console.log(fullPersonalInfo);
+        if (!(fullPersonalInfo.customerFirstName === '') &&
+            !(fullPersonalInfo.customerLastName === '') &&
+            !(fullPersonalInfo.phoneNumber === '') &&
+            !(fullPersonalInfo.address.block === '') &&
+            !(fullPersonalInfo.address.province === '0') &&
+            !(fullPersonalInfo.address.municipal === '0') &&
+            !(fullPersonalInfo.address.barangay === '0')
+        ) {
+            console.log(fullPersonalInfo);
+            retrievePersonalInfo(fullPersonalInfo)
+        } else {
+            console.log("Failed to retrieve Personal Information")
+        }
     }, [fullPersonalInfo]);
-    */
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
@@ -196,11 +208,15 @@ const PersonalInfo = ({user}) => {
 }
 
 // Service Booking Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const ServiceBooking = ({retrieveServiceBooking, serviceList, user}) => {
+const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList, user}) => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Service Details Variables
     const [areaDetails, setAreaDetails] = useState([]);
     const [workerNumbers, setWorkerNumbers] = useState([]);
+    const [servicePrices, setServicePrices] = useState([]);
+    const [windowNumber, setWindowNumber] = useState(1);
+    const [basePrice, setBasePrice] = useState(0);
+    const [finalPrice, setFinalPrice] = useState(0);
     const [serviceBookingInfo, setServiceBookingInfo] = useState({
         serviceCategory: '0',
         sizeOfArea: '0',
@@ -212,15 +228,20 @@ const ServiceBooking = ({retrieveServiceBooking, serviceList, user}) => {
     const onServiceSelect = (type) => {
         setServiceBookingInfo({serviceCategory: type, sizeOfArea: '0', numberOfWorkers: '0'});
         // --- Resets both Area and Worker before proceeding
+        setServicePrices([])
         setAreaDetails([]);
         setWorkerNumbers([]);
+        setBasePrice(0);
+        setFinalPrice(0)
+        setWindowNumber(1);
         
         if (type == 0) {
             return;
         }
 
         serviceList.forEach((service, index) => {
-            if (service._id == type) {
+            if (service.serviceName == type) {
+                setServicePrices(service.price);
                 setAreaDetails(service.areaDetails);
                 setWorkerNumbers(service.numberOfWorkers);
             }
@@ -229,23 +250,64 @@ const ServiceBooking = ({retrieveServiceBooking, serviceList, user}) => {
 
     // --- Handles Area Size Selection
     const onAreaSelect = (type) => {
+        setBasePrice(0);
+        setFinalPrice(0)
+        setWindowNumber(1);
+        
+        if (type == 0) {
+            setBasePrice('0')
+        }
+        
+        areaDetails.forEach((area, index) => {
+            if (area.sizeOfArea === type) {
+                setBasePrice(servicePrices[index]);
+                setFinalPrice(servicePrices[index]);
+            }
+        })
+
         setServiceBookingInfo({...serviceBookingInfo, sizeOfArea: type});
     }
     // --- Handles Worker Number Selection
     const onWorkersSelect = (type) => {
         setServiceBookingInfo({...serviceBookingInfo, numberOfWorkers: type});
     }
+    // --- Handles Window Number Change
+    const onWindowChange = (value) => {
+        setWindowNumber(value);
+    }
+    useEffect(() => {
+        setFinalPrice(basePrice*windowNumber);
+    }, [windowNumber])
 
     // --- Pass Service Booking Information to Parent
     useEffect(() => {
-        retrieveServiceBooking(serviceBookingInfo);
+        if (!(serviceBookingInfo.serviceCategory === '0') &&
+            !(serviceBookingInfo.sizeOfArea === '0') &&
+            !(serviceBookingInfo.numberOfWorkers == '0')
+        ) { 
+            console.log(serviceBookingInfo);
+            retrieveServiceBooking(serviceBookingInfo);
+        } else {
+            console.log("Failed to retrieve Service Booking Information")
+        }
     }, [serviceBookingInfo]);
+
+    // --- Pass Final Price to Parent
+    useEffect(() => {
+        console.log(finalPrice);
+        retrieveFinalPrice(finalPrice);
+    }, [finalPrice])
 
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (
         <div className="booking-page" id="service-booking-page">
             <h2>Service</h2>
+            <p className="service-price-prompt">
+                    Estimated Price: <strong>Php {
+                        finalPrice 
+                    }.00</strong>
+            </p>
             <div className="booking-grid col-three">
                 <ServiceType  
                 data={serviceList} 
@@ -262,16 +324,19 @@ const ServiceBooking = ({retrieveServiceBooking, serviceList, user}) => {
                 onChange={onWorkersSelect}
                 value={serviceBookingInfo.numberOfWorkers}
                 />
-                {(serviceBookingInfo.serviceCategory === "677632fc3b59c8d153f11476")?
+                {(serviceBookingInfo.serviceCategory === "Window Cleaning")?
                 (
                     <div className="text-container">
                         {/* INPUTS HERE */}
                         <input 
                         className="input" 
                         type="number" 
+                        value={windowNumber}
                         placeholder="Number of Windows" 
                         name="windowNumber" 
-                        id="windownumber-input" />
+                        id="windownumber-input" 
+                        min="1"
+                        onChange={(e) => {onWindowChange(e.target.value)}}/>
                         {/* LABEL HERE */}
                         <label 
                         className="text-label" 
@@ -324,7 +389,7 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
     useEffect(() => {
         ResetButtons();
         serviceList.forEach((service) => {
-            if (service._id == serviceBookingInfo.serviceCategory) {
+            if (service.serviceName == serviceBookingInfo.serviceCategory) {
                 setAreaList(service.areaDetails);
             }
         })
@@ -334,7 +399,7 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
     useEffect(() => {
         ResetButtons();
         areaList.forEach((area) => {
-            if (area._id == serviceBookingInfo.sizeOfArea) {
+            if (area.sizeOfArea == serviceBookingInfo.sizeOfArea) {
                 setTimeList(area.startTime);
             }
         })
@@ -378,7 +443,15 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
     
     // --- Pass Scheduling Information to Parent
     useEffect(() => {
-        retrieveScheduleBooking(scheduleBookingInfo)
+        if (!(scheduleBookingInfo.date === '') &&
+            !(scheduleBookingInfo.startTime === '')
+        ){
+            console.log(scheduleBookingInfo);
+            retrieveScheduleBooking(scheduleBookingInfo);
+        } else {
+            console.log("Failed to retrieve Schedule Booking");
+        }
+            
     }, [scheduleBookingInfo])
 
 
@@ -427,19 +500,133 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
     )
 }
  
-const AvailableCleaners = () => {
-    return (
-        <>
-        </>
-    )
-}
- 
-const Billing = () => {
-    return (
-        <>
-        </>
-    )
-}
- 
+// Cleaners Booking Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+const AvailableCleaners = ({retrieveCleanersBooking, availWorkerIdentifier, user}) => {
+    const [workersList, setWorkersList] = useState([]);
+    const [responseSuccess, setResponseSuccess] = useState(false);
+    const [workerNumbers, setWorkerNumbers] = useState(0);
+    const [selectedWorkers, setSelectedWorkers] = useState([]);
+    const [errorMessage, setErrorMessage] = useState({
+        status: '',
+        message: ''
+    })
 
-export {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Billing};
+    // --- Fetches Available Worker
+    useEffect(() => {
+        setWorkerNumbers(parseInt(availWorkerIdentifier.serviceDetails.numberOfWorkers));
+        setSelectedWorkers([]);
+        
+        const fetchAvailableWorkers = async () => {
+            // --- --- Successfull Fetching
+            try {
+                const response = await axios.post(`http://localhost:5000/api/appointment/getAvailableWorkers`, availWorkerIdentifier, {
+                    headers: { 'Content-Type': 'application/json' }
+                  });
+                  
+                if (response.status == 200) {
+                    setWorkersList(response.data.workers);
+                    setResponseSuccess(true);
+                }
+            // --- --- Failed Fetching
+            } catch (error) {
+                setResponseSuccess(false);
+                if(error.response.status == 404 || error.response.status == 400){
+                    setErrorMessage({
+                        status: `Error ${error.response.status}`,
+                        message: String(error.response.data.message)
+                    })
+                } else {
+                    setErrorMessage({
+                        status: 'Unknown Error',
+                        message: 'Sorry for the inconvenience, an unknown error has occured. Please try again later.'
+                    })
+                }
+            }
+        }
+
+        if (
+            availWorkerIdentifier.serviceDetails.serviceCategory &&
+            availWorkerIdentifier.serviceDetails.sizeOfArea &&
+            availWorkerIdentifier.scheduleDetails.date &&
+            availWorkerIdentifier.scheduleDetails.startTime
+        ) {
+            fetchAvailableWorkers();
+        }
+    }, [availWorkerIdentifier])
+
+    const workerSelect = (workerId, isSelected) => {
+        if (isSelected) {
+            setSelectedWorkers(selectedWorkers.filter((worker) => worker !== workerId))
+        }  else if (selectedWorkers.length != workerNumbers) {
+            setSelectedWorkers([...selectedWorkers, workerId]);
+        }
+    }
+
+    useEffect(() => {
+        if (selectedWorkers.length == workerNumbers){
+            retrieveCleanersBooking(selectedWorkers);
+        }
+    }, [selectedWorkers])
+    
+    return (
+        <div className="booking-page" id="cleaners-booking-page">
+            <h2>Available Cleaners Need You</h2>
+            <p className='worker-number-prompt'>Please Choose [ <strong>{selectedWorkers.length}</strong> / <strong>{workerNumbers}</strong> ] Workers</p>
+            <div className="avail-workers-list">
+                {responseSuccess 
+                    ? workersList.map((worker, index) => {
+                        const isSelected = selectedWorkers.includes(worker._id);
+                        return (
+                            <div 
+                            className={`avail-worker-container ${isSelected ? "selected" : ""}`}
+                            key={index}
+                            value={index}
+                            onClick={() => workerSelect(worker._id, isSelected)}
+                            >
+                                <div className="information">
+                                    <p className="name">{worker.userId}</p>
+                                    <p className="location">Location: {}</p>
+                                </div>
+                                <div className="rating">
+                                    <SVGIcons 
+                                    selected="startRatingSolid" 
+                                    size="24" 
+                                    color="#06E36D"/>
+                                    <p className="rating-number">{worker.rating}</p>
+                                </div>
+                                {!isSelected ? (
+                                    <SVGIcons 
+                                    selected="addButtonSolid" 
+                                    size="24" 
+                                    color="#60c36f"
+                                    clipRule="evenodd"
+                                    fillRule="evenodd"/>
+                                ):(
+                                    <SVGIcons 
+                                    selected="removeButtonSolid" 
+                                    size="24" 
+                                    color="#4b4b4b"
+                                    clipRule="evenodd"
+                                    fillRule="evenodd"/>
+                                )}
+                                
+                            </div>
+                        );   
+                    }) : (
+                    <div className="worker-error-container">
+                        <img className="worker-error-logo" src={errorLogo} alt="" />
+                        <p className="worker-error-message">{errorMessage.status}: {errorMessage.message}</p>
+                    </div>
+                    )
+                }
+                
+            </div>
+        </div>
+    )
+}
+ 
+const Review = () => {
+
+}
+
+export {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Review};

@@ -1,10 +1,6 @@
 @import '../index.css';
 
 /* =================== NAVIGATION BAR =================== */
-button {
-    all: unset;
-}
-
 .navbar {
     display         : flex;
     padding         : 0px 42px;
