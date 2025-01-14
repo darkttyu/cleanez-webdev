@@ -62,5 +62,8 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 
 ---
 
-## System Limitations
+## Business Rules
 - Only one worker is allowed per service category.
+- A user/customer can only set 1 appointment per service per day to prevent overbooking. [TO CHANGE]
+- A user can only cancel an appointment after 20 mins of booking it to prevent false bookings.
+- A user must set an appointment a day before the actual appointment.

@@ -818,9 +818,28 @@ export const rejectApplicant = async (req, res) => {
   const applicantId = req.params.id;
 
   try {
-    
+    const applicant = await User.findOne({_id: new Object(applicantId), role: "Applicant"})
+
+    if(!applicant) {
+      return res.status(404).json({success: false, message: "No Applicant Found."});
+    }
+
+    const updateUserRole = await User.findByIdAndUpdate(
+      applicantId,
+      {
+        role: "User",
+        $unset: { applicationDetails: {} }
+      }
+    )
+
+    if(!updateUserRole) {
+      return res.status(400).json({success: false, message: "Error in Updating User Information."})
+    }
+
+    return res.status(200).json({success: true, message: "Applicant Rejected."});
+
   } catch (error) {
-    
+    return res.status(500).json({success: false, message: "Server Error", error: error.message})
   }
 };
 

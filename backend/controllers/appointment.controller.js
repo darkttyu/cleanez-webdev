@@ -4,6 +4,7 @@ import { Worker } from "../models/worker.model.js";
 import { User } from "../models/user.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import { sendUserAppointmentConfirmation, sendWorkerAppointmentConfirmation } from "../nodemailer/sendMail.js";
+import { response } from "express";
 
 const formatTime = (time) => {
   // Extract hours and minutes from the input time
@@ -118,8 +119,6 @@ export const setAppointment = async (req, res) => {
       serviceCost
     });
 
-    // Saves the appointment document to the database.
-    const savedAppointment = await newAppointment.save();
     const earnings = serviceCost / serviceDetails.numberOfWorkers
 
       // Updates each assigned worker with the new appointment ID.
@@ -207,7 +206,9 @@ export const setAppointment = async (req, res) => {
       userTime, serviceCost); 
 
     console.log("Successfully Sent User Confirmation");
-
+    
+    // Saves the appointment document to the database.
+    const savedAppointment = await newAppointment.save();
     // Responds with a 201 status and a success message if the appointment is booked successfully.
     return res.status(201).json({ success: true, message: "Appointment has been booked successfully!" });
 
@@ -237,7 +238,7 @@ export const getAvailableWorkers = async (req, res) => {
       "workerAvailability.areaAssigned": sizeOfArea, 
       "workerAvailability.day": { $in: [formatDate] },  
       "workerAvailability.startTime": { $in: [startTime] }
-    });
+    }).lean(); // .lean ensures that plain objects will be returned instead of mongoose documents.
 
     // If no workers are found, respond with an error message.
     if (workers.length === 0) {
@@ -261,9 +262,29 @@ export const getAvailableWorkers = async (req, res) => {
 
     // If no available workers are found, respond with an error message.
     if (availableWorkers.length === 0) {
-      return res.status(400).json({ message: "No workers are available at this time" });
+      return res.status(404).json({ success: false, message: "No workers are available at this time",  availableWorkers: availableWorkers });
+    }
+    
+    // Maps the availableWorkers array and extracts the userId and assigns it in a new array.
+    const workeruserId = availableWorkers.map(availableWorkers => availableWorkers.userId);
+
+    // console.log(workeruserId);
+
+    // Loops through the 
+    for (const [index, userId] of workeruserId.entries()) {
+      const workerInformation = await User.findById(userId);
+
+      availableWorkers[index] = {
+        ...availableWorkers[index],
+        userDetails: {
+          firstName: workerInformation.firstName,
+          lastName: workerInformation.lastName,
+          address: workerInformation.address
+        }
+      };
     }
 
+    console.log(availableWorkers);
     // Successfully fetched available workers.
     return res.status(200).json({ message: "Successfully fetched available workers", workers: availableWorkers });
   } catch (error) {

@@ -60,7 +60,9 @@ const BookingPage = () => {
         const fetchServicesList = async () => {
             try {
                 const response = await axios.get(`http://localhost:5000/api/appointment/getServices`, {
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 
+                        'Content-Type': 'application/json',
+                    }
                 });
                 setServicesList(response.data.services);
             // --- --- Failed Fetching
@@ -182,13 +184,14 @@ const BookingPage = () => {
         try {
             e.preventDefault();
             const token = localStorage.getItem("token");
+            console.log("Token from the backend: ", token);
             const response = await axios.post(
                 `http://localhost:5000/api/appointment/setAppointment`,
                 bookingAppointmentInfo,
                 {
                     headers: { 
                         'Content-Type': 'application/json',
-                        ...(token && { 'Authorization': `Bearer ${token}` }) 
+                        'Authorization': `Bearer ${token}`
                     }
                 }
             );
