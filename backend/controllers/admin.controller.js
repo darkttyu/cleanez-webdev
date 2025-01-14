@@ -694,6 +694,137 @@ export const getWeeklyEarningsByService = async (req, res) => {
   }
 };
 
+
+// Applicant Controllers 
+export const getAllApplicants = async (req, res) => {
+  try {
+    const applicants = await User.find({role: "Applicant"});
+
+    if(!applicants) {
+      return res.status(404).json({success: false, message: "No Applicant Found."})
+    }
+    
+    return res.status(200).json({success: true, message: "Fetched Applicants Lists.", applicants: applicants})
+
+  } catch (error) {
+    return res.status(500).json({success: false, error: error})
+  }
+};
+
+export const getClickedApplicant = async (req, res) => {
+  const applicantId = req.params.id;
+  
+  try {
+    // Gets specific user info based on id sent 
+    const specificApplicant = await User.findOne({_id: new Object(applicantId), role: "Applicant"});
+
+    if(!specificApplicant) {
+      return res.status(404).json({success: false, message: "Applicant does not exist."});
+    }
+
+    // Filters the user info to only show the necessary fields
+    const filteredApplicantInfo = {
+      userId: specificApplicant._id,
+      email: specificApplicant.email,
+      firstName: specificApplicant.firstName,
+      lastName: specificApplicant.lastName,
+      address: specificApplicant.address,
+      phoneNumber: specificApplicant.phoneNumber,
+      gender: specificApplicant.gender,
+      birthDate: specificApplicant.birthDate,
+      applicantDetails: specificApplicant.applicationDetails // Includes all application details, including files that are need to be converted to the frontend
+    };
+
+    // Formats the birthdate to a more readable format
+    const formattedBirthDate = format(new Date(specificApplicant.birthDate), "dd/mm/yyyy");
+    
+    // Returns the updated user info with the formatted birthdate
+    const updatedApplicantInfo = {
+        ...filteredApplicantInfo, 
+        birthDate: formattedBirthDate
+      }
+    
+    // console.log(updatedApplicantInfo);
+    res.status(200).json({success: true, message:"Successfully Fetched User Information", applicant: updatedApplicantInfo});
+
+  } catch (error) {
+    console.log("Error in Fetching Specific User", error);
+    res.status(500).json({success:false, message:"Server Error"});
+  }
+  
+};
+
+export const acceptApplicant = async (req, res) => {
+  const applicantId = req.params.id;
+
+  try {
+    const applicant = await User.findOne({_id: new Object(applicantId), role: "Applicant"})
+
+    if(!applicant) {
+      return res.status(404).json({success: false, message: "No Applicant Found."});
+    }
+
+    const service = await Service.findOne(
+      {
+        serviceName: applicant.applicationDetails.serviceCategory,
+        "areaDetails.sizeOfArea": applicant.applicationDetails.areaAssigned
+      },
+      {
+        areaDetails: { $elemMatch: { sizeOfArea: applicant.applicationDetails.areaAssigned } }
+      }
+    );
+
+    if(!service) {
+      return res.status(404).json({success: false, message: "Service does not exist.", error: error.message});
+    }
+
+    const areaDetails = service.areaDetails[0];
+
+    const worker = new Worker({
+      userId: applicantId,
+      serviceCategory: applicant.applicationDetails.serviceCategory,
+      isApplicantVerified: "Verified",
+      workerAvailability: {
+        areaAssigned: areaDetails.sizeOfArea,
+        day: [],
+        startTime: areaDetails.startTime
+      },
+      totalEarnings: 0,
+      rating: 0,
+      assignedAppointments: []
+    })
+
+    const updateUserRole = await User.findByIdAndUpdate(
+      applicantId,
+      {
+        role: "Worker",
+        $unset: { applicationDetails: {} }
+      }
+    )
+
+    if(!updateUserRole) {
+      return res.status(400).json({success: false, message: "Error in Updating User Information."})
+    }
+
+    await worker.save();
+    return res.status(200).json({success: true, message: "Applicant accepted as Worker.", worker: worker});
+
+  } catch (error) {
+    return res.status(500).json({success: false, message: "Server Error", error: error.message})
+  }
+};
+
+export const rejectApplicant = async (req, res) => {
+  const applicantId = req.params.id;
+
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+
 /*
 export const addResumeField = async (req, res) => {
   try {

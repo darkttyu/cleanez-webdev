@@ -8,7 +8,7 @@ export const VERIFICATION_EMAIL_TEMPLATE = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -25,7 +25,7 @@ export const VERIFICATION_EMAIL_TEMPLATE = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -44,7 +44,7 @@ export const PASSWORD_RESET_SUCCESS_TEMPLATE = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -68,7 +68,7 @@ export const PASSWORD_RESET_SUCCESS_TEMPLATE = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -87,7 +87,7 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -103,7 +103,7 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -122,7 +122,7 @@ export const WELCOMING_EMAIL = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -145,7 +145,7 @@ export const WELCOMING_EMAIL = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -164,7 +164,7 @@ export const ADMIN_WELCOMING_EMAIL = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -192,7 +192,7 @@ export const ADMIN_WELCOMING_EMAIL = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -211,7 +211,7 @@ export const DELETE_ACCOUNT = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -231,7 +231,7 @@ export const DELETE_ACCOUNT = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -250,7 +250,7 @@ export const ACTIVATE_USER = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -271,7 +271,7 @@ export const ACTIVATE_USER = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -290,7 +290,7 @@ export const DEACTIVATE_USER = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -310,7 +310,7 @@ export const DEACTIVATE_USER = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -374,7 +374,7 @@ export const ACTIVATE_WORKER = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -394,7 +394,7 @@ export const ACTIVATE_WORKER = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -413,7 +413,7 @@ export const DEACTIVATE_WORKER = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -434,7 +434,7 @@ export const DEACTIVATE_WORKER = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -453,7 +453,7 @@ export const SEND_USER_BOOKING_CONFIRMATION = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -478,7 +478,7 @@ export const SEND_USER_BOOKING_CONFIRMATION = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
@@ -498,7 +498,7 @@ export const SEND_WORKER_BOOKING_CONFIRMATION =  `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="https://drive.google.com/uc?id=10jcHRjfgSTgPj2wi9efaef84W4uvZkBY" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -523,7 +523,7 @@ export const SEND_WORKER_BOOKING_CONFIRMATION =  `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="https://drive.google.com/uc?id=10nC-2cAghfi4tevlOxj-N2qg1_IwY5oP" alt="Footer Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
