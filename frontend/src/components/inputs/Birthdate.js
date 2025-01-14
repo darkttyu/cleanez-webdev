@@ -5,13 +5,19 @@ const InputBirthdate = ({value, onChange}) => {
             <input 
             className="input" 
             type="date" 
-            placeholder="Last Name" 
+            placeholder="Birthdate" 
             name="birthDate" 
             value={value}
             onChange={onChange}
             id="birthdate-input" 
             min="1860-01-01" 
             max="2025-12-30"/>
+            {/* LABEL HERE */}
+            <label 
+            className="text-label"
+            htmlFor="birthdate-input">
+                Birthdate
+            </label>
         </div> 
     );
 }

@@ -367,3 +367,12 @@ p {
      display: block;
      opacity: 100%;
 }
+
+/* select {
+     -moz-appearance   : none;
+     -webkit-appearance: none;
+}
+
+select::-ms-expand {
+     display: none;
+} */

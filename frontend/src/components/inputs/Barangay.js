@@ -13,7 +13,12 @@ const InputBarangay = ({value, data, onChange}) => {
                 {/* SELECT OPTIONS */}
                 <option value="0">Select Barangay</option>
                 {data.map((b, index) => (
-                    <option key={index} value={b.brgy_name}>{b.brgy_name}</option>
+                    <option 
+                        key={index} 
+                        value={b.brgy_code + b.brgy_name}
+                    >
+                        {b.brgy_name}
+                    </option>
                 ))}
             </select>
             {/* LABEL HERE */}

@@ -5,6 +5,26 @@ import FAQsPage from './pages/FAQsPage';
 import VerificationPage from './pages/UserSigningPages/VerificationPage'
 import FindAccountPage1 from './pages/UserSigningPages/FindAccountPage1';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import BookingPage from './pages/BookingPage';
+
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+
+function PageErrorHandler({component}) {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        try {
+            
+
+        } catch (err) {
+            console.log(err);
+            navigate('/login')
+        }
+    }, [navigate]);
+
+    return component;
+}
 
 function App() {
     return (
@@ -20,6 +40,7 @@ function App() {
                     <Route path='/signup/verify-email' element={<VerificationPage/>} />
                     <Route path="/frequently-asked-questions" element={<FAQsPage />} />
                     <Route path="/forgot-password" element={<FindAccountPage1/>} />
+                    <Route path='/booking' element={<PageErrorHandler component={<BookingPage/>} />}/>
                 </Routes>
             </div>
         </Router>

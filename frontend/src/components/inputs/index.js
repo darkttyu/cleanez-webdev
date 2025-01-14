@@ -9,3 +9,6 @@ export { default as Address } from "./Address";
 export { default as Province } from "./Province";
 export { default as Municipality } from "./Municipality";
 export { default as Barangay } from "./Barangay";
+export { ServiceType } from "./ServiceInputs";
+export { AreaSize } from "./ServiceInputs";
+export { WorkerNumbers } from "./ServiceInputs";
