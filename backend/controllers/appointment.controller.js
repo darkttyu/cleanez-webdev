@@ -106,6 +106,7 @@ export const setAppointment = async (req, res) => {
     // Extracts the user ID from the request object.
     const userId = req.userId;
 
+    
     // Creates a new appointment document.
     const newAppointment = new Appointment({
       userId,
@@ -118,6 +119,9 @@ export const setAppointment = async (req, res) => {
       assignedWorkers,
       serviceCost
     });
+
+    // Saves the appointment document to the database.
+    const savedAppointment = await newAppointment.save();
 
     const earnings = serviceCost / serviceDetails.numberOfWorkers
 
@@ -207,8 +211,6 @@ export const setAppointment = async (req, res) => {
 
     console.log("Successfully Sent User Confirmation");
     
-    // Saves the appointment document to the database.
-    const savedAppointment = await newAppointment.save();
     // Responds with a 201 status and a success message if the appointment is booked successfully.
     return res.status(201).json({ success: true, message: "Appointment has been booked successfully!" });
 
@@ -272,6 +274,7 @@ export const getAvailableWorkers = async (req, res) => {
 
     // Loops through the 
     for (const [index, userId] of workeruserId.entries()) {
+      
       const workerInformation = await User.findById(userId);
 
       availableWorkers[index] = {
