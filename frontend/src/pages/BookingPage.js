@@ -139,11 +139,6 @@ const BookingPage = () => {
         }
     },[selectedCleaners]);
 
-    useEffect(() => {
-        console.log("DATA SUCCESFULLY PASSED!")
-        console.log(bookingAppointmentInfo)
-    }, [bookingAppointmentInfo])
-
     const pageDisplay = () => {
         if (page === 0) {
             return (

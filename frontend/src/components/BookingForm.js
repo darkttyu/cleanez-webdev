@@ -167,7 +167,6 @@ const PersonalInfo = ({retrievePersonalInfo, user}) => {
             !(fullPersonalInfo.address.municipal === '0') &&
             !(fullPersonalInfo.address.barangay === '0')
         ) {
-            console.log("Succesfully Retrieved Personal Information")
             retrievePersonalInfo(fullPersonalInfo)
         } else {
             console.log("Failed to retrieve Personal Information")
@@ -318,7 +317,6 @@ const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList
             !(serviceBookingInfo.sizeOfArea === '0') &&
             !(serviceBookingInfo.numberOfWorkers === 0)
         ) { 
-            console.log("Successfully Retrieved Service Information")
             retrieveServiceBooking(serviceBookingInfo);
         } else {
             console.log("Failed to Retrieve Service Information")
@@ -402,16 +400,30 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
         try {
             const today = new Date();
 
+            //Today's Date
             const year = today.getFullYear();
             const month = String(today.getMonth()+1).padStart(2, '0');
             const day = String(today.getDate()+1).padStart(2, '0');
-            const max_year = String(today.getFullYear()+1);
 
-            const minDate = `${year}-${month}-${day}`;
-            const maxDate = `${max_year}-${month}-${day}`;
+            //Min Date
+            const minDateObj = new Date(today);
+            minDateObj.setDate(today.getDate() + 1); // Handle day overflow automatically
+            const minYear = minDateObj.getFullYear();
+            const minMonth = String(minDateObj.getMonth() + 1).padStart(2, '0');
+            const minDay = String(minDateObj.getDate()).padStart(2, '0');
+            const minDate = `${minYear}-${minMonth}-${minDay}`;
 
-            setDateLimit({minDate: minDate, maxDate: maxDate});
-            setScheduleBookingInfo({...this, date:minDate});
+            //Max Date
+            const maxDateObj = new Date(today);
+            maxDateObj.setMonth(today.getMonth() + 6);
+            const maxYear = maxDateObj.getFullYear();
+            const maxMonth = String(maxDateObj.getMonth() + 1).padStart(2, '0');
+            const maxDay = String(maxDateObj.getDate()).padStart(2, '0');
+            const maxDate = `${maxYear}-${maxMonth}-${maxDay}`;
+
+            setDateLimit({minDate, maxDate});
+
+            setScheduleBookingInfo((prev) => ({...prev, date:minDate}));
         } catch (e) {
             console.log(e);
         }
@@ -432,10 +444,6 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
             setTimeList(filteredArea ? filteredArea.startTime || [] : []);
         }
     }, [serviceBookingInfo]);
-    
-    useEffect(() => {
-        console.log("Area of Size Changed!")
-    }, [serviceBookingInfo.sizeOfArea])
 
     // --- Converts all Time to Readable Format
     useEffect(() => {
