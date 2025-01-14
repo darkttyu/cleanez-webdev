@@ -9,8 +9,10 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const BookingPage = () => {
+    // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Context Authenticator
     const {user} = useAuth();
-
+    // --- Main Information Variables
     const [serviceList, setServicesList] = useState([]);
     const [personalInfo, setPersonalInfo] = useState({});
     const [serviceBookingInfo, setServiceBookingInfo] = useState({});
@@ -50,7 +52,9 @@ const BookingPage = () => {
         assignedWorkers: [],
         serviceCost: 0
     })
-    
+    // --- Other Variables
+    const [page, setPage] = useState(0);
+
     // --- Fetches all Service Type Data
     useEffect(() => {
         const fetchServicesList = async () => {
@@ -140,6 +144,45 @@ const BookingPage = () => {
         console.log(bookingAppointmentInfo)
     }, [bookingAppointmentInfo])
 
+    const pageDisplay = () => {
+        if (page === 0) {
+            return (
+                <PersonalInfo 
+                retrievePersonalInfo={retrievePersonalInfo}
+                user={user}/>
+            )
+        } else if (page === 1) {
+            return (
+                <ServiceBooking 
+                retrieveServiceBooking={retrieveServiceBooking}
+                retrieveFinalPrice={retrieveFinalPrice}
+                serviceList={serviceList} 
+                user={user}/>
+            )
+        } else if (page === 2) {
+            return (
+                <Schedule 
+                retrieveScheduleBooking={retrieveScheduleBooking}
+                serviceBookingInfo={serviceBookingInfo}
+                serviceList={serviceList} 
+                user={user}/>
+            )
+        } else if (page === 3) {
+            return (
+                <AvailableCleaners 
+                retrieveCleanersBooking={retrieveCleanersBooking}
+                availWorkerIdentifier={availWorkerIdentifier}
+                user={user}/>
+            )
+        } else if (page === 4) {
+            return (
+                <Review 
+                bookingAppointmentInfo={bookingAppointmentInfo}
+                />
+            )
+        }
+    }
+
     return (  
         <>
             <nav className="navbar">
@@ -165,42 +208,46 @@ const BookingPage = () => {
                 </header>
                 <section className='booking-container'>
                     <form className='booking-container-content'>
-                        <PersonalInfo 
-                        retrievePersonalInfo={retrievePersonalInfo}
-                        user={user}/>
-                        <ServiceBooking 
-                        retrieveServiceBooking={retrieveServiceBooking}
-                        retrieveFinalPrice={retrieveFinalPrice}
-                        serviceList={serviceList} 
-                        user={user}/>
-                        <Schedule 
-                        retrieveScheduleBooking={retrieveScheduleBooking}
-                        serviceBookingInfo={serviceBookingInfo}
-                        serviceList={serviceList} 
-                        user={user}/>
-                        <AvailableCleaners 
-                        retrieveCleanersBooking={retrieveCleanersBooking}
-                        availWorkerIdentifier={availWorkerIdentifier}
-                        user={user}/>
-                        <Review 
-                        bookingAppointmentInfo={bookingAppointmentInfo}
-                        />
+                        {pageDisplay()}
                     </form>
                     <div className='booking-navigation'>
-                        <a
-                        className="" >
-                            <SVGIcons 
-                            selected="previousArrow" 
-                            size="40"
-                            color="#4B4B4B"/>
-                        </a>
-                        <a
-                        className="" >
-                            <SVGIcons 
-                            selected="forwardArrow" 
-                            size="40"
-                            color="#4B4B4B"/>
-                        </a>
+                        {page !== 0 ? (
+                            <button
+                            type='button'
+                            className="booking-btn left" 
+                            onClick={() =>{
+                                setPage((currPage) => currPage - 1);
+                            }}
+                            >
+                                <SVGIcons 
+                                selected="previousArrow" 
+                                size="40"
+                                color="#4B4B4B"/>
+                            </button>
+                        ) : (<></>)}
+                        
+                        {page !== 4 ? (
+                            <button
+                            type='button'
+                            className="booking-btn right" 
+                            onClick={() =>{
+                                setPage((currPage) => currPage + 1);
+                            }}>
+                                <SVGIcons 
+                                selected="forwardArrow" 
+                                size="40"
+                                color="#4B4B4B"/>
+                            </button>
+                        ) : (
+                            <button 
+                            type='submit' 
+                            className='booking-submit-btn booking-btn right'
+                            >
+                                Confirm and Submit
+                            </button>
+                        )}
+                        
+                        
                     </div>
                 </section>
             </div>

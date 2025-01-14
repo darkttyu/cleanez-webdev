@@ -15,7 +15,7 @@ import {
 import SVGIcons from "../SVGIcons";
 import errorLogo from "../images/logos/Logo-Error.svg"
 // --- React Import/s
-import { useState, useEffect} from "react";
+import { useState, useEffect, use} from "react";
 import { useNavigate } from "react-router-dom";
 // --- Other/React Import/s
 import {regions, provinces, cities, barangays} from "select-philippines-address";
@@ -404,7 +404,7 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
 
             const year = today.getFullYear();
             const month = String(today.getMonth()+1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
+            const day = String(today.getDate()+1).padStart(2, '0');
             const max_year = String(today.getFullYear()+1);
 
             const minDate = `${year}-${month}-${day}`;
@@ -420,23 +420,22 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
     // --- Lists all Area of a Selected Service
     useEffect(() => {
         ResetButtons();
-        setTimeList([]);
-
-        console.log("Transferred Data to Schedule!", serviceBookingInfo);
-
-        serviceList.forEach((service) => {
-            if (service.serviceName == serviceBookingInfo.serviceCategory) {
-                setAreaList(service.areaDetails);
-            }
-        })
-
-        areaList.forEach((area) => {
-            if (area.sizeOfArea == serviceBookingInfo.sizeOfArea) {
-                console.log(area.sizeOfArea, " ", serviceBookingInfo.sizeOfArea);
-                setTimeList(area.startTime);
-            }
-        })
-    }, [serviceBookingInfo])
+        const selectedService = serviceList.find(
+            (service) => service.serviceName === serviceBookingInfo.serviceCategory
+        );
+    
+        if (selectedService) {
+            const filteredArea = selectedService.areaDetails.find(
+                (area) => area.sizeOfArea === serviceBookingInfo.sizeOfArea
+            );
+            setAreaList(selectedService.areaDetails || []);
+            setTimeList(filteredArea ? filteredArea.startTime || [] : []);
+        }
+    }, [serviceBookingInfo]);
+    
+    useEffect(() => {
+        console.log("Area of Size Changed!")
+    }, [serviceBookingInfo.sizeOfArea])
 
     // --- Converts all Time to Readable Format
     useEffect(() => {
@@ -507,7 +506,7 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
                     // min={dateLimit.minDate} 
                     max={dateLimit.maxDate}/>
                 </div> 
-                {(serviceBookingInfo.serviceCategory != "0" && serviceBookingInfo.sizeOfArea != "0") ?
+                {(timeList.length > 0) ?
                 (<div className="time-input-container">
                     {/* LABEL HERE */}
                     <p className="basic-label">
