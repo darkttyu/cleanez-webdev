@@ -56,7 +56,6 @@ const LoginPanel = ({route}) => {
     }
     // --- Verifies Login Data after Submission
     const handleLogInSubmission = async (e) => {
-        console.log(loginCredentials);
         e.preventDefault();
         // --- --- Successfull Login
         try {

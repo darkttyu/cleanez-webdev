@@ -183,6 +183,38 @@ const BookingPage = () => {
         }
     }
 
+    const handleBookingSubmission = async (e) => {
+        try {
+            e.preventDefault();
+            const token = localStorage.getItem("token");
+            const response = await axios.post(
+                `http://localhost:5000/api/appointment/setAppointment`,
+                bookingAppointmentInfo,
+                {
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        ...(token && { 'Authorization': `Bearer ${token}` }) 
+                    }
+                }
+            );
+        
+            console.log("Passed Data: ", bookingAppointmentInfo); 
+            console.log("Booking Completed:", response.data.message);
+        
+        } catch (error) {
+            if (error.response) {
+                // Server responded with a status other than 200 range
+                console.log(`${error.response.status} ${error.response.data.message}`);
+            } else if (error.request) {
+                // Request was made but no response received
+                console.log("No response received from server:", error.request);
+            } else {
+                // Something happened setting up the request
+                console.log("Error creating the request:", error.message);
+            }
+        }
+    }
+
     return (  
         <>
             <nav className="navbar">
@@ -206,14 +238,14 @@ const BookingPage = () => {
                         <div className='progress-number'><p>5</p></div>
                     </div>
                 </header>
-                <section className='booking-container'>
-                    <form className='booking-container-content'>
+                <form className='booking-container'  method="POST" onSubmit={handleBookingSubmission}>
+                    <div className='booking-container-content'>
                         {pageDisplay()}
-                    </form>
+                    </div>
                     <div className='booking-navigation'>
                         {page !== 0 ? (
                             <button
-                            type='button'
+                            type="button"
                             className="booking-btn left" 
                             onClick={() =>{
                                 setPage((currPage) => currPage - 1);
@@ -228,7 +260,7 @@ const BookingPage = () => {
                         
                         {page !== 4 ? (
                             <button
-                            type='button'
+                            type="button"
                             className="booking-btn right" 
                             onClick={() =>{
                                 setPage((currPage) => currPage + 1);
@@ -240,16 +272,14 @@ const BookingPage = () => {
                             </button>
                         ) : (
                             <button 
-                            type='submit' 
+                            type="submit"
                             className='booking-submit-btn booking-btn right'
                             >
                                 Confirm and Submit
                             </button>
                         )}
-                        
-                        
                     </div>
-                </section>
+                </form>
             </div>
         </>
     );
