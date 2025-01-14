@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.route.js"; // Importing authentication rou
 import adminRoutes from "./routes/admin.route.js"; // Importing admin routes
 import appointmentRoutes from "./routes/appointment.route.js"; // Importing appointment routes
 import applicantRoutes from "./routes/applicant.route.js"; // Importing applicant routes
+import userRoutes from "./routes/user.route.js";
 import { connectDB } from './db/connectDB.js'; // Importing database connection function
 
 dotenv.config(); // Load environment variables from .env file
@@ -35,6 +36,7 @@ app.use("/api/auth", authRoutes); // Handles authentication-related routes
 app.use("/api/admin", adminRoutes); // Handles admin-related routes
 app.use("/api/appointment", appointmentRoutes); // Handles appointment-related routes
 app.use("/api/applicant", applicantRoutes); // Handles applicant-related routes
+app.use("/api/user", userRoutes);
 
 // Start the Express server and connect to the database
 app.listen(PORT, () => {
