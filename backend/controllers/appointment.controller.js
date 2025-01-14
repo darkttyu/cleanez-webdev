@@ -119,6 +119,9 @@ export const setAppointment = async (req, res) => {
       serviceCost
     });
 
+    // Saves the appointment document to the database.
+    const savedAppointment = await newAppointment.save();
+
     const earnings = serviceCost / serviceDetails.numberOfWorkers
 
       // Updates each assigned worker with the new appointment ID.
@@ -207,8 +210,6 @@ export const setAppointment = async (req, res) => {
 
     console.log("Successfully Sent User Confirmation");
     
-    // Saves the appointment document to the database.
-    const savedAppointment = await newAppointment.save();
     // Responds with a 201 status and a success message if the appointment is booked successfully.
     return res.status(201).json({ success: true, message: "Appointment has been booked successfully!" });
 
