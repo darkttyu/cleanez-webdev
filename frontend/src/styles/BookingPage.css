@@ -148,17 +148,17 @@
 
 
 #cleaners-booking-page,
-#service-booking-page {
+#service-booking-page,
+#review-booking-page {
     gap: 24px;
 }
 
-.worker-number-prompt,
-.service-price-prompt {
+.booking-page .subheading {
     text-align : left;
-    font-size  : 20px;
+    font-size  : 16px;
     font-family: var(--font1);
     color      : var(--color2b);
-    margin-top : -12px;
+    margin-top : -0.8em;
 }
 
 .avail-workers-list {

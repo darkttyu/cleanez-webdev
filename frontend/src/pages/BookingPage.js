@@ -27,6 +27,28 @@ const BookingPage = () => {
             date: '',
             startTime: ''
         }
+    });
+    const [bookingAppointmentInfo, setBookingAppointmentInfo] = useState({
+        customerFirstName: '',
+        customerLastName: '',
+        phoneNumber: '',
+        address: {
+            block: '',
+            province: '',
+            municipal: '',
+            barangay: ''
+        },
+        serviceDetails: {
+            serviceCategory: '',
+            sizeOfArea: '',
+            numberOfWorkers: 0
+        },
+        scheduleDetails: {
+            date: '',
+            startTime: ''
+        },
+        assignedWorkers: [],
+        serviceCost: 0
     })
     
     // --- Fetches all Service Type Data
@@ -78,7 +100,45 @@ const BookingPage = () => {
                 startTime: scheduleBookingInfo.startTime
             }
         })
-    }, [scheduleBookingInfo])
+    }, [scheduleBookingInfo]);
+    
+    // Fills the Full Booking Appointment Information when all fields are filled
+    useEffect(() => {
+        try {
+            if (personalInfo.address.block &&
+                personalInfo.address.province &&
+                personalInfo.address.municipal &&
+                personalInfo.address.barangay
+            ) {
+                setBookingAppointmentInfo({
+                    ...personalInfo,
+                    address: {
+                        block: personalInfo.address.block,
+                        province: personalInfo.address.province.slice(4),
+                        municipal: personalInfo.address.municipal.slice(6),
+                        barangay: personalInfo.address.barangay.slice(9)
+                    },
+                    serviceDetails: {
+                        ...serviceBookingInfo
+                    },
+                    scheduleDetails: {
+                        ...scheduleBookingInfo,
+                    },
+                    assignedWorkers: selectedCleaners,
+                    serviceCost: finalPrice
+                })
+            } else {
+                throw new Error("failed xd");
+            }
+        } catch (e) {
+            console.log(e.message);
+        }
+    },[selectedCleaners]);
+
+    useEffect(() => {
+        console.log("DATA SUCCESFULLY PASSED!")
+        console.log(bookingAppointmentInfo)
+    }, [bookingAppointmentInfo])
 
     return (  
         <>
@@ -122,7 +182,9 @@ const BookingPage = () => {
                         retrieveCleanersBooking={retrieveCleanersBooking}
                         availWorkerIdentifier={availWorkerIdentifier}
                         user={user}/>
-                        <Review />
+                        <Review 
+                        bookingAppointmentInfo={bookingAppointmentInfo}
+                        />
                     </form>
                     <div className='booking-navigation'>
                         <a

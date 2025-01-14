@@ -15,7 +15,8 @@ import {
 import SVGIcons from "../SVGIcons";
 import errorLogo from "../images/logos/Logo-Error.svg"
 // --- React Import/s
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 // --- Other/React Import/s
 import {regions, provinces, cities, barangays} from "select-philippines-address";
 import axios from "axios";
@@ -24,17 +25,18 @@ import axios from "axios";
 // Personal Info Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const PersonalInfo = ({retrievePersonalInfo, user}) => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    const navigate = useNavigate();
     // --- Address Variables
     const [regionData, setRegionData] = useState([]);
     const [provinceData, setProvinceData] = useState([]);
     const [municipalData, setMunicipalData] = useState([]);
     const [barangayData, setBarangayData] = useState([]);
     const [fullPersonalInfo, setFullPersonalInfo] = useState({
-        customerFirstName: user.firstName,
-        customerLastName: user.lastName,
-        phoneNumber: user.phoneNumber,
+        customerFirstName: '',
+        customerLastName: '',
+        phoneNumber: '',
         address: {
-            block: user.address.block,
+            block: '',
             province: '0',
             municipal: '0',
             barangay: '0'
@@ -43,6 +45,36 @@ const PersonalInfo = ({retrievePersonalInfo, user}) => {
     // --- Selected Address Variables
 
     // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Checks if person is logged-in
+    useEffect(() => {
+        const validateAndRedirect = () => {
+            try {
+                if (
+                    user.firstName 
+                ) {
+                    setFullPersonalInfo({
+                        customerFirstName: user.firstName,
+                        customerLastName: user.lastName,
+                        phoneNumber: user.phoneNumber,
+                        address: {
+                            block: user.address.block,
+                            province: '0',
+                            municipal: '0',
+                            barangay: '0'
+                        }
+                    })
+                } else {
+                    throw new Error("Missing required fields");
+                }
+            } catch (e) {
+                console.log("Validation failed, User not signed in: ", e.message);
+                navigate('/login');
+            }
+        }
+
+        validateAndRedirect();
+    }, [])
+
     // --- Fetches Region Data everytime the page is loaded/refereshed.
     useEffect(() => {
         const fetchRegion = async () => {
@@ -135,7 +167,7 @@ const PersonalInfo = ({retrievePersonalInfo, user}) => {
             !(fullPersonalInfo.address.municipal === '0') &&
             !(fullPersonalInfo.address.barangay === '0')
         ) {
-            console.log(fullPersonalInfo);
+            console.log("Succesfully Retrieved Personal Information")
             retrievePersonalInfo(fullPersonalInfo)
         } else {
             console.log("Failed to retrieve Personal Information")
@@ -220,13 +252,13 @@ const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList
     const [serviceBookingInfo, setServiceBookingInfo] = useState({
         serviceCategory: '0',
         sizeOfArea: '0',
-        numberOfWorkers: '0'
+        numberOfWorkers: 0
     });
 
     // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Changes Other Inputs based on Selected Service Type
     const onServiceSelect = (type) => {
-        setServiceBookingInfo({serviceCategory: type, sizeOfArea: '0', numberOfWorkers: '0'});
+        setServiceBookingInfo({serviceCategory: type, sizeOfArea: '0', numberOfWorkers: 0});
         // --- Resets both Area and Worker before proceeding
         setServicePrices([])
         setAreaDetails([]);
@@ -269,7 +301,8 @@ const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList
     }
     // --- Handles Worker Number Selection
     const onWorkersSelect = (type) => {
-        setServiceBookingInfo({...serviceBookingInfo, numberOfWorkers: type});
+        const convertedType = parseInt(type);
+        setServiceBookingInfo({...serviceBookingInfo, numberOfWorkers: convertedType});
     }
     // --- Handles Window Number Change
     const onWindowChange = (value) => {
@@ -283,18 +316,17 @@ const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList
     useEffect(() => {
         if (!(serviceBookingInfo.serviceCategory === '0') &&
             !(serviceBookingInfo.sizeOfArea === '0') &&
-            !(serviceBookingInfo.numberOfWorkers == '0')
+            !(serviceBookingInfo.numberOfWorkers === 0)
         ) { 
-            console.log(serviceBookingInfo);
+            console.log("Successfully Retrieved Service Information")
             retrieveServiceBooking(serviceBookingInfo);
         } else {
-            console.log("Failed to retrieve Service Booking Information")
+            console.log("Failed to Retrieve Service Information")
         }
     }, [serviceBookingInfo]);
 
     // --- Pass Final Price to Parent
     useEffect(() => {
-        console.log(finalPrice);
         retrieveFinalPrice(finalPrice);
     }, [finalPrice])
 
@@ -303,7 +335,7 @@ const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList
     return (
         <div className="booking-page" id="service-booking-page">
             <h2>Service</h2>
-            <p className="service-price-prompt">
+            <p className="subheading">
                     Estimated Price: <strong>Php {
                         finalPrice 
                     }.00</strong>
@@ -388,22 +420,23 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
     // --- Lists all Area of a Selected Service
     useEffect(() => {
         ResetButtons();
+        setTimeList([]);
+
+        console.log("Transferred Data to Schedule!", serviceBookingInfo);
+
         serviceList.forEach((service) => {
             if (service.serviceName == serviceBookingInfo.serviceCategory) {
                 setAreaList(service.areaDetails);
             }
         })
-    }, [serviceBookingInfo.serviceCategory]);
 
-    // --- Lists all Time of a Selected Area
-    useEffect(() => {
-        ResetButtons();
         areaList.forEach((area) => {
             if (area.sizeOfArea == serviceBookingInfo.sizeOfArea) {
+                console.log(area.sizeOfArea, " ", serviceBookingInfo.sizeOfArea);
                 setTimeList(area.startTime);
             }
         })
-    }, [serviceBookingInfo.sizeOfArea]);
+    }, [serviceBookingInfo])
 
     // --- Converts all Time to Readable Format
     useEffect(() => {
@@ -446,7 +479,6 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
         if (!(scheduleBookingInfo.date === '') &&
             !(scheduleBookingInfo.startTime === '')
         ){
-            console.log(scheduleBookingInfo);
             retrieveScheduleBooking(scheduleBookingInfo);
         } else {
             console.log("Failed to retrieve Schedule Booking");
@@ -472,10 +504,10 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
                     name="bookDate" 
                     onChange={(e) => handleDateInput(e.target.value)}
                     id="bookdate-input" 
-                    min={dateLimit.minDate} 
+                    // min={dateLimit.minDate} 
                     max={dateLimit.maxDate}/>
                 </div> 
-                {(serviceBookingInfo.serviceCategory != 0 && serviceBookingInfo.sizeOfArea != 0) ?
+                {(serviceBookingInfo.serviceCategory != "0" && serviceBookingInfo.sizeOfArea != "0") ?
                 (<div className="time-input-container">
                     {/* LABEL HERE */}
                     <p className="basic-label">
@@ -504,7 +536,7 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
 const AvailableCleaners = ({retrieveCleanersBooking, availWorkerIdentifier, user}) => {
     const [workersList, setWorkersList] = useState([]);
     const [responseSuccess, setResponseSuccess] = useState(false);
-    const [workerNumbers, setWorkerNumbers] = useState(0);
+    const [workerNumbers, setWorkerNumbers] = useState('0');
     const [selectedWorkers, setSelectedWorkers] = useState([]);
     const [errorMessage, setErrorMessage] = useState({
         status: '',
@@ -571,7 +603,7 @@ const AvailableCleaners = ({retrieveCleanersBooking, availWorkerIdentifier, user
     return (
         <div className="booking-page" id="cleaners-booking-page">
             <h2>Available Cleaners Need You</h2>
-            <p className='worker-number-prompt'>Please Choose [ <strong>{selectedWorkers.length}</strong> / <strong>{workerNumbers}</strong> ] Workers</p>
+            <p className='subheading'>Please Choose [ <strong>{selectedWorkers.length}</strong> / <strong>{workerNumbers}</strong> ] Workers</p>
             <div className="avail-workers-list">
                 {responseSuccess 
                     ? workersList.map((worker, index) => {
@@ -625,8 +657,114 @@ const AvailableCleaners = ({retrieveCleanersBooking, availWorkerIdentifier, user
     )
 }
  
-const Review = () => {
+const Review = ({bookingAppointmentInfo}) => {
+    const [info, setInfo] = useState({
+        customerFirstName: '',
+        customerLastName: '',
+        phoneNumber: '',
+        address: {
+            block: '',
+            province: '',
+            municipal: '',
+            barangay: ''
+        },
+        serviceDetails: {
+            serviceCategory: '',
+            sizeOfArea: '',
+            numberOfWorkers: 0
+        },
+        scheduleDetails: {
+            date: '',
+            startTime: ''
+        },
+        assignedWorkers: [],
+        serviceCost: 0
+    });
 
+    useEffect(() => {
+        try {
+            if (bookingAppointmentInfo.address.block) {
+                setInfo({...bookingAppointmentInfo});
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }, [bookingAppointmentInfo]);
+
+    return (
+        <div className="booking-page" id="review-booking-page">
+            <h2>Review and Confirm your Information</h2>
+            <p className="subheading">
+                By confirming, you will schedule the cleaning appointment in the system. Please ensure all information is accurate before proceeding.
+            </p>
+            <section className="review-information-container">
+                <div className="review-info-line">
+                    <p className="title">Full Name</p>
+                    <div className="data">
+                        <p>{info.customerFirstName} {info.customerLastName}</p>
+                    </div>
+                </div>
+                <div className="review-info-line">
+                    <p className="title">Phone Number</p>
+                    <div className="data">
+                        <p>{info.phoneNumber}</p>
+                    </div>
+                </div>
+                <div className="review-info-line">
+                    <p className="title">Address</p>
+                    <div className="data">
+                        <p>{info.address.block}</p>
+                        <p>{info.address.barangay}, {info.address.municipal}, {info.address.province}</p>
+                    </div>
+                </div>
+            </section>
+            <h2>Appointment Details</h2>
+            <section className="review-information-container">
+                <div className="review-info-line">
+                    <p className="title">Date</p>
+                    <div className="data">
+                        <p>{info.scheduleDetails.date}</p>
+                    </div>
+                </div>
+                <div className="review-info-line">
+                    <p className="title">Time</p>
+                    <div className="data">
+                        <p>{info.scheduleDetails.startTime}</p>
+                    </div>
+                </div>
+                <div className="review-info-line">
+                    <p className="title">Workers</p>
+                    <div className="data">
+                        {info.assignedWorkers.map((worker, index) => (
+                            <p key={index}>{worker}</p>
+                        ))}
+                    </div>
+                </div>
+            </section>
+            <h2>Service Details</h2>
+            <section className="review-information-container">
+                <div className="review-info-line">
+                    <p className="title">Service</p>
+                    <div className="data">
+                        <p>{info.serviceDetails.serviceCategory}</p>
+                    </div>
+                </div>
+                <div className="review-info-line">
+                    <p className="title">Size of Area</p>
+                    <div className="data">
+                        <p>{info.serviceDetails.sizeOfArea}</p>
+                    </div>
+                </div>
+                <hr />
+                <div className="review-info-line price">
+                    <p className="title">Total Cost</p>
+                    <div className="data">
+                        <p>&#8369;{info.serviceCost}</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    )
 }
 
 export {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Review};
