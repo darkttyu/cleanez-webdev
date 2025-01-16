@@ -23,58 +23,19 @@ import axios from "axios";
 
 
 // Personal Info Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const PersonalInfo = ({retrievePersonalInfo, user}) => {
+const PersonalInfo = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    const navigate = useNavigate();
     // --- Address Variables
     const [regionData, setRegionData] = useState([]);
     const [provinceData, setProvinceData] = useState([]);
     const [municipalData, setMunicipalData] = useState([]);
     const [barangayData, setBarangayData] = useState([]);
-    const [fullPersonalInfo, setFullPersonalInfo] = useState({
-        customerFirstName: '',
-        customerLastName: '',
-        phoneNumber: '',
-        address: {
-            block: '',
-            province: '0',
-            municipal: '0',
-            barangay: '0'
-        }
-    })
-    // --- Selected Address Variables
+
+    const [selectedProv, setSelectedProv] = useState('0');
+    const [selectedCity, setSelectedCity] = useState('0');
+    const [selectedBrgy, setSelectedBrgy] = useState('0');
 
     // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    // --- Checks if person is logged-in
-    useEffect(() => {
-        const validateAndRedirect = () => {
-            try {
-                if (
-                    user.firstName 
-                ) {
-                    setFullPersonalInfo({
-                        customerFirstName: user.firstName,
-                        customerLastName: user.lastName,
-                        phoneNumber: user.phoneNumber,
-                        address: {
-                            block: user.address.block,
-                            province: '0',
-                            municipal: '0',
-                            barangay: '0'
-                        }
-                    })
-                } else {
-                    throw new Error("Missing required fields");
-                }
-            } catch (e) {
-                console.log("Validation failed, User not signed in: ", e.message);
-                navigate('/login');
-            }
-        }
-
-        validateAndRedirect();
-    }, [])
-
     // --- Fetches Region Data everytime the page is loaded/refereshed.
     useEffect(() => {
         const fetchRegion = async () => {
@@ -130,48 +91,78 @@ const PersonalInfo = ({retrievePersonalInfo, user}) => {
     // --- --- Province
     useEffect(() => {
         provinceData.forEach((p, index) => {
-            if (p.province_name === user.address.province) {
+            if (p.province_name === bookingInfo.address.province) {
                 const provinceValue = p.province_code + p.province_name;
                 listMunicipalities(provinceValue);
-                setFullPersonalInfo({...fullPersonalInfo, address: {...fullPersonalInfo.address, province: provinceValue}});
+                setBookingInfo({
+                    ...bookingInfo, 
+                    address: {
+                        ...bookingInfo.address, 
+                        province: p.province_name
+                    }
+                });   
+                setSelectedProv(provinceValue);
             }
         })
 
     }, [provinceData]);
     // --- --- Municipal
     useEffect(() => { 
+        setSelectedCity('0');
+        setSelectedBrgy('0');
+        setBarangayData([]);
+
         municipalData.forEach((m, index) => {
-            if (m.city_name === user.address.municipal) {
+            if (m.city_name === bookingInfo.address.municipal) {
                 const municipalValue = m.city_code + m.city_name;
                 listBarangays(municipalValue);
-                setFullPersonalInfo({...fullPersonalInfo, address: {...fullPersonalInfo.address, municipal: municipalValue}});
+                setBookingInfo({
+                    ...bookingInfo, 
+                    address: {
+                        ...bookingInfo.address, 
+                        municipal: m.city_name
+                    }
+                });
+                setSelectedCity(municipalValue);
             }
         })
+  
     }, [municipalData]);
     // --- --- Barangay
     useEffect(() => {
         barangayData.forEach((b, index) => {
-            if (b.brgy_name === user.address.barangay) {
+            if (b.brgy_name === bookingInfo.address.barangay) {
                 const barangayValue = b.brgy_code + b.brgy_name;
-                setFullPersonalInfo({...fullPersonalInfo, address: {...fullPersonalInfo.address, barangay: barangayValue}});
+                setBookingInfo({
+                    ...bookingInfo, 
+                    address: {
+                        ...bookingInfo.address, 
+                        barangay: barangayValue.slice(9)
+                    }
+                });
+                setSelectedBrgy(barangayValue);
             }
         })
     }, [barangayData]);
 
+    //Verifies Booking Info
     useEffect(() => {
-        if (!(fullPersonalInfo.customerFirstName === '') &&
-            !(fullPersonalInfo.customerLastName === '') &&
-            !(fullPersonalInfo.phoneNumber === '') &&
-            !(fullPersonalInfo.address.block === '') &&
-            !(fullPersonalInfo.address.province === '0') &&
-            !(fullPersonalInfo.address.municipal === '0') &&
-            !(fullPersonalInfo.address.barangay === '0')
+        if (!(bookingInfo.customerFirstName === '') &&
+            !(bookingInfo.customerLastName === '') &&
+            !(bookingInfo.phoneNumber === '') &&
+            !(bookingInfo.address.block === '') &&
+            !(bookingInfo.address.province === '0' || bookingInfo.address.province === '') &&
+            !(bookingInfo.address.municipal === '0' || bookingInfo.address.municipal === '') &&
+            !(bookingInfo.address.barangay === '0' || bookingInfo.address.barangay === '')
         ) {
-            retrievePersonalInfo(fullPersonalInfo)
+            console.log("Personal Information is Complete")
+            console.log(bookingInfo);
+            setIsInfoComplete(true);
         } else {
             console.log("Failed to retrieve Personal Information")
+            setIsInfoComplete(false);
         }
-    }, [fullPersonalInfo]);
+    }, [bookingInfo]);
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
@@ -179,59 +170,91 @@ const PersonalInfo = ({retrievePersonalInfo, user}) => {
             <h2>Personal Information</h2>
             <div className="booking-grid col-three">
                 <FirstName 
-                    value={fullPersonalInfo.customerFirstName}
+                    value={bookingInfo.customerFirstName}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                                                customerFirstName: e.target.value})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            customerFirstName: e.target.value
+                        })
                     }}    
                 />
                 <LastName 
-                    value={fullPersonalInfo.customerLastName}
+                    value={bookingInfo.customerLastName}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                                                customerLastName: e.target.value})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            customerLastName: e.target.value
+                        })
                     }}   
                 />
                 <Phone 
-                    value={fullPersonalInfo.phoneNumber}
+                    value={bookingInfo.phoneNumber}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                                                phoneNumber: e.target.value})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            phoneNumber: e.target.value
+                        })
                     }}   
                 />
             </div>
             <h2>Address</h2>
             <div className="booking-grid col-two">
                 <Address 
-                    value={fullPersonalInfo.address.block}
+                    value={bookingInfo.address.block}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                                                address: {...fullPersonalInfo.address, block: e.target.value}})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            address: {
+                                ...bookingInfo.address, 
+                                block: e.target.value
+                            }
+                        })
                     }}   
                 />
                 <Province
-                    value={fullPersonalInfo.address.province}
+                    value={selectedProv}
                     data={provinceData} 
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                            address: {...fullPersonalInfo.adress, province: e.target.value, municipal:'0', barangay:'0'}})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            address: {
+                                ...bookingInfo.address, 
+                                province: e.target.value.slice(4), 
+                                municipal:'0', 
+                                barangay:'0'
+                            }
+                        })
                         listMunicipalities(e.target.value);
+                        setSelectedProv(e.target.value);
                     }}/>
                 <Municipality 
-                    value={fullPersonalInfo.address.municipal}
+                    value={selectedCity}
                     data={municipalData} 
                     selection={listBarangays}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                            address: {...fullPersonalInfo.address, municipal: e.target.value, barangay:'0'}})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            address: {
+                                ...bookingInfo.address, 
+                                municipal: e.target.value.slice(6),
+                                barangay:'0'
+                            }
+                        })
                         listBarangays(e.target.value);
+                        setSelectedCity(e.target.value);
                     }}/>
                 <Barangay 
-                    value={fullPersonalInfo.address.barangay}
+                    value={selectedBrgy}
                     data={barangayData}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                            address: {...fullPersonalInfo.address, barangay: e.target.value}})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            address: {
+                                ...bookingInfo.address,
+                                barangay: e.target.value.slice(9)
+                            }
+                        })
+                        setSelectedBrgy(e.target.value);
                     }}/>
             </div>
         </div>
@@ -239,31 +262,34 @@ const PersonalInfo = ({retrievePersonalInfo, user}) => {
 }
 
 // Service Booking Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList, user}) => {
+const ServiceBooking = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete}) => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Service Details Variables
     const [areaDetails, setAreaDetails] = useState([]);
     const [workerNumbers, setWorkerNumbers] = useState([]);
     const [servicePrices, setServicePrices] = useState([]);
     const [windowNumber, setWindowNumber] = useState(1);
-    const [basePrice, setBasePrice] = useState(0);
-    const [finalPrice, setFinalPrice] = useState(0);
-    const [serviceBookingInfo, setServiceBookingInfo] = useState({
-        serviceCategory: '0',
-        sizeOfArea: '0',
-        numberOfWorkers: 0
-    });
 
     // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Changes Other Inputs based on Selected Service Type
     const onServiceSelect = (type) => {
-        setServiceBookingInfo({serviceCategory: type, sizeOfArea: '0', numberOfWorkers: 0});
+        setBookingInfo({
+            ...bookingInfo,
+            serviceDetails: {
+                serviceCategory: type,
+                sizeOfArea: '0',
+                numberOfWorkers: 0
+            },
+            serviceCost: 0
+        });
         // --- Resets both Area and Worker before proceeding
         setServicePrices([])
         setAreaDetails([]);
         setWorkerNumbers([]);
-        setBasePrice(0);
-        setFinalPrice(0)
+        setBookingInfo({
+            ...bookingInfo,
+            serviceCost: 0
+        })
         setWindowNumber(1);
         
         if (type == 0) {
@@ -279,54 +305,85 @@ const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList
         })
     }
 
+    useEffect(() => {
+        serviceList.forEach((service, index) => {
+            if (service.serviceName == bookingInfo.serviceDetails.serviceCategory) {
+                setServicePrices(service.price);
+                setAreaDetails(service.areaDetails);
+                setWorkerNumbers(service.numberOfWorkers);
+            }
+        })
+    }, [bookingInfo.serviceDetails.serviceCategory])
+
     // --- Handles Area Size Selection
     const onAreaSelect = (type) => {
-        setBasePrice(0);
-        setFinalPrice(0)
+        setBookingInfo({
+            ...bookingInfo,
+            serviceCost: 0
+        })
         setWindowNumber(1);
         
         if (type == 0) {
-            setBasePrice('0')
+            setBookingInfo({
+                ...bookingInfo,
+                serviceCost: 0
+            })
         }
         
         areaDetails.forEach((area, index) => {
             if (area.sizeOfArea === type) {
-                setBasePrice(servicePrices[index]);
-                setFinalPrice(servicePrices[index]);
+                setBookingInfo({
+                    ...bookingInfo,
+                    serviceCost: servicePrices[index]
+                })
             }
         })
 
-        setServiceBookingInfo({...serviceBookingInfo, sizeOfArea: type});
+        setBookingInfo({
+            ...bookingInfo,
+            serviceDetails: {
+                ...bookingInfo.serviceDetails,
+                sizeOfArea: type
+            }
+        });
     }
     // --- Handles Worker Number Selection
     const onWorkersSelect = (type) => {
         const convertedType = parseInt(type);
-        setServiceBookingInfo({...serviceBookingInfo, numberOfWorkers: convertedType});
+        setBookingInfo({
+            ...bookingInfo,
+            serviceDetails: {
+                ...bookingInfo.serviceDetails,
+                numberOfWorkers: convertedType
+            }
+        });
     }
     // --- Handles Window Number Change
     const onWindowChange = (value) => {
         setWindowNumber(value);
     }
+
     useEffect(() => {
-        setFinalPrice(basePrice*windowNumber);
+        setBookingInfo({
+            ...bookingInfo,
+            serviceCost: (bookingInfo.serviceCost * windowNumber)
+        });
     }, [windowNumber])
 
     // --- Pass Service Booking Information to Parent
     useEffect(() => {
-        if (!(serviceBookingInfo.serviceCategory === '0') &&
-            !(serviceBookingInfo.sizeOfArea === '0') &&
-            !(serviceBookingInfo.numberOfWorkers === 0)
+        if (!(bookingInfo.serviceDetails.serviceCategory === '0') &&
+            !(bookingInfo.serviceDetails.sizeOfArea === '0') &&
+            !(bookingInfo.serviceDetails.numberOfWorkers === 0)
         ) { 
-            retrieveServiceBooking(serviceBookingInfo);
+            console.log("Service Information and Pricing is Complete");
+            console.log(bookingInfo);
+            setIsInfoComplete(true);
         } else {
-            console.log("Failed to Retrieve Service Information")
+            console.log("Failed to Retrieve Service Information and Pricing");
+            setIsInfoComplete(false);
         }
-    }, [serviceBookingInfo]);
-
-    // --- Pass Final Price to Parent
-    useEffect(() => {
-        retrieveFinalPrice(finalPrice);
-    }, [finalPrice])
+    }, [bookingInfo]);
 
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
@@ -335,26 +392,26 @@ const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList
             <h2>Service</h2>
             <p className="subheading">
                     Estimated Price: <strong>Php {
-                        finalPrice 
+                        bookingInfo.serviceCost
                     }.00</strong>
             </p>
             <div className="booking-grid col-three">
                 <ServiceType  
                 data={serviceList} 
                 onChange={onServiceSelect}
-                value={serviceBookingInfo.serviceCategory}
+                value={bookingInfo.serviceDetails.serviceCategory}
                 />
                 <AreaSize  
                 data={areaDetails} 
                 onChange={onAreaSelect}
-                value={serviceBookingInfo.sizeOfArea}
+                value={bookingInfo.serviceDetails.sizeOfArea}
                 />
                 <WorkerNumbers  
                 data={workerNumbers} 
                 onChange={onWorkersSelect}
-                value={serviceBookingInfo.numberOfWorkers}
+                value={bookingInfo.serviceDetails.numberOfWorkers}
                 />
-                {(serviceBookingInfo.serviceCategory === "Window Cleaning")?
+                {(bookingInfo.serviceDetails.serviceCategory === "Window Cleaning")?
                 (
                     <div className="text-container">
                         {/* INPUTS HERE */}
@@ -511,7 +568,7 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
                     name="bookDate" 
                     onChange={(e) => handleDateInput(e.target.value)}
                     id="bookdate-input" 
-                    // min={dateLimit.minDate} 
+                    min={dateLimit.minDate} 
                     max={dateLimit.maxDate}/>
                 </div> 
                 {(timeList.length > 0) ?
@@ -533,7 +590,6 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
                     </div>
                 </div>) : 
                 (<></>)}
-                
             </div>
         </div>
     )

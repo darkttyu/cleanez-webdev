@@ -29,9 +29,31 @@
 .booking-progress .progress-bar .progress {
     height          : inherit;
     border-radius   : 8px;
-    width           : 4%;
     background-color: #06E36D;
+    width           : 0%;
+    transition      : width 0.6s ease-in-out;
 }
+
+.booking-progress .progress-bar .progress.percent-0 {
+    width: 4%;
+}
+
+.booking-progress .progress-bar .progress.percent-25 {
+    width: 25%;
+}
+
+.booking-progress .progress-bar .progress.percent-50 {
+    width: 50%;
+}
+
+.booking-progress .progress-bar .progress.percent-75 {
+    width: 75%;
+}
+
+.booking-progress .progress-bar .progress.percent-100 {
+    width: 100%;
+}
+
 
 
 .booking-progress .progress-numbers {
@@ -314,6 +336,16 @@
     gap           : 16px;
 }
 
+@keyframes button-show {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
 .booking-submit-btn {
     background-color: #06E36D;
     border-radius   : 16px;
@@ -325,6 +357,34 @@
     box-shadow      : 0 4px 4px #00000040;
     border          : 3px solid #ffffff00;
     transition      : all 0.2s ease-out;
+    animation       : button-show 0.4s;
+    text-align      : center;
+    min-width       : 188px;
+    max-width       : 188px;
+}
+
+@keyframes submit-disabled {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.booking-submit-btn[disabled] {
+    background     : linear-gradient(300deg, #069e4d, #60c36f, #89d791);
+    background-size: 200% 200%;
+    animation      : submit-disabled 3s ease infinite;
+}
+
+.booking-submit-btn[disabled]:hover {
+    border: 3px solid #ffffff00;
 }
 
 .booking-submit-btn:hover {
@@ -334,4 +394,95 @@
 .booking-submit-btn:active {
     background-color: var(--color1e);
     box-shadow      : 0 0px 0px #00000040;
+}
+
+.booking-success-content {
+    display         : flex;
+    flex-direction  : column;
+    justify-content : center;
+    align-items     : center;
+    min-height      : calc(100vh - 90px);
+    position        : relative;
+    gap             : 48px;
+    padding         : 48px 0;
+    background-color: #f3f3f3;
+}
+
+.booking-success-container {
+    display         : flex;
+    flex-direction  : column;
+    justify-content : center;
+    align-items     : center;
+    gap             : 24px;
+    background-color: white;
+    border-radius   : 16px;
+    box-shadow      : 0 4px 4px #00000040;
+    min-width       : 770px;
+    padding         : 28px 40px;
+    gap             : 48px;
+}
+
+.booking-success-container a {
+    font-size  : 20px;
+    font-family: var(--font1);
+    font-weight: 600;
+    color      : var(--monoc4);
+    line-height: 2em;
+    position   : relative;
+    transition : all 0.2s ease-out;
+}
+
+.booking-success-container a:hover::after {
+    content         : '';
+    background-color: var(--monoc4);
+    height          : 1px;
+    width           : 100%;
+    position        : absolute;
+    left            : 0;
+    bottom          : 0;
+    animation       : button-show 0.2s ease-out;
+}
+
+.booking-success-container .success-message {
+    display         : flex;
+    flex-direction  : column;
+    justify-content : center;
+    align-items     : center;
+    gap             : 24px;
+    background-color: white;
+    width           : 100%;
+    border-radius   : 8px;
+}
+
+@keyframes success-animation {
+    0% {
+        transform: scale(0%) rotate(0deg);
+    }
+
+    88% {
+        transform: scale(112%) rotate(372deg);
+    }
+
+    90% {
+        transform: scale(112%) rotate(372deg);
+    }
+
+    100% {
+        transform: scale(100%) rotate(360deg);
+    }
+}
+
+.booking-success-container .success-message svg {
+    animation: success-animation 0.8s ease-in-out
+}
+
+.booking-success-container .success-message p {
+    font-size  : 20px;
+    font-family: var(--font2);
+    color      : var(--monoc4);
+    line-height: 1.4em;
+}
+
+.booking-success-container .success-message span {
+    color: #06E36D;
 }
