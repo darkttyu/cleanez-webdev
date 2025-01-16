@@ -15,18 +15,6 @@ const BookingPage = () => {
     const navigate = useNavigate();
     // --- Main Information Variables
     const [serviceList, setServicesList] = useState([]);
-    const [scheduleBookingInfo, setScheduleBookingInfo] = useState({});
-    const [availWorkerIdentifier, setAvailWorkerIdentifier] = useState({
-        serviceDetails: {
-            serviceCategory: '',
-            sizeOfArea:  '',
-            numberOfWorkers: ''
-        },
-        scheduleDetails: {
-            date: '',
-            startTime: ''
-        }
-    });
     const [bookingInfo, setBookingInfo] = useState({
         customerFirstName: '',
         customerLastName: '',
@@ -107,10 +95,6 @@ const BookingPage = () => {
         fetchServicesList();
     }, []);
 
-    const retrieveScheduleBooking = (data) => {
-        setScheduleBookingInfo(data);
-    }
-
     const retrieveCleanersBooking = (data) => {
         setSelectedCleaners(data);
     }
@@ -134,22 +118,22 @@ const BookingPage = () => {
         } else if (page === 2) {
             return (
                 <Schedule 
-                retrieveScheduleBooking={retrieveScheduleBooking}
-                serviceBookingInfo={serviceBookingInfo}
+                bookingInfo={bookingInfo}
+                setBookingInfo={setBookingInfo}
                 serviceList={serviceList} 
-                user={user}/>
+                setIsInfoComplete={setIsInfoComplete}/>
             )
         } else if (page === 3) {
             return (
                 <AvailableCleaners 
-                retrieveCleanersBooking={retrieveCleanersBooking}
-                availWorkerIdentifier={availWorkerIdentifier}
-                user={user}/>
+                bookingInfo={bookingInfo}
+                setBookingInfo={setBookingInfo}
+                setIsInfoComplete={setIsInfoComplete}/>
             )
         } else if (page === 4) {
             return (
                 <Review 
-                bookingAppointmentInfo={bookingAppointmentInfo}
+                bookingInfo={bookingInfo}
                 />
             )
         }
