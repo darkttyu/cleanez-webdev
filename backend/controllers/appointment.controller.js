@@ -44,7 +44,7 @@ export const getServices = async (req, res) => {
     const serviceList = await Service.find();
 
     // Logs the service list for debugging and readability purposes.
-    console.log(JSON.stringify(serviceList, null, 2)); // Used for better readability of the output.
+    // console.log(JSON.stringify(serviceList, null, 2));
 
     // If no services are found, responds with a 404 status code and an appropriate message.
     if (!serviceList) {
@@ -234,7 +234,7 @@ export const setAppointment = async (req, res) => {
  * Gets all available workers based on the user preference during appointments.
  */
 export const getAvailableWorkers = async (req, res) => {
-  const { serviceDetails, scheduleDetails } = req.body; 
+  const { address, serviceDetails, scheduleDetails } = req.body; 
 
   // Extracts the service category and size of area from the service details.
   const { serviceCategory, sizeOfArea } = serviceDetails;
@@ -258,7 +258,7 @@ export const getAvailableWorkers = async (req, res) => {
     }
 
     // Initialize an array to store available workers.
-    const availableWorkers = []
+    let availableWorkers = []
 
     // Loops through each worker to check if they are available at the specified date and time.
     workers.forEach(worker => {
@@ -277,13 +277,12 @@ export const getAvailableWorkers = async (req, res) => {
       return res.status(404).json({ success: false, message: "No workers are available at this time",  availableWorkers: availableWorkers });
     }
     
-    // FILTER THE AVAILABLE WORKERS TO THE LOCATION OF THE USER
     // Maps the availableWorkers array and extracts the userId and assigns it in a new array.
     const workeruserId = availableWorkers.map(availableWorkers => availableWorkers.userId);
 
     // console.log(workeruserId);
 
-    // Loops through the 
+    // Loops through the workers and adds their personal information 
     for (const [index, userId] of workeruserId.entries()) {
       
       const workerInformation = await User.findById(userId);
@@ -298,7 +297,13 @@ export const getAvailableWorkers = async (req, res) => {
       };
     }
 
-    // console.log(availableWorkers); For testing 
+    // Filtering Available Workers Depending on User Location 
+    availableWorkers = availableWorkers.filter(worker => {
+      const workerProvince = worker.userDetails.address.province
+      return workerProvince === address.province
+    })
+
+    console.log(availableWorkers); // For testing 
 
     // Successfully fetched available workers.
     return res.status(200).json({ message: "Successfully fetched available workers", workers: availableWorkers });
