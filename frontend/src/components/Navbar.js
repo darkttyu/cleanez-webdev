@@ -5,10 +5,17 @@ import {HashLink} from 'react-router-hash-link';
 import { useAuth } from '../AuthContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Navbar = () => {
     const { user, logout } = useAuth(); // Access user from context
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/home')
+        }
+    }, [user])
 
     const handleLogOut = async () => {
         try {
@@ -30,10 +37,10 @@ const Navbar = () => {
                 <img className="nav-logo" src={NavLogo} alt="Logo" />
             </Link>
             <div className="nav-links">
-                <HashLink to="/home#home" className="nav-link">Home</HashLink>
-                <HashLink to="/home#services" className="nav-link">Services</HashLink>
+                <HashLink to="/home/#home" className="nav-link">Home</HashLink>
+                <HashLink to="/home/#services" className="nav-link">Services</HashLink>
                 <Link to="/frequently-asked-questions" className="nav-link">FAQs</Link>
-                <HashLink to="/home#about-us" className="nav-link">About Us</HashLink>
+                <HashLink to="/home/#about-us" className="nav-link">About Us</HashLink>
 
                 {user ? (
                     <button 
