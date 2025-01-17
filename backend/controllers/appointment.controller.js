@@ -277,6 +277,7 @@ export const getAvailableWorkers = async (req, res) => {
       return res.status(404).json({ success: false, message: "No workers are available at this time",  availableWorkers: availableWorkers });
     }
     
+    // FILTER THE AVAILABLE WORKERS TO THE LOCATION OF THE USER
     // Maps the availableWorkers array and extracts the userId and assigns it in a new array.
     const workeruserId = availableWorkers.map(availableWorkers => availableWorkers.userId);
 
@@ -297,11 +298,43 @@ export const getAvailableWorkers = async (req, res) => {
       };
     }
 
-    console.log(availableWorkers);
+    // console.log(availableWorkers); For testing 
+
     // Successfully fetched available workers.
     return res.status(200).json({ message: "Successfully fetched available workers", workers: availableWorkers });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+/** 
+ * Gets the personal information of a specific worker.
+*/
+
+export const getWorkerInformation = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    let workerInformation = await Worker.findById({_id: new Object(id)});
+
+    if (!workerInformation) { 
+      return res.status(404).json({success: false, message: "Worker Not Found.", error: error.message});
+    }
+
+    const userInformation = await User.findById({_id: new Object(workerInformation.userId)});
+
+    if (!userInformation) {
+      return res.status(404).json({success: false, message: "User Information Not Found", error: error.message})
+    }
+
+    workerInformation = {
+      userInformation, 
+      workerInformation
+    }
+
+    return res.status(200).json({success: true, message: "Successfully Fetched Worker Information", worker: workerInformation});
+  } catch (error) {
+    return res.status(500).json({success: false, message: "Error in Fetching Worker Information.", error: error.message})
   }
 };
 
