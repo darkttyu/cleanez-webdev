@@ -1,59 +1,80 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-import {Link} from 'react-router-dom';
-import { useAuth } from '../AuthContext';
-import NavLogo from '../images/logos/nav-logo.png'
-import '../styles/BookingPage.css';
-import SVGIcons from "../SVGIcons";
-import {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Review} from "../components/BookingForm";
+import { useAuth } from '../../AuthContext';
+import NavLogo from '../../images/logos/nav-logo.png'
+import '../../styles/BookingPage.css';
+import SVGIcons from "../../SVGIcons";
+import {PersonalInfo, ServiceBooking, Schedule, AvailableCleaners, Review} from "../../components/BookingForm";
 import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const BookingPage = () => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Context Authenticator
     const {user} = useAuth();
+    const navigate = useNavigate();
     // --- Main Information Variables
     const [serviceList, setServicesList] = useState([]);
-    const [personalInfo, setPersonalInfo] = useState({});
-    const [serviceBookingInfo, setServiceBookingInfo] = useState({});
-    const [scheduleBookingInfo, setScheduleBookingInfo] = useState({});
-    const [finalPrice, setFinalPrice] = useState(0);
-    const [selectedCleaners, setSelectedCleaners] = useState([]);
-    const [availWorkerIdentifier, setAvailWorkerIdentifier] = useState({
-        serviceDetails: {
-            serviceCategory: '',
-            sizeOfArea:  '',
-            numberOfWorkers: ''
-        },
-        scheduleDetails: {
-            date: '',
-            startTime: ''
-        }
-    });
-    const [bookingAppointmentInfo, setBookingAppointmentInfo] = useState({
+    const [bookingInfo, setBookingInfo] = useState({
         customerFirstName: '',
         customerLastName: '',
         phoneNumber: '',
         address: {
             block: '',
-            province: '',
-            municipal: '',
-            barangay: ''
+            province: '0',
+            municipal: '0',
+            barangay: '0'
         },
         serviceDetails: {
-            serviceCategory: '',
-            sizeOfArea: '',
+            serviceCategory: '0',
+            sizeOfArea: '0',
             numberOfWorkers: 0
         },
         scheduleDetails: {
             date: '',
             startTime: ''
         },
-        assignedWorkers: [],
+        assignedWorkers: null,
         serviceCost: 0
     })
     // --- Other Variables
     const [page, setPage] = useState(0);
+    const [showSubmit, setShowSubmit] = useState(false);
+    const [disableSubmit, setDisabledSubmit] = useState(false);
+    const [progressbar, setProgressbar] = useState('');
+    const [isInfoComplete, setIsInfoComplete] = useState(false);
+
+    // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Checks if person is logged-in
+    useEffect(() => {
+        const validateAndRedirect = () => {
+            try {
+                if (
+                    user.firstName 
+                ) {
+                    setBookingInfo({
+                        ...bookingInfo,
+                        customerFirstName: user.firstName,
+                        customerLastName: user.lastName,
+                        phoneNumber: user.phoneNumber,
+                        address: {
+                            block: user.address.block,
+                            province: user.address.province,
+                            municipal: user.address.municipal,
+                            barangay: user.address.barangay
+                        }
+                    })
+                } else {
+                    throw new Error("Missing required fields");
+                }
+            } catch (e) {
+                console.log("Validation failed, User not signed in: ", e.message);
+                navigate('/login');
+            }
+        }
+
+        validateAndRedirect();
+    }, [])
 
     // --- Fetches all Service Type Data
     useEffect(() => {
@@ -74,125 +95,78 @@ const BookingPage = () => {
         fetchServicesList();
     }, []);
 
-    const retrievePersonalInfo = (data) => {
-        setPersonalInfo(data);
-    }
-
-    const retrieveServiceBooking = (data) => {
-        setServiceBookingInfo(data);
-    }
-
-    const retrieveScheduleBooking = (data) => {
-        setScheduleBookingInfo(data);
-    }
-
-    const retrieveFinalPrice = (data) => {
-        setFinalPrice(data);
-    }
-
     const retrieveCleanersBooking = (data) => {
         setSelectedCleaners(data);
     }
-
-    useEffect(() => {
-        setAvailWorkerIdentifier({
-            serviceDetails: {
-                serviceCategory: serviceBookingInfo.serviceCategory,
-                sizeOfArea:  serviceBookingInfo.sizeOfArea,
-                numberOfWorkers: serviceBookingInfo.numberOfWorkers
-            },
-            scheduleDetails: {
-                date: scheduleBookingInfo.date,
-                startTime: scheduleBookingInfo.startTime
-            }
-        })
-    }, [scheduleBookingInfo]);
-    
-    // Fills the Full Booking Appointment Information when all fields are filled
-    useEffect(() => {
-        try {
-            if (personalInfo.address.block &&
-                personalInfo.address.province &&
-                personalInfo.address.municipal &&
-                personalInfo.address.barangay
-            ) {
-                setBookingAppointmentInfo({
-                    ...personalInfo,
-                    address: {
-                        block: personalInfo.address.block,
-                        province: personalInfo.address.province.slice(4),
-                        municipal: personalInfo.address.municipal.slice(6),
-                        barangay: personalInfo.address.barangay.slice(9)
-                    },
-                    serviceDetails: {
-                        ...serviceBookingInfo
-                    },
-                    scheduleDetails: {
-                        ...scheduleBookingInfo,
-                    },
-                    assignedWorkers: selectedCleaners,
-                    serviceCost: finalPrice
-                })
-            } else {
-                throw new Error("failed xd");
-            }
-        } catch (e) {
-            console.log(e.message);
-        }
-    },[selectedCleaners]);
-
-    useEffect(() => {
-        console.log("DATA SUCCESFULLY PASSED!")
-        console.log(bookingAppointmentInfo)
-    }, [bookingAppointmentInfo])
 
     const pageDisplay = () => {
         if (page === 0) {
             return (
                 <PersonalInfo 
-                retrievePersonalInfo={retrievePersonalInfo}
-                user={user}/>
+                bookingInfo={bookingInfo}
+                setBookingInfo={setBookingInfo}
+                setIsInfoComplete={setIsInfoComplete}/>
             )
         } else if (page === 1) {
             return (
                 <ServiceBooking 
-                retrieveServiceBooking={retrieveServiceBooking}
-                retrieveFinalPrice={retrieveFinalPrice}
-                serviceList={serviceList} 
-                user={user}/>
+                bookingInfo={bookingInfo}
+                setBookingInfo={setBookingInfo}
+                serviceList={serviceList}
+                setIsInfoComplete={setIsInfoComplete} />
             )
         } else if (page === 2) {
             return (
                 <Schedule 
-                retrieveScheduleBooking={retrieveScheduleBooking}
-                serviceBookingInfo={serviceBookingInfo}
+                bookingInfo={bookingInfo}
+                setBookingInfo={setBookingInfo}
                 serviceList={serviceList} 
-                user={user}/>
+                setIsInfoComplete={setIsInfoComplete}/>
             )
         } else if (page === 3) {
             return (
                 <AvailableCleaners 
-                retrieveCleanersBooking={retrieveCleanersBooking}
-                availWorkerIdentifier={availWorkerIdentifier}
-                user={user}/>
+                bookingInfo={bookingInfo}
+                setBookingInfo={setBookingInfo}
+                setIsInfoComplete={setIsInfoComplete}/>
             )
         } else if (page === 4) {
             return (
                 <Review 
-                bookingAppointmentInfo={bookingAppointmentInfo}
+                bookingInfo={bookingInfo}
                 />
             )
         }
     }
 
+    useEffect(() => {
+        setIsInfoComplete(false);
+        setShowSubmit(false);
+
+        if (page === 0) setProgressbar('percent-0');
+        else if (page === 1) setProgressbar('percent-25');
+        else if (page === 2) setProgressbar('percent-50');
+        else if (page === 3) setProgressbar('percent-75');
+        else if (page === 4) {
+            setProgressbar('percent-100');
+            const timer = setTimeout(() => {
+                setShowSubmit(true);
+            }, 1000);
+
+            return () => clearTimeout(timer);
+        } 
+    }, [page])
+
     const handleBookingSubmission = async (e) => {
         try {
             e.preventDefault();
+            setDisabledSubmit(true);
+
             const token = localStorage.getItem("token");
             console.log("Token from the backend: ", token);
             const response = await axios.post(
                 `http://localhost:5000/api/appointment/setAppointment`,
-                bookingAppointmentInfo,
+                bookingInfo,
                 {
                     headers: { 
                         'Content-Type': 'application/json',
@@ -201,9 +175,10 @@ const BookingPage = () => {
                 }
             );
         
-            console.log("Passed Data: ", bookingAppointmentInfo); 
+            console.log("Passed Data: ", bookingInfo); 
             console.log("Booking Completed:", response.data.message);
-        
+            
+            navigate(`/booking/success`);
         } catch (error) {
             if (error.response) {
                 // Server responded with a status other than 200 range
@@ -215,6 +190,8 @@ const BookingPage = () => {
                 // Something happened setting up the request
                 console.log("Error creating the request:", error.message);
             }
+        } finally {
+            setDisabledSubmit(false);
         }
     }
 
@@ -231,14 +208,17 @@ const BookingPage = () => {
                 <header className='booking-progress'>
                     <p className='instructions'>To schedule a cleaning appointment, please fill out the information below.</p>
                     <div className='progress-bar'>
-                        <div className='progress'></div>
+                        <div className={`progress ${progressbar}`}></div>
                     </div>
-                    <div className='progress-numbers'>
-                        <div className='progress-number active'><p>1</p></div>
-                        <div className='progress-number'><p>2</p></div>
-                        <div className='progress-number'><p>3</p></div>
-                        <div className='progress-number'><p>4</p></div>
-                        <div className='progress-number'><p>5</p></div>
+                    <div className="progress-numbers">
+                        {Array.from({ length: 5 }, (_, index) => (
+                            <div
+                                key={index}
+                                className={`progress-number ${page === index ? "active" : ""}`}
+                            >
+                                <p>{index + 1}</p>
+                            </div>
+                        ))}
                     </div>
                 </header>
                 <form className='booking-container'  method="POST" onSubmit={handleBookingSubmission}>
@@ -261,7 +241,7 @@ const BookingPage = () => {
                             </button>
                         ) : (<></>)}
                         
-                        {page !== 4 ? (
+                        {(page !== 4 && isInfoComplete) ? (
                             <button
                             type="button"
                             className="booking-btn right" 
@@ -274,12 +254,15 @@ const BookingPage = () => {
                                 color="#4B4B4B"/>
                             </button>
                         ) : (
-                            <button 
-                            type="submit"
-                            className='booking-submit-btn booking-btn right'
-                            >
-                                Confirm and Submit
-                            </button>
+                            showSubmit && (
+                                <button 
+                                type="submit"
+                                className='booking-submit-btn booking-btn right'
+                                disabled={disableSubmit}
+                                >
+                                    {disableSubmit? "Submitting..." : "Confirm and Submit"}
+                                </button>
+                            )
                         )}
                     </div>
                 </form>

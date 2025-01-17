@@ -15,7 +15,7 @@ import {
 import SVGIcons from "../SVGIcons";
 import errorLogo from "../images/logos/Logo-Error.svg"
 // --- React Import/s
-import { useState, useEffect, use} from "react";
+import { useState, useEffect, useRef} from "react";
 import { useNavigate } from "react-router-dom";
 // --- Other/React Import/s
 import {regions, provinces, cities, barangays} from "select-philippines-address";
@@ -23,58 +23,20 @@ import axios from "axios";
 
 
 // Personal Info Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const PersonalInfo = ({retrievePersonalInfo, user}) => {
+const PersonalInfo = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    const navigate = useNavigate();
     // --- Address Variables
     const [regionData, setRegionData] = useState([]);
     const [provinceData, setProvinceData] = useState([]);
     const [municipalData, setMunicipalData] = useState([]);
     const [barangayData, setBarangayData] = useState([]);
-    const [fullPersonalInfo, setFullPersonalInfo] = useState({
-        customerFirstName: '',
-        customerLastName: '',
-        phoneNumber: '',
-        address: {
-            block: '',
-            province: '0',
-            municipal: '0',
-            barangay: '0'
-        }
-    })
-    // --- Selected Address Variables
 
+    const [selectedProv, setSelectedProv] = useState('0');
+    const [selectedCity, setSelectedCity] = useState('0');
+    const [selectedBrgy, setSelectedBrgy] = useState('0');
+
+    
     // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    // --- Checks if person is logged-in
-    useEffect(() => {
-        const validateAndRedirect = () => {
-            try {
-                if (
-                    user.firstName 
-                ) {
-                    setFullPersonalInfo({
-                        customerFirstName: user.firstName,
-                        customerLastName: user.lastName,
-                        phoneNumber: user.phoneNumber,
-                        address: {
-                            block: user.address.block,
-                            province: '0',
-                            municipal: '0',
-                            barangay: '0'
-                        }
-                    })
-                } else {
-                    throw new Error("Missing required fields");
-                }
-            } catch (e) {
-                console.log("Validation failed, User not signed in: ", e.message);
-                navigate('/login');
-            }
-        }
-
-        validateAndRedirect();
-    }, [])
-
     // --- Fetches Region Data everytime the page is loaded/refereshed.
     useEffect(() => {
         const fetchRegion = async () => {
@@ -130,49 +92,78 @@ const PersonalInfo = ({retrievePersonalInfo, user}) => {
     // --- --- Province
     useEffect(() => {
         provinceData.forEach((p, index) => {
-            if (p.province_name === user.address.province) {
+            if (p.province_name === bookingInfo.address.province) {
                 const provinceValue = p.province_code + p.province_name;
                 listMunicipalities(provinceValue);
-                setFullPersonalInfo({...fullPersonalInfo, address: {...fullPersonalInfo.address, province: provinceValue}});
+                setBookingInfo({
+                    ...bookingInfo, 
+                    address: {
+                        ...bookingInfo.address, 
+                        province: p.province_name
+                    }
+                });   
+                setSelectedProv(provinceValue);
             }
         })
 
     }, [provinceData]);
     // --- --- Municipal
     useEffect(() => { 
+        setSelectedCity('0');
+        setSelectedBrgy('0');
+        setBarangayData([]);
+
         municipalData.forEach((m, index) => {
-            if (m.city_name === user.address.municipal) {
+            if (m.city_name === bookingInfo.address.municipal) {
                 const municipalValue = m.city_code + m.city_name;
                 listBarangays(municipalValue);
-                setFullPersonalInfo({...fullPersonalInfo, address: {...fullPersonalInfo.address, municipal: municipalValue}});
+                setBookingInfo({
+                    ...bookingInfo, 
+                    address: {
+                        ...bookingInfo.address, 
+                        municipal: m.city_name
+                    }
+                });
+                setSelectedCity(municipalValue);
             }
         })
+  
     }, [municipalData]);
     // --- --- Barangay
     useEffect(() => {
         barangayData.forEach((b, index) => {
-            if (b.brgy_name === user.address.barangay) {
+            if (b.brgy_name === bookingInfo.address.barangay) {
                 const barangayValue = b.brgy_code + b.brgy_name;
-                setFullPersonalInfo({...fullPersonalInfo, address: {...fullPersonalInfo.address, barangay: barangayValue}});
+                setBookingInfo({
+                    ...bookingInfo, 
+                    address: {
+                        ...bookingInfo.address, 
+                        barangay: barangayValue.slice(9)
+                    }
+                });
+                setSelectedBrgy(barangayValue);
             }
         })
     }, [barangayData]);
 
+    //Verifies Booking Info
     useEffect(() => {
-        if (!(fullPersonalInfo.customerFirstName === '') &&
-            !(fullPersonalInfo.customerLastName === '') &&
-            !(fullPersonalInfo.phoneNumber === '') &&
-            !(fullPersonalInfo.address.block === '') &&
-            !(fullPersonalInfo.address.province === '0') &&
-            !(fullPersonalInfo.address.municipal === '0') &&
-            !(fullPersonalInfo.address.barangay === '0')
+        if (!(bookingInfo.customerFirstName === '') &&
+            !(bookingInfo.customerLastName === '') &&
+            !(bookingInfo.phoneNumber === '') &&
+            !(bookingInfo.address.block === '') &&
+            !(bookingInfo.address.province === '0' || bookingInfo.address.province === '') &&
+            !(bookingInfo.address.municipal === '0' || bookingInfo.address.municipal === '') &&
+            !(bookingInfo.address.barangay === '0' || bookingInfo.address.barangay === '')
         ) {
-            console.log("Succesfully Retrieved Personal Information")
-            retrievePersonalInfo(fullPersonalInfo)
+            console.log("Personal Information is Complete")
+            console.log(bookingInfo);
+            setIsInfoComplete(true);
         } else {
             console.log("Failed to retrieve Personal Information")
+            setIsInfoComplete(false);
         }
-    }, [fullPersonalInfo]);
+    }, [bookingInfo]);
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
@@ -180,59 +171,91 @@ const PersonalInfo = ({retrievePersonalInfo, user}) => {
             <h2>Personal Information</h2>
             <div className="booking-grid col-three">
                 <FirstName 
-                    value={fullPersonalInfo.customerFirstName}
+                    value={bookingInfo.customerFirstName}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                                                customerFirstName: e.target.value})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            customerFirstName: e.target.value
+                        })
                     }}    
                 />
                 <LastName 
-                    value={fullPersonalInfo.customerLastName}
+                    value={bookingInfo.customerLastName}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                                                customerLastName: e.target.value})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            customerLastName: e.target.value
+                        })
                     }}   
                 />
                 <Phone 
-                    value={fullPersonalInfo.phoneNumber}
+                    value={bookingInfo.phoneNumber}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                                                phoneNumber: e.target.value})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            phoneNumber: e.target.value
+                        })
                     }}   
                 />
             </div>
             <h2>Address</h2>
             <div className="booking-grid col-two">
                 <Address 
-                    value={fullPersonalInfo.address.block}
+                    value={bookingInfo.address.block}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                                                address: {...fullPersonalInfo.address, block: e.target.value}})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            address: {
+                                ...bookingInfo.address, 
+                                block: e.target.value
+                            }
+                        })
                     }}   
                 />
                 <Province
-                    value={fullPersonalInfo.address.province}
+                    value={selectedProv}
                     data={provinceData} 
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                            address: {...fullPersonalInfo.adress, province: e.target.value, municipal:'0', barangay:'0'}})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            address: {
+                                ...bookingInfo.address, 
+                                province: e.target.value.slice(4), 
+                                municipal:'0', 
+                                barangay:'0'
+                            }
+                        })
                         listMunicipalities(e.target.value);
+                        setSelectedProv(e.target.value);
                     }}/>
                 <Municipality 
-                    value={fullPersonalInfo.address.municipal}
+                    value={selectedCity}
                     data={municipalData} 
                     selection={listBarangays}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                            address: {...fullPersonalInfo.address, municipal: e.target.value, barangay:'0'}})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            address: {
+                                ...bookingInfo.address, 
+                                municipal: e.target.value.slice(6),
+                                barangay:'0'
+                            }
+                        })
                         listBarangays(e.target.value);
+                        setSelectedCity(e.target.value);
                     }}/>
                 <Barangay 
-                    value={fullPersonalInfo.address.barangay}
+                    value={selectedBrgy}
                     data={barangayData}
                     onChange={e => {
-                        setFullPersonalInfo({...fullPersonalInfo, 
-                            address: {...fullPersonalInfo.address, barangay: e.target.value}})
+                        setBookingInfo({
+                            ...bookingInfo, 
+                            address: {
+                                ...bookingInfo.address,
+                                barangay: e.target.value.slice(9)
+                            }
+                        })
+                        setSelectedBrgy(e.target.value);
                     }}/>
             </div>
         </div>
@@ -240,95 +263,141 @@ const PersonalInfo = ({retrievePersonalInfo, user}) => {
 }
 
 // Service Booking Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList, user}) => {
+const ServiceBooking = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete}) => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Service Details Variables
-    const [areaDetails, setAreaDetails] = useState([]);
+    const [areaList, setAreaList] = useState([]);
     const [workerNumbers, setWorkerNumbers] = useState([]);
-    const [servicePrices, setServicePrices] = useState([]);
+    const [priceList, setPriceList] = useState([]);
+    const [selectedPrice, setSelectedPrice] = useState(0);
     const [windowNumber, setWindowNumber] = useState(1);
-    const [basePrice, setBasePrice] = useState(0);
-    const [finalPrice, setFinalPrice] = useState(0);
-    const [serviceBookingInfo, setServiceBookingInfo] = useState({
-        serviceCategory: '0',
-        sizeOfArea: '0',
-        numberOfWorkers: 0
-    });
 
     // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    // --- Changes Other Inputs based on Selected Service Type
-    const onServiceSelect = (type) => {
-        setServiceBookingInfo({serviceCategory: type, sizeOfArea: '0', numberOfWorkers: 0});
-        // --- Resets both Area and Worker before proceeding
-        setServicePrices([])
-        setAreaDetails([]);
-        setWorkerNumbers([]);
-        setBasePrice(0);
-        setFinalPrice(0)
-        setWindowNumber(1);
-        
-        if (type == 0) {
-            return;
-        }
-
-        serviceList.forEach((service, index) => {
-            if (service.serviceName == type) {
-                setServicePrices(service.price);
-                setAreaDetails(service.areaDetails);
-                setWorkerNumbers(service.numberOfWorkers);
-            }
-        })
-    }
-
-    // --- Handles Area Size Selection
-    const onAreaSelect = (type) => {
-        setBasePrice(0);
-        setFinalPrice(0)
-        setWindowNumber(1);
-        
-        if (type == 0) {
-            setBasePrice('0')
-        }
-        
-        areaDetails.forEach((area, index) => {
-            if (area.sizeOfArea === type) {
-                setBasePrice(servicePrices[index]);
-                setFinalPrice(servicePrices[index]);
-            }
-        })
-
-        setServiceBookingInfo({...serviceBookingInfo, sizeOfArea: type});
-    }
-    // --- Handles Worker Number Selection
-    const onWorkersSelect = (type) => {
-        const convertedType = parseInt(type);
-        setServiceBookingInfo({...serviceBookingInfo, numberOfWorkers: convertedType});
-    }
-    // --- Handles Window Number Change
-    const onWindowChange = (value) => {
-        setWindowNumber(value);
-    }
+    // Handles auto-fill
     useEffect(() => {
-        setFinalPrice(basePrice*windowNumber);
+        const service = bookingInfo.serviceDetails.serviceCategory;
+        serviceList.forEach((s, index) => {
+            if (s.serviceName === service) {
+                fetchAreaAndWorkers(s._id);
+            }
+        })
+    }, [])
+
+    useEffect(() => {
+        const area = bookingInfo.serviceDetails.sizeOfArea;
+        areaList.forEach((a, index) => {
+            if (a.sizeOfArea === area) {
+                setSelectedPrice(priceList[index]);
+            }
+        })
+    }, [areaList])
+
+    useEffect(() => {
+        setBookingInfo({
+            ...bookingInfo,
+            serviceCost: parseInt(selectedPrice * windowNumber)
+        })
+    }, [selectedPrice])
+
+    useEffect(() => {
+        localStorage.setItem("windowNumber", windowNumber);
     }, [windowNumber])
+
+    // Fetch Area and Workers for selected Service
+    const fetchAreaAndWorkers = async (service) => {
+        try {
+            const response = await axios.get(`http://localhost:5000/api/appointment/getSpecificService/${service}`, {
+                headers: { 
+                    'Content-Type': 'application/json',
+                }
+            });
+            setAreaList(response.data.data.areaDetails);
+            setWorkerNumbers(response.data.data.numberOfWorkers);
+            setPriceList(response.data.data.price);
+        // --- --- Failed Fetching
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // Acts on selection of service
+    const onServiceSelect = (service) => {
+        setAreaList([]);
+        setWorkerNumbers([]);
+        setPriceList([]);
+        setSelectedPrice(0);
+        setWindowNumber(1);
+
+        serviceList.forEach((s, index) => {
+            if (s.serviceName === service) {
+                fetchAreaAndWorkers(s._id);
+            }
+        })
+
+        setBookingInfo({
+            ...bookingInfo,
+            serviceDetails: {
+                serviceCategory: service,
+                sizeOfArea: '0',
+                numberOfWorkers: 0
+            },
+            serviceCost: 0
+        })
+    }
+
+    // Acts on selection of area
+    const onAreaSelect = (area) => {
+        setSelectedPrice(0)
+        areaList.forEach((a, index) => {
+            if (a.sizeOfArea === area) {
+                setSelectedPrice(priceList[index]);
+            }
+        })
+
+        setBookingInfo({
+            ...bookingInfo,
+            serviceDetails: {
+                ...bookingInfo.serviceDetails,
+                sizeOfArea: area
+            }
+        })
+    }
+
+    //Acts on selection of workers
+    const onWorkersSelect = (workers) => {
+        setBookingInfo({
+            ...bookingInfo,
+            serviceDetails: {
+                ...bookingInfo.serviceDetails,
+                numberOfWorkers: workers
+            }
+        })
+    }
+
+    //Acts on change of window number
+    const onWindowChange = (number) => {
+        setWindowNumber(number);
+        setBookingInfo({
+            ...bookingInfo,
+            serviceCost: parseInt(selectedPrice * number)
+        })
+    }
 
     // --- Pass Service Booking Information to Parent
     useEffect(() => {
-        if (!(serviceBookingInfo.serviceCategory === '0') &&
-            !(serviceBookingInfo.sizeOfArea === '0') &&
-            !(serviceBookingInfo.numberOfWorkers === 0)
+        if (!(bookingInfo.serviceDetails.serviceCategory === '0') &&
+            !(bookingInfo.serviceDetails.sizeOfArea === '0') &&
+            !(bookingInfo.serviceDetails.numberOfWorkers == 0) &&
+            !(bookingInfo.serviceCost === 0)
         ) { 
-            console.log("Successfully Retrieved Service Information")
-            retrieveServiceBooking(serviceBookingInfo);
+            console.log("Service Information and Pricing is Complete");
+            console.log(bookingInfo);
+            setIsInfoComplete(true);
         } else {
-            console.log("Failed to Retrieve Service Information")
+            console.log("Failed to Retrieve Service Information and Pricing");
+            setIsInfoComplete(false);
         }
-    }, [serviceBookingInfo]);
-
-    // --- Pass Final Price to Parent
-    useEffect(() => {
-        retrieveFinalPrice(finalPrice);
-    }, [finalPrice])
+    }, [bookingInfo]);
 
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
@@ -337,26 +406,26 @@ const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList
             <h2>Service</h2>
             <p className="subheading">
                     Estimated Price: <strong>Php {
-                        finalPrice 
+                        bookingInfo.serviceCost
                     }.00</strong>
             </p>
             <div className="booking-grid col-three">
                 <ServiceType  
                 data={serviceList} 
                 onChange={onServiceSelect}
-                value={serviceBookingInfo.serviceCategory}
+                value={bookingInfo.serviceDetails.serviceCategory}
                 />
                 <AreaSize  
-                data={areaDetails} 
+                data={areaList} 
                 onChange={onAreaSelect}
-                value={serviceBookingInfo.sizeOfArea}
+                value={bookingInfo.serviceDetails.sizeOfArea}
                 />
                 <WorkerNumbers  
                 data={workerNumbers} 
                 onChange={onWorkersSelect}
-                value={serviceBookingInfo.numberOfWorkers}
+                value={bookingInfo.serviceDetails.numberOfWorkers}
                 />
-                {(serviceBookingInfo.serviceCategory === "Window Cleaning")?
+                {(bookingInfo.serviceDetails.serviceCategory === "Window Cleaning")?
                 (
                     <div className="text-container">
                         {/* INPUTS HERE */}
@@ -384,34 +453,72 @@ const ServiceBooking = ({retrieveServiceBooking, retrieveFinalPrice, serviceList
 }
 
 // Schedule Booking Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, user}) => {
-    const [areaList, setAreaList] = useState([]);
+const Schedule = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete}) => {
     const [timeList, setTimeList] = useState([]);
     const [newTimeList, setNewTimeList] = useState([]);
     const [dateLimit, setDateLimit] = useState({
         minDate: '',
         maxDate: ''
     });
-    const [scheduleBookingInfo, setScheduleBookingInfo] = useState({
-        date: '',
-        startTime: ''
-    })
 
     // --- Sets the Current Date min and max input of date
+    const getDateLimits = () => {
+        const today = new Date();
+
+        //Min Date
+        const minDateObj = new Date(today);
+        minDateObj.setDate(today.getDate() + 1); 
+        const minYear = minDateObj.getFullYear();
+        const minMonth = String(minDateObj.getMonth() + 1).padStart(2, '0');
+        const minDay = String(minDateObj.getDate()).padStart(2, '0');
+        const minDate = `${minYear}-${minMonth}-${minDay}`;
+
+        //Max Date
+        const maxDateObj = new Date(today);
+        maxDateObj.setMonth(today.getMonth() + 6);
+        const maxYear = maxDateObj.getFullYear();
+        const maxMonth = String(maxDateObj.getMonth() + 1).padStart(2, '0');
+        const maxDay = String(maxDateObj.getDate()).padStart(2, '0');
+        const maxDate = `${maxYear}-${maxMonth}-${maxDay}`;
+
+        setDateLimit({minDate, maxDate});
+
+        if (bookingInfo.scheduleDetails.date === '') {
+            setBookingInfo({
+                ...bookingInfo, 
+                scheduleDetails: {
+                    ...bookingInfo.scheduleDetails,
+                    date: minDate
+                }
+            });
+        }
+    }
+
+    const setSelectedTime = (sTime) => {
+        const buttons = document.querySelectorAll(".time-booking-button");
+        
+        const formattedTimes = Array.from(buttons).map((button) => button.textContent);
+        const convertedTimes = formattedTimes.map((fTime) => {
+            const [time, meridien] = fTime.split(' ');
+            const [hour, min] = time.split(':');
+
+            if (meridien === "PM") {
+                return `${parseInt(hour)+12}${min}`;
+            } else {meridien === "AM"} {
+                return `${hour}${min}`;
+            }
+        })
+
+        convertedTimes.forEach((cTime, index) => {
+            if (cTime === sTime) {
+                buttons[index].classList.add('active');
+            }
+        })
+    }
+
     useEffect(() => {
         try {
-            const today = new Date();
-
-            const year = today.getFullYear();
-            const month = String(today.getMonth()+1).padStart(2, '0');
-            const day = String(today.getDate()+1).padStart(2, '0');
-            const max_year = String(today.getFullYear()+1);
-
-            const minDate = `${year}-${month}-${day}`;
-            const maxDate = `${max_year}-${month}-${day}`;
-
-            setDateLimit({minDate: minDate, maxDate: maxDate});
-            setScheduleBookingInfo({...this, date:minDate});
+            getDateLimits();
         } catch (e) {
             console.log(e);
         }
@@ -421,21 +528,16 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
     useEffect(() => {
         ResetButtons();
         const selectedService = serviceList.find(
-            (service) => service.serviceName === serviceBookingInfo.serviceCategory
+            (service) => service.serviceName === bookingInfo.serviceDetails.serviceCategory
         );
     
         if (selectedService) {
             const filteredArea = selectedService.areaDetails.find(
-                (area) => area.sizeOfArea === serviceBookingInfo.sizeOfArea
+                (area) => area.sizeOfArea === bookingInfo.serviceDetails.sizeOfArea
             );
-            setAreaList(selectedService.areaDetails || []);
             setTimeList(filteredArea ? filteredArea.startTime || [] : []);
         }
-    }, [serviceBookingInfo]);
-    
-    useEffect(() => {
-        console.log("Area of Size Changed!")
-    }, [serviceBookingInfo.sizeOfArea])
+    }, [bookingInfo.serviceDetails]);
 
     // --- Converts all Time to Readable Format
     useEffect(() => {
@@ -456,9 +558,21 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
         setNewTimeList(convertedTimeList);
     }, [timeList])
 
+    useEffect(() => {
+        if (bookingInfo.scheduleDetails.startTime !== ''){
+            setSelectedTime(bookingInfo.scheduleDetails.startTime)
+        }   
+    },[newTimeList]);
+
     // --- Handles Date Input
     const handleDateInput = (value) => {
-        setScheduleBookingInfo({...scheduleBookingInfo, date: value})
+        setBookingInfo({
+            ...bookingInfo, 
+            scheduleDetails: {
+                ...bookingInfo.scheduleDetails,
+                date: value
+            }
+        })
     }
 
     // --- Handles Selection of Time
@@ -468,22 +582,31 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
     }
 
     const handleTimeButtonClick = (e, value) => {
-        setScheduleBookingInfo({...scheduleBookingInfo, startTime: value})
+        setBookingInfo({
+            ...bookingInfo,
+            scheduleDetails: {
+                ...bookingInfo.scheduleDetails,
+                startTime: value
+            }
+        })
         ResetButtons();
         e.target.classList.add('active');
     }
     
     // --- Pass Scheduling Information to Parent
     useEffect(() => {
-        if (!(scheduleBookingInfo.date === '') &&
-            !(scheduleBookingInfo.startTime === '')
+        if (!(bookingInfo.scheduleDetails.date === '') &&
+            !(bookingInfo.scheduleDetails.startTime === '')
         ){
-            retrieveScheduleBooking(scheduleBookingInfo);
+            console.log("Service Information and Pricing is Complete");
+            console.log(bookingInfo);
+            setIsInfoComplete(true);
         } else {
             console.log("Failed to retrieve Schedule Booking");
+            setIsInfoComplete(false);
         }
             
-    }, [scheduleBookingInfo])
+    }, [bookingInfo])
 
 
     return (
@@ -497,13 +620,13 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
                     </p>
                     {/* INPUT HERE */}
                     <input 
-                    value = {scheduleBookingInfo.date}
+                    value = {bookingInfo.scheduleDetails.date}
                     className="input" 
                     type="date" 
                     name="bookDate" 
                     onChange={(e) => handleDateInput(e.target.value)}
                     id="bookdate-input" 
-                    // min={dateLimit.minDate} 
+                    min={dateLimit.minDate} 
                     max={dateLimit.maxDate}/>
                 </div> 
                 {(timeList.length > 0) ?
@@ -525,32 +648,57 @@ const Schedule = ({retrieveScheduleBooking, serviceBookingInfo, serviceList, use
                     </div>
                 </div>) : 
                 (<></>)}
-                
             </div>
         </div>
     )
 }
  
 // Cleaners Booking Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const AvailableCleaners = ({retrieveCleanersBooking, availWorkerIdentifier, user}) => {
+const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => {
     const [workersList, setWorkersList] = useState([]);
     const [responseSuccess, setResponseSuccess] = useState(false);
-    const [workerNumbers, setWorkerNumbers] = useState('0');
+    const [workerNumbers, setWorkerNumbers] = useState(0);
     const [selectedWorkers, setSelectedWorkers] = useState([]);
     const [errorMessage, setErrorMessage] = useState({
         status: '',
         message: ''
     })
+    const [workerIdentifier, setWorkerIdentifier] = useState({
+        serviceDetails: {
+            serviceCategory: '',
+            sizeOfArea: ''
+        },
+        scheduleDetails: {
+            date: '',
+            startTime: ''
+        }
+    })
 
+
+    // Function --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    //Sets the only needed data for fetching workers
+    useEffect(() => {
+        setWorkerIdentifier({
+            serviceDetails: {
+                serviceCategory: bookingInfo.serviceDetails.serviceCategory,
+                sizeOfArea: bookingInfo.serviceDetails.sizeOfArea
+            },
+            scheduleDetails: {
+                date: bookingInfo.scheduleDetails.date,
+                startTime: bookingInfo.scheduleDetails.startTime
+            }
+        })
+
+        console.log(bookingInfo);
+    }, [bookingInfo])
     // --- Fetches Available Worker
     useEffect(() => {
-        setWorkerNumbers(parseInt(availWorkerIdentifier.serviceDetails.numberOfWorkers));
-        setSelectedWorkers([]);
+        setWorkerNumbers(parseInt(bookingInfo.serviceDetails.numberOfWorkers));
         
         const fetchAvailableWorkers = async () => {
             // --- --- Successfull Fetching
             try {
-                const response = await axios.post(`http://localhost:5000/api/appointment/getAvailableWorkers`, availWorkerIdentifier, {
+                const response = await axios.post(`http://localhost:5000/api/appointment/getAvailableWorkers`, workerIdentifier, {
                     headers: { 'Content-Type': 'application/json' }
                   });
                   
@@ -576,14 +724,20 @@ const AvailableCleaners = ({retrieveCleanersBooking, availWorkerIdentifier, user
         }
 
         if (
-            availWorkerIdentifier.serviceDetails.serviceCategory &&
-            availWorkerIdentifier.serviceDetails.sizeOfArea &&
-            availWorkerIdentifier.scheduleDetails.date &&
-            availWorkerIdentifier.scheduleDetails.startTime
+            workerIdentifier.serviceDetails.serviceCategory &&
+            workerIdentifier.serviceDetails.sizeOfArea &&
+            workerIdentifier.scheduleDetails.date &&
+            workerIdentifier.scheduleDetails.startTime
         ) {
             fetchAvailableWorkers();
         }
-    }, [availWorkerIdentifier])
+    }, [workerIdentifier])
+
+    useEffect(() => {
+        if (bookingInfo.assignedWorkers) {
+            setSelectedWorkers(bookingInfo.assignedWorkers);
+        }
+    }, [workersList])
 
     const workerSelect = (workerId, isSelected) => {
         if (isSelected) {
@@ -595,10 +749,16 @@ const AvailableCleaners = ({retrieveCleanersBooking, availWorkerIdentifier, user
 
     useEffect(() => {
         if (selectedWorkers.length == workerNumbers){
-            retrieveCleanersBooking(selectedWorkers);
+            setBookingInfo({
+                ...bookingInfo,
+                assignedWorkers: selectedWorkers
+            })
+            setIsInfoComplete(true);
+        } else {
+            setIsInfoComplete(false);
         }
     }, [selectedWorkers])
-    
+
     return (
         <div className="booking-page" id="cleaners-booking-page">
             <h2>Available Cleaners Need You</h2>
@@ -609,9 +769,8 @@ const AvailableCleaners = ({retrieveCleanersBooking, availWorkerIdentifier, user
                         const isSelected = selectedWorkers.includes(worker._id);
                         return (
                             <div 
-                            className={`avail-worker-container ${isSelected ? "selected" : ""}`}
+                            className={`avail-worker-container ${(isSelected) ? 'selected' : ''}`}
                             key={index}
-                            value={index}
                             onClick={() => workerSelect(worker._id, isSelected)}
                             >
                                 <div className="information">
@@ -656,40 +815,7 @@ const AvailableCleaners = ({retrieveCleanersBooking, availWorkerIdentifier, user
     )
 }
  
-const Review = ({bookingAppointmentInfo}) => {
-    const [info, setInfo] = useState({
-        customerFirstName: '',
-        customerLastName: '',
-        phoneNumber: '',
-        address: {
-            block: '',
-            province: '',
-            municipal: '',
-            barangay: ''
-        },
-        serviceDetails: {
-            serviceCategory: '',
-            sizeOfArea: '',
-            numberOfWorkers: 0
-        },
-        scheduleDetails: {
-            date: '',
-            startTime: ''
-        },
-        assignedWorkers: [],
-        serviceCost: 0
-    });
-
-    useEffect(() => {
-        try {
-            if (bookingAppointmentInfo.address.block) {
-                setInfo({...bookingAppointmentInfo});
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    }, [bookingAppointmentInfo]);
-
+const Review = ({bookingInfo}) => {
     return (
         <div className="booking-page" id="review-booking-page">
             <h2>Review and Confirm your Information</h2>
@@ -700,20 +826,20 @@ const Review = ({bookingAppointmentInfo}) => {
                 <div className="review-info-line">
                     <p className="title">Full Name</p>
                     <div className="data">
-                        <p>{info.customerFirstName} {info.customerLastName}</p>
+                        <p>{bookingInfo.customerFirstName} {bookingInfo.customerLastName}</p>
                     </div>
                 </div>
                 <div className="review-info-line">
                     <p className="title">Phone Number</p>
                     <div className="data">
-                        <p>{info.phoneNumber}</p>
+                        <p>{bookingInfo.phoneNumber}</p>
                     </div>
                 </div>
                 <div className="review-info-line">
                     <p className="title">Address</p>
                     <div className="data">
-                        <p>{info.address.block}</p>
-                        <p>{info.address.barangay}, {info.address.municipal}, {info.address.province}</p>
+                        <p>{bookingInfo.address.block}</p>
+                        <p>{bookingInfo.address.barangay}, {bookingInfo.address.municipal}, {bookingInfo.address.province}</p>
                     </div>
                 </div>
             </section>
@@ -722,19 +848,19 @@ const Review = ({bookingAppointmentInfo}) => {
                 <div className="review-info-line">
                     <p className="title">Date</p>
                     <div className="data">
-                        <p>{info.scheduleDetails.date}</p>
+                        <p>{bookingInfo.scheduleDetails.date}</p>
                     </div>
                 </div>
                 <div className="review-info-line">
                     <p className="title">Time</p>
                     <div className="data">
-                        <p>{info.scheduleDetails.startTime}</p>
+                        <p>{bookingInfo.scheduleDetails.startTime}</p>
                     </div>
                 </div>
                 <div className="review-info-line">
                     <p className="title">Workers</p>
                     <div className="data">
-                        {info.assignedWorkers.map((worker, index) => (
+                        {bookingInfo.assignedWorkers.map((worker, index) => (
                             <p key={index}>{worker}</p>
                         ))}
                     </div>
@@ -745,20 +871,20 @@ const Review = ({bookingAppointmentInfo}) => {
                 <div className="review-info-line">
                     <p className="title">Service</p>
                     <div className="data">
-                        <p>{info.serviceDetails.serviceCategory}</p>
+                        <p>{bookingInfo.serviceDetails.serviceCategory}</p>
                     </div>
                 </div>
                 <div className="review-info-line">
                     <p className="title">Size of Area</p>
                     <div className="data">
-                        <p>{info.serviceDetails.sizeOfArea}</p>
+                        <p>{bookingInfo.serviceDetails.sizeOfArea}</p>
                     </div>
                 </div>
                 <hr />
                 <div className="review-info-line price">
                     <p className="title">Total Cost</p>
                     <div className="data">
-                        <p>&#8369;{info.serviceCost}</p>
+                        <p>&#8369;{bookingInfo.serviceCost}</p>
                     </div>
                 </div>
             </section>

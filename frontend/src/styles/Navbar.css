@@ -5,9 +5,13 @@
     display         : flex;
     padding         : 0px 42px;
     align-items     : center;
-    background-color: var(--color1c);
+    background-color: #EBFFE9;
     height          : 90px;
     width           : 100%;
+    border-bottom   : 1px solid var(--monoc4);
+    position        : sticky;
+    top             : 0;
+    z-index         : 999;
 }
 
 .navbar.space-between {
