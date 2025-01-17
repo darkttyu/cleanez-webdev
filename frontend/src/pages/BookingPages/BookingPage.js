@@ -37,7 +37,6 @@ const BookingPage = () => {
         assignedWorkers: null,
         serviceCost: 0
     });
-    const [workersData, setWorkersData] = useState([]);
     // --- Other Variables
     const [page, setPage] = useState(0);
     const [showSubmit, setShowSubmit] = useState(false);
@@ -125,14 +124,12 @@ const BookingPage = () => {
                 <AvailableCleaners 
                 bookingInfo={bookingInfo}
                 setBookingInfo={setBookingInfo}
-                setIsInfoComplete={setIsInfoComplete}
-                setWorkersData={setWorkersData}/>
+                setIsInfoComplete={setIsInfoComplete}/>
             )
         } else if (page === 4) {
             return (
                 <Review 
                 bookingInfo={bookingInfo}
-                workersData={workersData}
                 />
             )
         }

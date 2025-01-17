@@ -654,7 +654,7 @@ const Schedule = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete})
 }
  
 // Cleaners Booking Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete, setWorkersData}) => {
+const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => {
     const [workersList, setWorkersList] = useState([]);
     const [responseSuccess, setResponseSuccess] = useState(false);
     const [workerNumbers, setWorkerNumbers] = useState(0);
@@ -742,14 +742,8 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete, setW
     const workerSelect = (worker, isSelected) => {
         if (isSelected) {
             setSelectedWorkers(selectedWorkers.filter((w) => w !== worker._id))
-            setWorkersData((workersData) => {
-                workersData.filter((wd) => wd !== worker)
-            })
         }  else if (selectedWorkers.length != workerNumbers) {
             setSelectedWorkers([...selectedWorkers, worker._id]);
-            setWorkersData((workersData) => {
-                return [...workersData, worker];
-            })
         }
     }
 
@@ -825,11 +819,7 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete, setW
     )
 }
  
-const Review = ({bookingInfo, workersData}) => {
-    useEffect(() => {
-        console.log("Workers Data!", workersData);
-    }, [workersData])
-
+const Review = ({bookingInfo}) => {
     return (
         <div className="booking-page" id="review-booking-page">
             <h2>Review and Confirm your Information</h2>
@@ -874,8 +864,8 @@ const Review = ({bookingInfo, workersData}) => {
                 <div className="review-info-line">
                     <p className="title">Workers</p>
                     <div className="data">
-                        {workersData.map((worker, index) => (
-                            <p key={index}>{worker.userDetails.firstName} {worker.userDetails.lastName}</p>
+                        {bookingInfo.assignedWorkers.map((worker, index) => (
+                            <p key={index}>{worker}</p>
                         ))}
                     </div>
                 </div>

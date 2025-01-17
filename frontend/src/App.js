@@ -26,12 +26,12 @@ function App() {
                     <Route path="/forgot-password" element={<FindAccountPage1/>} />
                     <Route path='/booking' element={<BookingPage/>}/>
                     <Route path='/booking/success' element={<BookingSuccess/>}/>
-                    <Route path='/account/:id' element={<AccountLayout/>}>
+                    {/* <Route path='/account/:id' element={<AccountLayout/>}>
                         <Route index element={<Navigate to='profile'/>}/>
                         <Route to='profile' element={<AccProfile/>}/>
                         <Route to='dashboard' element={<AccDashboard/>}/>
                         <Route to='appointments' element={<AccAppointments/>}/>
-                    </Route>
+                    </Route> */}
                 </Routes>
             </div>
         </Router>
