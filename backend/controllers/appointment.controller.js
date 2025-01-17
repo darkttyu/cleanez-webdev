@@ -4,7 +4,7 @@ import { Worker } from "../models/worker.model.js";
 import { User } from "../models/user.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import { sendUserAppointmentConfirmation, sendWorkerAppointmentConfirmation } from "../nodemailer/sendMail.js";
-import { response } from "express";
+import moment from "moment";
 
 const formatTime = (time) => {
   // Extract hours and minutes from the input time
@@ -106,16 +106,60 @@ export const setAppointment = async (req, res) => {
     // Extracts the user ID from the request object.
     const userId = req.userId;
     
+    const appointmentList = await Appointment.find({userId: userId});
+
+    // Checks if the appointment already exists. Prevents double booking.
+    const duplicateAppointment = appointmentList.some(appointment => 
+      appointment.customerFirstName === customerFirstName &&
+      appointment.customerLastName === customerLastName &&
+      appointment.address.block === address.block &&
+      appointment.address.province === address.province &&
+      appointment.address.municipal === address.municipal &&
+      appointment.address.barangay === address.barangay &&
+      appointment.serviceDetails.serviceCategory === serviceDetails.serviceCategory &&
+      moment(appointment.scheduleDetails.date).startOf('day').isSame(moment(scheduleDetails.date).startOf('day')) &&
+      moment(appointment.scheduleDetails.startTime, "HHmm").isSame(moment(scheduleDetails.startTime, "HHmm"))
+    );
     
-    // CHECK IF THE USER HAS AN EXISTING APPOINTMENT FOR THAT ADDRESS WITHIN THE DAY
-    // CHECK IF THE USER HAS AN EXISTING APPOINTMENT FOR THAT SERVICE WITHIN THE DAY
+    if(duplicateAppointment) {
+      return res.status(400).json({success: false, message: "Appointment already exists.", duplicateAppointment: duplicateAppointment})
+    }
+
+    // Checks if the appointment exists based on the specified date and time regardless of service. Avoids conflicting schedules.
+    const appointmentConflict = appointmentList.some(appointment=> 
+      moment(appointment.scheduleDetails.date).startOf('day').isSame(moment(scheduleDetails.date).startOf('day')) &&
+      moment(appointment.scheduleDetails.startTime, "HHmm").isSame(moment(scheduleDetails.startTime, "HHmm"))
+    )
+
+    if(appointmentConflict) {
+      return res.status(400).json({success: false, message: "Cannot process appointment due to conflict with other scheduled Appointments.", appointmentConflict: appointmentConflict})
+    }
+
     const appointmentServiceList = await Appointment.find({"userId": userId, "serviceDetails.serviceCategory": serviceDetails.serviceCategory}); // Gets all the appointments that the user booked for that specific service.
 
-    if(appointmentServiceList) {
-      
+    console.log(appointmentServiceList)
+
+    // Checks if a user has made an appointment for a specific service for the current day. This limits the appointment of each service / day to 1.
+    const currentDateConflict = appointmentServiceList.some(appointment => 
+      moment(appointment.createdAt).startOf('day').isSame(moment().startOf('day'))
+    );
+    
+    // console.log(currentDateConflict);
+    if(currentDateConflict){
+      return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service for today.", currentDateConflict: currentDateConflict});
     }
-    // COMPARE ALL THE DATE AND TIME TO THE CURRENT DATE AND TIME OF THE APPOINTMENT, IF MAY MAGMATCH,, SEND AN ERROR MESSAGE
-    const appointmentList = await Appointment.find();
+
+    // Checks if the appointment exists given a specific day, time, and service. This avoids overbooking if a user decides to 
+    // book the same service on a different day
+    const dateTimeConflict = appointmentServiceList.some(appointment => 
+      moment(appointment.scheduleDetails.date).startOf('day').isSame(moment(scheduleDetails.date).startOf('day')) && 
+      moment(appointment.scheduleDetails.startTime, "HHmm").isSame(moment(scheduleDetails.startTime, "HHmm"))
+    )
+
+    // console.log(dateTimeConflict) 
+    if(dateTimeConflict) {
+      return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service on that Date and Time.", dateTimeConflict: dateTimeConflict})
+    }
 
     // Creates a new appointment document.
     const newAppointment = new Appointment({
@@ -221,8 +265,8 @@ export const setAppointment = async (req, res) => {
 
     console.log("Successfully Sent User Confirmation");
     
-    // Responds with a 201 status and a success message if the appointment is booked successfully.
-    return res.status(201).json({ success: true, message: "Appointment has been booked successfully!" });
+    // Responds with a 200 status and a success message if the appointment is booked successfully.
+    return res.status(200).json({ success: true, message: "Appointment has been booked successfully!" });
 
   } catch (error) {
     // If there's an error during the appointment creation process, returns a 500 status with an error message.
@@ -260,7 +304,7 @@ export const getAvailableWorkers = async (req, res) => {
     // Initialize an array to store available workers.
     let availableWorkers = []
 
-    // Loops through each worker to check if they are available at the specified date and time.
+    // Loops through each workers assignedAppointments to check if they are available at the specified date and time.
     workers.forEach(worker => {
       const isConflict = worker.assignedAppointments.some(appointment => 
         new Date(appointment.date).getTime() === new Date(date).getTime() 
@@ -303,7 +347,10 @@ export const getAvailableWorkers = async (req, res) => {
       return workerProvince === address.province
     })
 
-    console.log(availableWorkers); // For testing 
+    // Checks if there are any available workers
+    if (availableWorkers.length === 0) {
+      return res.status(404).json({success: false, message: "No Workers Found.", workers: availableWorkers})
+    }
 
     // Successfully fetched available workers.
     return res.status(200).json({ message: "Successfully fetched available workers", workers: availableWorkers });
@@ -332,6 +379,7 @@ export const getWorkerInformation = async (req, res) => {
       return res.status(404).json({success: false, message: "User Information Not Found", error: error.message})
     }
 
+    // Combines the Worker Information to their Personal Information 
     workerInformation = {
       userInformation, 
       workerInformation
@@ -358,3 +406,77 @@ export const testEmailBooking = async (req, res) => {
   }
   return res.status(200).json({ message: "Request Success" });
 }; 
+
+export const testValidAppointments = async(req, res) => {
+    // Destructures the required fields from the request body.
+  const { customerFirstName, customerLastName, phoneNumber, address, serviceDetails, scheduleDetails} = req.body;
+
+  try {
+    // Validates if all required fields are provided in the request body.
+    if ( !customerFirstName || !customerLastName || !phoneNumber || !address || !serviceDetails || !scheduleDetails ) {
+      return res.status(400).json({ message: "Please fill up all fields" });
+    }
+
+    // Extracts the user ID from the request object.
+    const userId = req.userId;
+    
+    const appointmentServiceList = await Appointment.find({"userId": userId, "serviceDetails.serviceCategory": serviceDetails.serviceCategory}); // Gets all the appointments that the user booked for that specific service.
+
+    console.log(appointmentServiceList)
+
+    // CHECK IF THE USER HAS AN EXISTING APPOINTMENT FOR THAT SERVICE FOR THE CURRENT DAY
+    const currentDateConflict = appointmentServiceList.some(appointment => 
+      moment(appointment.createdAt).startOf('day').isSame(moment().startOf('day'))
+    );
+    
+    console.log(currentDateConflict);
+    if(currentDateConflict){
+      return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service for today.", currentDateConflict: currentDateConflict});
+    }
+
+    // CHECK IF THE USER HAS AN EXISTING APPOINTMENT FOR THAT SERVICE FOR THAT SPECIFIC DAY AND TIME
+    const dateTimeConflict = appointmentServiceList.some(appointment => 
+      moment(appointment.scheduleDetails.date).startOf('day').isSame(moment(scheduleDetails.date).startOf('day')) && 
+      moment(appointment.scheduleDetails.startTime, "HHmm").isSame(moment(scheduleDetails.startTime, "HHmm"))
+    )
+
+    console.log(dateTimeConflict) 
+    if(dateTimeConflict) {
+      return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service on that Date and Time.", dateTimeConflict: dateTimeConflict})
+    }
+
+    const appointmentList = await Appointment.find({userId: userId});
+
+    // CHECK IF THE USER HAS AN EXISTING APPOINTMENT FOR THAT SPECIFIC DAY AND TIME REGARDLESS OF SERVICE
+    const appointmentConflict = appointmentList.some(appointment=> 
+      moment(appointment.scheduleDetails.date).startOf('day').isSame(moment(scheduleDetails.date).startOf('day')) &&
+      moment(appointment.scheduleDetails.startTime, "HHmm").isSame(moment(scheduleDetails.startTime, "HHmm"))
+    )
+
+    if(appointmentConflict) {
+      return res.status(400).json({success: false, message: "Cannot process appointment due to conflict with other scheduled Appointments.", appointmentConflict: appointmentConflict})
+    }
+
+    // CHECK IF THE USER HAS AN EXISTING APPOINTMENT REGARDLESS OF THE SERVICE, DATE, TIME, LITERAL DUPLICATE
+    const duplicateAppointment = appointmentList.some(appointment => 
+      appointment.customerFirstName === customerFirstName &&
+      appointment.customerLastName === customerLastName &&
+      appointment.address.block === address.block &&
+      appointment.address.province === address.province &&
+      appointment.address.municipal === address.municipal &&
+      appointment.address.barangay === address.barangay &&
+      appointment.serviceDetails.serviceCategory === serviceDetails.serviceCategory &&
+      moment(appointment.scheduleDetails.date).startOf('day').isSame(moment(scheduleDetails.date).startOf('day')) &&
+      moment(appointment.scheduleDetails.startTime, "HHmm").isSame(moment(scheduleDetails.startTime, "HHmm"))
+    );
+    
+    console.log(duplicateAppointment)
+    if(duplicateAppointment) {
+      return res.status(400).json({success: false, message: "Appointment already exists.", duplicateAppointment: duplicateAppointment})
+    }
+
+    return res.status(200).json({success: true, message: "Fetched Appointment List based on Specific Service.", appointments: appointmentList});
+  } catch(error) {
+    return res.status(500).json({success: false, message: "Server Error", error: error.message})
+  }
+};
