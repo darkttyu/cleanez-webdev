@@ -36,7 +36,8 @@ const BookingPage = () => {
         },
         assignedWorkers: null,
         serviceCost: 0
-    })
+    });
+    const [workersData, setWorkersData] = useState([]);
     // --- Other Variables
     const [page, setPage] = useState(0);
     const [showSubmit, setShowSubmit] = useState(false);
@@ -95,10 +96,6 @@ const BookingPage = () => {
         fetchServicesList();
     }, []);
 
-    const retrieveCleanersBooking = (data) => {
-        setSelectedCleaners(data);
-    }
-
     const pageDisplay = () => {
         if (page === 0) {
             return (
@@ -128,12 +125,14 @@ const BookingPage = () => {
                 <AvailableCleaners 
                 bookingInfo={bookingInfo}
                 setBookingInfo={setBookingInfo}
-                setIsInfoComplete={setIsInfoComplete}/>
+                setIsInfoComplete={setIsInfoComplete}
+                setWorkersData={setWorkersData}/>
             )
         } else if (page === 4) {
             return (
                 <Review 
                 bookingInfo={bookingInfo}
+                workersData={workersData}
                 />
             )
         }

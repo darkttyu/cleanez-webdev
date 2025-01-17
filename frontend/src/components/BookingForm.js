@@ -654,7 +654,7 @@ const Schedule = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete})
 }
  
 // Cleaners Booking Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => {
+const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete, setWorkersData}) => {
     const [workersList, setWorkersList] = useState([]);
     const [responseSuccess, setResponseSuccess] = useState(false);
     const [workerNumbers, setWorkerNumbers] = useState(0);
@@ -739,11 +739,17 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
         }
     }, [workersList])
 
-    const workerSelect = (workerId, isSelected) => {
+    const workerSelect = (worker, isSelected) => {
         if (isSelected) {
-            setSelectedWorkers(selectedWorkers.filter((worker) => worker !== workerId))
+            setSelectedWorkers(selectedWorkers.filter((w) => w !== worker._id))
+            setWorkersData((workersData) => {
+                workersData.filter((wd) => wd !== worker)
+            })
         }  else if (selectedWorkers.length != workerNumbers) {
-            setSelectedWorkers([...selectedWorkers, workerId]);
+            setSelectedWorkers([...selectedWorkers, worker._id]);
+            setWorkersData((workersData) => {
+                return [...workersData, worker];
+            })
         }
     }
 
@@ -771,11 +777,15 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
                             <div 
                             className={`avail-worker-container ${(isSelected) ? 'selected' : ''}`}
                             key={index}
-                            onClick={() => workerSelect(worker._id, isSelected)}
+                            onClick={() => workerSelect(worker, isSelected)}
                             >
                                 <div className="information">
-                                    <p className="name">{worker.userId}</p>
-                                    <p className="location">Location: {}</p>
+                                    <p className="name">{`
+                                    ${worker.userDetails.firstName} ${worker.userDetails.lastName}
+                                    `}</p>
+                                    <p className="location">Location: {`
+                                    ${worker.userDetails.address.barangay}, ${worker.userDetails.address.municipal}, ${worker.userDetails.address.province}
+                                    `}</p>
                                 </div>
                                 <div className="rating">
                                     <SVGIcons 
@@ -815,7 +825,11 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
     )
 }
  
-const Review = ({bookingInfo}) => {
+const Review = ({bookingInfo, workersData}) => {
+    useEffect(() => {
+        console.log("Workers Data!", workersData);
+    }, [workersData])
+
     return (
         <div className="booking-page" id="review-booking-page">
             <h2>Review and Confirm your Information</h2>
@@ -860,8 +874,8 @@ const Review = ({bookingInfo}) => {
                 <div className="review-info-line">
                     <p className="title">Workers</p>
                     <div className="data">
-                        {bookingInfo.assignedWorkers.map((worker, index) => (
-                            <p key={index}>{worker}</p>
+                        {workersData.map((worker, index) => (
+                            <p key={index}>{worker.userDetails.firstName} {worker.userDetails.lastName}</p>
                         ))}
                     </div>
                 </div>
