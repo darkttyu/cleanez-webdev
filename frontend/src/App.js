@@ -7,6 +7,8 @@ import FindAccountPage1 from './pages/UserSigningPages/FindAccountPage1';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import BookingPage from './pages/BookingPages/BookingPage';
 import BookingSuccess from './pages/BookingPages/BookingSuccess';
+import { useNavigate } from 'react-router-dom';
+import AccountLayout from './pages/UserPages/AccountLayout';
 
 function App() {
     return (
@@ -24,6 +26,12 @@ function App() {
                     <Route path="/forgot-password" element={<FindAccountPage1/>} />
                     <Route path='/booking' element={<BookingPage/>}/>
                     <Route path='/booking/success' element={<BookingSuccess/>}/>
+                    <Route path='/account/:id' element={<AccountLayout/>}>
+                        <Route index element={<Navigate to='profile'/>}/>
+                        <Route to='profile' element={<AccProfile/>}/>
+                        <Route to='dashboard' element={<AccDashboard/>}/>
+                        <Route to='appointments' element={<AccAppointments/>}/>
+                    </Route>
                 </Routes>
             </div>
         </Router>
