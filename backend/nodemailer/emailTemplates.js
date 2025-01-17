@@ -514,7 +514,7 @@ export const SEND_WORKER_BOOKING_CONFIRMATION =  `
       <li><strong>Size of Area:</strong> <span style="font-weight: bold; color: #4CAF50;">{sizeOfArea}</span></li>
       <li><strong>Date:</strong> <span style="font-weight: bold; color: #4CAF50;">{bookingDate}</span></li>
       <li><strong>Time:</strong> <span style="font-weight: bold; color: #4CAF50;">{bookingTime}</span></li>
-      <li><strong>Earnings:</strong> <span style="font-weight: bold; color: #4CAF50;">{earnings}</span></li>
+      <li><strong>Earnings:</strong> <span style="font-weight: bold; color: #4CAF50;">₱ {earnings}.00</span></li>
       <li><strong>Assigned Team:</strong> <span style="font-weight: bold; color: #4CAF50;">{workerList}</span></li>
     </ul>
     <p style="text-align: justify;">Please ensure you arrive at the scheduled location on time and prepared to deliver the high-quality service CleanEZ is known for. If you encounter any issues or have questions regarding this booking, please contact us immediately at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>

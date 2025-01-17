@@ -1,6 +1,16 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  profilePicture: {
+    data: { 
+      type: Buffer, 
+      default: null 
+    },
+    contentType: { 
+      type: String, 
+      default: null 
+    }
+  },
   email: {
     type: String,
     required: true,

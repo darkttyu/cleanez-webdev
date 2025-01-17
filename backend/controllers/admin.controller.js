@@ -843,23 +843,44 @@ export const rejectApplicant = async (req, res) => {
   }
 };
 
-
 /*
-export const addResumeField = async (req, res) => {
+export const addProfilePictureField = async (req, res) => {
   try {
     const result = await User.updateMany(
-      { role: "User" },  // Filters users by role 'User'
-      {
-        $set: {
-          resume: null  // Setting the 'resume' field to null
+      {},
+        {
+          $set: {
+            profilePicture: null
+          }
         }
-      }
-    );
-
-    return res.status(200).json({ message: `${result.modifiedCount} users updated` });
+    )
   } catch (error) {
-    return res.status(500).json({ message: "Error updating users", error: error.message });
+    console.log("error in adding profile picture field: ", error.message)
   }
 };
-
 */
+
+/*
+export const removeResumeField = async (req, res) => {
+  try {
+    const result = await User.updateMany(
+      {},
+      { 
+        $unset: { resume: null }  // This will remove the 'resume' field
+      }
+    );
+    
+
+    const updatedUsers = await User.find({ role: "User" }).limit(5);
+    console.log(updatedUsers); // Verify if 'resume' is missing
+
+    console.log(result); // Logs the result of the update operation
+    return res.status(200).json({success: true, message: "Update Success", result: result})
+  } catch (error) {
+    console.error(error); // Logs any error that occurs during the operation
+  }
+  
+};
+*/
+
+

@@ -105,8 +105,18 @@ export const setAppointment = async (req, res) => {
 
     // Extracts the user ID from the request object.
     const userId = req.userId;
-
     
+    
+    // CHECK IF THE USER HAS AN EXISTING APPOINTMENT FOR THAT ADDRESS WITHIN THE DAY
+    // CHECK IF THE USER HAS AN EXISTING APPOINTMENT FOR THAT SERVICE WITHIN THE DAY
+    const appointmentServiceList = await Appointment.find({"userId": userId, "serviceDetails.serviceCategory": serviceDetails.serviceCategory}); // Gets all the appointments that the user booked for that specific service.
+
+    if(appointmentServiceList) {
+      
+    }
+    // COMPARE ALL THE DATE AND TIME TO THE CURRENT DATE AND TIME OF THE APPOINTMENT, IF MAY MAGMATCH,, SEND AN ERROR MESSAGE
+    const appointmentList = await Appointment.find();
+
     // Creates a new appointment document.
     const newAppointment = new Appointment({
       userId,
