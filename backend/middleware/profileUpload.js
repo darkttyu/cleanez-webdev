@@ -31,7 +31,7 @@ const profileUpload = multer({
   },
 });
 
-// Export the file upload middleware to handle multiple file fields
+// Export the file upload middleware 
 export const uploadProfile = profileUpload.fields([
   { name: 'profile', maxCount: 1}, // Upload a single image for the profile; 
 ]);

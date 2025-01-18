@@ -68,13 +68,11 @@ const appointmentSchema = new mongoose.Schema(
         required: true
       }
     },
-    assignedWorkers: [
-      {
+    assignedWorkers: {
         type: [mongoose.Schema.Types.ObjectId], 
         ref: "Worker", // References the `Worker` model
         required: true,
       },
-    ],
     serviceCost: {
       type: Number,
       required: true,
@@ -87,7 +85,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Paid"],
+      enum: ["Pending", "Paid", "Cancelled"],
       default: "Pending",
       required: true
     }
