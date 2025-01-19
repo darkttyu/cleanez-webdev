@@ -134,40 +134,32 @@ export const clickedWorker = async (req, res) => {
 
 export const editWorkerSchedule = async (req, res) => {
   const userId = req.params.id;
-  const { serviceCategory, workerAvailability } = req.body;
+  const { workerAvailability } = req.body;
 
   try {
     // Checks if the worker exists.
-    const currentWorker = await Worker.findOne({ userId });
+    const currentWorker = await Worker.findById(userId);
     if (!currentWorker) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Worker does not exist" });
+      return res.status(404).json({ success: false, message: "Worker does not exist" });
     }
 
     // Updates the worker's schedule information.
     const updatedWorkerInfo = await Worker.findByIdAndUpdate(
       currentWorker._id,
       {
-        serviceCategory,
-        workerAvailability,
+        "workerAvailability.day": workerAvailability.day,
+        "workerAvailability.startTime": workerAvailability.startTime
       },
       { new: true } // Ensures the updated document is returned.
     );
 
     if (!updatedWorkerInfo) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Failed to update worker." });
+      return res.status(400).json({ success: false, message: "Failed to update worker." });
     }
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Successfully Updated User Information!" });
+    return res.status(200).json({ success: true, message: "Successfully Updated User Information!", data: updatedWorkerInfo});
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Server Error", error: error.message });
+    return res.status(500).json({ success: false, message: "Server Error", error: error.message });
   }
 };
 

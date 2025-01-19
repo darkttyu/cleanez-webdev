@@ -89,6 +89,124 @@ export const getSpecificService = async (req, res) => {
 };
 
 /**
+ * Gets all available workers based on the user preference during appointments.
+ */
+export const getAvailableWorkers = async (req, res) => {
+  const { address, serviceDetails, scheduleDetails } = req.body; 
+
+  // Extracts the service category and size of area from the service details.
+  const { serviceCategory, sizeOfArea } = serviceDetails;
+  const { date, startTime } = scheduleDetails; 
+  
+  // Formats the date to the day of the week.
+  const formatDate = formatDay(date);
+
+  try {
+    // Retrieves all workers that match the service category, area assigned, day, and start time.
+    let workers = await Worker.find({
+      "serviceCategory": serviceCategory, 
+      "workerAvailability.areaAssigned": sizeOfArea, 
+      "workerAvailability.day": { $in: [formatDate] },  
+      "workerAvailability.startTime": { $in: [startTime] }
+    }).lean(); // .lean ensures that plain objects will be returned instead of mongoose documents.
+
+    // If no workers are found, respond with an error message.
+    if (workers.length === 0) {
+      return res.status(404).json({ message: "No available workers found" });
+    }
+
+    // Initialize an array to store available workers.
+    let availableWorkers = []
+
+    // Loops through each workers assignedAppointments to check if they are available at the specified date and time.
+    workers.forEach(worker => {
+      const isConflict = worker.assignedAppointments.some(appointment => 
+        new Date(appointment.date).getTime() === new Date(date).getTime() 
+        && appointment.startTime === startTime
+      );
+
+      if(!isConflict) {
+        availableWorkers.push(worker);
+      }
+    });
+
+    // If no available workers are found, respond with an error message.
+    if (availableWorkers.length === 0) {
+      return res.status(404).json({ success: false, message: "No workers are available at this time",  availableWorkers: availableWorkers });
+    }
+    
+    // Maps the availableWorkers array and extracts the userId and assigns it in a new array.
+    const workeruserId = availableWorkers.map(availableWorkers => availableWorkers.userId);
+
+    // console.log(workeruserId);
+
+    // Loops through the workers and adds their personal information 
+    for (const [index, userId] of workeruserId.entries()) {
+      
+      const workerInformation = await User.findById(userId);
+
+      availableWorkers[index] = {
+        ...availableWorkers[index],
+        userDetails: {
+          firstName: workerInformation.firstName,
+          lastName: workerInformation.lastName,
+          address: workerInformation.address
+        }
+      };
+    }
+
+    // Filtering Available Workers Depending on User Location 
+    availableWorkers = availableWorkers.filter(worker => {
+      const workerProvince = worker.userDetails.address.province
+      return workerProvince === address.province
+    })
+
+    // Checks if there are any available workers
+    if (availableWorkers.length === 0) {
+      return res.status(404).json({success: false, message: "No Workers Found.", workers: availableWorkers})
+    }
+
+    // Successfully fetched available workers.
+    return res.status(200).json({ message: "Successfully fetched available workers", workers: availableWorkers });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/** 
+ * Gets the personal information of a specific worker.
+*/
+
+export const getWorkerInformation = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    let workerInformation = await Worker.findById({_id: new Object(id)});
+
+    if (!workerInformation) { 
+      return res.status(404).json({success: false, message: "Worker Not Found.", error: error.message});
+    }
+
+    const userInformation = await User.findById({_id: new Object(workerInformation.userId)});
+
+    if (!userInformation) {
+      return res.status(404).json({success: false, message: "User Information Not Found", error: error.message})
+    }
+
+    // Combines the Worker Information to their Personal Information 
+    workerInformation = {
+      userInformation, 
+      workerInformation
+    }
+
+    return res.status(200).json({success: true, message: "Successfully Fetched Worker Information", worker: workerInformation});
+  } catch (error) {
+    return res.status(500).json({success: false, message: "Error in Fetching Worker Information.", error: error.message})
+  }
+};
+
+/**
  * Creates a new appointment in the system by validating the schedule details and assigning workers.
  * This function is triggered when a user books an appointment.
  */
@@ -274,122 +392,8 @@ export const setAppointment = async (req, res) => {
   }
 };
 
-/**
- * Gets all available workers based on the user preference during appointments.
- */
-export const getAvailableWorkers = async (req, res) => {
-  const { address, serviceDetails, scheduleDetails } = req.body; 
+export const rateAppointment = async (req, res) => {
 
-  // Extracts the service category and size of area from the service details.
-  const { serviceCategory, sizeOfArea } = serviceDetails;
-  const { date, startTime } = scheduleDetails; 
-  
-  // Formats the date to the day of the week.
-  const formatDate = formatDay(date);
-
-  try {
-    // Retrieves all workers that match the service category, area assigned, day, and start time.
-    let workers = await Worker.find({
-      "serviceCategory": serviceCategory, 
-      "workerAvailability.areaAssigned": sizeOfArea, 
-      "workerAvailability.day": { $in: [formatDate] },  
-      "workerAvailability.startTime": { $in: [startTime] }
-    }).lean(); // .lean ensures that plain objects will be returned instead of mongoose documents.
-
-    // If no workers are found, respond with an error message.
-    if (workers.length === 0) {
-      return res.status(404).json({ message: "No available workers found" });
-    }
-
-    // Initialize an array to store available workers.
-    let availableWorkers = []
-
-    // Loops through each workers assignedAppointments to check if they are available at the specified date and time.
-    workers.forEach(worker => {
-      const isConflict = worker.assignedAppointments.some(appointment => 
-        new Date(appointment.date).getTime() === new Date(date).getTime() 
-        && appointment.startTime === startTime
-      );
-
-      if(!isConflict) {
-        availableWorkers.push(worker);
-      }
-    });
-
-    // If no available workers are found, respond with an error message.
-    if (availableWorkers.length === 0) {
-      return res.status(404).json({ success: false, message: "No workers are available at this time",  availableWorkers: availableWorkers });
-    }
-    
-    // Maps the availableWorkers array and extracts the userId and assigns it in a new array.
-    const workeruserId = availableWorkers.map(availableWorkers => availableWorkers.userId);
-
-    // console.log(workeruserId);
-
-    // Loops through the workers and adds their personal information 
-    for (const [index, userId] of workeruserId.entries()) {
-      
-      const workerInformation = await User.findById(userId);
-
-      availableWorkers[index] = {
-        ...availableWorkers[index],
-        userDetails: {
-          firstName: workerInformation.firstName,
-          lastName: workerInformation.lastName,
-          address: workerInformation.address
-        }
-      };
-    }
-
-    // Filtering Available Workers Depending on User Location 
-    availableWorkers = availableWorkers.filter(worker => {
-      const workerProvince = worker.userDetails.address.province
-      return workerProvince === address.province
-    })
-
-    // Checks if there are any available workers
-    if (availableWorkers.length === 0) {
-      return res.status(404).json({success: false, message: "No Workers Found.", workers: availableWorkers})
-    }
-
-    // Successfully fetched available workers.
-    return res.status(200).json({ message: "Successfully fetched available workers", workers: availableWorkers });
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-/** 
- * Gets the personal information of a specific worker.
-*/
-
-export const getWorkerInformation = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    let workerInformation = await Worker.findById({_id: new Object(id)});
-
-    if (!workerInformation) { 
-      return res.status(404).json({success: false, message: "Worker Not Found.", error: error.message});
-    }
-
-    const userInformation = await User.findById({_id: new Object(workerInformation.userId)});
-
-    if (!userInformation) {
-      return res.status(404).json({success: false, message: "User Information Not Found", error: error.message})
-    }
-
-    // Combines the Worker Information to their Personal Information 
-    workerInformation = {
-      userInformation, 
-      workerInformation
-    }
-
-    return res.status(200).json({success: true, message: "Successfully Fetched Worker Information", worker: workerInformation});
-  } catch (error) {
-    return res.status(500).json({success: false, message: "Error in Fetching Worker Information.", error: error.message})
-  }
 };
 
 // Testing Controllers 

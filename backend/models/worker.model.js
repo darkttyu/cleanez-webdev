@@ -50,7 +50,12 @@ const workerSchema = new mongoose.Schema({
   },
   totalEarnings: { 
     type: Number, 
-    default: 0.00 },
+    default: 0.00 
+  },
+  accumulatedRating: {
+    type: [Number],
+    default: []
+  },
   rating: { 
     type: Number, 
     default: 0.00 

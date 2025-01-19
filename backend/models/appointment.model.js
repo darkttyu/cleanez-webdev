@@ -88,6 +88,10 @@ const appointmentSchema = new mongoose.Schema(
       enum: ["Pending", "Paid", "Cancelled"],
       default: "Pending",
       required: true
+    },
+    appointmentRating: {
+      type: Number,
+      default: 0
     }
   },
   { timestamps: true }
