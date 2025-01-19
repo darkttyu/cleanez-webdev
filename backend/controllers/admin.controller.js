@@ -807,6 +807,8 @@ export const acceptApplicant = async (req, res) => {
     }
 
     await worker.save();
+
+    // SEND ACCEPTANCE EMAIL TO USER
     return res.status(200).json({success: true, message: "Applicant accepted as Worker.", worker: worker});
 
   } catch (error) {
@@ -836,6 +838,7 @@ export const rejectApplicant = async (req, res) => {
       return res.status(400).json({success: false, message: "Error in Updating User Information."})
     }
 
+    // SEND REJECTION EMAIL TO USER
     return res.status(200).json({success: true, message: "Applicant Rejected."});
 
   } catch (error) {
@@ -883,4 +886,21 @@ export const removeResumeField = async (req, res) => {
 };
 */
 
+// export const addCancelledAppointment = async (req, res) => {
+//   try {
+//     const result = await User.updateMany(
+//       {}, 
+//       {
+//         $set: { cancelledAppointment: 0 }
+//       }
+//     );
 
+//     if (!result) {
+//       return res.status(400).json({success: false, message: "Error in Adding Field", error: error.message})
+//     }
+
+//     return res.status(200).json({success: true, message: "Added Field.", data: result})
+//   } catch (error) {
+//     return res.status(500).json({success:false, message: "Server Error", error: error.message})
+//   }
+// };

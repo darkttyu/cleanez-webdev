@@ -1,5 +1,5 @@
 import express from "express";
-import { editAccountInformation, getAccountInformation, getAllUserAppointments, viewAppointment } from "../controllers/user.controller.js";
+import { cancelAppointment, editAccountInformation, getAccountInformation, getAllUserAppointments, setAppointmentAsCompleted, viewAppointment } from "../controllers/user.controller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { uploadProfile } from "../middleware/profileUpload.js";
 
@@ -12,5 +12,7 @@ router.post("/editAccountInformation", verifyToken, uploadProfile, editAccountIn
 // Dashboard
 router.get("/getAllUserAppointments", verifyToken, getAllUserAppointments);
 router.get("/viewAppointment/:id", viewAppointment);
+router.get("/setAppointmentAsCompleted/:id", setAppointmentAsCompleted);
+router.get("/cancelAppointment/:id", cancelAppointment);
 
 export default router;

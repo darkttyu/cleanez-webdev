@@ -1,5 +1,6 @@
 import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
+import moment from 'moment';
 import { User } from "../models/user.model.js";
 import { Admin } from '../models/admin.model.js';
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
@@ -144,7 +145,7 @@ export const login = async (req, res) => {
       const isPasswordValid = await bcryptjs.compare(password, user.password);
 
       if (!isPasswordValid) {
-        return res.status(400).json({ success: false, message: "Invalid Credentials" });
+        return res.status(400).json({ success: false, message: "Invalid Credentials"});
       }
 
       if(!user.isVerified) {
@@ -157,6 +158,12 @@ export const login = async (req, res) => {
 
       // Generate token and set cookie
       const token = generateTokenAndSetCookie(res, user._id);
+
+      // Resets the Flag to 0 every first day of the month.
+      const currentDate = moment();
+      if(moment(currentDate).date() === 1) {
+        user.cancelledAppointment = 0;
+      }
 
       // Update last login date
       user.lastLogin = new Date();

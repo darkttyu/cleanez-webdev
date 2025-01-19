@@ -145,9 +145,113 @@ export const viewAppointment = async (req, res) => {
 };
 
 export const setAppointmentAsCompleted = async (req, res) => {
+  const appointmentId = req.params.id;
+
   try {
-    
+    const appointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      {
+        "appointmentStatus": "Completed"
+      }
+    ).lean();
+
+    if(!appointment) {
+      return res.status(404).json({success: false, message: "Error in Fetching Appointment."});
+    }
+
+    console.log(appointment);
+    return res.status(200).json({success: true, message: "Appointment Marked as Completed.", data: appointment})
+
   } catch (error) {
+    return res.status(500).json({success: false, message: "Server Error", error: error.message});
+  }
+};
+
+export const cancelAppointment = async (req, res) => {
+  const appointmentId = req.params.id;
+  try {
+    // Fetches the Appointment Information
+    const appointment = await Appointment.findById(appointmentId).lean();
+
+      if(!appointment) {
+        return res.status(404).json({success: false, message: "Error in Fetching Appointment."});
+      }
+
+    // Compares the hours today to the hours of the time of creation
+    const appointmentDate = moment(appointment.createdAt);
+    const currentTime = moment();
+    const hourDifference = currentTime.diff(appointmentDate, 'hours');
+
+      // Sends an error message if the user attempts to cancel an appointment 1 Day after booking.
+      // if(hourDifference >= 2) {
+      //   return res.status(400).json({ 
+      //       success: false, 
+      //       message: "Cannot Cancel an Appointment 2 hours after Booking.",
+      //       data: hourDifference
+      //     })
+      // }
+
+    const user = await User.findById(appointment.userId);
+      if(!user) {
+        return res.status(404).json({success: false, message: "Error in Fetching User."})
+      }
+
+      // Checks if the user exceeds the limit of cancellation
+      if(user.cancelledAppointment >= 30) {
+        return res.status(400).json({
+          success: false, 
+          message: "Cancellation Rejected. Number of Cancellations Exceeded.",
+        })
+      }
     
+    // Updates the status of the appointment
+    const cancelledAppointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      {
+        "appointmentStatus": "Cancelled",
+        "paymentStatus": "Cancelled"
+      }
+    ).lean();
+
+    // Increases the Count of Cancellations Made
+    const increaseFlagCount = await User.findByIdAndUpdate(
+      appointment.userId,
+      {
+        $inc: { cancelledAppointment: 1 }
+      }
+    )
+
+    // Worker Update 
+    let workerList = []
+      
+      appointment.assignedWorkers.forEach(worker => {
+        workerList.push(worker);
+      })
+
+        // Loops through the workerList array to get the workers to be updated.
+        for(const workerId of workerList) {
+          
+            const workerInfo = await Worker.findById(workerId);
+
+            if(workerInfo && workerInfo.assignedAppointments) {
+              await Worker.findByIdAndUpdate(
+                workerId,
+                {
+                  $pull: { assignedAppointments: 
+                    { 
+                      "appointmentId": appointmentId
+                    },
+                  }
+                }
+              )
+              console.log("Updated Worker Assigned Appointment");
+            }
+        }
+
+    // SEND CANCELLATION EMAIL TO USER AND WORKER 
+    return res.status(200).json({success: true, message: "Successfully Cancelled the Appointment.", data: workerList})
+
+  } catch (error) {
+    return res.status(500).json({success: false, message: "Server Error", error: error.message});
   }
 };

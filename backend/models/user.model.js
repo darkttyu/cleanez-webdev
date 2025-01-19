@@ -88,6 +88,10 @@ const userSchema = new mongoose.Schema({
   verificationToken: String,
   verificationTokenExpiresAt: Date, 
 
+  cancelledAppointment: {
+    type: Number, 
+    default: 0,
+  },
   applicationDetails: {
     serviceCategory: {
       type: String,

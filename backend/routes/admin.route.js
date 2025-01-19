@@ -34,6 +34,7 @@ router.put("/setUserToActive/:id", setUserToActive);
 
 // router.put("/removeResumeField", removeResumeField);
 // router.put("/addProfilePictureField", addProfilePictureField);
+// router.put("/addCancelledAppointment", addCancelledAppointment)
 
 // Service 
 router.post("/insertService", insertService);
