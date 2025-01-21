@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Profile
 router.get("/getAccountInformation", verifyToken, getAccountInformation);
-router.post("/editAccountInformation", verifyToken, uploadProfile, editAccountInformation);
+router.put("/editAccountInformation", verifyToken, uploadProfile, editAccountInformation);
 
 // Dashboard
 router.get("/getAllUserAppointments", verifyToken, getAllUserAppointments);

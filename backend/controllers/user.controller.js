@@ -25,7 +25,7 @@ export const editAccountInformation = async (req, res) => {
   // Gets the user id by from the localStorage and token
   const id = req.userId
 
-  let { profile } = req.files;
+  let profile = req.files?.profile;
   const { birthDate, gender, phoneNumber, email, block, province, municipal, barangay} = req.body;
 
     try {
@@ -33,19 +33,18 @@ export const editAccountInformation = async (req, res) => {
       const currentUser = await User.findOne({_id: new Object(id)})
 
       if(!currentUser) {
-        res.status(404).json({ success:false, message:"User does not exist", error: error.message });
+        res.status(404).json({ success:false, message:"User does not exist"});
       }
 
-      profile = {
-        data: profile[0].buffer, // Store profile picture buffer
-        contentType: profile[0].mimetype // Store profile picture's MIME type
-      };
+      if(profile && profile.length > 0){
+        profile = {
+          data: profile[0].buffer, // Store profile picture buffer
+          contentType: profile[0].mimetype // Store profile picture's MIME type
+        };
+    }
 
       // Updates the user info based on the id and the updated user info
-      const updatedUserInfo = await User.findByIdAndUpdate(
-        id, 
-        {
-          profilePicture: profile, 
+      const updatedData = {
           email,
           birthDate,
           gender,
@@ -54,45 +53,73 @@ export const editAccountInformation = async (req, res) => {
           "address.province": province,
           "address.municipal": municipal,
           "address.barangay": barangay,
-        },
-        { new: true}
-      );
+        }
+
+        if(profile) {
+          updatedData.profilePicture = profile
+        }
     
+      const updatedUserInfo = await User.findByIdAndUpdate(id, updatedData, { new: true });
+        
         if(!updatedUserInfo) {
-          return res.status(400).json({success: false, message: "Failed to update user."})
+          return res.status(400).json({success: false, message: "Errr in Updating User Information."})
         }
         
-        // Returns a success message if the user info is updated
-        res.status(200).json({success: true, message: "Successfully Updated User Information!", updatedUser: updatedUserInfo})
+      // Returns a success message if the user info is updated
+      res.status(200).json({success: true, message: "Successfully Updated User Information!", updatedUser: updatedUserInfo})
 
     } catch (error) {
       res.status(500).json({success: false, message: "Server Error: ", error: error.message})
     }
 };
 
-// Appointment 
+// Dashboard
 export const getAllUserAppointments = async (req, res) => {
   const id = req.userId;
 
   try {
     // Gets the total number of appointments made by the user, whether cancelled or completed
     const userAppointmentCount = await Appointment.countDocuments({userId: new Object(id)})
-    if(userAppointmentCount === 0) {
-      return res.status(400).json({success: true, message: "User has not set an appointment.", data: userAppointmentCount})
-    }
+      if(userAppointmentCount === 0) {
+        return res.status(400).json({success: true, message: "User has not set an appointment.", data: userAppointmentCount})
+      }
 
     // Gets the total number of completed appointments by the user.
     const completeAppointmentCount = await Appointment.countDocuments({userId: new Object(id), appointmentStatus: "Completed", paymentStatus: "Completed"})
-    if(userAppointmentCount === 0) {
-      return res.status(400).json({success: true, message: "User has not completed any Appointments.", data: completeAppointmentCount})
-    }
+      if(userAppointmentCount === 0) {
+        return res.status(400).json({success: true, message: "User has not completed any Appointments.", data: completeAppointmentCount})
+      }
 
-    // Gets the upcoming appointments within the 7-day period.
-    const userAppointments = await Appointment.find({userId: new Object(id)});
-    const upcomingAppointment = userAppointments.filter(appointment => {
-      const appointmentDate = moment(appointment.scheduleDetails.date);
-      return appointmentDate.isBetween(moment(), moment().add(7, 'days'), 'day', '[]'); // isBetween arguments are start, end, unit, and inclusive [], () means exclusive
+    // Gets the upcoming appointments
+    const userAppointments = await Appointment.find({ userId: new Object(id) });
+      // Filters the appointment information to get only needed data from each appointment.
+      const filteredAppointments = await Promise.all(
+        userAppointments.map(async (appointment) => {
+          const { _id, serviceDetails, scheduleDetails, appointmentStatus, paymentStatus } = await Appointment.findById(appointment._id)
+
+            // Slices the date to a more readable format (eg. 2025-01-01)
+            let slicedDate ='';
+              if(scheduleDetails.date instanceof Date){
+                slicedDate = scheduleDetails.date.toISOString().slice(0,10);
+              }
+                return {
+                  _id,
+                  serviceDetails: serviceDetails.serviceCategory,
+                  scheduledDate: slicedDate,
+                  scheduledTime: scheduleDetails.time,
+                  appointmentStatus,
+                  paymentStatus
+                }
+        })
+      )
+      
+    // Filters all the appointments only to get the appointments within 7 days.
+    const upcomingAppointment = filteredAppointments.filter(appointment => {
+      const appointmentDate = moment(appointment.scheduledDate);
+        return appointmentDate.isBetween(moment(), moment().add(7, 'days'), 'day', '[]'); // isBetween arguments are start, end, unit, and inclusive [], () means exclusive
     });
+
+    
 
     const userAppointmentDetails = {
       userAppointmentCount,
@@ -309,4 +336,9 @@ export const rateAppointment = async (req, res) => {
   } catch (error) {
     return res.status(500).json({success: false, message: "Server Error", error: error.message})
   }
+};
+
+// Appointments
+export const viewAppointmentHistory = async (req, res) => {
+
 };

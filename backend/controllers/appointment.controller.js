@@ -255,7 +255,7 @@ export const setAppointment = async (req, res) => {
 
     const appointmentServiceList = await Appointment.find({"userId": userId, "serviceDetails.serviceCategory": serviceDetails.serviceCategory}); // Gets all the appointments that the user booked for that specific service.
 
-    console.log(appointmentServiceList)
+    // console.log(appointmentServiceList)
 
     // Checks if a user has made an appointment for a specific service for the current day. This limits the appointment of each service / day to 1.
     const currentDateConflict = appointmentServiceList.some(appointment => 
