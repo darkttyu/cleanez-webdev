@@ -392,9 +392,6 @@ export const setAppointment = async (req, res) => {
   }
 };
 
-export const rateAppointment = async (req, res) => {
-
-};
 
 // Testing Controllers 
 // This function is used for testing purposes only and sends an email to the assigned workers for the appointment.

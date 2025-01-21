@@ -887,12 +887,31 @@ export const removeResumeField = async (req, res) => {
 //       }
 //     );
 
-//     if (!result) {
-//       return res.status(400).json({success: false, message: "Error in Adding Field", error: error.message})
-//     }
+    // if (!result) {
+    //   return res.status(400).json({success: false, message: "Error in Adding Field", error: error.message})
+    // }
 
-//     return res.status(200).json({success: true, message: "Added Field.", data: result})
+    // return res.status(200).json({success: true, message: "Added Field.", data: result})
 //   } catch (error) {
 //     return res.status(500).json({success:false, message: "Server Error", error: error.message})
 //   }
 // };
+
+export const addAccumulatedRating = async (req, res) => {
+  try {
+    const result = await Worker.updateMany(
+      {}, 
+      {
+        $set: { accumulatedRating: [] }
+      }
+    );
+
+    if (!result) {
+      return res.status(400).json({success: false, message: "Error in Adding Field", error: error.message})
+    }
+
+    return res.status(200).json({success: true, message: "Added Field.", data: result})
+  } catch (error) {
+    return res.status(500).json({success:false, message: "Server Error", error: error.message})
+  }
+}

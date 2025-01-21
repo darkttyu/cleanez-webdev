@@ -7,7 +7,6 @@ import { addUser, addWorker, clickedUser, deleteUser, editUserInfo,
 
 const router = express.Router();
 
-
 // Dashboard Tab
 router.get("/getWorkerCount", getWorkerCount);
 // Appointments Tab
@@ -35,6 +34,7 @@ router.put("/setUserToActive/:id", setUserToActive);
 // router.put("/removeResumeField", removeResumeField);
 // router.put("/addProfilePictureField", addProfilePictureField);
 // router.put("/addCancelledAppointment", addCancelledAppointment)
+// router.put("/addAccumulatedRating", addAccumulatedRating);
 
 // Service 
 router.post("/insertService", insertService);

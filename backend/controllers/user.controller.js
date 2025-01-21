@@ -182,14 +182,14 @@ export const cancelAppointment = async (req, res) => {
     const currentTime = moment();
     const hourDifference = currentTime.diff(appointmentDate, 'hours');
 
-      // Sends an error message if the user attempts to cancel an appointment 1 Day after booking.
-      // if(hourDifference >= 2) {
-      //   return res.status(400).json({ 
-      //       success: false, 
-      //       message: "Cannot Cancel an Appointment 2 hours after Booking.",
-      //       data: hourDifference
-      //     })
-      // }
+      //Sends an error message if the user attempts to cancel an appointment 1 Day after booking.
+      if(hourDifference >= 2) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Cannot Cancel an Appointment 2 hours after Booking.",
+            data: hourDifference
+          })
+      }
 
     const user = await User.findById(appointment.userId);
       if(!user) {
@@ -253,5 +253,60 @@ export const cancelAppointment = async (req, res) => {
 
   } catch (error) {
     return res.status(500).json({success: false, message: "Server Error", error: error.message});
+  }
+};
+
+export const rateAppointment = async (req, res) => {
+  const { appointmentRating } = req.body;
+  const appointmentId = req.params.id;
+
+  try {
+    const appointment = await Appointment.findById(appointmentId).lean();
+
+    if(!appointment){
+      return res.status(400).json({success: false, message: "Appointment not Found."})
+    }
+
+    let workerList = [];
+
+    appointment.assignedWorkers.forEach(worker => {
+      workerList.push(worker);
+    })
+    
+    // Loops through the workerList array to get the workers to be updated.
+    for(const workerId of workerList) {
+          
+      const workerInfo = await Worker.findById(workerId);
+
+      if(workerInfo && workerInfo.assignedAppointments) {
+        await Worker.findByIdAndUpdate(
+          workerId,
+          {
+            $push: {
+                "accumulatedRating": appointmentRating
+              },
+          }
+        )
+        console.log("Updated Worker Accumulated Ratings.");
+      
+        
+        const updatedWorkerInfo = await Worker.findById(workerId);
+
+        const ratingSum = updatedWorkerInfo.accumulatedRating.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+        const rating = ratingSum / updatedWorkerInfo.accumulatedRating.length;
+
+        await Worker.findByIdAndUpdate(
+          updatedWorkerInfo,
+          {
+            "rating": rating
+          },
+          { new: true }
+        )
+      }
+
+        return res.status(200).json({success: true, message: "Worker Rating Updated."});
+    } 
+  } catch (error) {
+    return res.status(500).json({success: false, message: "Server Error", error: error.message})
   }
 };
