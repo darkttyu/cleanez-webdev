@@ -5,10 +5,15 @@ import '../styles/HomePage.css'
 import {Header, Services, About, Founders} from '../components/HomeContent';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useEffect } from 'react';
 
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const HomePage = ({isLoggedIn}) => {
+    useEffect(() => {
+        document.title = 'CleanEZ | Home'
+    }, [])
+
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <>

@@ -18,8 +18,6 @@ import {
 // --- Other/React Import/s
 import {useState, useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../AuthContext";
-import axios from 'axios';
 import {regions, provinces, cities, barangays} from "select-philippines-address";
 
 
@@ -276,7 +274,7 @@ const SignupPanel = () => {
                             <h3>ADDRESS</h3>
                             <Address value={signUpData.address.block} onChange={handleSignUp}/>
                             <Province 
-                                value={signUpData.address.province}
+                                value={(signUpData.address.province) ? signUpData.address.province : '0'}
                                 data={provinceData} 
                                 onChange={(e) => {
                                     listMunicipalities(e.targe.value);

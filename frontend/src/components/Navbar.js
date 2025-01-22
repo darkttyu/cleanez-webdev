@@ -47,7 +47,7 @@ const Navbar = () => {
                     className='nav-link my-account-container'>
                     My Account
                         <div className='pop-up'>
-                            <Link to={`/account/${user._id}`} className='sub-link'>My Account</Link>
+                            <Link to={`/account`} className='sub-link'>My Account</Link>
                             <Link to="/home" className='sub-link' onClick={handleLogOut}>Log Out</Link>
                         </div>
                     </button>

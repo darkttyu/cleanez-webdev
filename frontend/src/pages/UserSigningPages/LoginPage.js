@@ -67,7 +67,10 @@ const LoginPanel = ({route}) => {
             console.log("Passed Data: ", loginCredentials); // Data Checker
             console.log("Login Completed:", response.data);
 
+            setIsDisabled(true)
+
             if (response.status === 200) {
+                setIsDisabled(false)
                 if (route === "login") {
                     const token = response.data.token; // Token from the response
                     localStorage.setItem("token", token); // Token saved in Local Storage
