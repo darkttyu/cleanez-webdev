@@ -1,8 +1,5 @@
-import { User } from "../models/user.model.js";
-import { Worker } from "../models/worker.model.js";
-import { Appointment } from "../models/appointment.model.js";
-import moment from "moment";
-import { fetchAppointments, fetchWorker, markAppointment, updateWorker, updateWorkerService, viewAppointment } from "../services/worker.service.js";
+import { fetchAppointments, fetchWorker, markAppointment, 
+  updateWorker, updateWorkerService, viewAppointment } from "../services/worker.service.js";
 
 // Profile
 export const getWorkerAccountInformation = async (req, res) => {
