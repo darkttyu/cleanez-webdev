@@ -62,7 +62,7 @@ export const editAccountInformation = async (req, res) => {
       const updatedUserInfo = await User.findByIdAndUpdate(id, updatedData, { new: true });
         
         if(!updatedUserInfo) {
-          return res.status(400).json({success: false, message: "Errr in Updating User Information."})
+          return res.status(400).json({success: false, message: "Error in Updating User Information."})
         }
         
       // Returns a success message if the user info is updated
@@ -77,60 +77,59 @@ export const editAccountInformation = async (req, res) => {
 export const getAllUserAppointments = async (req, res) => {
   const id = req.userId;
 
-  try {
-    // Gets the total number of appointments made by the user, whether cancelled or completed
-    const userAppointmentCount = await Appointment.countDocuments({userId: new Object(id)})
-      if(userAppointmentCount === 0) {
-        return res.status(400).json({success: true, message: "User has not set an appointment.", data: userAppointmentCount})
-      }
+    try {
+      // Gets the total number of appointments made by the user, whether cancelled or completed
+      const userAppointmentCount = await Appointment.countDocuments({userId: new Object(id)})
+        if(userAppointmentCount === 0) {
+          return res.status(400).json({success: true, message: "User has not set an appointment.", data: userAppointmentCount})
+        }
 
-    // Gets the total number of completed appointments by the user.
-    const completeAppointmentCount = await Appointment.countDocuments({userId: new Object(id), appointmentStatus: "Completed", paymentStatus: "Completed"})
-      if(userAppointmentCount === 0) {
-        return res.status(400).json({success: true, message: "User has not completed any Appointments.", data: completeAppointmentCount})
-      }
+      // Gets the total number of completed appointments by the user.
+      const completeAppointmentCount = await Appointment.countDocuments({userId: new Object(id), appointmentStatus: "Completed", paymentStatus: "Completed"})
+        if(userAppointmentCount === 0) {
+          return res.status(400).json({success: true, message: "User has not completed any Appointments.", data: completeAppointmentCount})
+        }
 
-    // Gets the upcoming appointments
-    const userAppointments = await Appointment.find({ userId: new Object(id) });
-      // Filters the appointment information to get only needed data from each appointment.
-      const filteredAppointments = await Promise.all(
-        userAppointments.map(async (appointment) => {
-          const { _id, serviceDetails, scheduleDetails, appointmentStatus, paymentStatus } = await Appointment.findById(appointment._id)
+      // Gets the upcoming appointments
+      const userAppointments = await Appointment.find({ userId: new Object(id) });
+        // Filters the appointment information to get only needed data from each appointment.
+        const filteredAppointments = await Promise.all(
+          userAppointments.map(async (appointment) => {
+            const { _id, serviceDetails, scheduleDetails, appointmentStatus, paymentStatus, appointmentRating } = await Appointment.findById(appointment._id)
 
-            // Slices the date to a more readable format (eg. 2025-01-01)
-            let slicedDate ='';
-              if(scheduleDetails.date instanceof Date){
-                slicedDate = scheduleDetails.date.toISOString().slice(0,10);
-              }
-                return {
-                  _id,
-                  serviceDetails: serviceDetails.serviceCategory,
-                  scheduledDate: slicedDate,
-                  scheduledTime: scheduleDetails.time,
-                  appointmentStatus,
-                  paymentStatus
+              // Slices the date to a more readable format (eg. 2025-01-01)
+              let slicedDate ='';
+                if(scheduleDetails.date instanceof Date){
+                  slicedDate = scheduleDetails.date.toISOString().slice(0,10);
                 }
-        })
-      )
+                  return {
+                    _id,
+                    serviceDetails: serviceDetails.serviceCategory,
+                    scheduledDate: slicedDate,
+                    scheduledTime: scheduleDetails.time,
+                    rating: appointmentRating,
+                    appointmentStatus,
+                    paymentStatus
+                  }
+          })
+        )
+
+      // Filters all the appointments only to get the appointments within 7 days.
+      const upcomingAppointment = filteredAppointments.filter(appointment => {
+        const appointmentDate = moment(appointment.scheduledDate);
+          return appointmentDate.isBetween(moment(), moment().add(7, 'days'), 'day', '[]'); // isBetween arguments are start, end, unit, and inclusive [], () means exclusive
+      });
+
+      const userAppointmentDetails = {
+        userAppointmentCount,
+        completeAppointmentCount,
+        upcomingAppointment
+      }
       
-    // Filters all the appointments only to get the appointments within 7 days.
-    const upcomingAppointment = filteredAppointments.filter(appointment => {
-      const appointmentDate = moment(appointment.scheduledDate);
-        return appointmentDate.isBetween(moment(), moment().add(7, 'days'), 'day', '[]'); // isBetween arguments are start, end, unit, and inclusive [], () means exclusive
-    });
-
-    
-
-    const userAppointmentDetails = {
-      userAppointmentCount,
-      completeAppointmentCount,
-      upcomingAppointment
+      return res.status(200).json({success: true, message: "Successfully Fetched All User Appointments.", data: userAppointmentDetails})
+    } catch (error) {
+      return res.status(500).json({success: false, message: "Server Error", error: error.message})
     }
-    
-    return res.status(200).json({success: true, message: "Successfully Fetched All User Appointments.", data: userAppointmentDetails})
-  } catch (error) {
-    return res.status(500).json({success: false, message: "Server Error", error: error.message})
-  }
 };
 
 export const viewAppointment = async (req, res) => {
@@ -340,5 +339,41 @@ export const rateAppointment = async (req, res) => {
 
 // Appointments
 export const viewAppointmentHistory = async (req, res) => {
+  const id = req.userId;
 
+    try {
+      const userAppointments = await Appointment.find({ userId: new Object(id) });
+        // Filters the appointment information to get only needed data from each appointment.
+        const filteredAppointments = await Promise.all(
+          userAppointments.map(async (appointment) => {
+            const { _id, serviceDetails, scheduleDetails, appointmentRating, appointmentStatus,  } = await Appointment.findById(appointment._id)
+
+              // Slices the date to a more readable format (eg. 2025-01-01)
+              let slicedDate ='';
+                if(scheduleDetails.date instanceof Date){
+                  slicedDate = scheduleDetails.date.toISOString().slice(0,10);
+                }
+                  return {
+                    _id,
+                    serviceDetails: serviceDetails.serviceCategory,
+                    scheduledDate: slicedDate,
+                    scheduledTime: scheduleDetails.time,
+                    rating: appointmentRating,
+                    appointmentStatus,
+                  }
+          })
+        )
+          
+        let appointmentHistory = [];
+        filteredAppointments.map(async (appointment) => {
+          if(appointment.appointmentStatus === 'Completed' || appointment.appointmentStatus === 'Cancelled') {
+            appointmentHistory.push(appointment);
+          }
+        })
+      
+      return res.status(200).json({ success: true, message: "Appointment History Fetched Successfully.", appointments: appointmentHistory})
+
+    } catch (error) {
+      return res.status(500).json({ success: false, message: "Server Error.", error: error.message})
+    }
 };
