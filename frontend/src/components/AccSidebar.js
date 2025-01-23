@@ -80,6 +80,16 @@ const AccSidebar = ({user, setNavTitle}) => {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        try {
+            if (user.role) console.log(user.role)
+            else throw new Error("Session Timed Out")
+        } catch (e) {
+            console.log(e);
+            navigate('/home');
+        }
+    }, [user])
+
     const accountSideDisplay = (role) => {
         const currRole = String(role).toLowerCase()
 
