@@ -277,14 +277,14 @@ const SignupPanel = () => {
                                 value={(signUpData.address.province) ? signUpData.address.province : '0'}
                                 data={provinceData} 
                                 onChange={(e) => {
-                                    listMunicipalities(e.targe.value);
+                                    listMunicipalities(e.target.value);
                                     handleSignUp(e);
                                 }}/>
                             <Municipality 
                                 value={signUpData.address.municipal}
                                 data={municipalData} 
                                 onChange={(e) => {
-                                    listBarangays(e.targe.value);
+                                    listBarangays(e.target.value);
                                     handleSignUp(e);
                                 }}/>
                             <Barangay

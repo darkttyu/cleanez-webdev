@@ -18,8 +18,8 @@ const FAQsPage = () => {
                 eng: "How long is each cleaning session?",
                 fil: "Gaano katagal ang bawat cleaning session?"
         },answers:{
-                eng: "The duration depends on the size of your home and the type of service you book. On average, a session lasts between 2 to 5 hours.",
-                fil: "Depende ang tagal sa laki ng bahay at uri ng serbisyong na-book. Karaniwan, tumatagal ito ng 2 hanggang 5 oras."
+                eng: "The duration depends on the size of your home and the type of service you book. On average, a session lasts between 1 to 8 hours.",
+                fil: "Depende ang tagal sa laki ng bahay at uri ng serbisyong na-book. Karaniwan, tumatagal ito ng 1 hanggang 8 oras."
         }},
         {questions:{
                 eng: "How many helpers will come to my house?",
@@ -74,15 +74,22 @@ const FAQsPage = () => {
                 eng: "Can I cancel or reschedule my booking?",
                 fil: "Pwede ko bang i-cancel o i-reschedule ang aking booking?"
         },answers:{
-                eng: "Yes, you can cancel or reschedule your booking through the app. We recommend doing so at least 24 hours in advance to avoid cancellation fees.",
-                fil: "Oo, pwede mong i-cancel o i-reschedule ang iyong booking sa app. Pinapayo namin na gawin ito nang hindi bababa sa 24 oras bago ang naka-schedule na oras upang maiwasan ang cancellation fees."
+                eng: "Yes, you can cancel or reschedule your booking through the app. We recommend doing so at least 2 hours within the day to avoid cancellation fees.",
+                fil: "Oo, pwede mong i-cancel o i-reschedule ang iyong booking sa app. Pinapayo namin na gawin ito nang hindi bababa sa 2 oras upang maiwasan ang cancellation fees."
+        }},
+        {questions:{
+                eng: "How many times can I cancel an Appointment per month?",
+                fil: "Ilang beses ko pwedeng ikansela ang appointment sa isang buwan?"
+        },answers:{
+                eng: "You can only cancel an appointment with a Maximum of 30 times a month.",
+                fil: "Maaari lamang mag-cancel ng appointment ang isang user ng hanggang 30 beses kada buwan."
         }},
         {questions:{
                 eng: "Is the service available in my area?",
                 fil: "Available ba ang serbisyo sa lugar ko?"
         },answers:{
-                eng: "CleanEz currently operates in Metro Manila and selected nearby areas. Check the app to see if we cover your location.",
-                fil: "Ang CleanEz ay kasalukuyang nag-ooperate sa Metro Manila at piling kalapit na lugar. I-check ang app upang makita kung sakop namin ang inyong lugar."
+                eng: "CleanEz currently operates in Metro Manila and selected areas. Check the app to see if we cover your location.",
+                fil: "Ang CleanEz ay kasalukuyang nag-ooperate sa Metro Manila at piling mga lugar. I-check ang app upang makita kung sakop namin ang inyong lugar."
         }},
         {questions:{
                 eng: "Can I choose my preferred cleaner?",
@@ -137,8 +144,8 @@ const FAQsPage = () => {
                 eng: "Can I book a cleaning service for the same day?",
                 fil: "Pwede ba akong mag-book ng cleaning service para sa parehong araw?"
         },answers:{
-                eng: "Yes, same-day bookings are possible, but availability may vary depending on the schedule of our cleaners. It’s best to book early to secure your slot.",
-                fil: "Oo, maaari kang mag-book ng service para sa parehong araw, ngunit depende ito sa availability ng aming cleaners. Mas mabuting mag-book nang maaga upang masigurado ang inyong slot."
+                eng: "No, same-day bookings are not possible due to security reasons. As much as possible, we want to avoid scheduling  conflicts and false bookings.",
+                fil: "Hindi posible ang same-day bookings dahil sa mga kadahilanang pangseguridad. Hangga't maaari, nais naming maiwasan ang mga iskedyul na nagkakabanggaan at mga pekeng bookings."
         }},
         {questions:{
                 eng: "Do you offer specialized cleaning services like carpet or upholstery cleaning?",

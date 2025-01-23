@@ -1,42 +1,86 @@
 import { User } from "../models/user.model.js";
+import { Worker } from "../models/worker.model.js";
+import { Appointment } from "../models/appointment.model.js";
+import moment from "moment";
+import { fetchAppointments, fetchUser, insertAppointmentRating, markAppointmentAsCancelled, markAppointmentAsComplete, updateUser, viewAllAppointments, viewUserAppointment } from "../services/user.service.js";
 
+// Profile
 export const getAccountInformation = async (req, res) => {
-  const userId = req.userId;
-
   try {
-    const user = await User.findById({_id: new Object(userId)});
-
-    if(!user) {
-      return res.status(400).json({success: false, message: "Error in Fetching User Information."});
-    }
-
-    return res.status(200).json({success: true, message: "Fetched User Information", user: user});
+    const user = await fetchUser(req.userId);
+    return res.status(200).json({ success: true, message: "Fetched User Information", user: user });
 
   } catch (error) {
-    return res.status(500).json({success: false, message: "Server Error", error: error.message});
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
 export const editAccountInformation = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
+    try {
+      const updatedUser = await updateUser(req.userId, req.body, req.files?.profile);
+      // Returns a success message if the user info is updated
+      res.status(200).json({success: true, message: "Successfully Updated User Information!", updatedUser: updatedUser})
+
+    } catch (error) {
+      res.status(500).json({success: false, message: error.message})
+    }
 };
 
-export const getAppointmentInformation = async (req, res) => {
+// Dashboard
+export const getAllUserAppointments = async (req, res) => {
+    try {
+      const allAppointmentInformation = await fetchAppointments(req.userId);
+      return res.status(200).json({success: true, message: "Successfully Fetched All Upcoming Appointments.", data: allAppointmentInformation})
+    } catch (error) {
+      return res.status(400).json({success: false, message: error.message})
+    }
+};
+
+export const viewAppointment = async (req, res) => {
   try {
-    
+    const appointment = await viewUserAppointment(req.params.id);
+    return res.status(200).json({success: true, message: "Fetched Specific Appointment Information.", data: appointment});
   } catch (error) {
-    
+    return res.status(400).json({success: false, message: error.message})
   }
 };
 
 export const setAppointmentAsCompleted = async (req, res) => {
   try {
-    
+    const markedAppointment = await markAppointmentAsComplete(req.params.id);
+    return res.status(200).json({success: true, message: "Appointment Marked as Completed.", data: markedAppointment})
   } catch (error) {
-    
+    return res.status(500).json({success: false, message: error.message});
   }
+};
+
+export const cancelAppointment = async (req, res) => {
+  try {
+    const appointment = await markAppointmentAsCancelled(req.params.id);
+    // SEND CANCELLATION EMAIL TO USER AND WORKER 
+    return res.status(200).json({ success: true, message: "Successfully Cancelled the Appointment.", data: appointment })
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+export const rateAppointment = async (req, res) => {
+
+  try {
+    const ratedAppointment = await insertAppointmentRating(req.body, req.params.id)
+    return res.status(200).json({success: true, message: "Worker Rating Updated.", data: ratedAppointment});
+  } catch (error) {
+    return res.status(500).json({success: false, message: error.message})
+  }
+};
+
+// Appointments
+export const viewAppointmentHistory = async (req, res) => {
+    try {
+      const userAppointments = await viewAllAppointments(req.userId);      
+      return res.status(200).json({ success: true, message: "Appointment History Fetched Successfully.", appointments: userAppointments})
+
+    } catch (error) {
+      return res.status(500).json({ success: false, message: "Server Error.", error: error.message})
+    }
 };

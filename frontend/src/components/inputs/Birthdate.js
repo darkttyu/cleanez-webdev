@@ -16,7 +16,6 @@ const InputBirthdate = ({value, onChange}) => {
             <label 
             className="text-label"
             htmlFor="birthdate-input">
-                Birthdate
             </label>
         </div> 
     );

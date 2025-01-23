@@ -664,6 +664,12 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
         message: ''
     })
     const [workerIdentifier, setWorkerIdentifier] = useState({
+        address: {
+            block: '',
+            province: '',
+            municipal: '',
+            barangay: ''
+        },
         serviceDetails: {
             serviceCategory: '',
             sizeOfArea: ''
@@ -679,6 +685,12 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
     //Sets the only needed data for fetching workers
     useEffect(() => {
         setWorkerIdentifier({
+            address: {
+                block: bookingInfo.address.block,
+                province: bookingInfo.address.province,
+                municipal: bookingInfo.address.municipal,
+                barangay: bookingInfo.address.barangay
+            },
             serviceDetails: {
                 serviceCategory: bookingInfo.serviceDetails.serviceCategory,
                 sizeOfArea: bookingInfo.serviceDetails.sizeOfArea
