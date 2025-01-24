@@ -19,7 +19,8 @@ import {
 import {useState, useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {regions, provinces, cities, barangays} from "select-philippines-address";
-
+import axios from "axios";
+import { useAuth } from "../../AuthContext";
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const SignupPanel = () => {

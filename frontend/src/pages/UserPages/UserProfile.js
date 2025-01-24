@@ -165,7 +165,7 @@ const UserProfile = () => {
         if (option === 1) {
             console.log("cancelled");
             setAccountInfo({...user});
-            profileUpdate(user.profilePicture)
+            setProfileURL(profileConvert(user.profilePicture))
             setIsDisabled(!isDisabled);
         } else if (option == 2) {
             updateAccountInformation();
