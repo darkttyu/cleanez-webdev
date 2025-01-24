@@ -10,13 +10,23 @@ import axios from "axios";
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const UserProfile = () => {
+     // --- Convert Binary Data to Profile URL
+     const profileConvert = (profile) => {
+
+        const dataType = profile.contentType
+        const binaryData = new Uint8Array(profile.data.data);
+        const base64String = btoa(String.fromCharCode(...binaryData));
+
+        return `data:${dataType};base64,${base64String}`;
+    }
+
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Context Authenticator
     const { user, setUser } = useAuth();
     // --- Account Information
     const [accountInfo, setAccountInfo] = useState({...user})
     // --- Profile URL for loading current Profile Picture
-    const [profileURL, setProfileURL] = useState('');
+    const [profileURL, setProfileURL] = useState(profileConvert(user.profilePicture));
     // --- Profile File Information
     const [profileFile, setProfileFile] = useState({});
     // --- Editing Mode Toggler
@@ -32,22 +42,12 @@ const UserProfile = () => {
     const [selectedBrgy, setSelectedBrgy] = useState('0');
     
     
-    // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    // --- Convert Binary Data to Profile URL
-    const profileConvert = (profile) => {
-
-        const dataType = profile.contentType
-        const binaryData = new Uint8Array(profile.data.data);
-        const base64String = btoa(String.fromCharCode(...binaryData));
-
-        return `data:${dataType};base64,${base64String}`;
-    }
-
+    // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     // --- Updates Profile Information on Load
     useEffect(() => {
-        setProfileURL(profileConvert(user.profilePicture))
-        setAccountInfo({...user})
-    }, [user])
+        setAccountInfo({ ...user });
+    }, []);
+    
 
     // --- Fetches Address Data
     // --- --- Regions
@@ -177,14 +177,12 @@ const UserProfile = () => {
 
     const updateData = async (accInfo, profile) => {
         const form = new FormData();
-      
-        form.append("accInfo", JSON.stringify(accInfo))
-            if(profile){
-                form.append("profile", profile)
-            }
+        console.log(accInfo);
 
-        console.log("FORM DATA: ", accInfo);
-        
+        form.append("accInfo", JSON.stringify(accInfo))
+        form.append("profile", profile)
+
+        console.log(form);
         return form;
     }
 
@@ -194,6 +192,8 @@ const UserProfile = () => {
             const token = localStorage.getItem("token");
             
             const formData = await updateData(accountInfo, profileFile);
+
+            console.log([...formData.entries()]);
 
             const updateResponse = await 
             axios.put(`http://localhost:5000/api/user/editAccountInformation`, 
@@ -313,7 +313,7 @@ const UserProfile = () => {
                             {/* SELECT OPTIONS */}
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
-                            <option value="Discolsed">Rather Not Say</option>
+                            <option value="Disclosed">Rather Not Say</option>
                         </select>
                     </div> 
 
