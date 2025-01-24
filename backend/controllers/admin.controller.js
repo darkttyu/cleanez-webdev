@@ -877,7 +877,7 @@ export const addField = async (req, res) => {
 //   const updatedProfile = await User.updateMany(
 //     {},
 //     {
-//       "profilePicture": profile
+//       $set: { "profilePicture": { data: profile.data, contentType: profile.contentType } }
 //     },
 //     { new: true }
 //   )

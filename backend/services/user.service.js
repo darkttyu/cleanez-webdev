@@ -33,9 +33,9 @@ export const updateUser = async(id, body, profile) => {
       if(!user){
         throw new Error("User does not exist");
       } 
-        let profilePicture;
+        
         if(profile && profile.length > 0){
-          profilePicture = {
+          profile = {
             data: profile[0].buffer, // Store profile picture buffer
             contentType: profile[0].mimetype // Store profile picture's MIME type
           };
@@ -53,21 +53,18 @@ export const updateUser = async(id, body, profile) => {
             "address.barangay": barangay,
           }
 
-            if(profilePicture) {
+            if(profile) {
               updatedData.profilePicture = profile;
             }
+
           
-          console.log("Profile Picture: ", profilePicture);
-          console.log("-------------------------------------------------------------------------------------------------------------")
-          let updatedUserInfo = await User.findByIdAndUpdate(id, updatedData, { new: true });
-        
+          const updatedUserInfo = await User.findByIdAndUpdate(id, updatedData, { new: true });
+          console.log(updatedUserInfo);
             if(!updatedUserInfo) {
               throw new Error("Error in Updating User Information.");
             }
 
-            console.log(updatedUserInfo)
             const updatedUser = {
-              profile: profilePicture,
               name: updatedUserInfo.firstName + " " + updatedUserInfo.lastName,
               birthDate: updatedUserInfo.birthDate,
               gender: updatedUserInfo.gender,
@@ -80,7 +77,7 @@ export const updateUser = async(id, body, profile) => {
                 province: updatedUserInfo.address.province
               }
             }
-            
+
           return updatedUser;
 };
 

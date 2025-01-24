@@ -144,6 +144,7 @@ export const verifyEmail = async (req, res) => {
 export const login = async (req, res) => {
   const { login, password } = req.body;
 
+  console.log(req.body);
   try {
     // Validate login and password
     if (!login || !password) {
