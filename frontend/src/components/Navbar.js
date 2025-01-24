@@ -11,12 +11,6 @@ const Navbar = () => {
     const { user, logout } = useAuth(); // Access user from context
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!user) {
-            navigate('/home')
-        }
-    }, [user])
-
     const handleLogOut = async () => {
         try {
             const response = await axios.post(`http://localhost:5000/api/auth/logout`)

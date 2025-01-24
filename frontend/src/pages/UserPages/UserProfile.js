@@ -1,17 +1,26 @@
+// Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+// --- Component Import/s
+import header from "../../images/assets/bg-signing-nograin.svg"
+// --- Other/React Import/s
 import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
-import header from "../../images/assets/bg-signing-nograin.svg"
 import {regions, provinces, cities, barangays} from "select-philippines-address";
 import axios from "axios";
 
+
+// Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const UserProfile = () => {
+    // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Context Authenticator
     const { user, setUser } = useAuth();
-    
-    const [userChanges, setUserChanges] = useState({...user})
-
+    // --- Account Information
+    const [accountInfo, setAccountInfo] = useState({...user})
+    // --- Profile URL for loading current Profile Picture
     const [profileURL, setProfileURL] = useState('');
+    // --- Profile File Information
+    const [profileFile, setProfileFile] = useState({});
+    // --- Editing Mode Toggler
     const [isDisabled, setIsDisabled] = useState(true);
-
     // --- Address Variables
     const [regionData, setRegionData] = useState([]);
     const [provinceData, setProvinceData] = useState([]);
@@ -22,18 +31,25 @@ const UserProfile = () => {
     const [selectedCity, setSelectedCity] = useState('0');
     const [selectedBrgy, setSelectedBrgy] = useState('0');
     
-    useEffect(() => {
-        console.log(user);
-        const dataType = user.profilePicture.contentType
-        const binaryData = new Uint8Array(user.profilePicture.data.data);
+    
+    // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Convert Binary Data to Profile URL
+    const profileConvert = (profile) => {
+        const dataType = profile.contentType
+        const binaryData = new Uint8Array(profile.data.data);
         const base64String = btoa(String.fromCharCode(...binaryData));
 
-        setProfileURL(`data:${dataType};base64,${base64String}`)
-        
+        return `data:${dataType};base64,${base64String}`l
+    }
+
+    // --- Updates Profile Information on Load
+    useEffect(() => {
+        setProfileURL(profileConvert(user.profilePicture))
+        setAccountInfo({...user})
     }, [user])
 
-    // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    // --- Fetches Region Data everytime the page is loaded/refereshed.
+    // --- Fetches Address Data
+    // --- --- Regions
     useEffect(() => {
         const fetchRegion = async () => {
             try {
@@ -45,8 +61,7 @@ const UserProfile = () => {
         }
         fetchRegion();
     }, []);
-
-    // --- Fetches all Provinces
+    // --- --- Provinces
     useEffect(() => {
         const listAllProvince = async () => {
             const allProvinces = []
@@ -68,15 +83,14 @@ const UserProfile = () => {
             listAllProvince();
         }
     }, [regionData]); 
-
-    // --- Fetches Municipality based on Province on Change
+    // --- --- Municipalities
     const listMunicipalities = (province) => {
         const code = province.slice(0,4)
         cities(code).then((res) => {
             setMunicipalData(res);
         });
     }
-    // --- Fetches Barangay based on Municipality on Change
+    // --- --- Barangays
     const listBarangays = (municipal) => {
         const code = municipal.slice(0,6)
         barangays(code).then((res) => {
@@ -92,10 +106,10 @@ const UserProfile = () => {
                 const provinceValue = p.province_code + p.province_name;
                 listMunicipalities(provinceValue);
                 setSelectedProv(provinceValue);
-                setUserChanges({
-                    ...userChanges,
+                setAccountInfo({
+                    ...accountInfo,
                     address: {
-                        ...userChanges.address,
+                        ...accountInfo.address,
                         province: p.province_name
                     }
                 });
@@ -113,10 +127,10 @@ const UserProfile = () => {
                 const municipalValue = m.city_code + m.city_name;
                 listBarangays(municipalValue);
                 setSelectedCity(municipalValue);
-                setUserChanges({
-                    ...userChanges,
+                setAccountInfo({
+                    ...accountInfo,
                     address: {
-                        ...userChanges.address,
+                        ...accountInfo.address,
                         municipal: m.city_name
                     }
                 });
@@ -130,10 +144,10 @@ const UserProfile = () => {
             if (b.brgy_name === user.address.barangay) {
                 const barangayValue = b.brgy_code + b.brgy_name;
                 setSelectedBrgy(barangayValue);
-                setUserChanges({
-                    ...userChanges,
+                setAccountInfo({
+                    ...accountInfo,
                     address: {
-                        ...userChanges.address,
+                        ...accountInfo.address,
                         barangay: b.brgy_name
                     }
                 });
@@ -141,43 +155,77 @@ const UserProfile = () => {
         })
     }, [barangayData]);
     
+    // --- Toggles Editing Mode on Button Click
     const editProfile = () => {
         setIsDisabled(!isDisabled);
     }
 
-    const updateAccountInformation = async () => {
-        try {
-            const updateResponse = await axios.put(`http://localhost:5000/api/auth/editAccountInformation`, userChanges, {
-                headers: { 'Content-Type': 'application/json' }
-              });
-
-            console.log(updateResponse)
-            
-        // --- --- Failed Update Account Information
-        } catch (error) {
-            console.log(error)
-        }
-        
-    }
-
+    // --- Save or Cancel Profile Information on Button Click
     const saveProfile = (option) => {
-        setIsDisabled(!isDisabled);
-
         if (option === 1) {
             console.log("cancelled");
-            setUserChanges({...user});
+            setAccountInfo({...user});
+            profileUpdate(user.profilePicture)
+            setIsDisabled(!isDisabled);
         } else if (option == 2) {
             updateAccountInformation();
         }
     }
 
+    // --- Updates Account Information
+    const updateAccountInformation = async () => {
+        try {
+            const updateData = async (accInfo, profile) => {
+                const form = new FormData();
+              
+                form.append(accInfo, JSON.stringify(accInfo))
+                form.append(profile, 'file')
+
+                return form;
+            }
+
+            const token = localStorage.getItem("token");
+    
+            const updateResponse = await 
+            axios.put(`http://localhost:5000/api/auth/editAccountInformation`, 
+                updateData(accountInfo, profileFile), 
+                {
+                    headers: { 
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            console.log(updateResponse)
+            setIsDisabled(!isDisabled);
+        // --- --- Failed Update Account Information
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+    // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <div className="profile-page">
             <img src={header} alt="" className="profile-header"/>
 
             <div className="profile-main">
                 <div className="profile-image-text">
-                    <img src={profileURL} alt="" className="profile-image"/>
+                    <div className="profile-image-container">
+                        <img src={profileURL} alt="" className="profile-image"/>
+                        {!isDisabled ? (
+                            <input type="file" 
+                            accept=""
+                            onChange={(e) => {
+                                setProfileURL(URL.createObjectURL(e.target.files[0]));
+                                setProfileFile(URL.createObjectURL(e.target.files[0]))
+                            }}/>
+                        ):(
+                            <></>
+                        )}
+                    </div>
                     <div className="profile-text">
                         <p className="profile-name">{user.firstName} {user.lastName}</p>
                         <div className="profile-edit-options">
@@ -222,10 +270,10 @@ const UserProfile = () => {
                         type="date" 
                         placeholder="Birthdate" 
                         name="birthDate" 
-                        value={userChanges.birthDate.slice(0, 10)}
+                        value={accountInfo.birthDate.slice(0, 10)}
                         onChange={(e) => {
-                            setUserChanges({
-                                ...userChanges,
+                            setAccountInfo({
+                                ...accountInfo,
                                 birthDate: e.target.value
                             })
                         }}
@@ -243,11 +291,11 @@ const UserProfile = () => {
                         <select 
                         className="input" 
                         name="gender" 
-                        value = {userChanges.gender}
+                        value = {accountInfo.gender}
                         id="gender-input" 
                         onChange={(e) => {
-                            setUserChanges({
-                                ...userChanges,
+                            setAccountInfo({
+                                ...accountInfo,
                                 gender: e.target.value
                             })
                         }}
@@ -274,10 +322,10 @@ const UserProfile = () => {
                         type="text" 
                         placeholder="Phone Number" 
                         name="phone" 
-                        value={userChanges.phoneNumber}
+                        value={accountInfo.phoneNumber}
                         onChange={(e) => {
-                            setUserChanges({
-                                ...userChanges,
+                            setAccountInfo({
+                                ...accountInfo,
                                 phoneNumber: e.target.value
                             })
                         }}
@@ -299,10 +347,10 @@ const UserProfile = () => {
                         type="email" 
                         placeholder="Email" 
                         name="email" 
-                        value={userChanges.email}
+                        value={accountInfo.email}
                         onChange={(e) => {
-                            setUserChanges({
-                                ...userChanges,
+                            setAccountInfo({
+                                ...accountInfo,
                                 email: e.target.value
                             })
                         }}
@@ -324,12 +372,12 @@ const UserProfile = () => {
                         type="text" 
                         placeholder="Block / No. / Street" 
                         name="block"
-                        value={userChanges.address.block} 
+                        value={accountInfo.address.block} 
                         onChange={(e) => {
-                            setUserChanges({
-                                ...userChanges,
+                            setAccountInfo({
+                                ...accountInfo,
                                 address: {
-                                    ...userChanges.address,
+                                    ...accountInfo.address,
                                     block: e.target.value
                                 }
                             })
@@ -350,10 +398,10 @@ const UserProfile = () => {
                             id="province-input" 
                             onChange={(e) => {
                                 listMunicipalities(e.target.value)
-                                setUserChanges({
-                                    ...userChanges,
+                                setAccountInfo({
+                                    ...accountInfo,
                                     address: {
-                                        ...userChanges.address,
+                                        ...accountInfo.address,
                                         province: e.target.value.slice(0, 4)
                                     }
                                 })    
@@ -390,10 +438,10 @@ const UserProfile = () => {
                         id="municipality-input"
                         onChange={(e) => {
                             listBarangays(e.target.value)
-                            setUserChanges({
-                                ...userChanges,
+                            setAccountInfo({
+                                ...accountInfo,
                                 address: {
-                                    ...userChanges.address,
+                                    ...accountInfo.address,
                                     municipality: e.target.value.slice(0, 6)
                                 }
                             })   
@@ -429,10 +477,10 @@ const UserProfile = () => {
                         value={selectedBrgy}
                         id="barangay-input"
                         onChange={(e) => {
-                            setUserChanges({
-                                ...userChanges,
+                            setAccountInfo({
+                                ...accountInfo,
                                 address: {
-                                    ...userChanges.address,
+                                    ...accountInfo.address,
                                     barangay: e.target.value.slice(0, 9)
                                 }
                             })   
