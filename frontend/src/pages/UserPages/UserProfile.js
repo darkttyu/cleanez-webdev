@@ -39,7 +39,7 @@ const UserProfile = () => {
         const binaryData = new Uint8Array(profile.data.data);
         const base64String = btoa(String.fromCharCode(...binaryData));
 
-        return `data:${dataType};base64,${base64String}`l
+        return `data:${dataType};base64,${base64String}`;
     }
 
     // --- Updates Profile Information on Load
