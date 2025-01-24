@@ -298,7 +298,11 @@ export const insertAppointmentRating = async(body, appointmentId) => {
 
 // Appointments 
 export const viewAllAppointments = async(id) => {
-  const userAppointments = await Appointment.find({ userId: new Object(id) });
+  const userAppointments = await Appointment.find({ 
+    userId: new Object(id), 
+    appointmentStatus: { $in: ["Completed", "Cancelled"]}
+  });
+  
   // Filters the appointment information to get only needed data from each appointment.
   const filteredAppointments = await Promise.all(
     userAppointments.map(async (appointment) => {

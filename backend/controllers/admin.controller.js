@@ -5,25 +5,19 @@ import bcryptjs from 'bcryptjs';
 import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import * as generator from 'generate-password';
+import { fetchWorkers } from "../services/admin.service.js";
 
 // Worker Controllers
 export const findAllWorkers = async (req, res) => {
+
   try {
-    const workerList = await Worker.find()
-      .populate({
-        path: "userId", // Populates user data (firstName, lastName, address, status).
-        select: "firstName lastName address status",
-      })
-      .select("serviceCategory totalEarnings"); // Selects only specified fields from Worker.
-
-    console.log(JSON.stringify(workerList, null, 2)); // Debugging: Print worker list for readability.
-
+    const workers = await fetchWorkers();
     return res
       .status(200)
-      .json({ success: true, message: "Successfully Fetched Worker List" });
+      .json({ success: true, message: "Successfully Fetched Worker List", worker: workers});
+
   } catch (error) {
-    console.log("Error in Fetching Workers", error); // Logs errors for debugging.
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
