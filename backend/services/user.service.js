@@ -10,21 +10,7 @@ export const fetchUser = async(id) => {
       throw new Error("User does not exist.");
     }
 
-    const userInformation = {
-      name: user.firstName + " " + user.lastName,
-      birthDate: user.birthDate,
-      gender: user.gender,
-      phoneNumber: user.phoneNumber,
-      email: user.email,
-      address: {
-        block: user.address.block,
-        barangay: user.address.barangay,
-        municipal: user.address.municipal,
-        province: user.address.province
-      }
-    }
-
-    return userInformation;
+    return user;
 };
 
 export const updateUser = async(id, body, profile) => {
