@@ -172,24 +172,25 @@ const UserProfile = () => {
         }
     }
 
+    // --- Creates Form
+    const updateData = async (accInfo, profile) => {
+        const form = new FormData();
+      
+        form.append(accInfo, JSON.stringify(accInfo))
+        form.append(profile, 'file')
+
+        console.log(form);
+        return form;
+    }
+
     // --- Updates Account Information
     const updateAccountInformation = async () => {
         try {
-            const updateData = async (accInfo, profile) => {
-                const form = new FormData();
-              
-                form.append("accInfo", JSON.stringify(accInfo))
-                form.append("profile", 'file')
-
-                console.log(form);
-                return form;
-            }
-
             const token = localStorage.getItem("token");
     
             const updateResponse = await 
             axios.put(`http://localhost:5000/api/user/editAccountInformation`, 
-                updateAccountInformation, 
+                updateData(accountInfo, profileFile), 
                 {
                     headers: { 
                         'Authorization': `Bearer ${token}`
@@ -329,7 +330,7 @@ const UserProfile = () => {
                                 phoneNumber: e.target.value
                             })
                         }}
-                        disabled={isDisabled}
+                        disabled={true}
                         id="phone-input" />
                     </div> 
 
@@ -354,7 +355,7 @@ const UserProfile = () => {
                                 email: e.target.value
                             })
                         }}
-                        disabled={isDisabled}
+                        disabled={true}
                         id="email-input" />
                     </div> 
 
