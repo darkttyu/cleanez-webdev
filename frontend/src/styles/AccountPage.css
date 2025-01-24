@@ -191,6 +191,7 @@
 
 /* DASHBOARD PAGE */
 .dashboard-page {
+    position        : relative;
     padding         : 48px;
     display         : flex;
     flex-direction  : column;

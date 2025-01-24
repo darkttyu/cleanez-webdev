@@ -34,9 +34,10 @@ const UserDashboard = () => {
         fetchAppointments();
     }, [])
 
-    useEffect(() => {
-        console.log(upcomingData);
-    }, [upcomingData])
+    const showAppointment = (status) => {
+        
+    }
+
 
     return (  
         <div className="dashboard-page">
@@ -68,7 +69,7 @@ const UserDashboard = () => {
                             <tr key={index} className="dashboard-tbody-tr">
                                 <td className="dashboard-tbody-td">{data.serviceDetails}</td>
                                 <td className="dashboard-tbody-td">{data.scheduledDate.replaceAll('-', '/')}</td>
-                                <td className="dashboard-tbody-td"></td>
+                                <td className="dashboard-tbody-td">{data.scheduledTime}</td>
                                 <td className="dashboard-tbody-td">{data.rating}</td>
                                 <td className="dashboard-tbody-td">{data.appointmentStatus}</td>
                             </tr>
