@@ -1,3 +1,4 @@
+import { Appointment } from "../models/appointment.model.js";
 import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 
@@ -9,34 +10,39 @@ export const submitApplicationForm = async (req, res) => {
   
   // Retrieve files (resume, ID1, ID2) and fields (serviceCategory, areaAssigned) from the request
   const { resume, ID1, ID2 } = req.files;
-  const { email, serviceCategory, areaAssigned } = req.body;
+  const { email, serviceCategory, areaAssigned } = JSON.parse(req.body);
 
-  // Check if userId is present (user must be authenticated)
-  if (!userId) {
-    return res.status(401).json({ message: 'User is not authenticated' });
-  }
+    // Check if userId is present (user must be authenticated)
+    if (!userId) {
+      return res.status(401).json({ message: 'User is not authenticated' });
+    }
 
   // Fetch the user from the database using the provided userId
   const user = await User.findById(userId);
 
-  // If user is not found, respond with a 404 status
-  if(!user) {
-    return res.status(404).json({success: false, message: "User not found"});
-  }
+    // If user is not found, respond with a 404 status
+    if(!user) {
+      return res.status(404).json({success: false, message: "User not found"});
+    }
 
   // Checks the database if the applicant already submitted a form
   const applicant = await User.findOne({email, role: "Applicant"});
 
-  if(applicant) {
-    return res.status(409).json({success: false, message: "Applicant Already Exists", applicant: applicant})
-  }
+    if(applicant) {
+      return res.status(409).json({success: false, message: "Applicant Already Exists", applicant: applicant})
+    }
 
   // Checks the database if an applicant is already a worker
   const worker = await Worker.findOne({userId: userId});
 
-  if(worker) {
-    return res.status(409).json({success: false, message: "Applicant is Already a Worker.", worker: worker})
-  }
+    if(worker) {
+      return res.status(400).json({success: false, message: "Applicant is Already a Worker.", worker: worker})
+    }
+  
+  const appointment = await Appointment.findOne({userId: userId, appointmentStatus: "Pending"})
+    if(appointment){
+      return res.status(400).json({success: false, message: "User has scheduled appointments. Appointment Rejected", appointment: appointment})
+    }
 
   // Update user's role to "Applicant" and set application details
   user.role = "Applicant";
