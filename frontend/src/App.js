@@ -9,6 +9,7 @@ import BookingPage from './pages/BookingPages/BookingPage';
 import BookingSuccess from './pages/BookingPages/BookingSuccess';
 import { useNavigate } from 'react-router-dom';
 import AccountLayout from './pages/UserPages/AccountLayout';
+import UserProfile from './pages/UserPages/UserProfile';
 
 function App() {
     return (
@@ -26,12 +27,12 @@ function App() {
                     <Route path="/forgot-password" element={<FindAccountPage1/>} />
                     <Route path='/booking' element={<BookingPage/>}/>
                     <Route path='/booking/success' element={<BookingSuccess/>}/>
-                    {/* <Route path='/account/:id' element={<AccountLayout/>}>
-                        <Route index element={<Navigate to='profile'/>}/>
-                        <Route to='profile' element={<AccProfile/>}/>
-                        <Route to='dashboard' element={<AccDashboard/>}/>
-                        <Route to='appointments' element={<AccAppointments/>}/>
-                    </Route> */}
+                    <Route path='/account' element={<AccountLayout/>}>
+                        <Route index element={<Navigate to='/account/profile'/>}/>
+                        <Route path='profile' element={<UserProfile/>}/>
+                        {/* <Route to='dashboard' element={<AccDashboard/>}/>
+                        <Route to='appointments' element={<AccAppointments/>}/> */}
+                    </Route>
                 </Routes>
             </div>
         </Router>

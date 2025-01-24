@@ -74,6 +74,8 @@ const BookingPage = () => {
         }
 
         validateAndRedirect();
+
+        document.title = "CleanEZ | Booking"
     }, [])
 
     // --- Fetches all Service Type Data

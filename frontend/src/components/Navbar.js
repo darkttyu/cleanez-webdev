@@ -11,12 +11,6 @@ const Navbar = () => {
     const { user, logout } = useAuth(); // Access user from context
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!user) {
-            navigate('/home')
-        }
-    }, [user])
-
     const handleLogOut = async () => {
         try {
             const response = await axios.post(`http://localhost:5000/api/auth/logout`)
@@ -47,7 +41,7 @@ const Navbar = () => {
                     className='nav-link my-account-container'>
                     My Account
                         <div className='pop-up'>
-                            <Link to={`/account/${user._id}`} className='sub-link'>My Account</Link>
+                            <Link to={`/account`} className='sub-link'>My Account</Link>
                             <Link to="/home" className='sub-link' onClick={handleLogOut}>Log Out</Link>
                         </div>
                     </button>
