@@ -7,7 +7,7 @@ const workerSchema = new mongoose.Schema({
     required: true },
   serviceCategory: {
     type: String, 
-    enum: ['Residential Cleaning', 'Deep Cleaning', 'Move In/Out Cleaning', 
+    enum: ['Residential Cleaning', 'Deep Cleaning', 'Move In / Out Cleaning', 
       'Post-Renovation Cleaning', 'Office Cleaning', 'Window Cleaning'],
     required: true
   },

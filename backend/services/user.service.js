@@ -32,9 +32,10 @@ export const updateUser = async(id, body, profile) => {
     const user = await User.findById({ _id: new Object(id) });
       if(!user){
         throw new Error("User does not exist");
-      }
+      } 
+        let profilePicture;
         if(profile && profile.length > 0){
-          profile = {
+          profilePicture = {
             data: profile[0].buffer, // Store profile picture buffer
             contentType: profile[0].mimetype // Store profile picture's MIME type
           };
@@ -52,7 +53,7 @@ export const updateUser = async(id, body, profile) => {
             "address.barangay": barangay,
           }
 
-            if(profile) {
+            if(profilePicture) {
               updatedData.profilePicture = profile;
             }
 
@@ -63,6 +64,7 @@ export const updateUser = async(id, body, profile) => {
             }
 
             const updatedUser = {
+              profile: profilePicture,
               name: updatedUserInfo.firstName + " " + updatedUserInfo.lastName,
               birthDate: updatedUserInfo.birthDate,
               gender: updatedUserInfo.gender,
@@ -75,7 +77,7 @@ export const updateUser = async(id, body, profile) => {
                 province: updatedUserInfo.address.province
               }
             }
-
+            
           return updatedUser;
 };
 
@@ -302,7 +304,7 @@ export const viewAllAppointments = async(id) => {
     userId: new Object(id), 
     appointmentStatus: { $in: ["Completed", "Cancelled"]}
   });
-  
+
   // Filters the appointment information to get only needed data from each appointment.
   const filteredAppointments = await Promise.all(
     userAppointments.map(async (appointment) => {

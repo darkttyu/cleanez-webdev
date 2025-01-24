@@ -178,20 +178,20 @@ const UserProfile = () => {
             const updateData = async (accInfo, profile) => {
                 const form = new FormData();
               
-                form.append(accInfo, JSON.stringify(accInfo))
-                form.append(profile, 'file')
+                form.append("accInfo", JSON.stringify(accInfo))
+                form.append("profile", 'file')
 
+                console.log(form);
                 return form;
             }
 
             const token = localStorage.getItem("token");
     
             const updateResponse = await 
-            axios.put(`http://localhost:5000/api/auth/editAccountInformation`, 
-                updateData(accountInfo, profileFile), 
+            axios.put(`http://localhost:5000/api/user/editAccountInformation`, 
+                updateAccountInformation, 
                 {
                     headers: { 
-                        'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${token}`
                     }
                 }
