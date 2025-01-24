@@ -46,7 +46,7 @@ const UserProfile = () => {
     // --- Updates Profile Information on Load
     useEffect(() => {
         setAccountInfo({ ...user });
-    }, []);
+    }, [user]);
     
 
     // --- Fetches Address Data
@@ -205,7 +205,19 @@ const UserProfile = () => {
                 }
             );
 
-            console.log(updateResponse)
+            console.log(updateResponse);
+            
+            const getResponse = await axios.get(`http://localhost:5000/api/user/getAccountInformation`,
+                {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            console.log(getResponse);
+            setUser(getResponse.data.user);
+
             setIsDisabled(!isDisabled);
         // --- --- Failed Update Account Information
         } catch (error) {
