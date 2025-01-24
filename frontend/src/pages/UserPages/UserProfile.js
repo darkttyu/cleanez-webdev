@@ -179,9 +179,12 @@ const UserProfile = () => {
         const form = new FormData();
       
         form.append("accInfo", JSON.stringify(accInfo))
-        form.append("profile", profile)
+            if(profile){
+                form.append("profile", profile)
+            }
 
-        console.log(form);
+        console.log("FORM DATA: ", accInfo);
+        
         return form;
     }
 
