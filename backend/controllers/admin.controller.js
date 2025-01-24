@@ -6,6 +6,9 @@ import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendUs
 import { format } from 'date-fns';
 import * as generator from 'generate-password';
 import { fetchWorkers } from "../services/admin.service.js";
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from "url";
 
 // Worker Controllers
 export const findAllWorkers = async (req, res) => {
@@ -853,3 +856,31 @@ export const addField = async (req, res) => {
   
 };
 */
+
+// const fetchDefaultProfile = async() => {
+//   const __filename = fileURLToPath(import.meta.url);
+//   const __dirname = path.dirname(__filename);
+  
+//   const profilePath = path.join(__dirname, "../images/defaultProfile1.jpg");
+
+//   const imageBuffer = fs.readFileSync(profilePath);
+
+//   return { 
+//     data: imageBuffer,
+//     contentType: 'image/jpeg'
+//   }
+// };
+
+// export const updateProfile = async(req, res) => {
+//   const profile = await fetchDefaultProfile();
+
+//   const updatedProfile = await User.updateMany(
+//     {},
+//     {
+//       "profilePicture": profile
+//     },
+//     { new: true }
+//   )
+
+//   return res.status(200).json({success: true, message: updatedProfile})
+// }

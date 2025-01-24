@@ -5,8 +5,25 @@ import { User } from "../models/user.model.js";
 import { Admin } from '../models/admin.model.js';
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail } from "../nodemailer/sendMail.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 // USER AUTHENTICATION
+
+const fetchDefaultProfile = async() => {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  const profilePath = path.join(__dirname, "../images/defaultProfile1.jpg");
+
+  const imageBuffer = fs.readFileSync(profilePath);
+
+  return { 
+    data: imageBuffer,
+    contentType: 'image/jpeg'
+  }
+};
 
 /**
  * Handles user signup by receiving user details, checking if the user already exists, 
@@ -35,6 +52,8 @@ export const signup = async (req, res) => {
     // Generate verification token
     const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
 
+    const defaultProfile = await fetchDefaultProfile();
+
     // Create new user
     const user = new User({
       email,
@@ -46,7 +65,8 @@ export const signup = async (req, res) => {
       gender,
       address,
       verificationToken,
-      verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000
+      verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
+      profilePicture: defaultProfile
     });
 
     // Save user to database
@@ -180,7 +200,7 @@ export const login = async (req, res) => {
         },
       });
     } catch (error) {
-      console.log("Error Logging In.");
+      return res.status(500).json({success: false, message: error.message})
     }
 
   } catch (error) {

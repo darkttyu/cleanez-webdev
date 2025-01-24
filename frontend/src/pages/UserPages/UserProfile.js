@@ -167,29 +167,32 @@ const UserProfile = () => {
             setAccountInfo({...user});
             setProfileURL(profileConvert(user.profilePicture))
             setIsDisabled(!isDisabled);
-        } else if (option == 2) {
+        } else if (option === 2) {
             updateAccountInformation();
         }
+    }
+
+    const updateData = async (accInfo, profile) => {
+        const form = new FormData();
+      
+        form.append("accInfo", JSON.stringify(accInfo))
+        form.append("profile", profile)
+
+        console.log(form);
+        return form;
     }
 
     // --- Updates Account Information
     const updateAccountInformation = async () => {
         try {
-            const updateData = async (accInfo, profile) => {
-                const form = new FormData();
-              
-                form.append("accInfo", JSON.stringify(accInfo))
-                form.append("profile", 'file')
-
-                console.log(form);
-                return form;
-            }
 
             const token = localStorage.getItem("token");
-    
+            
+            const formData = await updateData(accountInfo, profileFile);
+
             const updateResponse = await 
             axios.put(`http://localhost:5000/api/user/editAccountInformation`, 
-                updateAccountInformation, 
+                formData, 
                 {
                     headers: { 
                         'Authorization': `Bearer ${token}`
@@ -217,10 +220,11 @@ const UserProfile = () => {
                         <img src={profileURL} alt="" className="profile-image"/>
                         {!isDisabled ? (
                             <input type="file" 
-                            accept=""
+                            accept="image/"
                             onChange={(e) => {
-                                setProfileURL(URL.createObjectURL(e.target.files[0]));
-                                setProfileFile(URL.createObjectURL(e.target.files[0]))
+                                const file = e.target.files[0]
+                                setProfileURL(URL.createObjectURL(file));
+                                setProfileFile(file)
                             }}/>
                         ):(
                             <></>

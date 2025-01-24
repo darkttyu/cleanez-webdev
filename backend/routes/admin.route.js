@@ -9,6 +9,7 @@ const router = express.Router();
 
 // Dashboard Tab
 router.get("/getWorkerCount", getWorkerCount);
+
 // Appointments Tab
 
 // Applicants Tab
@@ -32,6 +33,7 @@ router.put("/softDeleteUser/:id", softDeleteUser); // Sets Status of User to Ina
 router.put("/setUserToActive/:id", setUserToActive);
 
 // router.put("/addField", addField);
+// router.put("/updateProfile", uploadProfile, updateProfile)
 
 // Service 
 router.post("/insertService", insertService);
