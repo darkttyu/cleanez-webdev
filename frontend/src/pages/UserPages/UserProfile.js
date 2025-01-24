@@ -35,6 +35,7 @@ const UserProfile = () => {
     // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Convert Binary Data to Profile URL
     const profileConvert = (profile) => {
+
         const dataType = profile.contentType
         const binaryData = new Uint8Array(profile.data.data);
         const base64String = btoa(String.fromCharCode(...binaryData));
@@ -172,20 +173,17 @@ const UserProfile = () => {
         }
     }
 
+    // --- Creates Form
     const updateData = async (accInfo, profile) => {
         const form = new FormData();
       
-        form.append("accInfo", JSON.stringify(accInfo))
-        form.append("profile", profile)
-
-        console.log(form);
-        return form;
+        form.append(accInfo, JSON.stringify(accInfo))
+        form.append(profile, 'file')
     }
 
     // --- Updates Account Information
     const updateAccountInformation = async () => {
         try {
-
             const token = localStorage.getItem("token");
             
             const formData = await updateData(accountInfo, profileFile);
@@ -333,7 +331,7 @@ const UserProfile = () => {
                                 phoneNumber: e.target.value
                             })
                         }}
-                        disabled={isDisabled}
+                        disabled={true}
                         id="phone-input" />
                     </div> 
 
@@ -358,7 +356,7 @@ const UserProfile = () => {
                                 email: e.target.value
                             })
                         }}
-                        disabled={isDisabled}
+                        disabled={true}
                         id="email-input" />
                     </div> 
 
