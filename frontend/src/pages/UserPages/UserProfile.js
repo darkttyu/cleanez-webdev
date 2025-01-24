@@ -35,6 +35,7 @@ const UserProfile = () => {
     // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Convert Binary Data to Profile URL
     const profileConvert = (profile) => {
+
         const dataType = profile.contentType
         const binaryData = new Uint8Array(profile.data.data);
         const base64String = btoa(String.fromCharCode(...binaryData));
