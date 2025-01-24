@@ -1,7 +1,3 @@
-import { User } from "../models/user.model.js";
-import { Worker } from "../models/worker.model.js";
-import { Appointment } from "../models/appointment.model.js";
-import moment from "moment";
 import { fetchAppointments, fetchUser, insertAppointmentRating, markAppointmentAsCancelled, markAppointmentAsComplete, updateUser, viewAllAppointments, viewUserAppointment } from "../services/user.service.js";
 
 // Profile
@@ -17,7 +13,8 @@ export const getAccountInformation = async (req, res) => {
 
 export const editAccountInformation = async (req, res) => {
     try {
-      const updatedUser = await updateUser(req.userId, req.body, req.files?.profile);
+      const accountInfo = JSON.parse(req.body.accInfo);
+      const updatedUser = await updateUser(req.userId, accountInfo, req.files?.profile);
       // Returns a success message if the user info is updated
       res.status(200).json({success: true, message: "Successfully Updated User Information!", updatedUser: updatedUser})
 

@@ -46,7 +46,7 @@ const UserProfile = () => {
     // --- Updates Profile Information on Load
     useEffect(() => {
         setAccountInfo({ ...user });
-    }, []);
+    }, [user]);
     
 
     // --- Fetches Address Data
@@ -180,11 +180,11 @@ const UserProfile = () => {
         console.log(accInfo);
 
         form.append("accInfo", JSON.stringify(accInfo))
-        if(profile) {
+        
+        if(profile){
             form.append("profile", profile)
         }
-
-        console.log(form);
+        
         return form;
     }
 
@@ -194,8 +194,6 @@ const UserProfile = () => {
             const token = localStorage.getItem("token");
             
             const formData = await updateData(accountInfo, profileFile);
-
-            console.log([...formData.entries()]);
 
             const updateResponse = await 
             axios.put(`http://localhost:5000/api/user/editAccountInformation`, 
@@ -207,7 +205,19 @@ const UserProfile = () => {
                 }
             );
 
-            console.log(updateResponse)
+            console.log(updateResponse);
+            
+            const getResponse = await axios.get(`http://localhost:5000/api/user/getAccountInformation`,
+                {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            console.log(getResponse);
+            setUser(getResponse.data.user);
+
             setIsDisabled(!isDisabled);
         // --- --- Failed Update Account Information
         } catch (error) {

@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
+import { Appointment } from "../models/appointment.model.js";
 import bcryptjs from 'bcryptjs';
 import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
@@ -41,29 +42,35 @@ export const addWorker = async (req, res) => {
       role: "Worker",
       isVerified: true,
     });
-    if (workerAlreadyExists) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Worker already exists" });
-    }
+      if (workerAlreadyExists) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Worker already exists" });
+      }
+
+    const applicantAppointment = await Appointment.find({"userId": userId, appointmentStatus: "Pending"})
+    console.log(applicantAppointment)
+      if(applicantAppointment.length >= 1){
+        return res.status(400).json({success: false, message: "User has scheduled appointments. Insertion Rejected"});
+      }
 
     // gets service details based on the service category
     const getServiceDetails = await Service.findOne({ serviceName: serviceCategory });
 
-    if (!getServiceDetails) { 
-      return res
-        .status(404)
-        .json({ success: false, message: "Service Category does not exist." });
-    }
+      if (!getServiceDetails) { 
+        return res
+          .status(404)
+          .json({ success: false, message: "Service Category does not exist." });
+      }
 
     // gets area details based on the worker's assigned area    
     const getAreaDetail = getServiceDetails.areaDetails.find((area) => area.sizeOfArea === workerAvailability.areaAssigned);
 
-    if (!getAreaDetail) { 
-      return res
-        .status(404)
-        .json({ success: false, message: "Area Assigned does not exist." });
-    }
+      if (!getAreaDetail) { 
+        return res
+          .status(404)
+          .json({ success: false, message: "Area Assigned does not exist." });
+      }
 
     // gets the start time based on the worker's assigned area
     const startTime = getAreaDetail.startTime;
@@ -87,11 +94,11 @@ export const addWorker = async (req, res) => {
       role: "Worker",
     });
 
-    if (!updateUserRole) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Failed to Update User Role." });
-    }
+      if (!updateUserRole) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Failed to Update User Role." });
+      }
 
     adminWelcomeWorkerEmail(updateUserRole.firstName, updateUserRole.email); // Sends welcome email.
 

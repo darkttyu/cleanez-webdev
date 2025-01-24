@@ -3,6 +3,21 @@ import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import moment from "moment";
 
+const formatTime = (time) => {
+  // Extract hours and minutes from the input time
+  let hours = parseInt(time.substring(0, 2), 10); // First two characters are hours
+  let minutes = time.substring(2, 4); // Last two characters are minutes
+
+  // Determine AM or PM
+  const period = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  hours = hours % 12 || 12;
+
+  // Format the time string
+  return `${hours.toString().padStart(2, '0')}:${minutes} ${period}`;
+};
+
 // Profile
 export const fetchUser = async(id) => {
   const user = await User.findById(id);
@@ -10,21 +25,7 @@ export const fetchUser = async(id) => {
       throw new Error("User does not exist.");
     }
 
-    const userInformation = {
-      name: user.firstName + " " + user.lastName,
-      birthDate: user.birthDate,
-      gender: user.gender,
-      phoneNumber: user.phoneNumber,
-      email: user.email,
-      address: {
-        block: user.address.block,
-        barangay: user.address.barangay,
-        municipal: user.address.municipal,
-        province: user.address.province
-      }
-    }
-
-    return userInformation;
+    return user;
 };
 
 export const updateUser = async(id, body, profile) => {
@@ -100,11 +101,12 @@ export const fetchAppointments = async(id) => {
               if(scheduleDetails.date instanceof Date){
                 slicedDate = scheduleDetails.date.toISOString().slice(0,10);
               }
+            let formattedTime = formatTime(scheduleDetails.startTime)
                 return {
                   _id,
                   serviceDetails: serviceDetails.serviceCategory,
                   scheduledDate: slicedDate,
-                  scheduledTime: scheduleDetails.time,
+                  scheduledTime: formattedTime,
                   rating: appointmentRating,
                   appointmentStatus,
                   paymentStatus
@@ -118,6 +120,7 @@ export const fetchAppointments = async(id) => {
             return appointmentDate.isBetween(moment(), moment().add(7, 'days'), 'day', '[]'); // isBetween arguments are start, end, unit, and inclusive [], () means exclusive
         });
 
+        
         const userAppointmentDetails = {
           userAppointmentCount,
           completeAppointmentCount,

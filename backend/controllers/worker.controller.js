@@ -14,7 +14,8 @@ export const getWorkerAccountInformation = async (req, res) => {
 
 export const editWorkerAccountInformation = async (req, res) => {
     try {
-      const updatedWorker = await updateWorker(req.userId, req.body, req.files?.profile); // Data from multipart-form
+      const accountInfo = JSON.parse(req.body.accInfo);
+      const updatedWorker = await updateWorker(req.userId, accountInfo, req.files?.profile); // Data from multipart-form
       // Returns a success message if the worker info is updated
       res.status(200).json({ success: true, message: "Successfully Updated Worker Information!", updatedUser: updatedWorker})
 
