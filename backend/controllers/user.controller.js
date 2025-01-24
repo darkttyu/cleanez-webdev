@@ -1,7 +1,3 @@
-import { User } from "../models/user.model.js";
-import { Worker } from "../models/worker.model.js";
-import { Appointment } from "../models/appointment.model.js";
-import moment from "moment";
 import { fetchAppointments, fetchUser, insertAppointmentRating, markAppointmentAsCancelled, markAppointmentAsComplete, updateUser, viewAllAppointments, viewUserAppointment } from "../services/user.service.js";
 
 // Profile
