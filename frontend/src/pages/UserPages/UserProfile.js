@@ -185,7 +185,7 @@ const UserProfile = () => {
     // --- Updates Account Information
     const updateAccountInformation = async () => {
         try {
-            
+
             const token = localStorage.getItem("token");
             console.log(accountInfo);
             const formData = await updateData(accountInfo, profileFile);
