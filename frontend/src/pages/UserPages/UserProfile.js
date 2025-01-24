@@ -177,8 +177,8 @@ const UserProfile = () => {
     const updateData = async (accInfo, profile) => {
         const form = new FormData();
       
-        form.append(accInfo, JSON.stringify(accInfo))
-        form.append(profile, 'file')
+        form.append("accInfo", JSON.stringify(accInfo))
+        form.append("profile", 'file')
     }
 
     // --- Updates Account Information

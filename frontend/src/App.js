@@ -10,6 +10,7 @@ import BookingSuccess from './pages/BookingPages/BookingSuccess';
 import { useNavigate } from 'react-router-dom';
 import AccountLayout from './pages/UserPages/AccountLayout';
 import UserProfile from './pages/UserPages/UserProfile';
+import UserDashboard from './pages/UserPages/UserDashboard';
 
 function App() {
     return (
@@ -30,8 +31,8 @@ function App() {
                     <Route path='/account' element={<AccountLayout/>}>
                         <Route index element={<Navigate to='/account/profile'/>}/>
                         <Route path='profile' element={<UserProfile/>}/>
-                        {/* <Route to='dashboard' element={<AccDashboard/>}/>
-                        <Route to='appointments' element={<AccAppointments/>}/> */}
+                        <Route path='dashboard' element={<UserDashboard/>}/>
+                        {/* <Route to='appointments' element={<AccAppointments/>}/> */}
                     </Route>
                 </Routes>
             </div>
