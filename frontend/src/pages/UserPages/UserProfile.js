@@ -180,9 +180,11 @@ const UserProfile = () => {
         console.log(accInfo);
 
         form.append("accInfo", JSON.stringify(accInfo))
-        form.append("profile", profile)
-
-        console.log(form);
+        
+        if(profile){
+            form.append("profile", profile)
+        }
+        
         return form;
     }
 
@@ -192,8 +194,6 @@ const UserProfile = () => {
             const token = localStorage.getItem("token");
             
             const formData = await updateData(accountInfo, profileFile);
-
-            console.log([...formData.entries()]);
 
             const updateResponse = await 
             axios.put(`http://localhost:5000/api/user/editAccountInformation`, 
