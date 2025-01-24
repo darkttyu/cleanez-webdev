@@ -29,6 +29,7 @@ const UserSide = ({setNavTitle}) => {
             className={
                 `link-item ${activeLink === 'Dashboard' ? 'active' : ''}`
             }
+            to='dashboard'
             onClick={(e) => handleClick('Dashboard')}>
                 
                 Dashboard
