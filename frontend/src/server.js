@@ -1,0 +1,1 @@
+export const backendURL = "https://cleanez-api.vercel.app/api"
