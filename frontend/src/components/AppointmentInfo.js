@@ -39,7 +39,7 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
     useEffect(() => {
         const fetchAppointment = async (id) => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/user/viewAppointment/${id}`);
+                const response = await axios.get(`https://cleanez-api.vercel.app/api/user/viewAppointment/${id}`);
     
                 setData(response.data.data);
             } catch (e) {
