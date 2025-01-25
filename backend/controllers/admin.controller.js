@@ -334,6 +334,21 @@ export const findAllUsers = async (req, res) => {
   
 };
 
+
+const fetchDefaultProfile = async() => {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  const profilePath = path.join(__dirname, "../images/defaultProfile1.jpg");
+
+  const imageBuffer = fs.readFileSync(profilePath);
+
+  return { 
+    data: imageBuffer,
+    contentType: 'image/jpeg'
+  }
+};
+
 export const addUser = async (req, res) => {
   const {email, firstName, lastName, phoneNumber, birthDate, gender, address} = req.body;
 
@@ -360,6 +375,7 @@ export const addUser = async (req, res) => {
     // Hashes the generated password
     const hashedPassword = await bcryptjs.hash(userGeneratedPassword, 10);
 
+    const defaultProfile = await fetchDefaultProfile();
     // Creates a new User
     const user = new User({
       email,
@@ -371,7 +387,8 @@ export const addUser = async (req, res) => {
       gender,
       address,
       status: "Active",
-      isVerified: true
+      isVerified: true,
+      profilePicture: defaultProfile
     });
 
     await user.save();
