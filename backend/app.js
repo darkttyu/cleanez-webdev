@@ -10,7 +10,7 @@ import userRoutes from "./routes/user.route.js";
 import workerRoutes from "./routes/worker.route.js";
 import { connectDB } from './db/connectDB.js'; // Importing database connection function
 
-// dotenv.config(); // Load environment variables from .env file
+dotenv.config(); // Load environment variables from .env file
 
 const app = express(); // Create an Express application
 const PORT = process.env.PORT || 5000; // Set the server port (defaults to 5000 if not set in environment variables)
@@ -24,11 +24,6 @@ app.use(cookieParser());
 // Middleware to parse URL-encoded data (like form submissions)
 app.use(express.urlencoded({ extended: true }));
 
-if(process.env.NODE_ENV !== "production"){
-  dotenv.config({
-    path: "./.env"
-  })
-}
 // CORS middleware configuration for handling cross-origin requests
 app.use(cors({
   origin: process.env.CLIENT_URL, // Allow requests from the frontend on localhost:3000
