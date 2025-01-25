@@ -504,7 +504,7 @@ const Schedule = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete})
 
             if (meridien === "PM") {
                 return `${parseInt(hour)+12}${min}`;
-            } else {meridien === "AM"} {
+            } else {
                 return `${hour}${min}`;
             }
         })
