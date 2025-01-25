@@ -39,6 +39,10 @@ app.use("/api/applicant", applicantRoutes); // Handles applicant-related routes
 app.use("/api/user", userRoutes);
 app.use("/api/worker", workerRoutes);
 
+app.get('/', (req, res) => {
+  res.send('API is running');
+});
+
 // Export the app for Vercel
 connectDB(); // Connect to the database
 
