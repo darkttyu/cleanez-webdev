@@ -20,7 +20,7 @@ const UserDashboard = () => {
             try {
                 const token = localStorage.getItem("token");
                 
-                const response = await axios.get(`http://localhost:5000/api/user/getAllUserAppointments`,
+                const response = await axios.get(`https://cleanez-api.vercel.app/api/user/getAllUserAppointments`,
                     {
                         headers: { 
                             'Authorization': `Bearer ${token}`
