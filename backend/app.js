@@ -41,4 +41,5 @@ app.use("/api/worker", workerRoutes);
 
 // Export the app for Vercel
 connectDB(); // Connect to the database
-module.exports = app;
+
+export default app;
