@@ -256,3 +256,5 @@ export const updateWorkerService = async(id, body) => {
 
     return updatedWorkerService;
 };
+
+// Earnings 

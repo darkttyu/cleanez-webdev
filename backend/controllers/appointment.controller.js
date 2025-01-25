@@ -88,6 +88,12 @@ export const getSpecificService = async (req, res) => {
   }
 };
 
+// Used for rounding off the rating to 2 decimal places
+function roundToDecimal(num, decimals) {
+  const factor = Math.pow(10, decimals);
+  return Math.round(num * factor) / factor;
+}
+
 /**
  * Gets all available workers based on the user preference during appointments.
  */
@@ -147,12 +153,18 @@ export const getAvailableWorkers = async (req, res) => {
 
       availableWorkers[index] = {
         ...availableWorkers[index],
+        //availableWorkers[index].rating: roundToDecimal(availableWorkers[index].rating, 2),
         userDetails: {
           firstName: workerInformation.firstName,
           lastName: workerInformation.lastName,
           address: workerInformation.address
         }
       };
+    }
+
+    // Updates the rating and rounds it off to 2 decimal places.
+    for(let worker of availableWorkers){
+      worker.rating = roundToDecimal(worker.rating, 2)
     }
 
     // Filtering Available Workers Depending on User Location 
@@ -257,15 +269,15 @@ export const setAppointment = async (req, res) => {
 
     // console.log(appointmentServiceList)
 
-    // // Checks if a user has made an appointment for a specific service for the current day. This limits the appointment of each service / day to 1.
-    // const currentDateConflict = appointmentServiceList.some(appointment => 
-    //   moment(appointment.createdAt).startOf('day').isSame(moment().startOf('day'))
-    // );
+    // Checks if a user has made an appointment for a specific service for the current day. This limits the appointment of each service / day to 1.
+    const currentDateConflict = appointmentServiceList.some(appointment => 
+      moment(appointment.createdAt).startOf('day').isSame(moment().startOf('day'))
+    );
     
-    // // console.log(currentDateConflict);
-    // if(currentDateConflict){
-    //   return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service for today.", currentDateConflict: currentDateConflict});
-    // }
+    // console.log(currentDateConflict);
+    if(currentDateConflict){
+      return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service for today.", currentDateConflict: currentDateConflict});
+    }
 
     // Checks if the appointment exists given a specific day, time, and service. This avoids overbooking if a user decides to 
     // book the same service on a different day
