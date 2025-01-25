@@ -299,13 +299,13 @@ p {
      opacity: 0.5;
 }
 
-.cancel {
+.prompt-btn.cancel {
      color           : var(--color2b);
      border          : 1px solid var(--color2b);
      background-color: var(--monoc2);
 }
 
-.cancel:hover {
+.prompt-btn.cancel:hover {
      color           : var(--monoc2);
      border          : 1px solid var(--color2b);
      background-color: #a888c3;

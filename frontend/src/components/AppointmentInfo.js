@@ -50,15 +50,20 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
         fetchAppointment(appID);
     }, [])
 
-    const showActionButtons = (currStatus) => {
+    const showActionButtons = (currStatus, currRating) => {
         const status = String(currStatus).toLowerCase();
         console.log(status)
 
-        if (status === "completed") {
+        if (status === "completed" && currRating === 0) {
             return (
                 <button className="apt-act-btn rate">
                     Rate Workers
                 </button>
+            );
+        }
+        else if (status === "completed" && currRating > 0) {
+            return (
+                <></>
             );
         } else if (status === "cancelled") {
             return (
@@ -77,6 +82,10 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
             );
         }
     }
+
+    useEffect(() => {
+        console.log(data)
+    }, [data])
 
     return (  
         <div className="appointment-info-container">
@@ -174,7 +183,7 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
                         color="#222222"/>
                     </button>
                     <div className="appointment-actions">
-                        {showActionButtons(data.appointmentStatus)}
+                        {showActionButtons(data.appointmentStatus, data.appointmentRating)}
                     </div>
                 </div>
             </section>

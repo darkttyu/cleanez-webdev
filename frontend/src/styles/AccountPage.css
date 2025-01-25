@@ -104,6 +104,11 @@
     padding        : 12px 0;
 }
 
+.appointment-actions {
+    display: flex;
+    gap    : 24px;
+}
+
 .apt-act-btn {
     padding      : 10px;
     border-radius: 16px;

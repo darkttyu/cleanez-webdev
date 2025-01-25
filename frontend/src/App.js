@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import AccountLayout from './pages/UserPages/AccountLayout';
 import UserProfile from './pages/UserPages/UserProfile';
 import UserDashboard from './pages/UserPages/UserDashboard';
+import UserAppointments from './pages/UserPages/UserAppointments';
 
 function App() {
     return (
@@ -32,7 +33,7 @@ function App() {
                         <Route index element={<Navigate to='/account/profile'/>}/>
                         <Route path='profile' element={<UserProfile/>}/>
                         <Route path='dashboard' element={<UserDashboard/>}/>
-                        {/* <Route to='appointments' element={<AccAppointments/>}/> */}
+                        <Route path='appointments' element={<UserAppointments/>}/>
                     </Route>
                 </Routes>
             </div>
