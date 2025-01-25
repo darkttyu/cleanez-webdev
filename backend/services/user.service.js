@@ -141,12 +141,12 @@ export const viewUserAppointment = async(appointmentId) => {
     for (const workerId of appointment.assignedWorkers) {
       const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
           if (!worker) {
-            return res.status(400).json({success: false, message: "Worker Not Found.", error: error.message})
+            throw new Error("Worker Not Found.")
           }
 
           const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
             if (!user) {
-              return res.status(400).json({success: false, message: "User Not Found.", error: error.message})
+              throw new Error("User Not Found.")
             }
             
             const { firstName, lastName } = user;
@@ -155,15 +155,9 @@ export const viewUserAppointment = async(appointmentId) => {
       
       const formattedTime = formatTime(appointment.scheduleDetails.startTime)
       
-        const updatedAppointment = await Appointment.findByIdAndUpdate(
-          appointmentId,
-          {
-            "scheduleDetails.startTime": formattedTime
-          }
-        ).lean()
-
       const appointmentInformation = {
-        ...updatedAppointment,
+        ...appointment,
+        appointmentTime: formattedTime,
         assignedWorkers: assignedWorkersNames
       }
 
