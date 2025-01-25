@@ -29,6 +29,7 @@ const UserSide = ({setNavTitle}) => {
             className={
                 `link-item ${activeLink === 'Dashboard' ? 'active' : ''}`
             }
+            to='dashboard'
             onClick={(e) => handleClick('Dashboard')}>
                 
                 Dashboard
@@ -124,12 +125,19 @@ const AccSidebar = ({user, setNavTitle}) => {
                 <ul className="sidebar-links">
                     {accountSideDisplay(user.role)}
                 </ul>
-                <Link 
-                className="sidebar-logout"
-                to="/home"
-                onClick={handleLogOut}>
-                    Log Out
-                </Link>
+                <div className="sidebar-return-container">
+                    <Link 
+                    className="sidebar-return"
+                    to="/home">
+                        Return to Home
+                    </Link>
+                    <Link 
+                    className="sidebar-return"
+                    to="/home"
+                    onClick={handleLogOut}>
+                        Log Out
+                    </Link>
+                </div>
             </div>
             
         </div>

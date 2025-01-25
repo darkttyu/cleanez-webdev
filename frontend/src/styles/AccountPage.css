@@ -1,5 +1,143 @@
 @import "../index.css";
 
+/* APPOINTMENT POPUP */
+.appointment-info-container {
+    position               : absolute;
+    background-color       : #60606077;
+    top                    : 0;
+    z-index                : 99999;
+    height                 : 100%;
+    width                  : 100%;
+    backdrop-filter        : blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display                : flex;
+    justify-content        : center;
+    align-items            : center;
+}
+
+.appointment-info-box {
+    display         : flex;
+    flex-direction  : column;
+    gap             : 20px;
+    background-color: #F8F8F8;
+    border-radius   : 16px;
+    padding         : 24px 40px;
+}
+
+.appointment-title-status {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+}
+
+.appointment-title {
+    font-size: 26px;
+}
+
+.appointment-data {
+    display       : flex;
+    flex-direction: column;
+    gap           : 20px;
+}
+
+.appointment-data h2 {
+    text-align: left;
+}
+
+.appointment-data-box {
+    display         : flex;
+    flex-direction  : column;
+    gap             : 16px;
+    background-color: white;
+    border-radius   : 8px;
+    padding         : 16px 20px;
+}
+
+.appointment-data-line {
+    display              : grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+.appointment-data-line p {
+    text-align : left;
+    font-family: var(--font2);
+    font-size  : 16px;
+    color      : var(--monoc4);
+}
+
+.appointment-data-line.price p {
+    font-size  : 20px;
+    font-weight: 600;
+}
+
+.appointment-data-line.price {
+    font-size     : 20px;
+    padding-bottom: 16px;
+}
+
+.appointment-data-line .title,
+.appointment-data-line.price {
+    font-weight: 600;
+}
+
+.appointment-data-line .data {
+    display       : flex;
+    flex-direction: column;
+    gap           : 16px;
+}
+
+.appointment-return {
+    cursor: pointer;
+}
+
+.appointment-return:hover>svg>path {
+    transition: all 0.1s ease-in-out;
+}
+
+.appointment-return:hover>svg>path {
+    fill: #06E36D;
+}
+
+.appointment-buttons {
+    display        : flex;
+    justify-content: space-between;
+    padding        : 12px 0;
+}
+
+.apt-act-btn {
+    padding      : 10px;
+    border-radius: 16px;
+    max-width    : fit-content;
+    justify-self : center;
+    font-weight  : 500;
+    box-shadow   : 0 4px 4px #00000040;
+    transition   : all 0.2s ease-out;
+}
+
+.apt-act-btn:hover {
+    filter        : brightness(83%) saturate(144%);
+    -webkit-filter: brightness(83%) saturate(144%);
+    -moz-filter   : brightness(83%) saturate(144%);
+    box-shadow    : 0 0px 0px #00000040;
+}
+
+
+.apt-act-btn.complete {
+    background-color: #06E36D;
+    color           : white;
+}
+
+.apt-act-btn.rate {
+    background-color: #FFDB4B;
+    color           : #222222;
+}
+
+.apt-act-btn.cancel {
+    background-color: #CC3363;
+    color           : white;
+}
+
+/* USER PAGE */
 .account-page-layout {
     display   : flex;
     width     : 100%;
@@ -38,7 +176,7 @@
 
 .link-item {
     display      : inline-block;
-    padding      : 12px 24px;
+    padding      : 12px 36px;
     border-radius: 8px;
     width        : 100%;
     transition   : all 0.2s ease-out;
@@ -62,16 +200,20 @@
     background-color: #0ec262;
 }
 
+.sidebar-return-container {
+    display       : flex;
+    flex-direction: column;
+}
 
-.sidebar-logout {
+.sidebar-return {
     font-family  : var(--font2);
     color        : var(--monoc4);
-    text-align   : center;
-    padding      : 12px;
+    text-align   : left;
+    padding      : 12px 36px;
     border-radius: 8px;
 }
 
-.sidebar-logout:hover {
+.sidebar-return:hover {
     background-color: #e4e4e4
 }
 
@@ -81,7 +223,9 @@
 }
 
 .account-page-right {
-    width: 100%;
+    width   : 100%;
+    overflow: auto;
+    position: relative;
 }
 
 /* PROFILE PAGE */
@@ -182,4 +326,115 @@
 .profile-save {
     color           : white;
     background-color: #06E36D;
+}
+
+/* DASHBOARD PAGE */
+.dashboard-page {
+    position        : relative;
+    padding         : 48px;
+    display         : flex;
+    flex-direction  : column;
+    align-items     : center;
+    gap             : 48px;
+    background-color: #F8F8F8;
+    width           : 100%;
+    height          : calc(100vh - 90px);
+}
+
+.dashboard-header {
+    display: flex;
+    gap    : 24px;
+}
+
+.dashboard-total-container {
+    padding         : 24px;
+    background-color: white;
+    border-radius   : 8px;
+    box-shadow      : 0 4px 4px #00000040;
+}
+
+.dashboard-total {
+    font-family: var(--font2);
+    font-size  : 32px;
+    font-weight: 700;
+    color      : #06E36D;
+    margin-top : 24px;
+    text-align : right;
+}
+
+.dashboard-upcoming-container {
+    max-width: 1180px;
+    width    : 80%;
+}
+
+.dashboard-upcoming-container>h2 {
+    text-align   : left;
+    margin-bottom: 24px;
+}
+
+.dashboard-list-container {
+    width           : 100%;
+    padding         : 24px;
+    background-color: #fff;
+    border-radius   : 8px;
+    box-shadow      : 0 4px 4px #00000040;
+}
+
+.dashboard-list-table {
+    width: 100%;
+}
+
+.dashboard-thead {
+    background-color: #f8f8f8;
+    border          : 1px solid black;
+}
+
+.dashboard-th {
+    font-family : var(--font2);
+    font-size   : 20px;
+    font-weight : 600;
+    color       : var(--color2b);
+    padding     : 20px 0;
+    border-color: #f8f8f8;
+}
+
+.dashboard-tbody-tr {
+    border-bottom: 1px solid var(--monoc4-50);
+    height       : 64px;
+    cursor       : pointer;
+}
+
+.dashboard-tbody-tr:hover {
+    background-color: #EBFFE9;
+}
+
+.dashboard-tbody-td {
+    font-family: var(--font2);
+    font-size  : 16px;
+    text-align : center;
+    color      : var(--monoc4);
+    position   : relative;
+}
+
+.dashboard-status {
+    padding      : 10px;
+    border-radius: 16px;
+    max-width    : fit-content;
+    justify-self : center;
+    font-weight  : 500;
+}
+
+.dashboard-status.completed {
+    background-color: #06E36D;
+    color           : white;
+}
+
+.dashboard-status.scheduled {
+    background-color: #FFDB4B;
+    color           : #222222;
+}
+
+.dashboard-status.cancelled {
+    background-color: #CC3363;
+    color           : white;
 }
