@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS middleware configuration for handling cross-origin requests
 app.use(cors({
-  origin: process.env.CLIENT_URL, // Allow requests from the frontend
+  origin: "https://cleanez.vercel.app", // Allow requests from the frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers in requests
   credentials: true // Allow credentials (cookies, HTTP authentication) in requests
