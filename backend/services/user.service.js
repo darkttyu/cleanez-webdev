@@ -138,7 +138,7 @@ export const viewUserAppointment = async(appointmentId) => {
 
     const assignedWorkersNames = [];
     // Loops through each worker ID to retrieve the workers full names and returns it as an array.
-    for (const workerId of appointmentInformation.assignedWorkers) {
+    for (const workerId of appointment.assignedWorkers) {
       const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
           if (!worker) {
             return res.status(400).json({success: false, message: "Worker Not Found.", error: error.message})
@@ -153,8 +153,8 @@ export const viewUserAppointment = async(appointmentId) => {
             assignedWorkersNames.push(`${firstName} ${lastName}`);
       }
       
-      appointmentInformation = {
-        ...appointmentInformation,
+      const appointmentInformation = {
+        ...appointment,
         assignedWorkers: assignedWorkersNames
       }
 
