@@ -153,8 +153,17 @@ export const viewUserAppointment = async(appointmentId) => {
             assignedWorkersNames.push(`${firstName} ${lastName}`);
       }
       
+      const formattedTime = formatTime(appointment.scheduleDetails.startTime)
+      
+        const updatedAppointment = await Appointment.findByIdAndUpdate(
+          appointmentId,
+          {
+            "scheduleDetails.startTime": formattedTime
+          }
+        ).lean()
+
       const appointmentInformation = {
-        ...appointment,
+        ...updatedAppointment,
         assignedWorkers: assignedWorkersNames
       }
 
