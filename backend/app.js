@@ -46,4 +46,5 @@ app.get('/', (req, res) => {
 // Export the app for Vercel
 connectDB(); // Connect to the database
 
+// LOGIN CHECK
 export default app;
