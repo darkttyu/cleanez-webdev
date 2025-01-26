@@ -1,5 +1,6 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 import AppointmentInfo from "../../components/AppointmentInfo";
+import RatingBox from "../../components/RatingBox";
 // --- Other/React Import/s
 import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";

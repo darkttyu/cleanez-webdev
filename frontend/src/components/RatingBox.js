@@ -85,7 +85,6 @@ const RatingBox = ({appID, setShowRating, fetchAppointments}) => {
                             selected="starRatingOutline" 
                             size="48px" 
                             color={starOne}
-                            onMouseEnter={(e) => ratingHover(1)}
                             onClick={(e) => ratingClick(1)}/>
                             <SVGIcons
                             strokewidth="1.5"
@@ -93,7 +92,6 @@ const RatingBox = ({appID, setShowRating, fetchAppointments}) => {
                             selected="starRatingOutline" 
                             size="48px" 
                             color={starTwo}
-                            onMouseEnter={(e) => ratingHover(2)}
                             onClick={(e) => ratingClick(2)}/>
                             <SVGIcons
                             strokewidth="1.5"
@@ -101,7 +99,6 @@ const RatingBox = ({appID, setShowRating, fetchAppointments}) => {
                             selected="starRatingOutline" 
                             size="48px" 
                             color={starThree}
-                            onMouseEnter={(e) => ratingHover(3)}
                             onClick={(e) => ratingClick(3)}/>
                             <SVGIcons
                             strokewidth="1.5"
@@ -109,7 +106,6 @@ const RatingBox = ({appID, setShowRating, fetchAppointments}) => {
                             selected="starRatingOutline" 
                             size="48px" 
                             color={starFour}
-                            onMouseEnter={(e) => ratingHover(4)}
                             onClick={(e) => ratingClick(4)}/>
                             <SVGIcons
                             strokewidth="1.5"
@@ -117,7 +113,6 @@ const RatingBox = ({appID, setShowRating, fetchAppointments}) => {
                             selected="starRatingOutline" 
                             size="48px" 
                             color={starFive}
-                            onMouseEnter={(e) => ratingHover(5)}
                             onClick={(e) => ratingClick(5)}/>
                         </div>
                     </div>
