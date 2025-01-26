@@ -710,7 +710,7 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
         const fetchAvailableWorkers = async () => {
             // --- --- Successfull Fetching
             try {
-                const response = await axios.post(`http://localhost:5000/api/appointment/getAvailableWorkers`, workerIdentifier, {
+                const response = await axios.post(`https://cleanez-api.vercel.app/api/appointment/getAvailableWorkers`, workerIdentifier, {
                     headers: { 'Content-Type': 'application/json' }
                   });
                   
@@ -773,7 +773,7 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
 
     return (
         <div className="booking-page" id="cleaners-booking-page">
-            <h2>Available Cleaners Need You</h2>
+            <h2>Available Cleaners Near You</h2>
             <p className='subheading'>Please Choose [ <strong>{selectedWorkers.length}</strong> / <strong>{workerNumbers}</strong> ] Workers</p>
             <div className="avail-workers-list">
                 {responseSuccess 
