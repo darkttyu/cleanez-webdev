@@ -86,7 +86,8 @@
     gap           : 16px;
 }
 
-.appointment-return {
+.appointment-return,
+.apt-act-btn {
     cursor: pointer;
 }
 
@@ -104,6 +105,11 @@
     padding        : 12px 0;
 }
 
+.appointment-actions {
+    display: flex;
+    gap    : 24px;
+}
+
 .apt-act-btn {
     padding      : 10px;
     border-radius: 16px;
@@ -113,14 +119,6 @@
     box-shadow   : 0 4px 4px #00000040;
     transition   : all 0.2s ease-out;
 }
-
-.apt-act-btn:hover {
-    filter        : brightness(83%) saturate(144%);
-    -webkit-filter: brightness(83%) saturate(144%);
-    -moz-filter   : brightness(83%) saturate(144%);
-    box-shadow    : 0 0px 0px #00000040;
-}
-
 
 .apt-act-btn.complete {
     background-color: #06E36D;
@@ -136,6 +134,15 @@
     background-color: #CC3363;
     color           : white;
 }
+
+.apt-act-btn:hover {
+    filter        : brightness(83%) saturate(144%);
+    -webkit-filter: brightness(83%) saturate(144%);
+    -moz-filter   : brightness(83%) saturate(144%);
+    box-shadow    : 0 0px 0px #00000040;
+    color         : #222222;
+}
+
 
 /* USER PAGE */
 .account-page-layout {

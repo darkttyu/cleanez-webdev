@@ -3,7 +3,7 @@ import axios from "axios";
 import SVGIcons from "../SVGIcons";
 
 
-const AppointmentInfo = ({appID, setShowAppInfo}) => {
+const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment, completeAppointment}) => {
     const [data, setData] = useState({
         _id: "",
         userId: "",
@@ -50,15 +50,19 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
         fetchAppointment(appID);
     }, [])
 
-    const showActionButtons = (currStatus) => {
+    const showActionButtons = (id, currStatus, currRating) => {
         const status = String(currStatus).toLowerCase();
-        console.log(status)
 
-        if (status === "completed") {
+        if (status === "completed" && currRating === 0) {
             return (
                 <button className="apt-act-btn rate">
                     Rate Workers
                 </button>
+            );
+        }
+        else if (status === "completed" && currRating > 0) {
+            return (
+                <></>
             );
         } else if (status === "cancelled") {
             return (
@@ -67,16 +71,24 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
         } else if (status === "scheduled") {
             return (
                 <>
-                    <button className="apt-act-btn cancel">
+                    <button 
+                    className="apt-act-btn cancel"
+                    onClick={(e) => cancelAppointment(id)}>
                         Cancel Appointments
                     </button>
-                    <button className="apt-act-btn complete">
+                    <button 
+                    className="apt-act-btn complete"
+                    onClick={(e) => completeAppointment(id)}>
                         Mark as Complete
                     </button>
                 </>
             );
         }
     }
+
+    useEffect(() => {
+        console.log(data)
+    }, [data])
 
     return (  
         <div className="appointment-info-container">
@@ -174,7 +186,7 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
                         color="#222222"/>
                     </button>
                     <div className="appointment-actions">
-                        {showActionButtons(data.appointmentStatus)}
+                        {showActionButtons(data._id, data.appointmentStatus, data.appointmentRating)}
                     </div>
                 </div>
             </section>

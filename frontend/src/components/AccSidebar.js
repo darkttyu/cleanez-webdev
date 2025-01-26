@@ -38,6 +38,7 @@ const UserSide = ({setNavTitle}) => {
             className={
                 `link-item ${activeLink === 'Appointments' ? 'active' : ''}`
             }
+            to='appointments'
             onClick={(e) => handleClick('Appointments')}>
                 
                 Appointments
