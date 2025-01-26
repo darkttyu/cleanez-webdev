@@ -120,11 +120,12 @@ export const fetchAppointments = async(id) => {
             return appointmentDate.isBetween(moment(), moment().add(7, 'days'), 'day', '[]'); // isBetween arguments are start, end, unit, and inclusive [], () means exclusive
         });
 
-        
+          const sortedAppointments = upcomingAppointment.sort((a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate));
+
         const userAppointmentDetails = {
           userAppointmentCount,
           completeAppointmentCount,
-          upcomingAppointment
+          sortedAppointments
         }
 
         return userAppointmentDetails;
