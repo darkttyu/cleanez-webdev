@@ -66,6 +66,15 @@ const WorkerSide = ({setNavTitle}) => {
             onClick={(e) => handleClick('Profile')}>
                 Profile
             </Link></li>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Appointments' ? 'active' : ''}`
+            }
+            to='appointments'
+            onClick={(e) => handleClick('Appointments')}>
+                
+                Appointments
+            </Link></li>
         </>
     );
 }

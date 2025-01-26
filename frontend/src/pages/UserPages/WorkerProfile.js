@@ -204,16 +204,7 @@ const WorkerProfile = () => {
 
             console.log(updateResponse);
             
-            const getResponse = await axios.get(`http://localhost:5000/api/worker/getWorkerAccountInformation`,
-                {
-                    headers: { 
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-
-            console.log(getResponse);
-            setUser(getResponse.data.user);
+            setUser(updateResponse.data.updatedUser);
 
             setIsDisabled(!isDisabled);
         // --- --- Failed Update Account Information
