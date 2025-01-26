@@ -9,28 +9,31 @@ import axios from "axios";
 const UserAppointments = () => {
     const [appointments, setAppointments] = useState([]);
     const [showAppInfo, setShowAppInfo] = useState(false);
+    const [showRating, setShowRating] = useState(false);
     const [appID, setAppID] = useState('');
 
-    useEffect(() => {
-        const fetchAppointments = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                
-                const response = await axios.get(`http://localhost:5000/api/user/viewAppointmentHistory`,
-                    {
-                        headers: { 
-                            'Authorization': `Bearer ${token}`
-                        }
+    const fetchAppointments = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            
+            const response = await axios.get(`http://localhost:5000/api/user/viewAppointmentHistory`,
+                {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
                     }
-                );
+                }
+            );
 
-                console.log(response)
+            console.log(response)
 
-                setAppointments(response.data.appointments);
-            } catch (e) {
-                console.log(e);
-            }
+            setAppointments(response.data.appointments);
+        } catch (e) {
+            console.log(e);
         }
+    }
+
+    useEffect(() => {
+        
 
         fetchAppointments();
     }, [])
@@ -46,7 +49,14 @@ const UserAppointments = () => {
     }, [showAppInfo])
 
     return (  
-        <>
+        <>  
+            {showRating ?
+            <RatingBox
+            appID={appID}
+            setShowRating={setShowRating}
+            fetchAppointments={fetchAppointments}/> :
+            <></>
+            }
             {showAppInfo ? <AppointmentInfo appID={appID} setShowAppInfo={setShowAppInfo}/> : <></>}
             <div className="dashboard-page">
                 <section className="dashboard-upcoming-container">
@@ -57,7 +67,6 @@ const UserAppointments = () => {
                                 <tr>
                                     <th className="dashboard-th">Service</th>
                                     <th className="dashboard-th">Date</th>
-                                    <th className="dashboard-th">Time</th>
                                     <th className="dashboard-th">Rating</th>
                                     <th className="dashboard-th">Status</th>
                                 </tr>
@@ -71,7 +80,6 @@ const UserAppointments = () => {
                                     showAppointment(data._id)}}>
                                     <td className="dashboard-tbody-td">{data.serviceDetails}</td>
                                     <td className="dashboard-tbody-td">{data.scheduledDate.replaceAll('-', '/')}</td>
-                                    <td className="dashboard-tbody-td">{data.scheduledTime}</td>
                                     <td className="dashboard-tbody-td">{data.rating}</td>
                                     <td className="dashboard-tbody-td ">
                                         <div className={`dashboard-status 
