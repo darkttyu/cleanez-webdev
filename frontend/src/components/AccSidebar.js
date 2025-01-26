@@ -48,24 +48,23 @@ const UserSide = ({setNavTitle}) => {
 }
 
 const WorkerSide = ({setNavTitle}) => {
+    const [activeLink, setActiveLink] = useState('Profile');
+    const navigate = useNavigate();
+
+    const handleClick = (title) => {
+        setNavTitle(title)
+        setActiveLink(title)
+    }
+
     return (  
         <>
             <li><Link 
-            className="link-item active"
-            onClick={(e) => setNavTitle('Profile')}>
-                
-                <p className="link-title">Profile</p>
-            </Link></li>
-            <li><Link 
-            className="link-item"
-            onClick={(e) => setNavTitle('Dashboard')}>
-                
-                <p className="link-title">Dashboard</p>
-            </Link></li>
-            <li><Link className="link-item"
-            onClick={(e) => setNavTitle('Appointments')}>
-                
-                <p className="link-title">Appointments</p>
+            className={
+                `link-item ${activeLink === 'Profile' ? 'active' : ''}`
+            }
+            to='profile'
+            onClick={(e) => handleClick('Profile')}>
+                Profile
             </Link></li>
         </>
     );
@@ -82,24 +81,14 @@ const AccSidebar = ({user, setNavTitle}) => {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        try {
-            if (user.role) console.log(user.role)
-            else throw new Error("Session Timed Out")
-        } catch (e) {
-            console.log(e);
-            navigate('/home');
-        }
-    }, [user])
+    const accountSideDisplay = () => {
+        const role = localStorage.getItem("role")
 
-    const accountSideDisplay = (role) => {
-        const currRole = String(role).toLowerCase()
-
-        if (currRole === 'user') {
+        if (role === 'User') {
             return <UserSide setNavTitle={setNavTitle}/>
-        } else if (currRole === 'worker') {
+        } else if (role === 'Worker') {
             return <WorkerSide setNavTitle={setNavTitle}/>
-        } else if (currRole === 'admin') {
+        } else if (role === 'admin') {
             return <AdminSide setNavTitle={setNavTitle}/>
         }
     }
@@ -109,7 +98,8 @@ const AccSidebar = ({user, setNavTitle}) => {
             const response = await axios.post(`http://localhost:5000/api/auth/logout`)
             console.log(response);
 
-            localStorage.removeItem("token")
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
             logout();
             navigate('/home');
         } catch (error) {
@@ -119,12 +109,12 @@ const AccSidebar = ({user, setNavTitle}) => {
 
     return (  
         <div className="account-page-left">
-            <Link to={user ? `/home/${user._id}` : "/home"}>
+            <Link to="/home">
                 <img className="sidebar-logo" src={logo} alt="Logo" />
             </Link>
             <div className="sidebar-content">
                 <ul className="sidebar-links">
-                    {accountSideDisplay(user.role)}
+                    {accountSideDisplay()}
                 </ul>
                 <div className="sidebar-return-container">
                     <Link 

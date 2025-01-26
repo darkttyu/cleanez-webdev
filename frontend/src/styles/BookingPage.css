@@ -122,7 +122,7 @@
 }
 
 .booking-grid.col-three {
-    grid-template-columns: repeat(3, 324px);
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .booking-grid.col-two {

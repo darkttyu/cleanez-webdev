@@ -5,10 +5,10 @@ import {HashLink} from 'react-router-hash-link';
 import { useAuth } from '../AuthContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-const Navbar = () => {
-    const { user, logout } = useAuth(); // Access user from context
+const Navbar = ({user, setUser}) => {
+    const { logout } = useAuth(); // Access user from context
     const navigate = useNavigate();
 
     const handleLogOut = async () => {
@@ -17,17 +17,17 @@ const Navbar = () => {
             console.log(response);
 
             localStorage.removeItem("token")
+            localStorage.removeItem("role");
             logout();
-            navigate('/home');
+            location.reload();
         } catch (error) {
             console.log('Logout Failed: ', error)
         }
     }
-    
-    
+
     return (
         <nav className="navbar space-between">
-            <Link to={user ? `/home/${user._id}` : "/home"}>
+            <Link to="/home">
                 <img className="nav-logo" src={NavLogo} alt="Logo" />
             </Link>
             <div className="nav-links">

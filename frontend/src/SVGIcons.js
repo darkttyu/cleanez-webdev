@@ -66,7 +66,7 @@ const SVGIcons = ({selected, size, color, strokewidth, stroke, onClick}) => {
 
      return (  
           <svg
-               stroke-width = {strokewidth? strokewidth : 0}
+               strokeWidth = {strokewidth? strokewidth : 0}
                stroke = {stroke? stroke : ""}
                width = {size}
                height = {size}

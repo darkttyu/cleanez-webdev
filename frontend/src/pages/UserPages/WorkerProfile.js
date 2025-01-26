@@ -7,11 +7,9 @@ import { useAuth } from "../../AuthContext";
 import {regions, provinces, cities, barangays} from "select-philippines-address";
 import axios from "axios";
 
-
-// Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const UserProfile = () => {
-     // --- Convert Binary Data to Profile URL
-     const profileConvert = (profile) => {
+const WorkerProfile = () => {
+    // --- Convert Binary Data to Profile URL
+    const profileConvert = (profile) => {
         console.log(profile);
         const dataType = profile.contentType;
         const binaryData = new Uint8Array(profile.data.data);
@@ -24,7 +22,7 @@ const UserProfile = () => {
     // --- Context Authenticator
     const { user, setUser } = useAuth();
     // --- Account Information
-    const [accountInfo, setAccountInfo] = useState({...user})
+    const [accountInfo, setAccountInfo] = useState({...user});
     // --- Profile URL for loading current Profile Picture
     const [profileURL, setProfileURL] = useState(profileConvert(user.profilePicture));
     // --- Profile File Information
@@ -43,12 +41,6 @@ const UserProfile = () => {
     
     
     // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    // --- Updates Profile Information on Load
-    useEffect(() => {
-        setAccountInfo({ ...user });
-    }, [user]);
-    
-
     // --- Fetches Address Data
     // --- --- Regions
     useEffect(() => {
@@ -174,7 +166,6 @@ const UserProfile = () => {
     }
 
     // --- Creates Form
-
     const updateData = async (accInfo, profile) => {
         const form = new FormData();
         console.log(accInfo);
@@ -188,15 +179,12 @@ const UserProfile = () => {
         return form;
     }
 
-    // --- Updates Account Information
-    const updateAccountInformation = async () => {
+    const updateInformation = async (token) => {
         try {
-            const token = localStorage.getItem("token");
-            
             const formData = await updateData(accountInfo, profileFile);
 
             const updateResponse = await 
-            axios.put(`http://localhost:5000/api/user/editAccountInformation`, 
+            axios.put(`http://localhost:5000/api/user/editWorkerAccountInformation`, 
                 formData, 
                 {
                     headers: { 
@@ -206,17 +194,36 @@ const UserProfile = () => {
             );
 
             console.log(updateResponse);
-            
-            const getResponse = await axios.get(`http://localhost:5000/api/user/getAccountInformation`,
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    const getInformation = async (token) => {
+        try {
+            const getResponse = await axios.get(`http://localhost:5000/api/user/getWorkerAccountInformation`,
                 {
                     headers: { 
                         'Authorization': `Bearer ${token}`
                     }
                 }
             );
-
+            
             console.log(getResponse);
-            setUser(getResponse.data.user);
+            return (getResponse.data.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    // --- Updates Account Information
+    const updateAccountInformation = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            
+            updateInformation(token);
+
+            setUser(getInformation(token));
 
             setIsDisabled(!isDisabled);
         // --- --- Failed Update Account Information
@@ -526,4 +533,4 @@ const UserProfile = () => {
     );
 }
  
-export default UserProfile;
+export default WorkerProfile;

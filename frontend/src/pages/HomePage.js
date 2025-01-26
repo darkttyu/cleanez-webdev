@@ -5,30 +5,23 @@ import '../styles/HomePage.css'
 import {Header, Services, About, Founders} from '../components/HomeContent';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-const HomePage = ({isLoggedIn}) => {
+const HomePage = () => {
     const { user } = useAuth();
-    const navigate = useNavigate();
     
     useEffect(() => {
         document.title = 'CleanEZ | Home'
     }, [])
 
-    useEffect(() => {
-        if (!user) {
-            navigate('/home')
-        }
-    }, [user])
-
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <>
-            <Navbar isLoggedIn={isLoggedIn}/>
+            <Navbar user={user}/>
             <Header />
             <Services />
             <About />
