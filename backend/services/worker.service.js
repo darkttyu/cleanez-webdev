@@ -21,16 +21,24 @@ const formatTime = (time) => {
 // Profile 
 export const fetchWorker = async(id) => {
   const user = await User.findById({ _id: new Object(id) });
-
     if(!user){
       throw new Error("User does not exist.");
     }
       if(user.role !== "Worker"){
         throw new Error("Bad Request. User is not a worker.");
       }
+  
+  const worker = await Worker.findOne({"userId": new Object(id)});
+    if(!worker){
+      throw new Error("Worker does not exist.");
+    }
+  
+  const workerInfo = {
+    user, 
+    worker
+  }
 
-  console.log(user);
-  return user;
+  return workerInfo;
 };
 
 export const updateWorker = async(id, body, profile) => {
