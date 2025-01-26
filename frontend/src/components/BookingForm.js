@@ -795,7 +795,7 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
                                 </div>
                                 <div className="rating">
                                     <SVGIcons 
-                                    selected="startRatingSolid" 
+                                    selected="starRatingSolid" 
                                     size="24" 
                                     color="#06E36D"/>
                                     <p className="rating-number">{worker.rating}</p>
@@ -805,15 +805,13 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
                                     selected="addButtonSolid" 
                                     size="24" 
                                     color="#60c36f"
-                                    clipRule="evenodd"
-                                    fillRule="evenodd"/>
+                                    />
                                 ):(
                                     <SVGIcons 
                                     selected="removeButtonSolid" 
                                     size="24" 
                                     color="#4b4b4b"
-                                    clipRule="evenodd"
-                                    fillRule="evenodd"/>
+                                    />
                                 )}
                                 
                             </div>
