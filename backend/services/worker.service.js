@@ -258,6 +258,19 @@ export const updateWorkerService = async(id, body) => {
 };
 
 // Earnings 
+export const getDailyEarnings = async () => {
+
+};
+
+export const getWeeklyEarnings = async () => {
+
+};
+
 export const getMonthlyEarnings = async() => {
 
 };
+
+export const getYearlyEarnings = async() => {
+
+};
+

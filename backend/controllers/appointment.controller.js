@@ -251,9 +251,9 @@ export const setAppointment = async (req, res) => {
       moment(appointment.scheduleDetails.startTime, "HHmm").isSame(moment(scheduleDetails.startTime, "HHmm"))
     );
     
-    if(duplicateAppointment) {
-      return res.status(400).json({success: false, message: "Appointment already exists.", duplicateAppointment: duplicateAppointment})
-    }
+      if(duplicateAppointment) {
+        return res.status(400).json({success: false, message: "Appointment already exists.", duplicateAppointment: duplicateAppointment})
+      }
 
     // Checks if the appointment exists based on the specified date and time regardless of service. Avoids conflicting schedules.
     const appointmentConflict = appointmentList.some(appointment=> 
@@ -261,9 +261,9 @@ export const setAppointment = async (req, res) => {
       moment(appointment.scheduleDetails.startTime, "HHmm").isSame(moment(scheduleDetails.startTime, "HHmm"))
     )
 
-    if(appointmentConflict) {
-      return res.status(400).json({success: false, message: "Cannot process appointment due to conflict with other scheduled Appointments.", appointmentConflict: appointmentConflict})
-    }
+      if(appointmentConflict) {
+        return res.status(400).json({success: false, message: "Cannot process appointment due to conflict with other scheduled Appointments.", appointmentConflict: appointmentConflict})
+      }
 
     const appointmentServiceList = await Appointment.find({"userId": userId, "serviceDetails.serviceCategory": serviceDetails.serviceCategory}); // Gets all the appointments that the user booked for that specific service.
 
@@ -274,10 +274,10 @@ export const setAppointment = async (req, res) => {
       moment(appointment.createdAt).startOf('day').isSame(moment().startOf('day'))
     );
     
-    // console.log(currentDateConflict);
-    if(currentDateConflict){
-      return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service for today.", currentDateConflict: currentDateConflict});
-    }
+      // console.log(currentDateConflict);
+      if(currentDateConflict){
+        return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service for today.", currentDateConflict: currentDateConflict});
+      }
 
     // Checks if the appointment exists given a specific day, time, and service. This avoids overbooking if a user decides to 
     // book the same service on a different day
@@ -286,10 +286,10 @@ export const setAppointment = async (req, res) => {
       moment(appointment.scheduleDetails.startTime, "HHmm").isSame(moment(scheduleDetails.startTime, "HHmm"))
     )
 
-    // console.log(dateTimeConflict) 
-    if(dateTimeConflict) {
-      return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service on that Date and Time.", dateTimeConflict: dateTimeConflict})
-    }
+      // console.log(dateTimeConflict) 
+      if(dateTimeConflict) {
+        return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service on that Date and Time.", dateTimeConflict: dateTimeConflict})
+      }
 
     // Creates a new appointment document.
     const newAppointment = new Appointment({
@@ -348,33 +348,33 @@ export const setAppointment = async (req, res) => {
           assignedWorkersNames.push(`${firstName} ${lastName}`);
         }
 
-        // Loops through the workers and sends an email to them.
-        for (const workerId of assignedWorkers) {
-          const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
-          
-          if (!worker) {
-            throw new Error(`Worker with ID ${workerId} not found`);
-          }
-          
-          const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
+          // Loops through the workers and sends an email to them.
+          for (const workerId of assignedWorkers) {
+            const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
+            
+            if (!worker) {
+              throw new Error(`Worker with ID ${workerId} not found`);
+            }
+            
+            const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
 
-          if (!user) {
-            throw new Error(`User with ID ${worker.userId} not found`);
+            if (!user) {
+              throw new Error(`User with ID ${worker.userId} not found`);
+            }
+            
+            const workerTime = formatTime(scheduleDetails.startTime);
+            const earnings = serviceCost / serviceDetails.numberOfWorkers
+            
+            // Sends the appointment confirmation email to the worker
+            sendWorkerAppointmentConfirmation(
+              user.firstName, user.email, customerFirstName, 
+              customerLastName, address.block, address.municipal,
+              address.province, address.barangay, serviceDetails.serviceCategory,
+              serviceDetails.sizeOfArea, scheduleDetails.date, 
+              workerTime, assignedWorkersNames, earnings); 
+            
+              console.log("Successfully Sent Worker Confirmation"); 
           }
-          
-          const workerTime = formatTime(scheduleDetails.startTime);
-          const earnings = serviceCost / serviceDetails.numberOfWorkers
-          
-          // Sends the appointment confirmation email to the worker
-          sendWorkerAppointmentConfirmation(
-            user.firstName, user.email, customerFirstName, 
-            customerLastName, address.block, address.municipal,
-            address.province, address.barangay, serviceDetails.serviceCategory,
-            serviceDetails.sizeOfArea, scheduleDetails.date, 
-            workerTime, assignedWorkersNames, earnings); 
-          
-            console.log("Successfully Sent Worker Confirmation"); 
-        }
 
       } catch (error) {
           console.error("Error during email sending:", error);

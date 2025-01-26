@@ -115,12 +115,13 @@ export const fetchAppointments = async(id) => {
       )
 
         // Filters all the appointments only to get the appointments within 7 days.
-        const upcomingAppointment = filteredAppointments.filter(appointment => {
+        const unsortedAppointment = filteredAppointments.filter(appointment => {
           const appointmentDate = moment(appointment.scheduledDate);
             return appointmentDate.isBetween(moment(), moment().add(7, 'days'), 'day', '[]'); // isBetween arguments are start, end, unit, and inclusive [], () means exclusive
         });
 
-        
+          const upcomingAppointment = unsortedAppointment.sort((a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate));
+
         const userAppointmentDetails = {
           userAppointmentCount,
           completeAppointmentCount,

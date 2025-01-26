@@ -1,5 +1,6 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 import AppointmentInfo from "../../components/AppointmentInfo";
+import RatingBox from "../../components/RatingBox";
 // --- Other/React Import/s
 import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
@@ -13,6 +14,7 @@ const UserDashboard = () => {
         upcomingAppointment: []
     });
     const [showAppInfo, setShowAppInfo] = useState(false);
+    const [showRating, setShowRating] = useState(false);
     const [appID, setAppID] = useState('');
 
     const fetchAppointments = async () => {
@@ -76,10 +78,18 @@ const UserDashboard = () => {
 
     return (  
         <>
+            {showRating ?
+            <RatingBox
+            appID={appID}
+            setShowRating={setShowRating}
+            fetchAppointments={fetchAppointments}/> :
+            <></>
+            }
             {showAppInfo ? 
             <AppointmentInfo 
             appID={appID} 
             setShowAppInfo={setShowAppInfo}
+            setShowRating={setShowRating}
             cancelAppointment={cancelAppointment}
             completeAppointment={completeAppointment}/> : 
             <></>}

@@ -3,7 +3,7 @@ import axios from "axios";
 import SVGIcons from "../SVGIcons";
 
 
-const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment, completeAppointment}) => {
+const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointment, completeAppointment}) => {
     const [data, setData] = useState({
         _id: "",
         userId: "",
@@ -50,12 +50,17 @@ const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment, completeAppo
         fetchAppointment(appID);
     }, [])
 
-    const showActionButtons = (id, currStatus, currRating) => {
+    const showActionButtons = (currStatus, currRating) => {
         const status = String(currStatus).toLowerCase();
 
         if (status === "completed" && currRating === 0) {
             return (
-                <button className="apt-act-btn rate">
+                <button 
+                className="act-btn rate"
+                onClick={(e) => {
+                    setShowAppInfo(false);
+                    setShowRating(true);
+                }}>
                     Rate Workers
                 </button>
             );
@@ -72,13 +77,13 @@ const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment, completeAppo
             return (
                 <>
                     <button 
-                    className="apt-act-btn cancel"
-                    onClick={(e) => cancelAppointment(id)}>
+                    className="act-btn cancel"
+                    onClick={(e) => cancelAppointment(appID)}>
                         Cancel Appointments
                     </button>
                     <button 
-                    className="apt-act-btn complete"
-                    onClick={(e) => completeAppointment(id)}>
+                    className="act-btn complete"
+                    onClick={(e) => completeAppointment(appID)}>
                         Mark as Complete
                     </button>
                 </>
@@ -91,7 +96,8 @@ const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment, completeAppo
     }, [data])
 
     return (  
-        <div className="appointment-info-container">
+        <div 
+        className="appointment-info-container">
             <section className="appointment-info-box">
                 <div className="appointment-data">
                     {/* Title and Status */}
@@ -186,7 +192,7 @@ const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment, completeAppo
                         color="#222222"/>
                     </button>
                     <div className="appointment-actions">
-                        {showActionButtons(data._id, data.appointmentStatus, data.appointmentRating)}
+                        {showActionButtons(data.appointmentStatus, data.appointmentRating)}
                     </div>
                 </div>
             </section>

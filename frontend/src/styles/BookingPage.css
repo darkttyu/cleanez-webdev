@@ -91,7 +91,9 @@
     background-color: #f3f3f3;
     border-radius   : 16px;
     box-shadow      : 0 4px 4px #00000040;
-    min-width       : 770px;
+    min-width       : 720px;
+    width           : 90%;
+    max-width       : 1080px;
     padding         : 28px 40px;
 }
 
@@ -203,9 +205,6 @@
     position      : relative;
 }
 
-#cleaners-booking-page {
-    width: 1300px;
-}
 
 .avail-worker-container {
     display         : flex;
