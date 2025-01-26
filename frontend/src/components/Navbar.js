@@ -19,7 +19,6 @@ const Navbar = ({user, setUser}) => {
             localStorage.removeItem("token")
             localStorage.removeItem("role");
             logout();
-            location.reload();
         } catch (error) {
             console.log('Logout Failed: ', error)
         }
