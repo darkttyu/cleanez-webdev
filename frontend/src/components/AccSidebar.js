@@ -105,7 +105,7 @@ const AccSidebar = ({user, setNavTitle}) => {
 
     const handleLogOut = async () => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/auth/logout`)
+            const response = await axios.post(`https://cleanez-api.vercel.app/api/auth/logout`)
             console.log(response);
 
             localStorage.removeItem("token")
