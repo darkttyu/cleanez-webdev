@@ -15,25 +15,37 @@ const UserDashboard = () => {
     const [showAppInfo, setShowAppInfo] = useState(false);
     const [appID, setAppID] = useState('');
 
-    useEffect(() => {
-        const fetchAppointments = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                
-                const response = await axios.get(`http://localhost:5000/api/user/getAllUserAppointments`,
-                    {
-                        headers: { 
-                            'Authorization': `Bearer ${token}`
-                        }
+    const fetchAppointments = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            
+            const response = await axios.get(`http://localhost:5000/api/user/getAllUserAppointments`,
+                {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
                     }
-                );
+                }
+            );
 
-                setUpcomingData(response.data.data);
-            } catch (e) {
-                console.log(e);
-            }
+            setUpcomingData(response.data.data);
+        } catch (e) {
+            console.log(e);
         }
+    }
 
+    const cancelAppointment = async (id) => {
+        try {
+            const repsonse = await axios.put(`http://localhost:5000/api/user/cancelAppointment/${id}`);
+            console.log(repsonse);
+
+            setShowAppInfo(false);
+            fetchAppointments();
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
         fetchAppointments();
     }, [])
 
@@ -43,6 +55,8 @@ const UserDashboard = () => {
         setAppID(id);
     }
 
+
+    
     useEffect(() => {
         console.log(showAppInfo);
     }, [showAppInfo])
@@ -50,7 +64,12 @@ const UserDashboard = () => {
 
     return (  
         <>
-            {showAppInfo ? <AppointmentInfo appID={appID} setShowAppInfo={setShowAppInfo}/> : <></>}
+            {showAppInfo ? 
+            <AppointmentInfo 
+            appID={appID} 
+            setShowAppInfo={setShowAppInfo}
+            cancelAppointment={cancelAppointment}/> : 
+            <></>}
             <div className="dashboard-page">
                 <div className="dashboard-header">
                     <section className="dashboard-total-container">

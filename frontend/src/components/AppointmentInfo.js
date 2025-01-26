@@ -3,7 +3,7 @@ import axios from "axios";
 import SVGIcons from "../SVGIcons";
 
 
-const AppointmentInfo = ({appID, setShowAppInfo}) => {
+const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment}) => {
     const [data, setData] = useState({
         _id: "",
         userId: "",
@@ -50,9 +50,8 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
         fetchAppointment(appID);
     }, [])
 
-    const showActionButtons = (currStatus, currRating) => {
+    const showActionButtons = (id, currStatus, currRating) => {
         const status = String(currStatus).toLowerCase();
-        console.log(status)
 
         if (status === "completed" && currRating === 0) {
             return (
@@ -72,7 +71,9 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
         } else if (status === "scheduled") {
             return (
                 <>
-                    <button className="apt-act-btn cancel">
+                    <button 
+                    className="apt-act-btn cancel"
+                    onClick={(e) => cancelAppointment(id)}>
                         Cancel Appointments
                     </button>
                     <button className="apt-act-btn complete">
@@ -183,7 +184,7 @@ const AppointmentInfo = ({appID, setShowAppInfo}) => {
                         color="#222222"/>
                     </button>
                     <div className="appointment-actions">
-                        {showActionButtons(data.appointmentStatus, data.appointmentRating)}
+                        {showActionButtons(data._id, data.appointmentStatus, data.appointmentRating)}
                     </div>
                 </div>
             </section>
