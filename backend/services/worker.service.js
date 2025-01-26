@@ -34,8 +34,8 @@ export const fetchWorker = async(id) => {
     }
   
   const workerInfo = {
-    user, 
-    worker
+    ...user.toObject(),
+    worker: worker
   }
 
   return workerInfo;
