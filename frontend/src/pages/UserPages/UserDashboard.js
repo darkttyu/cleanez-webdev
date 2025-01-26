@@ -118,7 +118,7 @@ const UserDashboard = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                            {upcomingData.sortedAppointments.map((data, index) => (
+                            {upcomingData.upcomingAppointment.map((data, index) => (
                                 <tr 
                                 key={index} 
                                 className="dashboard-tbody-tr"
