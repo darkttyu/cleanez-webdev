@@ -20,16 +20,15 @@ const UserDashboard = () => {
             try {
                 const token = localStorage.getItem("token");
                 
-                if(token) {
-                    const response = await axios.get(`https://cleanez-api.vercel.app/api/user/getAllUserAppointments`,
-                        {
-                            headers: { 
-                                'Authorization': `Bearer ${token}`
-                            }
+                const response = await axios.get(`https://cleanez-api.vercel.app/api/user/getAllUserAppointments`,
+                    {
+                        headers: { 
+                            'Authorization': `Bearer ${token}`
                         }
-                    );
-                    setUpcomingData(response.data.data);
-                }
+                    }
+                );
+
+                setUpcomingData(response.data.data);
             } catch (e) {
                 console.log(e);
             }
