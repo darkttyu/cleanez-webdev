@@ -190,7 +190,6 @@ const WorkerProfile = () => {
     const updateAccountInformation = async () => {
         try {
             const token = localStorage.getItem("token");
-            
             const formData = await updateData(accountInfo, profileFile);
 
             const updateResponse = await 
