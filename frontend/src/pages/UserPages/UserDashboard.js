@@ -45,6 +45,18 @@ const UserDashboard = () => {
         }
     }
 
+    const completeAppointment = async (id) => {
+        try {
+            const response = await axios.put(`http://localhost:5000/api/user/setAppointmentAsCompleted/${id}`);
+            console.log(response);
+
+            setShowAppInfo(false);
+            fetchAppointments();
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     useEffect(() => {
         fetchAppointments();
     }, [])
@@ -68,7 +80,8 @@ const UserDashboard = () => {
             <AppointmentInfo 
             appID={appID} 
             setShowAppInfo={setShowAppInfo}
-            cancelAppointment={cancelAppointment}/> : 
+            cancelAppointment={cancelAppointment}
+            completeAppointment={completeAppointment}/> : 
             <></>}
             <div className="dashboard-page">
                 <div className="dashboard-header">

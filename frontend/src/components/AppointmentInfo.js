@@ -3,7 +3,7 @@ import axios from "axios";
 import SVGIcons from "../SVGIcons";
 
 
-const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment}) => {
+const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment, completeAppointment}) => {
     const [data, setData] = useState({
         _id: "",
         userId: "",
@@ -76,7 +76,9 @@ const AppointmentInfo = ({appID, setShowAppInfo, cancelAppointment}) => {
                     onClick={(e) => cancelAppointment(id)}>
                         Cancel Appointments
                     </button>
-                    <button className="apt-act-btn complete">
+                    <button 
+                    className="apt-act-btn complete"
+                    onClick={(e) => completeAppointment(id)}>
                         Mark as Complete
                     </button>
                 </>
