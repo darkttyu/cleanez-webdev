@@ -13,27 +13,14 @@ const UserAppointments = () => {
     const [showRating, setShowRating] = useState(false);
     const [appID, setAppID] = useState('');
 
-<<<<<<< HEAD
-    useEffect(() => {
-        const fetchAppointments = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                
-                const response = await axios.get(`https://cleanez-api.vercel.app/api/user/viewAppointmentHistory`,
-                    {
-                        headers: { 
-                            'Authorization': `Bearer ${token}`
-                        }
-=======
     const fetchAppointments = async () => {
         try {
             const token = localStorage.getItem("token");
             
-            const response = await axios.get(`http://localhost:5000/api/user/viewAppointmentHistory`,
+            const response = await axios.get(`hhttps://cleanez-api.vercel.app/api/user/viewAppointmentHistory`,
                 {
                     headers: { 
                         'Authorization': `Bearer ${token}`
->>>>>>> cleanEZ
                     }
                 }
             );
