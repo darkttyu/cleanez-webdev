@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
 
-
-const UserAppointments = () => {
+const WorkerAppointments = () => {
     const [appointments, setAppointments] = useState([]);
     const [showAppInfo, setShowAppInfo] = useState(false);
     const [showRating, setShowRating] = useState(false);
@@ -97,4 +96,4 @@ const UserAppointments = () => {
     );
 }
  
-export default UserAppointments;
+export default WorkerAppointments;

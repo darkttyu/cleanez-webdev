@@ -13,6 +13,7 @@ import UserProfile from './pages/UserPages/UserProfile';
 import UserDashboard from './pages/UserPages/UserDashboard';
 import UserAppointments from './pages/UserPages/UserAppointments';
 import WorkerProfile from './pages/UserPages/WorkerProfile';
+import WorkerAppointments from './pages/UserPages/WorkerAppointments';
 import { useAuth } from './AuthContext';
 import { useEffect, useState } from 'react';
 
@@ -41,6 +42,7 @@ function App() {
             return (
                 <>
                     <Route path='profile' element={<WorkerProfile/>}/>
+                    <Route path='appointments' element={<WorkerAppointments/>}/>
                 </>
             )
         }
