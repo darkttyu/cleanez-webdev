@@ -1,5 +1,5 @@
 import express from "express";
-import { editWorkerAccountInformation, editWorkerServiceInformation, getWorkerAccountInformation, getWorkerAppointments, markAppointmentAsPaid, viewWorkerAppointment } from "../controllers/worker.controller.js";
+import { editWorkerAccountInformation, editWorkerServiceInformation, getWorkerAccountInformation, getWorkerAppointments, getWorkerDetails, markAppointmentAsPaid, viewWorkerAppointment } from "../controllers/worker.controller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { uploadProfile } from "../middleware/profileUpload.js";
 
@@ -7,6 +7,7 @@ const router = express.Router();
 
 // Profile
 router.get("/getWorkerAccountInformation", verifyToken, getWorkerAccountInformation);
+router.get("/getWorkerDetails", verifyToken, getWorkerDetails)
 router.put("/editWorkerAccountInformation", verifyToken, uploadProfile, editWorkerAccountInformation);
 
 // Appointments

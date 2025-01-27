@@ -31,6 +31,14 @@ export const fetchWorker = async(id) => {
   return user;
 };
 
+export const fetchWorkerDetails = async(id) => {
+  const worker = await Worker.find({"userId": new Object(id)});
+    if(!worker){
+      throw new Error("Worker Information does not exist.");
+    }
+
+  return worker;
+}
 export const updateWorker = async(id, body, profile) => {
   const user = await User.findOne({ _id: new Object(id) });
 
