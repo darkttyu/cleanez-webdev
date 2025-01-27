@@ -73,7 +73,6 @@ const UserAppointments = () => {
                             </thead>
                             <tbody>
                             {appointments.map((data, index) => (
-                            !(data.paymentStatus === "Paid") ? 
                                 <tr 
                                 key={index} 
                                 className="dashboard-tbody-tr"
@@ -94,8 +93,7 @@ const UserAppointments = () => {
                                             {data.paymentStatus}
                                         </div>
                                     </td>
-                                </tr> :
-                                <></>
+                                </tr>
                             ))}
                             </tbody>
                         </table>
