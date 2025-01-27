@@ -67,11 +67,13 @@ const UserAppointments = () => {
                                     <th className="dashboard-th">Service</th>
                                     <th className="dashboard-th">Date</th>
                                     <th className="dashboard-th">Rating</th>
-                                    <th className="dashboard-th">Status</th>
+                                    <th className="dashboard-th">Appointment</th>
+                                    <th className="dashboard-th">Payment</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {appointments.map((data, index) => (
+                            !(data.paymentStatus === "Paid") ? 
                                 <tr 
                                 key={index} 
                                 className="dashboard-tbody-tr"
@@ -86,7 +88,14 @@ const UserAppointments = () => {
                                             {data.appointmentStatus}
                                         </div>
                                     </td>
-                                </tr>
+                                    <td className="dashboard-tbody-td ">
+                                        <div className={`dashboard-status 
+                                        ${String(data.paymentStatus).toLowerCase()}`}>
+                                            {data.paymentStatus}
+                                        </div>
+                                    </td>
+                                </tr> :
+                                <></>
                             ))}
                             </tbody>
                         </table>
