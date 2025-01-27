@@ -3,7 +3,7 @@ import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import bcryptjs from 'bcryptjs';
-import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import * as generator from 'generate-password';
 import { fetchUsers, fetchWorkers, postWorker } from "../services/admin.service.js";
