@@ -28,17 +28,7 @@ export const fetchWorker = async(id) => {
         throw new Error("Bad Request. User is not a worker.");
       }
   
-  const worker = await Worker.findOne({"userId": new Object(id)});
-    if(!worker){
-      throw new Error("Worker does not exist.");
-    }
-  
-  const workerInfo = {
-    ...user.toObject(),
-    worker: worker
-  }
-
-  return workerInfo;
+  return user;
 };
 
 export const updateWorker = async(id, body, profile) => {
