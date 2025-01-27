@@ -315,7 +315,7 @@ export const viewAllAppointments = async(id) => {
   // Filters the appointment information to get only needed data from each appointment.
   const filteredAppointments = await Promise.all(
     userAppointments.map(async (appointment) => {
-      const { _id, serviceDetails, scheduleDetails, appointmentRating, appointmentStatus,  } = await Appointment.findById(appointment._id)
+      const { _id, serviceDetails, scheduleDetails, appointmentRating, appointmentStatus,  paymentStatus } = await Appointment.findById(appointment._id)
 
         // Slices the date to a more readable format (eg. 2025-01-01)
         let slicedDate ='';
@@ -329,6 +329,7 @@ export const viewAllAppointments = async(id) => {
               scheduledTime: scheduleDetails.time,
               rating: appointmentRating,
               appointmentStatus,
+              paymentStatus
             }
     })
   )
