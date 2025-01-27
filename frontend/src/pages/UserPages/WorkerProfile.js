@@ -44,6 +44,7 @@ const WorkerProfile = () => {
     // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     // --- Updates Profile Information on Load
     useEffect(() => {
+        console.log(user);
         setAccountInfo({ ...user });
     }, [user]);
     
@@ -245,7 +246,11 @@ const WorkerProfile = () => {
                         )}
                     </div>
                     <div className="profile-text">
+                        <div className="profile-name-rating">
                         <p className="profile-name">{user.firstName} {user.lastName}</p>
+                        {/* <p className="profile-rating">{user.}</p> */}
+                        </div>
+                        
                         <div className="profile-edit-options">
                         {isDisabled ? (
                             <button 

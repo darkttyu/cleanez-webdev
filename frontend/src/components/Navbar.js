@@ -7,8 +7,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-const Navbar = ({user, setUser}) => {
-    const { logout } = useAuth(); // Access user from context
+const Navbar = () => {
+    const { user, setUser, logout } = useAuth(); // Access user from context
     const navigate = useNavigate();
 
     const handleLogOut = async () => {

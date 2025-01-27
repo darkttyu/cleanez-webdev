@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }) => {
                     response = await axios.get(`http://localhost:5000/api/worker/getWorkerAccountInformation`,{
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
+
                 }
                 
                 if (isMounted) {
