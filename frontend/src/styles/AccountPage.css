@@ -435,14 +435,12 @@
     font-weight  : 500;
 }
 
-.dashboard-status.completed,
-.dashboard-status.paid {
+.dashboard-status.completed {
     background-color: #06E36D;
     color           : white;
 }
 
-.dashboard-status.scheduled,
-.dashboard-status.pending {
+.dashboard-status.scheduled {
     background-color: #FFDB4B;
     color           : #222222;
 }
