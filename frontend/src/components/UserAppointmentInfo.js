@@ -3,7 +3,7 @@ import axios from "axios";
 import SVGIcons from "../SVGIcons";
 
 
-const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointment, completeAppointment}) => {
+const UserAppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointment, completeAppointment}) => {
     const [data, setData] = useState({
         _id: "",
         userId: "",
@@ -50,8 +50,9 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
         fetchAppointment(appID);
     }, [])
 
-    const showActionButtons = (currStatus, currRating) => {
+    const showActionButtons = (currStatus, currRating, currPayment) => {
         const status = String(currStatus).toLowerCase();
+        const payment = String(currPayment).toLowerCase();
 
         if (status === "completed" && currRating === 0) {
             return (
@@ -73,6 +74,16 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
             return (
                 <></>
             );
+        } else if (status === "scheduled" && payment === "paid") {
+            return (
+                <>
+                    <button 
+                    className="act-btn complete"
+                    onClick={(e) => completeAppointment(appID)}>
+                        Mark as Complete
+                    </button>
+                </>
+            );
         } else if (status === "scheduled") {
             return (
                 <>
@@ -81,13 +92,8 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
                     onClick={(e) => cancelAppointment(appID)}>
                         Cancel Appointments
                     </button>
-                    <button 
-                    className="act-btn complete"
-                    onClick={(e) => completeAppointment(appID)}>
-                        Mark as Complete
-                    </button>
                 </>
-            );
+            )
         }
     }
 
@@ -192,7 +198,7 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
                         color="#222222"/>
                     </button>
                     <div className="appointment-actions">
-                        {showActionButtons(data.appointmentStatus, data.appointmentRating)}
+                        {showActionButtons(data.appointmentStatus, data.appointmentRating, data.paymentStatus)}
                     </div>
                 </div>
             </section>
@@ -200,4 +206,4 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
     );
 }
  
-export default AppointmentInfo;
+export default UserAppointmentInfo;

@@ -214,7 +214,6 @@ const UserProfile = () => {
             );
 
             console.log(getResponse);
-            
             setUser(getResponse.data.user);
 
             setIsDisabled(!isDisabled);

@@ -1,16 +1,14 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-import AppointmentInfo from "../../components/AppointmentInfo";
+import WorkerAppointmentInfo from "../../components/WorkerAppointmentInfo";
 import RatingBox from "../../components/RatingBox";
 // --- Other/React Import/s
 import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
 
-
 const WorkerAppointments = () => {
-    const [upcomingData, setUpcomingData] = useState([]);
+    const [appointments, setAppointments] = useState([]);
     const [showAppInfo, setShowAppInfo] = useState(false);
-    const [showRating, setShowRating] = useState(false);
     const [appID, setAppID] = useState('');
 
     const fetchAppointments = async () => {
@@ -24,32 +22,10 @@ const WorkerAppointments = () => {
                     }
                 }
             );
-            console.log(response.data.data)
-            setUpcomingData(response.data.data);
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
-    const cancelAppointment = async (id) => {
-        try {
-            const repsonse = await axios.put(`http://localhost:5000/api/user/cancelAppointment/${id}`);
-            console.log(repsonse);
+            console.log(response)
 
-            setShowAppInfo(false);
-            fetchAppointments();
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    const completeAppointment = async (id) => {
-        try {
-            const response = await axios.put(`http://localhost:5000/api/user/setAppointmentAsCompleted/${id}`);
-            console.log(response);
-
-            setShowAppInfo(false);
-            fetchAppointments();
+            setAppointments(response.data.data);
         } catch (e) {
             console.log(e);
         }
@@ -65,30 +41,38 @@ const WorkerAppointments = () => {
         setAppID(id);
     }
 
+    const paidAppointment = async (id) => {
+        try {
+            const token = localStorage.getItem("token");
+            console.log(id, token);
+            const response = await axios.put(`http://localhost:5000/api/worker/markAppointmentAsPaid/${id}`, {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+            });
 
-    
+            console.log(response);
+
+            setShowAppInfo(false);
+            fetchAppointments();
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     useEffect(() => {
         console.log(showAppInfo);
     }, [showAppInfo])
 
-
     return (  
-        <>
-            {showRating ?
-            <RatingBox
-            appID={appID}
-            setShowRating={setShowRating}
-            fetchAppointments={fetchAppointments}/> :
-            <></>
-            }
+        <>  
             {showAppInfo ? 
-            <AppointmentInfo 
+            <WorkerAppointmentInfo 
             appID={appID} 
             setShowAppInfo={setShowAppInfo}
-            setShowRating={setShowRating}
-            cancelAppointment={cancelAppointment}
-            completeAppointment={completeAppointment}/> : 
-            <></>}
+            paidAppointment={paidAppointment}/> :
+             <></>}
             <div className="dashboard-page">
                 <section className="dashboard-upcoming-container">
                     <h2>Upcoming Appointments</h2>
@@ -99,12 +83,12 @@ const WorkerAppointments = () => {
                                     <th className="dashboard-th">Client</th>
                                     <th className="dashboard-th">Date</th>
                                     <th className="dashboard-th">Time</th>
-                                    <th className="dashboard-th">Appointment Status</th>
-                                    <th className="dashboard-th">Payment Status</th>
+                                    <th className="dashboard-th">Appointment</th>
+                                    <th className="dashboard-th">Payment</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {upcomingData.map((data, index) => (
+                            {appointments.map((data, index) => (
                                 <tr 
                                 key={index} 
                                 className="dashboard-tbody-tr"
@@ -133,7 +117,6 @@ const WorkerAppointments = () => {
                 </section>
             </div>
         </>
-        
     );
 }
  

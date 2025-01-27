@@ -6,7 +6,16 @@ import { useAuth } from "../AuthContext";
 import axios from "axios";
 
 const UserSide = ({setNavTitle}) => {
-    const [activeLink, setActiveLink] = useState('Profile');
+    const [activeLink, setActiveLink] = useState(() => {
+        let path = String(window.location.pathname);
+
+        if (path === "/account") return 'Profile';
+
+        path = path.replace('/account/', '');
+        
+        return path.charAt(0).toUpperCase() + path.slice(1);
+        }
+    );
     const navigate = useNavigate();
 
     const handleClick = (title) => {
@@ -48,7 +57,16 @@ const UserSide = ({setNavTitle}) => {
 }
 
 const WorkerSide = ({setNavTitle}) => {
-    const [activeLink, setActiveLink] = useState('Profile');
+    const [activeLink, setActiveLink] = useState(() => {
+            let path = String(window.location.pathname);
+
+            if (path === "/account") return 'Profile';
+
+            path = path.replace('/account/', '');
+            
+            return path.charAt(0).toUpperCase() + path.slice(1);
+        }
+    );
     const navigate = useNavigate();
 
     const handleClick = (title) => {

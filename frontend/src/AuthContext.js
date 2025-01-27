@@ -31,10 +31,12 @@ export const AuthProvider = ({ children }) => {
             try {
                 let response;
                 if (role === 'User') {
+                    console.log("Loggin in as a User");
                     response = await axios.get(`http://localhost:5000/api/user/getAccountInformation`,{
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                 } else if (role === 'Worker') {
+                    console.log("Loggin in as a Worker");
                     response = await axios.get(`http://localhost:5000/api/worker/getWorkerAccountInformation`,{
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
