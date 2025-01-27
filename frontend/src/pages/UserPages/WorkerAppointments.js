@@ -45,7 +45,7 @@ const WorkerAppointments = () => {
         try {
             const token = localStorage.getItem("token");
             console.log(id, token);
-            const response = await axios.put(`http://localhost:5000/api/worker/markAppointmentAsPaid/${id}`, {
+            const response = await axios.put(`http://localhost:5000/api/worker/markAppointmentAsPaid/${id}`, {}, {
                     headers: { 
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
