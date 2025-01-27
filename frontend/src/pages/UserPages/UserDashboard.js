@@ -1,5 +1,5 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-import AppointmentInfo from "../../components/AppointmentInfo";
+import UserAppointmentInfo from "../../components/UserAppointmentInfo";
 import RatingBox from "../../components/RatingBox";
 // --- Other/React Import/s
 import { useEffect, useState } from "react";
@@ -86,7 +86,7 @@ const UserDashboard = () => {
             <></>
             }
             {showAppInfo ? 
-            <AppointmentInfo 
+            <UserAppointmentInfo 
             appID={appID} 
             setShowAppInfo={setShowAppInfo}
             setShowRating={setShowRating}

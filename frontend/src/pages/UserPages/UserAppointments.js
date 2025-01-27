@@ -1,5 +1,5 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-import AppointmentInfo from "../../components/AppointmentInfo";
+import UserAppointmentInfo from "../../components/UserAppointmentInfo";
 import RatingBox from "../../components/RatingBox";
 // --- Other/React Import/s
 import { useEffect, useState } from "react";
@@ -56,7 +56,7 @@ const UserAppointments = () => {
             fetchAppointments={fetchAppointments}/> :
             <></>
             }
-            {showAppInfo ? <AppointmentInfo appID={appID} setShowAppInfo={setShowAppInfo}/> : <></>}
+            {showAppInfo ? <UserAppointmentInfo appID={appID} setShowAppInfo={setShowAppInfo}/> : <></>}
             <div className="dashboard-page">
                 <section className="dashboard-upcoming-container">
                     <h2>Appointments History</h2>
