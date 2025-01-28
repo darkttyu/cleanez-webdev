@@ -6,7 +6,7 @@ import bcryptjs from 'bcryptjs';
 import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import * as generator from 'generate-password';
-import { fetchUsers, fetchWorkers, postWorker } from "../services/admin.service.js";
+import { fetchUsers, fetchWorker, fetchWorkers, postWorker } from "../services/admin.service.js";
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from "url";
@@ -44,55 +44,20 @@ export const addWorker = async (req, res) => {
 };
 
 export const clickedWorker = async (req, res) => {
-  const userId = req.params.id;
-
   try {
-    const worker = await Worker.findOne({ userId })
-      .populate({
-        path: "userId", // Populates user data (firstName, lastName).
-        select: "firstName lastName",
-      })
-      .select("serviceCategory workerAvailability"); // Selects specific worker fields.
-
-    console.log(JSON.stringify(worker, null, 2)); // Debugging: Prints worker details.
-
-    return res
-      .status(200)
-      .json({ success: true, message: "Successfully Fetched Worker" });
+    const worker = await fetchWorker(req.params.id);
+    return res.status(200).json({ success: true, message: "Successfully Fetched Worker", worker: worker});
   } catch (error) {
-    console.log("Error in Fetching Worker", error); // Logs errors for debugging.
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
 export const editWorkerSchedule = async (req, res) => {
-  const userId = req.params.id;
-  const { workerAvailability } = req.body;
-
   try {
-    // Checks if the worker exists.
-    const currentWorker = await Worker.findById(userId);
-    if (!currentWorker) {
-      return res.status(404).json({ success: false, message: "Worker does not exist" });
-    }
-
-    // Updates the worker's schedule information.
-    const updatedWorkerInfo = await Worker.findByIdAndUpdate(
-      currentWorker._id,
-      {
-        "workerAvailability.day": workerAvailability.day,
-        "workerAvailability.startTime": workerAvailability.startTime
-      },
-      { new: true } // Ensures the updated document is returned.
-    );
-
-    if (!updatedWorkerInfo) {
-      return res.status(400).json({ success: false, message: "Failed to update worker." });
-    }
-
-    return res.status(200).json({ success: true, message: "Successfully Updated User Information!", data: updatedWorkerInfo});
+    const currentWorkerSchedule = await updateSchedule(req.params.id, req.body);
+    return res.status(200).json({ success: true, message: "Successfully Updated User Information!", data: currentWorkerSchedule});
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 

@@ -59,25 +59,21 @@ export const postWorker = async(body) => {
       // Checks if an applicant / worker to be added still has an appointment
       const applicantAppointment = await Appointment.find({"userId": userId, appointmentStatus: "Pending"})
         if(applicantAppointment.length >= 1){
-          return res.status(400).json({success: false, message: "User has scheduled appointments. Insertion Rejected"});
+          throw new Error("User has scheduled appointments. Insertion Rejected");
         }
   
       // gets service details based on the service category
       const getServiceDetails = await Service.findOne({ serviceName: serviceCategory });
   
         if (!getServiceDetails) { 
-          return res
-            .status(404)
-            .json({ success: false, message: "Service Category does not exist." });
+          throw new Error("Service Category does not exist.");
         }
   
       // gets area details based on the worker's assigned area    
       const getAreaDetail = getServiceDetails.areaDetails.find((area) => area.sizeOfArea === workerAvailability.areaAssigned);
   
         if (!getAreaDetail) { 
-          return res
-            .status(404)
-            .json({ success: false, message: "Area Assigned does not exist." });
+          throw new Error("Area Assigned does not exist.");
         }
   
       // gets the start time based on the worker's assigned area
@@ -103,18 +99,52 @@ export const postWorker = async(body) => {
       });
   
         if (!updateUserRole) {
-          return res
-            .status(400)
-            .json({ success: false, message: "Failed to Update User Role." });
+          throw new Error("Failed to Update User Role." );
         }
   
       adminWelcomeWorkerEmail(updateUserRole.firstName, updateUserRole.email); // Sends welcome email.
   
-      res.status(201).json({
-        success: true,
-        message: "Worker Created Successfully",
-        worker: {
-          ...worker._doc, // Sends worker data as part of the response.
-        },
-      });
+      return worker;
+};
+
+export const fetchWorker = async(userId) => {
+  const worker = await Worker.findOne({ userId })
+  .populate({
+    path: "userId", // Populates user data (firstName, lastName).
+    select: "firstName lastName",
+  })
+  .select("serviceCategory workerAvailability"); // Selects specific worker fields.
+
+  // console.log(JSON.stringify(worker, null, 2)); // Debugging: Prints worker details.
+
+    if(!worker){
+      throw new Error("Error Retrieving Worker Information.")
+    }
+
+  return worker;
+};
+
+export const updateSchedule = async (userId, body) => {
+  // Checks if the worker exists.
+  const { workerAvailability } = body;
+  const currentWorker = await Worker.findById(userId);
+    if (!currentWorker) {
+      throw new Error("Worker does not exist");
+    }
+
+  // Updates the worker's schedule information.
+  const updatedWorkerInfo = await Worker.findByIdAndUpdate(
+    currentWorker._id,
+    {
+      "workerAvailability.day": workerAvailability.day,
+      "workerAvailability.startTime": workerAvailability.startTime
+    },
+    { new: true } // Ensures the updated document is returned.
+  );
+
+    if (!updatedWorkerInfo) {
+      throw new Error("Failed to update worker.");
+    }
+  
+  return updatedWorkerInfo;
 };
