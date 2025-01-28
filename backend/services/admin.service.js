@@ -2,7 +2,12 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import moment from "moment";
-import { adminWelcomeWorkerEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
+import bcryptjs from 'bcryptjs';
+import * as generator from 'generate-password';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from "url";
 
 // Workers
 export const fetchWorkers = async() => {
@@ -27,8 +32,7 @@ export const fetchUsers = async() => {
     if(!users){
       throw new Error("Users not Found.");
     }
-
-    
+ 
   const userData = users.map(user => ({
     userId: user._id,
     firstName: user.firstName,
@@ -124,7 +128,7 @@ export const fetchWorker = async(userId) => {
   return worker;
 };
 
-export const updateSchedule = async (userId, body) => {
+export const updateSchedule = async(userId, body) => {
   // Checks if the worker exists.
   const { workerAvailability } = body;
   const currentWorker = await Worker.findById(userId);
@@ -147,4 +151,193 @@ export const updateSchedule = async (userId, body) => {
     }
   
   return updatedWorkerInfo;
+};
+
+export const updateStatus = async(userId) => {
+  const checkWorker = await Worker.findOne({ userId });
+    if(!checkWorker){
+      throw new Error("Worker does not exist.");
+    }
+
+  const user = await User.findById(userId);
+    if(!user){
+      throw new Error("User not Found.");
+    }
+  
+      if(user.status === "Active"){
+        const updatedWorkerStatus = await User.findByIdAndUpdate(
+          userId,
+          {
+            status: "Active",
+          },
+          { new: true}
+        );
+
+          if(!updatedWorkerStatus){
+            throw new Error("Failed to set Worker Status to Active.")
+          }
+
+          // Sends Activation Email
+          sendWorkerActivationEmail(
+            updatedWorkerStatus.firstName, 
+            updatedWorkerStatus.email);
+
+          return updatedWorkerStatus;
+      } else {
+        const updatedWorkerStatus = await User.findByIdAndUpdate(
+          userId,
+          {
+            status: "Inactive",
+          },
+          { new: true}
+        );
+
+          if(!updatedWorkerStatus){
+            throw new Error("Failed to Soft Delete Worker.")
+          }
+
+          // Sends deactivation email
+          sendWorkerDeactivationEmail(
+            updatedWorkerInfo.firsName, 
+            updatedWorkerInfo.email
+          )
+
+          return updatedWorkerStatus;
+      }
+};
+
+export const serviceDeleteWorker = async(userId) => {
+  const checkWorkerAppointment = await Worker.findOne({ userId })
+    if(checkWorkerAppointment.assignedAppointments != []){
+      throw new Error("Cannot Delete Worker. Worker still has Assigned Appointments")
+    }
+  
+  const deletedWorker = await Worker.findOneAndDelete({ userId }) // removes worker record;
+
+    if(!deletedWorker){
+      throw new Error("Worker not Found.");
+    }
+
+  const updateUserRole = await User.findByIdAndUpdate(
+    userId, 
+    {
+      role: "User",
+    });
+
+    if(!updateUserRole){
+      throw new Error("Error in Updating User Role.");
+    }
+
+    sendAccountDeletion(updateUserRole.firstName, updateUserRole.email);
+    return true;
+};
+
+// User 
+export const fetchUserList = async () => {
+  // Gets all the User information and stores it in an array of objects
+  const userList = await User.find();
+    if(!userList){
+      throw new Error("Error in Fetching Users.");
+    }
+
+  // Map allows us to manipulate arrays and transforming them into a new array.
+  const filteredUserInfo = userList.map(user => ({
+    userId: user._id,
+    firstname: user.firstName,
+    lastName: user.lastName,
+    address: {
+      block: user.address.block,
+      province: user.address.province,
+      municipal: user.address.municipal,
+      barangay: user.address.barangay
+    },
+    status: user.status,
+    isVerified: user.isVerified,
+    lastLogin: user.lastLogin
+  }))
+
+  // Formats the last login time to a more readable format
+  const updatedUserInfo = filteredUserInfo.map(user => {
+    const lastLogin = new Date(user.lastLogin);
+
+    // Formats the date and time to a more readable format
+    const updatedLogintime = lastLogin.toLocaleString
+    ("en-US", {
+        timeZone: "Asia/Manila",
+        dateStyle: "short",
+        timeStyle: "short",
+        hour12: false
+      });
+    
+    // Returns the updated user info with the formatted last login time
+    return {
+      ...user, 
+      lastLogin: updatedLogintime
+    }
+  })
+
+    return updatedUserInfo;
+};
+
+const fetchDefaultProfile = async() => {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  const profilePath = path.join(__dirname, "../images/defaultProfile1.jpg");
+
+  const imageBuffer = fs.readFileSync(profilePath);
+
+  return { 
+    data: imageBuffer,
+    contentType: 'image/jpeg'
+  }
+};
+
+export const postUser = async (body) => {
+  const { email, firstName, lastName, phoneNumber, birthDate,
+    gender, address } = body;
+
+    // Checks if all fields are filled out
+    if(!firstName || !lastName || !email || !phoneNumber ||   !birthDate || !gender || !address) {
+      throw new Error("All fields are required.");
+    }
+  
+  const userAlreadyExists = await User.findOne({email});
+    if(userAlreadyExists){
+      throw new Error("User already exists.")
+    }
+  
+  // Generates random password
+  const userGeneratedPassword = generator.generate({
+    length: 12,
+    numbers: true
+  })
+  
+  const hashedPassword = await bcryptjs.hash(userGeneratedPassword, 10);
+
+  const defaultProfile = await fetchDefaultProfile();
+
+  const user = new User({
+    email,
+    password: hashedPassword,
+    firstName,
+    lastName,
+    phoneNumber, 
+    birthDate,
+    gender,
+    address,
+    status: "Active",
+    isVerified: true, 
+    profilePicture: defaultProfile
+  })
+
+    await user.save();
+
+    adminWelcomeEmail(user.firstName, user.email, user.phoneNumber, userGeneratedPassword);
+
+    return user;
+}
+
+export const getUser = async (userId) => {
+
 };

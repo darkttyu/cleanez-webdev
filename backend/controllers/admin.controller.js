@@ -3,23 +3,17 @@ import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import bcryptjs from 'bcryptjs';
-import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import * as generator from 'generate-password';
-import { fetchUsers, fetchWorker, fetchWorkers, postWorker } from "../services/admin.service.js";
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from "url";
+import { fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceDeleteWorker, updateStatus } from "../services/admin.service.js";
+
 
 // Worker Controllers
 export const findAllWorkers = async (req, res) => {
-
   try {
     const workers = await fetchWorkers();
-    return res
-      .status(200)
-      .json({ success: true, message: "Successfully Fetched Worker List", worker: workers});
-
+    return res.status(200).json({ success: true, message: "Successfully Fetched Worker List", worker: workers});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -61,253 +55,52 @@ export const editWorkerSchedule = async (req, res) => {
   }
 };
 
-export const setWorkerToActive = async (req, res) => {
-  const userId = req.params.id;
-
+export const updateWorkerStatus = async (req, res) => {
   try {
-    const currentWorker = await Worker.findOne({ userId });
-
-    if (!currentWorker) {
-      res
-        .status(404)
-        .json({ success: false, message: "Worker does not exist" });
-    }
-
-    const updatedWorkerInfo = await User.findByIdAndUpdate(
-      userId,
-      {
-        status: "Active", // Updates worker status to Active.
-      },
-      { new: true }
-    );
-
-    if (!updatedWorkerInfo) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Failed to set worker status to Active." });
-    }
-
-    sendWorkerActivationEmail(
-      updatedWorkerInfo.firstName,
-      updatedWorkerInfo.email
-    ); // Sends activation email.
-
-    return res
-      .status(200)
-      .json({ success: true, message: "Worker Status set to Active" });
+    const updatedWorker = await updateStatus(req.param.id);
+    return res.status(200).json({success: true, message: "Updated Worker Status.", worker: updatedWorker });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Server Error", error: error.message });
+    return res.status(400).json({success: false, message: error.message})
   }
-};
-
-export const softDeleteWorker = async (req, res) => {
-  const userId = req.params.id;
-
-  try {
-    const currentWorker = await Worker.findOne({ userId });
-
-    if (!currentWorker) {
-      res
-        .status(404)
-        .json({ success: false, message: "Worker does not exist" });
-    }
-
-    const updatedWorkerInfo = await User.findByIdAndUpdate(
-      userId,
-      {
-        status: "Inactive", // Updates worker status to Inactive.
-      },
-      { new: true }
-    );
-
-    if (!updatedWorkerInfo) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Failed to Soft Delete Worker." });
-    }
-
-    sendWorkerDeactivationEmail(
-      updatedWorkerInfo.firstName,
-      updatedWorkerInfo.email
-    ); // Sends deactivation email.
-
-    return res
-      .status(200)
-      .json({ success: true, message: "Successfully Soft Deleted Worker" });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Server Error", error: error.message });
-  }
-};
+}
 
 export const deleteWorker = async (req, res) => {
-  const userId = req.params.id;
-
   try {
-    const deleteUser = await Worker.findOneAndDelete({ userId }); // Removes the worker record.
-
-    if (!deleteUser) {
-      return res
-        .status(500)
-        .json({ success: false, message: "User not Found." });
-    }
-
-    const updateUser = await User.findByIdAndUpdate(userId, {
-      role: "User", // Resets user role to "User".
-    });
-
-    if (!updateUser) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Error in Updating user role." });
-    }
-
-    sendAccountDeletion(deleteUser.firstName, deleteUser.email); // Sends account deletion email.
-    
-    return res.status(200).json({
-      success: true,
-      message: "Worker Information Deleted Successfully.",
-    });
+    const deletedWorker = await serviceDeleteWorker(req.params.id);
+    return res.status(200).json({success: true, message: "Deleted Worker Information."})
   } catch (error) {
-    console.log("Error in deleting user.", error); // Logs errors for debugging.
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
 // User Controllers
 export const findAllUsers = async (req, res) => {
   try {
-    // Gets all the User information and stores it in an array of objects
-    const userList = await User.find();
-    
-    // Map allows us to manipulate arrays and transforming them into a new array.
-    const filteredUserInfo = userList.map(user => ({
-      userId: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      address: user.address,
-      phoneNumber: user.phoneNumber,
-      status: user.status,
-      isVerified: user.isVerified,
-      lastLogin: user.lastLogin
-    }));
-    
-    // Formats the last login time to a more readable format
-    const updatedUserInfo = filteredUserInfo.map(user => {
-      const lastLogin = new Date(user.lastLogin);
-
-      // Formats the date and time to a more readable format
-      const updatedLoginTime = lastLogin.toLocaleString("en-US", {
-        timeZone: "Asia/Manila",
-        dateStyle: "short",
-        timeStyle: "short",
-        hour12: false
-      });
-      
-      // Returns the updated user info with the formatted last login time
-      return {
-        ...user, 
-        lastLogin: updatedLoginTime
-      }
-    })
-
-      if(filteredUserInfo) {
-        res.status(200).json({
-          success: true,
-          message: "Fetched All User Information",
-        });
-        console.log(updatedUserInfo) // Pang check sa console ng nafetch na info
-      } 
+    const users = await fetchUserList();
+    return res.status(200).json({success: true, message: "Fetched Users", userList: users})
+  
   } catch (error) {
     console.log("Error in Fetching Users", error);
-    res.status(500).json({success:false, message:"Server Error"});
+    res.status(500).json({ success: false, message: error.message});
   }
   
 };
 
-
-const fetchDefaultProfile = async() => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
-  const profilePath = path.join(__dirname, "../images/defaultProfile1.jpg");
-
-  const imageBuffer = fs.readFileSync(profilePath);
-
-  return { 
-    data: imageBuffer,
-    contentType: 'image/jpeg'
-  }
-};
-
-export const addUser = async (req, res) => {
-  const {email, firstName, lastName, phoneNumber, birthDate, gender, address} = req.body;
-
-  console.log("Received request body:", req.body); // Data Checker
-  
+export const addUser = async (req, res) => {  
   try {
-    // Checks if all fields are filled out
-    if(!firstName || !lastName || !email || !phoneNumber || !birthDate || !gender || !address) {
-      throw new Error("All fields are required.");
-    }
+    const newUser = postUser(req.body);
     
-    // Checks if the user already exists in the database
-    const userAlreadyExists = await User.findOne({email});
-    if(userAlreadyExists) {
-      return res.status(400).json({success:false, message: "User already exists"});
-    }
-
-    // Generates a Random Password for the User
-    const userGeneratedPassword = generator.generate({
-      length: 12,
-      numbers: true,
-    })
-    
-    // Hashes the generated password
-    const hashedPassword = await bcryptjs.hash(userGeneratedPassword, 10);
-
-    const defaultProfile = await fetchDefaultProfile();
-    // Creates a new User
-    const user = new User({
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-      phoneNumber, 
-      birthDate,
-      gender,
-      address,
-      status: "Active",
-      isVerified: true,
-      profilePicture: defaultProfile
-    });
-
-    await user.save();
-
-    adminWelcomeEmail(user.firstName, user.email, user.phoneNumber, userGeneratedPassword);
-
-    // Returns the user information without the password for security
-    res.status(201).json({
-      success: true,
-      message: "User Created Successfully",
-      user: {
-        ...user._doc,
-        password:undefined,
-      },
-    })
+    res.status(201).json({success: true,message: "User Created Successfully", user: { ...newUser._doc, password: undefined, }
+      })
 
   } catch (error) {
     return res.status(400).json({success:false, message: error.message});
   }
 };
 
-export const clickedUser = async(req, res) => {
-  const userId = req.params.id;
-  
+export const clickedUser = async(req, res) => {  
   try {
+    const user = await getUser(req.params.id);
     // Gets specific user info based on id sent 
     const specificUser = await User.findOne({_id: new Object(userId)});
 
