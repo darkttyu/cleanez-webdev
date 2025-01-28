@@ -1,4 +1,4 @@
-const InputAddress = ({value, onChange}) => {
+const InputAddress = ({value, onChange, disabled=false}) => {
     return (  
         <div className="text-container">
             {/* INPUT HERE */}
@@ -9,6 +9,7 @@ const InputAddress = ({value, onChange}) => {
             name="block"
             value={value} 
             onChange={onChange}
+            disabled = {disabled}
             id="address-input" />
             {/* LABEL HERE */}
             <label 

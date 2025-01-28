@@ -1,4 +1,4 @@
-const InputPhone = ({value, onChange}) => {
+const InputPhone = ({value, onChange, disabled=false}) => {
     return (  
         <div className="text-container">
             {/* INPUT HERE */}
@@ -9,6 +9,7 @@ const InputPhone = ({value, onChange}) => {
             name="phoneNumber"
             value={value}
             onChange={onChange} 
+            disabled = {disabled}
             id="sms-input"/>
             {/* LABEL HERE */}
             <label 
