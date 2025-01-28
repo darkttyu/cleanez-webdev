@@ -32,13 +32,15 @@ export const fetchWorker = async(id) => {
 };
 
 export const fetchWorkerDetails = async(id) => {
-  const worker = await Worker.find({"userId": new Object(id)});
+  const worker = await Worker.findOne({"userId": new Object(id)});
     if(!worker){
       throw new Error("Worker Information does not exist.");
     }
-
+    
+  // console.log(worker);
   return worker;
-}
+};
+
 export const updateWorker = async(id, body, profile) => {
   const user = await User.findOne({ _id: new Object(id) });
 
@@ -241,26 +243,31 @@ export const updateWorkerService = async(id, body) => {
             throw new Error("Bad Request. Worker still has assigned appointments.")
           }
         }
-    
-    const updateWorkerServiceInfo = {
-      "serviceCategory": serviceCategory,
-      "workerAvailability.areaAssigned": workerAvailability.areaAssigned,
-      "workerAvailability.day": workerAvailability.day,
-      "workerAvailability.startTime": workerAvailability.startTime
-    }
 
-    // Updates the worker service info if it passes all validations.
-    const updatedWorkerService = await Worker.findOneAndUpdate(
-      { userId: id },
-      updateWorkerServiceInfo,
-      { new: true}
-    )
-
-      if(!updatedWorkerService){
-        throw new Error("Error in Updating Worker Service Information.")
-      }
-
-    return updatedWorkerService;
+        if((workerAvailability.day.length === 0 && workerAvailability.startTime.length === 0) || (workerAvailability.day.length > 0 && workerAvailability.startTime.length > 0)){
+          const updateWorkerServiceInfo = {
+            "serviceCategory": serviceCategory,
+            "workerAvailability.areaAssigned": workerAvailability.areaAssigned,
+            "workerAvailability.day": workerAvailability.day,
+            "workerAvailability.startTime": workerAvailability.startTime
+          }
+      
+          // Updates the worker service info if it passes all validations.
+          const updatedWorkerService = await Worker.findOneAndUpdate(
+            { userId: id },
+            updateWorkerServiceInfo,
+            { new: true}
+          )
+      
+            if(!updatedWorkerService){
+              throw new Error("Error in Updating Worker Service Information.")
+            }
+      
+          return updatedWorkerService;
+          
+        } else {
+          throw new Error("Bad Request. You must fill both fields or unselect them all.")
+        }
 };
 
 // Earnings 

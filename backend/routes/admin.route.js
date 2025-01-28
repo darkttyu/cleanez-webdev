@@ -1,8 +1,10 @@
 import express from 'express';
 import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, 
   findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, 
-  deleteWorker, softDeleteWorker, setWorkerToActive, setUserToActive, insertService, 
-  getWorkerCount, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant
+  deleteWorker, setUserToActive, insertService, 
+  getWorkerCount, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant,
+  getUserDetails,
+  updateWorkerStatus
 } from '../controllers/admin.controller.js';
 
 const router = express.Router();
@@ -16,12 +18,14 @@ router.get("/getWorkerCount", getWorkerCount);
 
 // Worker Tab
 router.get("/findAllWorkers", findAllWorkers);
+
+router.get("/getUserDetails", getUserDetails);
 router.post("/addWorker", addWorker);
+
 router.get("/clickedWorker/:id", clickedWorker);
 router.put("/editWorkerSchedule/:id", editWorkerSchedule);
+router.put("/updateWorkerStatus/:id", updateWorkerStatus);
 router.delete("/deleteWorker/:id", deleteWorker);
-router.put("/softDeleteWorker/:id", softDeleteWorker);
-router.put("/setWorkertoActive/:id", setWorkerToActive);
 
 // User Tab
 router.get("/findAllUsers", findAllUsers); // Retrieves all user information
