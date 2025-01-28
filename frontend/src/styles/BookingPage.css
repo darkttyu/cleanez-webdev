@@ -484,3 +484,50 @@
 .booking-success-container .success-message span {
     color: #06E36D;
 }
+
+.application-file-btn {
+    display         : flex;
+    flex-direction  : column;
+    justify-content : center;
+    align-items     : center;
+    gap             : 24px;
+    background-color: white;
+    border-radius   : 8px;
+    padding         : 36px;
+    border          : 2px dashed #222;
+}
+
+.application-file-btn>p {
+    font-family: var(--font1);
+    font-weight: 400;
+    font-size  : 16px;
+    color      : #20063B;
+}
+
+.application-file-btn>p>span {
+    font-weight: 600;
+    color      : #06E36D;
+}
+
+.application-files {
+    display       : flex;
+    flex-direction: column;
+    gap           : 12px;
+}
+
+.file-text {
+    display       : flex;
+    flex-direction: column;
+    gap           : 12px;
+}
+
+.file-text>p {
+    text-align : left;
+    font-family: var(--font2);
+    font-size  : 16px;
+    color      : #4b4b4b;
+}
+
+.file-text>p:first-of-type {
+    text-decoration: underline;
+}

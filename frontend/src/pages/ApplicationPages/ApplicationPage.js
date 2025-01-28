@@ -3,7 +3,7 @@ import { useAuth } from '../../AuthContext';
 import NavLogo from '../../images/logos/nav-logo.png'
 import '../../styles/BookingPage.css';
 import SVGIcons from "../../SVGIcons";
-import {PersonalInfo, ServiceInfo} from "../../components/ApplicantForm";
+import {PersonalInfo, ServiceInfo, FileSubmission} from "../../components/ApplicantForm";
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -36,8 +36,6 @@ const ApplicationPage = () => {
     const [progressbar, setProgressbar] = useState('');
     const [isInfoComplete, setIsInfoComplete] = useState(false);
 
-
-
     const validateAndRedirect = () => {
         try {
             if (user) {
@@ -64,12 +62,14 @@ const ApplicationPage = () => {
     }
 
     useEffect(() => {
+        document.title = "CleanEZ | Application"
+    }, [])
+
+    useEffect(() => {
         if (user) {
             validateAndRedirect();
         }
-
-        document.title = "CleanEZ | Application"
-    }, [])
+    }, [user])
 
     // --- Fetches all Service Type Data
     useEffect(() => {
@@ -108,7 +108,7 @@ const ApplicationPage = () => {
             )
         } else if (page === 2) {
             return (
-                <></>
+                <FileSubmission />
             )
         } 
     }

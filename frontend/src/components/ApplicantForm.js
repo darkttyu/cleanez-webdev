@@ -371,4 +371,114 @@ const ServiceInfo = ({applicantInfo, setApplicantInfo, setIsInfoComplete, servic
     );
 }
 
-export {PersonalInfo, ServiceInfo /*, FileSubmission*/};
+const FileSubmission = ({}) => {
+    const inputRef = useRef();
+
+    const [selectedFiles, setSelectedFiles] = useState({
+        resume: null,
+        ID1: null,
+        ID2: null
+    });
+
+    const handleOnChange = (event) => {
+        const filesArray = Array.from(event.target.files);
+
+        if (filesArray.length !== 3) {
+            alert("You need to only select 3 files.");
+            return;
+        }
+        
+        let newFiles = { resume: null, ID1: null, ID2: null };
+
+        filesArray.forEach((file) => {
+            if (file.type === 'application/pdf' && !newFiles.resume) {
+                newFiles.resume = file;
+            } else if (
+                (file.type === 'image/jpeg' || file.type === 'image/png') &&
+                !newFiles.ID1
+            ) {
+                newFiles.ID1 = file;
+            } else if (
+                (file.type === 'image/jpeg' || file.type === 'image/png') &&
+                !newFiles.ID2
+            ) {
+                newFiles.ID2 = file;
+            }
+        });
+
+        console.log("New Files: ", newFiles);
+
+        if (newFiles.resume && newFiles.ID1 && newFiles.ID2) {
+            setSelectedFiles(newFiles);
+        } else {
+            alert("Please upload 1 PDF resume and 2 valid ID images (JPG/PNG).");
+            setSelectedFiles({ resume: null, ID1: null, ID2: null });
+        }
+    }
+
+    const onChooseFile = () => {
+        inputRef.current.click();
+    }
+
+    return (
+        <div className="booking-page" id="service-booking-page">
+            <h2>Resume and Valid IDs</h2>
+            <div className="booking-grid col-one">
+                {/* Hidden Input Element */}
+                <input 
+                type="file" 
+                ref={inputRef} 
+                style={{display: "none"}} 
+                accept="image/png, image/jpg, application/pdf"
+                onChange={handleOnChange} 
+                multiple/>
+
+                <button 
+                className="application-file-btn" 
+                type="button" 
+                onClick={onChooseFile}>
+                    <SVGIcons 
+                    selected="uploadFile"
+                    size="100px"
+                    color="#06E36D"/>
+                    <p><span>Click here</span> to upload your resume and (2) valid IDs or drag and drop your files.</p>
+                    <p>Supported Format: PDF, JPG, PNG (maximum of 10 mb each)</p>
+                </button>
+
+                <div className="application-files">
+                    {selectedFiles.resume ?
+                        <div className="selected-file">
+                            <div className="file-text">
+                                <p>{selectedFiles.resume.name}</p>
+                                <p>{(selectedFiles.resume.size/(1024*1024)).toFixed(2)} mb</p>
+                            </div>
+                        </div> :
+                        <></>
+                    }
+                    {selectedFiles.ID1 ?
+                        <div className="selected-file">
+                            <div className="file-text">
+                                <p>{selectedFiles.ID1.name}</p>
+                                <p>{(selectedFiles.ID1.size/(1024*1024)).toFixed(2)} mb</p>
+                            </div>
+                            
+                        </div> :
+                        <></>
+                    }
+                    {selectedFiles.ID2 ?
+                        <div className="selected-file">
+                            <div className="file-text">
+                                <p>{selectedFiles.ID2.name}</p>
+                                <p>{(selectedFiles.ID2.size/(1024*1024)).toFixed(2)} mb</p>
+                            </div>
+                            
+                        </div> :
+                        <></>
+                    }
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export {PersonalInfo, ServiceInfo, FileSubmission};
