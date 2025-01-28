@@ -191,7 +191,7 @@ const Founders = () => {
               <div className="founder-items">
               {founders.map((founder, index) => (
                    <div className="founder-item" key={index}>
-                        <img className="founder-image" src={founder.image} alt=""/>
+                        <img className="founder-image" src={founder.image} alt={placeholder}/>
                         <div className="founder-label">
                              <p className="founder-name">{founder.name}</p>
                              <p className="founder-pos">{founder.pos}</p>
