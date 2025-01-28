@@ -22,10 +22,14 @@ const WorkerSchedule = () => {
         }
     });
 
+    const [editMode, setEditMode] = useState(false);
+
+    // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Fetches Worker Detail from Database;
     const fetchWorkerDetail = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios(`http://localhost:5000/api/worker/getWorkerDetails`, {
+            const response = await axios.get(`http://localhost:5000/api/worker/getWorkerDetails`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
 
@@ -39,7 +43,7 @@ const WorkerSchedule = () => {
 
     const fetchServices = async () => {
         try {
-            const response = await axios(`http://localhost:5000/api/appointment/getServices`);
+            const response = await axios.get(`http://localhost:5000/api/appointment/getServices`);
 
             // console.log(response.data.services);
             setServiceList(response.data.services);
@@ -144,6 +148,7 @@ const WorkerSchedule = () => {
     }, [newWorkerSchedule])
     
     useEffect(() => {
+        // console.log("Initial Worker Deets: ", workerDetails);
         if (workerDetails) {
             setNewWorkerSchedule({
                 serviceCategory: workerDetails.serviceCategory,
@@ -161,6 +166,38 @@ const WorkerSchedule = () => {
         fetchServices();
     }, []);
 
+    const handleScheduleCancel = () => {
+        setNewWorkerSchedule({
+            serviceCategory: workerDetails.serviceCategory,
+            workerAvailability: {
+                areaAssigned: workerDetails.workerAvailability.areaAssigned,
+                day: workerDetails.workerAvailability.day,
+                startTime: workerDetails.workerAvailability.startTime
+            }
+        });
+        setEditMode(false);
+    };
+
+    const handleScheduleSave = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await axios.put(`http://localhost:5000/api/worker/editWorkerServiceInformation`,
+                newWorkerSchedule,
+                {headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }}
+            )
+
+            console.log("Saved: ", response);
+            fetchWorkerDetail();
+            setEditMode(false);
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (  
         <div className="schedule-page">
             <section className="schedule-container">
@@ -176,6 +213,7 @@ const WorkerSchedule = () => {
                         name="serviceName" 
                         value={newWorkerSchedule.serviceCategory}  
                         id="service-input" 
+                        disabled ={!editMode}
                         onChange={(e) => {
                             const newServiceCategory = e.target.value;
 
@@ -207,6 +245,7 @@ const WorkerSchedule = () => {
                             name="sizeOfArea" 
                             value={newWorkerSchedule.workerAvailability.areaAssigned} 
                             id="area-size-input" 
+                            disabled ={!editMode}
                             onChange={(e) => {
                                 setNewWorkerSchedule({
                                     ...newWorkerSchedule,
@@ -229,10 +268,10 @@ const WorkerSchedule = () => {
             <section className="schedule-container">
                 <h2>Worker Schedule</h2>
                 <div className="schedule-inputs" id="schedule-inputs">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Service Category</th>
+                    <table className="schedule-table">
+                        <thead className="schedule-thead">
+                            <tr className="schedule-tr">
+                                <th className="service-header">Service Category</th>
                                 <th><label htmlFor="SUN">SUN</label></th>
                                 <th><label htmlFor="MON">MON</label></th>
                                 <th><label htmlFor="TUE">TUE</label></th>
@@ -242,42 +281,49 @@ const WorkerSchedule = () => {
                                 <th><label htmlFor="SAT">SAT</label></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
+                        <tbody className="schedule-tbody">
+                            <tr className="schedule-tr">
                                 <td>{newWorkerSchedule.serviceCategory}</td>
                                 <td>
                                     <input type="checkbox" name="worker-days" id="SUN" value="Sunday"
                                     onChange={handleDayChanges}
+                                    disabled ={!editMode}
                                     checked={newWorkerSchedule?.workerAvailability?.day.includes("Sunday")}/>
                                 </td>
                                 <td>
                                     <input type="checkbox" name="worker-days" id="MON" value="Monday"
                                     onChange={handleDayChanges}
+                                    disabled ={!editMode}
                                     checked={newWorkerSchedule?.workerAvailability?.day.includes("Monday")}/>
                                 </td>
                                 <td>
                                     <input type="checkbox" name="worker-days" id="TUE" value="Tuesday"
                                     onChange={handleDayChanges}
+                                    disabled ={!editMode}
                                     checked={newWorkerSchedule?.workerAvailability?.day.includes("Tuesday")}/>
                                 </td>
                                 <td>
                                     <input type="checkbox" name="worker-days" id="WED" value="Wednesday"
                                     onChange={handleDayChanges}
+                                    disabled ={!editMode}
                                     checked={newWorkerSchedule?.workerAvailability?.day.includes("Wednesday")}/>
                                 </td>
                                 <td>
                                     <input type="checkbox" name="worker-days" id="THU" value="Thursday"
                                     onChange={handleDayChanges}
+                                    disabled ={!editMode}
                                     checked={newWorkerSchedule?.workerAvailability?.day.includes("Thursday")}/>
                                 </td>
                                 <td>
                                     <input type="checkbox" name="worker-days" id="FRI" value="Friday"
                                     onChange={handleDayChanges}
+                                    disabled ={!editMode}
                                     checked={newWorkerSchedule?.workerAvailability?.day.includes("Friday")}/>
                                 </td>
                                 <td>
                                     <input type="checkbox" name="worker-days" id="SAT" value="Saturday"
                                     onChange={handleDayChanges}
+                                    disabled ={!editMode}
                                     checked={newWorkerSchedule?.workerAvailability?.day.includes("Saturday")}/>
                                 </td>
                             </tr>
@@ -297,6 +343,7 @@ const WorkerSchedule = () => {
                     className="worker-time-checkbox"
                     value={time}
                     onChange={handleTimeChanges}
+                    disabled ={!editMode}
                     checked={newWorkerSchedule?.workerAvailability?.startTime.includes(time)}/>
                     <label 
                     htmlFor={time} 
@@ -307,6 +354,30 @@ const WorkerSchedule = () => {
                 ))}
                 </div>
             </section>
+            <div className="schedule-actions">
+            {!editMode ?
+                <button
+                type="button"
+                className="schedule-btn green"
+                onClick={(e) => setEditMode(true)}>
+                    Edit Schedule
+                </button> :
+                <>
+                    <button
+                    type="button"
+                    className="schedule-btn red"
+                    onClick={handleScheduleCancel}>
+                        Cancel
+                    </button>
+                    <button
+                    type="button"
+                    className="schedule-btn green"
+                    onClick={handleScheduleSave}>
+                        Save Changes
+                    </button>
+                </>
+            }
+            </div>
         </div>
     );
 }

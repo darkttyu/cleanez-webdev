@@ -108,3 +108,18 @@ td {
   position: absolute;
   z-index : -1;
 }
+
+h2 {
+  font-family: var(--font1);
+  font-size  : 24px;
+  font-weight: 700;
+  text-align : center;
+  color      : #20063B;
+}
+
+h3 {
+  font-family: var(--font1);
+  font-size  : 16px;
+  font-weight: 700;
+  text-align : center;
+}
