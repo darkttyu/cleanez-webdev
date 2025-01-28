@@ -1,11 +1,13 @@
 import express from 'express';
 import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, 
-  findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, 
-  deleteWorker, setUserToActive, insertService, 
+  findAllUsers, findAllWorkers, clickedWorker, editWorkerSchedule, 
+  deleteWorker, insertService, 
   getWorkerCount, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant,
   getUserDetails,
-  updateWorkerStatus
+  updateWorkerStatus,
+  updateUserStatus
 } from '../controllers/admin.controller.js';
+import { uploadProfile } from "../middleware/profileUpload.js";
 
 const router = express.Router();
 
@@ -31,10 +33,9 @@ router.delete("/deleteWorker/:id", deleteWorker);
 router.get("/findAllUsers", findAllUsers); // Retrieves all user information
 router.post("/addUser", addUser); // Directly Creates a new user
 router.get("/clickedUser/:id", clickedUser); // Reads and Retrieves specific user data upon profile clicking
-router.put("/editUserInfo/:id", editUserInfo); // Updates User Information
+router.put("/editUserInfo/:id", uploadProfile, editUserInfo); // Updates User Information
 router.delete("/deleteUser/:id", deleteUser); // Deletes User Entirely from the Database
-router.put("/softDeleteUser/:id", softDeleteUser); // Sets Status of User to Inactive
-router.put("/setUserToActive/:id", setUserToActive);
+router.put("/updateUserStatus/:id", updateUserStatus); // Sets Status of User to Inactive
 
 // router.put("/addField", addField);
 // router.put("/updateProfile", uploadProfile, updateProfile)

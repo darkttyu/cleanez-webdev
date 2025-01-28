@@ -58,11 +58,9 @@ export const updateUser = async(id, body, profile) => {
               updatedData.profilePicture = profile;
             }
 
-          
           const updatedUserInfo = await User.findByIdAndUpdate(id, updatedData, { new: true });
-          console.log(updatedUserInfo);
             if(!updatedUserInfo) {
-              throw new Error("Error in Updating User Information.");
+              throw new Error("Bad Request. Error in Updating User Information.");
             }
 
             const updatedUser = {

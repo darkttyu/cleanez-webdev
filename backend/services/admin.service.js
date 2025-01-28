@@ -2,7 +2,8 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import moment from "moment";
-import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendUserDeactivationEmail, sendUserActivationEmail } from "../nodemailer/sendMail.js";
+import { format } from 'date-fns';
 import bcryptjs from 'bcryptjs';
 import * as generator from 'generate-password';
 import path from 'path';
@@ -212,7 +213,7 @@ export const serviceDeleteWorker = async(userId) => {
       throw new Error("Cannot Delete Worker. Worker still has Assigned Appointments")
     }
   
-  const deletedWorker = await Worker.findOneAndDelete({ userId }) // removes worker record;
+  const deletedWorker = await Worker.findOneAndDelete({userId: userId}) // removes worker record;
 
     if(!deletedWorker){
       throw new Error("Worker not Found.");
@@ -336,8 +337,178 @@ export const postUser = async (body) => {
     adminWelcomeEmail(user.firstName, user.email, user.phoneNumber, userGeneratedPassword);
 
     return user;
-}
+};
 
 export const getUser = async (userId) => {
+  const user = await User.findOne({_id: new Object(userId)}) 
 
+    if(!user){
+      throw new Error("Bad Request. User does not exist.");
+    }
+    
+    // Filters the user info to only show the necessary fields
+    const filteredUserInfo = {
+      userId: user._id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
+      gender: user.gender,
+      birthDate: user.birthDate,
+      profilePicture: user.profilePicture
+    };
+    
+    const formattedBirthDate = format(new Date(user.birthDate), "dd/mm/yyyy");
+        
+        // Returns the updated user info with the formatted birthdate
+        const updatedUserInfo = {
+            ...filteredUserInfo, 
+            birthDate: formattedBirthDate
+          }
+
+          return updatedUserInfo;
+};
+
+export const updateUser = async (userId, body, profile) => {
+
+  const { email, firstName, lastName, birthDate, gender, phoneNumber, address } = body
+
+  // Checks if the user exists
+  const currentUser = await User.findOne({_id: new Object(userId)})
+    if(!currentUser) {
+      throw new Error("Bad Request. User does not exist.")
+    }
+
+      if(profile && profile.length > 0){
+        profile = {
+          data: profile[0].buffer,
+          contentType: profile[0].mimetype
+        }
+      };
+  
+  const userAppointmentCount = Appointment.countDocuments({userId: new Object(userId), 
+    $or: [
+        { appointmentStatus: "Scheduled" }, 
+        { paymentStatus: "Pending" }
+      ] 
+    });
+
+    if(userAppointmentCount > 0){
+      throw new Error("Bad Request. User still has Pending Appointments.");
+    }
+
+  // Updates the user info based on the id and the updated user info
+  const updatedUserInfo = await User.findByIdAndUpdate(
+    userId, 
+    {
+      email,
+      firstName,
+      lastName,
+      birthDate,
+      gender,
+      phoneNumber, 
+      address: {
+        "block": address.block,
+        "province": address.province,
+        "municipal": address.municipal,
+        "barangay": address.barangay
+      }
+    },
+    { new: true}
+  );
+
+    if(profile){
+      updatedUserInfo.profilePicture = profile;
+    }
+      if(!updatedUserInfo) {
+        throw new Error("Failed to update user.");
+      }
+      
+      return updatedUserInfo
+};
+
+export const serviceDeleteUser = async (userId) => {
+  const id = new Object(userId)
+
+  const user = await User.findById(id);
+    if(!user){
+      throw new Error("Bad Request. User does not exist.");
+    }
+      if(user.role === "Worker"){
+        const worker = await Worker.findOne({userId: id});
+          if(!worker){
+            throw new Error("Bad Request. Worker does not exist.");
+          }
+
+        const deleteWorker = await Worker.findOneAndDelete({userId: id});
+          if(!deleteWorker){
+            throw new Error("Bad Request. Error in Deleting Worker Information.")
+          }
+      }
+  
+  const userAppointmentCount = await Appointment.countDocuments({userId: id, 
+    $or:[
+      { appointmentStatus: "Scheduled" }, 
+      { paymentStatus: "Pending" }
+    ] 
+  });
+
+    if(userAppointmentCount > 0){
+      throw new Error("Bad Request. User still has Pending Appointments.")
+    }
+
+  const deleteUserInformation = await User.findOneAndDelete({_id: id}); 
+    if(!deleteUserInformation){
+      throw new Error("Bad Request. Error in Deleting User with User ID: ${userId}")
+    }
+  
+    // Sends an account deletion email to the user
+    sendAccountDeletion(deleteUser.firstName, deleteUser.email);
+    return true;
+};
+
+export const serviceUpdateUserStatus = async (userId) => {
+  const user = await User.findById(userId);
+    if(!user){
+      throw new Error("Bad Request. User does not exist.");
+    }
+
+  const userAppointmentCount = await Appointment.countDocuments({
+    userId,
+    $or: [
+      { appointmentStatus: "Scheduled " },
+      { paymentStatus: "Pending" }
+    ]
+  })
+    if(userAppointmentCount > 0){
+      throw new Error("Bad Request. User still has Scheduled / Pending Appointments.")
+    }
+      
+      if(user.status === 'Active'){
+        const updatedUserStatus = await User.findByIdAndUpdate(
+          userId,
+          { status: "Inactive" },
+          { new: true }
+        );
+          
+          if(!updatedUserStatus){
+            throw new Error("Bad Request. Error in Updating User Status.");
+          }
+
+          sendUserDeactivationEmail(updatedUserStatus.firstName, updatedUserStatus.email);
+          return true;
+      } else {
+        const updatedUserStatus = await User.findByIdAndUpdate(
+          userId,
+          { status: "Active" },
+          { new: true }
+        );
+          
+          if(!updatedUserStatus){
+            throw new Error("Bad Request. Error in Updating User Status.");
+          }
+          sendUserActivationEmail(updatedUserStatus.firstName, updatedUserStatus.email);
+          return true;
+      }
 };

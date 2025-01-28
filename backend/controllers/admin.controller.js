@@ -4,9 +4,8 @@ import { Service } from "../models/service.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import bcryptjs from 'bcryptjs';
 import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail } from "../nodemailer/sendMail.js";
-import { format } from 'date-fns';
 import * as generator from 'generate-password';
-import { fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceDeleteWorker, updateStatus } from "../services/admin.service.js";
+import { fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceDeleteUser, serviceDeleteWorker, serviceUpdateUserStatus, updateStatus, updateUser } from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -101,172 +100,46 @@ export const addUser = async (req, res) => {
 export const clickedUser = async(req, res) => {  
   try {
     const user = await getUser(req.params.id);
-    // Gets specific user info based on id sent 
-    const specificUser = await User.findOne({_id: new Object(userId)});
-
-    if(!specificUser) {
-      return res.status(404).json({success: false, message: "User does not exist."});
-    }
-
-    // Filters the user info to only show the necessary fields
-    const filteredUserInfo = {
-      userId: specificUser._id,
-      email: specificUser.email,
-      firstName: specificUser.firstName,
-      lastName: specificUser.lastName,
-      address: specificUser.address,
-      phoneNumber: specificUser.phoneNumber,
-      gender: specificUser.gender,
-      birthDate: specificUser.birthDate,
-    };
-
-    // Formats the birthdate to a more readable format
-    const formattedBirthDate = format(new Date(specificUser.birthDate), "dd/mm/yyyy");
-    
-    // Returns the updated user info with the formatted birthdate
-    const updatedUserInfo = {
-        ...filteredUserInfo, 
-        birthDate: formattedBirthDate
-      }
-    
-    console.log(updatedUserInfo);
-    res.status(200).json({success: true, message:"Successfully Fetched User Information"});
+    res.status(200).json({success: true, message:"Successfully Fetched User Information", user: user });
 
   } catch (error) {
     console.log("Error in Fetching Specific User", error);
-    res.status(500).json({success:false, message:"Server Error"});
+    res.status(400).json({success:false, message: error.message });
   }
   
 };
 
 export const editUserInfo = async(req, res) => {
-  // Gets the user id from the params and the updated user info from the body
-  const userId = req.params.id;
-  const { firstName, lastName, birthDate, gender, phoneNumber, email, address} = req.body;
-
+  // Multipart-form
     try {
-      // Checks if the user exists
-      const currentUser = await User.findOne({_id: new Object(userId)})
-      if(!currentUser) {
-        res.status(404).json({success:false, message:"User does not exist"});
-      }
-      
-      // Updates the user info based on the id and the updated user info
-      const updatedUserInfo = await User.findByIdAndUpdate(
-        userId, 
-        {
-          email,
-          firstName,
-          lastName,
-          birthDate,
-          gender,
-          phoneNumber, 
-          address
-        },
-        { new: true}
-      );
-    
-        if(!updatedUserInfo) {
-          return res.status(400).json({success: false, message: "Failed to update user."})
-        }
-        
-        // Returns a success message if the user info is updated
-        res.status(200).json({success: true, message: "Successfully Updated User Information!"})
+      const updatedUser = await updateUser(req.params.id, accountInfo, req.files?.profile);
+      // Returns a success message if the user info is updated
+      res.status(200).json({ success: true, message: "Successfully Updated User Information!", user: updatedUser })
 
     } catch (error) {
-      res.status(500).json({success: false, message: "Server Error: ", error: error.message})
+      res.status(400).json({ success: false, message: error.message })
     }
 };
 
 export const deleteUser = async(req, res) => {
-  const userId = req.params.id;
-
   try {
-    // Deletes the user based on the id sent
-    const deleteUser = await User.findByIdAndDelete(userId)
+    const user = await serviceDeleteUser(req.params.id);
 
-    if(!deleteUser) {
-      return res.status(500).json({ success: false, message: "User not Found."});
+    if(user){
+      return res.status(200).json({ success: true, message: "User Deleted Successfully." })
     }
-
-    // Sends an account deletion email to the user
-    sendAccountDeletion(deleteUser.firstName, deleteUser.email);
-    
-    // Returns a success message if the user is deleted
-    return res.status(200).json({
-      success: true, 
-      message: "User Deleted Successfully."
-    })
-
   } catch (error) {
-    // Logs the error if there is an error in deleting the user
-    console.log("Error in deleting user.", error);
-    return res.status(500).json({ success: false, message: "Server Error" });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
-export const softDeleteUser = async(req, res) => {
-  // Gets the user id from the params
-  const userId = req.params.id;
-
-    try {
-      //  Checks if the user exists
-      const currentUser = await User.findOne({_id: new Object(userId)})
-      
-      if(!currentUser) {
-        res.status(404).json({success:false, message:"User does not exist"});
-      }
-
-      // Updates the user status to Inactive and sends an email
-      const updatedUserInfo = await User.findByIdAndUpdate(
-        userId, 
-        {
-          status: "Inactive"
-        },
-        { new: true}
-      );
-    
-        if(!updatedUserInfo) {
-          return res.status(400).json({success: false, message: "Failed to Soft Delete User."})
-        }
-        
-        sendUserDeactivationEmail(updatedUserInfo.firstName, updatedUserInfo.email);
-        return res.status(200).json({success: true, message: "Successfully Soft Deleted User"})
-
-    } catch (error) {
-      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
-    }
-};
-
-export const setUserToActive = async (req, res) => {
-  const userId = req.params.id;
-
-    try {
-      const currentUser = await User.findOne({_id: new Object(userId)})
-      
-      if(!currentUser) {
-        res.status(404).json({success:false, message:"User does not exist"});
-      }
-      
-      // Updates the user status to Active and sends an email
-      const updatedUserInfo = await User.findByIdAndUpdate(
-        userId, 
-        {
-          status: "Active"
-        },
-        { new: true}
-      );
-      
-        if(!updatedUserInfo) {
-          return res.status(400).json({success: false, message: "Failed to set user status to Active."})
-        }
-        
-        sendUserActivationEmail(updatedUserInfo.firstName, updatedUserInfo.email);
-        return res.status(200).json({success: true, message: "User status set to Active."})
-
-    } catch (error) {
-      return res.status(500).json({success: false, message: "Server Error: ", error: error.message})
-    }
+export const updateUserStatus = async(req, res) => {
+  try {
+    const user = await serviceUpdateUserStatus(req.params.id);
+    return res.status(200).json({success: true, message: "Succesfully Updated User Status", user: user})
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
 };
 
 // Service Controllers
