@@ -3,10 +3,10 @@ import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import bcryptjs from 'bcryptjs';
-import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail, sendWorkerActivationEmail, sendWorkerDeactivationEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import * as generator from 'generate-password';
-import { fetchWorkers } from "../services/admin.service.js";
+import { fetchUsers, fetchWorker, fetchWorkers, postWorker } from "../services/admin.service.js";
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from "url";
@@ -25,145 +25,39 @@ export const findAllWorkers = async (req, res) => {
   }
 };
 
-export const addWorker = async (req, res) => {
-  const { userId, serviceCategory, workerAvailability } = req.body;
-
-  console.log("Received request body:", req.body); // Debugging: Logs incoming request body.
-
+export const getUserDetails = async (req, res) => {
   try {
-    // Validates required fields.
-    if (!userId || !serviceCategory || !workerAvailability) {
-      throw new Error("All fields are required.");
-    }
+    const user = await fetchUsers();
+    return res.status(200).json({success: true, users: user})
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
 
-    // Checks if the user is already a verified worker.
-    const workerAlreadyExists = await User.findOne({
-      _id: userId,
-      role: "Worker",
-      isVerified: true,
-    });
-      if (workerAlreadyExists) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Worker already exists" });
-      }
-
-    const applicantAppointment = await Appointment.find({"userId": userId, appointmentStatus: "Pending"})
-    console.log(applicantAppointment)
-      if(applicantAppointment.length >= 1){
-        return res.status(400).json({success: false, message: "User has scheduled appointments. Insertion Rejected"});
-      }
-
-    // gets service details based on the service category
-    const getServiceDetails = await Service.findOne({ serviceName: serviceCategory });
-
-      if (!getServiceDetails) { 
-        return res
-          .status(404)
-          .json({ success: false, message: "Service Category does not exist." });
-      }
-
-    // gets area details based on the worker's assigned area    
-    const getAreaDetail = getServiceDetails.areaDetails.find((area) => area.sizeOfArea === workerAvailability.areaAssigned);
-
-      if (!getAreaDetail) { 
-        return res
-          .status(404)
-          .json({ success: false, message: "Area Assigned does not exist." });
-      }
-
-    // gets the start time based on the worker's assigned area
-    const startTime = getAreaDetail.startTime;
-
-    // Creates a new worker document.
-    const worker = new Worker({
-      userId,
-      serviceCategory,
-      isApplicantVerified: "Verified",
-
-      workerAvailability: {
-        ...workerAvailability, 
-        startTime: startTime
-      }
-    });
-
-    await worker.save(); // Saves the worker to the database.
-
-    // Updates the user's role to "Worker".
-    const updateUserRole = await User.findByIdAndUpdate(userId, {
-      role: "Worker",
-    });
-
-      if (!updateUserRole) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Failed to Update User Role." });
-      }
-
-    adminWelcomeWorkerEmail(updateUserRole.firstName, updateUserRole.email); // Sends welcome email.
-
-    res.status(201).json({
-      success: true,
-      message: "Worker Created Successfully",
-      worker: {
-        ...worker._doc, // Sends worker data as part of the response.
-      },
-    });
+export const addWorker = async (req, res) => {
+  try {
+    const addedWorker = await postWorker(req.body);
+    return res.status(200).json({ success: true, message: addedWorker})
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
 
 export const clickedWorker = async (req, res) => {
-  const userId = req.params.id;
-
   try {
-    const worker = await Worker.findOne({ userId })
-      .populate({
-        path: "userId", // Populates user data (firstName, lastName).
-        select: "firstName lastName",
-      })
-      .select("serviceCategory workerAvailability"); // Selects specific worker fields.
-
-    console.log(JSON.stringify(worker, null, 2)); // Debugging: Prints worker details.
-
-    return res
-      .status(200)
-      .json({ success: true, message: "Successfully Fetched Worker" });
+    const worker = await fetchWorker(req.params.id);
+    return res.status(200).json({ success: true, message: "Successfully Fetched Worker", worker: worker});
   } catch (error) {
-    console.log("Error in Fetching Worker", error); // Logs errors for debugging.
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
 export const editWorkerSchedule = async (req, res) => {
-  const userId = req.params.id;
-  const { workerAvailability } = req.body;
-
   try {
-    // Checks if the worker exists.
-    const currentWorker = await Worker.findById(userId);
-    if (!currentWorker) {
-      return res.status(404).json({ success: false, message: "Worker does not exist" });
-    }
-
-    // Updates the worker's schedule information.
-    const updatedWorkerInfo = await Worker.findByIdAndUpdate(
-      currentWorker._id,
-      {
-        "workerAvailability.day": workerAvailability.day,
-        "workerAvailability.startTime": workerAvailability.startTime
-      },
-      { new: true } // Ensures the updated document is returned.
-    );
-
-    if (!updatedWorkerInfo) {
-      return res.status(400).json({ success: false, message: "Failed to update worker." });
-    }
-
-    return res.status(200).json({ success: true, message: "Successfully Updated User Information!", data: updatedWorkerInfo});
+    const currentWorkerSchedule = await updateSchedule(req.params.id, req.body);
+    return res.status(200).json({ success: true, message: "Successfully Updated User Information!", data: currentWorkerSchedule});
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 

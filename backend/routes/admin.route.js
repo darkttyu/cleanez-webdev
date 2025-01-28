@@ -2,7 +2,8 @@ import express from 'express';
 import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, 
   findAllUsers, softDeleteUser, findAllWorkers, clickedWorker, editWorkerSchedule, 
   deleteWorker, softDeleteWorker, setWorkerToActive, setUserToActive, insertService, 
-  getWorkerCount, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant
+  getWorkerCount, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant,
+  getUserDetails
 } from '../controllers/admin.controller.js';
 
 const router = express.Router();
@@ -16,7 +17,10 @@ router.get("/getWorkerCount", getWorkerCount);
 
 // Worker Tab
 router.get("/findAllWorkers", findAllWorkers);
+
+router.get("/getUserDetails", getUserDetails);
 router.post("/addWorker", addWorker);
+
 router.get("/clickedWorker/:id", clickedWorker);
 router.put("/editWorkerSchedule/:id", editWorkerSchedule);
 router.delete("/deleteWorker/:id", deleteWorker);
