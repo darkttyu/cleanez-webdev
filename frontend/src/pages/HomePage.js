@@ -21,7 +21,7 @@ const HomePage = () => {
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <>
-            <Navbar user={user}/>
+            <Navbar/>
             <Header />
             <Services />
             <About />

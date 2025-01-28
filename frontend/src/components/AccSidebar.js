@@ -93,6 +93,15 @@ const WorkerSide = ({setNavTitle}) => {
                 
                 Appointments
             </Link></li>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Schedule' ? 'active' : ''}`
+            }
+            to='schedule'
+            onClick={(e) => handleClick('Schedule')}>
+                
+                Schedule
+            </Link></li>
         </>
     );
 }

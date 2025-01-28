@@ -14,8 +14,10 @@ import UserDashboard from './pages/UserPages/UserDashboard';
 import UserAppointments from './pages/UserPages/UserAppointments';
 import WorkerProfile from './pages/UserPages/WorkerProfile';
 import WorkerAppointments from './pages/UserPages/WorkerAppointments';
+import WorkerSchedule from './pages/UserPages/WorkerSchedule';
 import { useAuth } from './AuthContext';
 import { useEffect, useState } from 'react';
+
 
 function App() {
     const { user } = useAuth();
@@ -43,6 +45,7 @@ function App() {
                 <>
                     <Route path='profile' element={<WorkerProfile/>}/>
                     <Route path='appointments' element={<WorkerAppointments/>}/>
+                    <Route path='schedule' element={<WorkerSchedule/>}/>
                 </>
             )
         }
