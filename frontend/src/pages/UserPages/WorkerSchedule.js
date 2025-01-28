@@ -24,6 +24,10 @@ const WorkerSchedule = () => {
 
     const [editMode, setEditMode] = useState(false);
 
+    useEffect(() => {
+        console.log(timeList);
+    }, [timeList])
+
     // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Fetches Worker Detail from Database;
     const fetchWorkerDetail = async () => {
@@ -69,10 +73,18 @@ const WorkerSchedule = () => {
             (area) => area.sizeOfArea === newWorkerSchedule.workerAvailability.areaAssigned
         );
 
+        if (newWorkerSchedule.workerAvailability.areaAssigned == "0") {
+            console.log("Area is 0")
+            setTimeList([]);
+            return;
+        }
+
         if (selectedArea && selectedArea.startTime !== timeList) {
             // console.log("Selected Time: ", selectedArea.startTime);
+            console.log("Area is ", newWorkerSchedule.workerAvailability.areaAssigned);
             setTimeList(selectedArea.startTime);
         }
+
     }
 
     const convertTime = (time) => {
@@ -131,10 +143,10 @@ const WorkerSchedule = () => {
     }, [timeValues])
 
     useEffect(() => {
-        if (areaList.length > 0 && newWorkerSchedule.workerAvailability.areaAssigned !== "0") {
+        if (areaList.length > 0) {
             fetchTime();
         }
-    }, [newWorkerSchedule, areaList])
+    }, [newWorkerSchedule, areaList]);
 
     useEffect(() => {
         if (serviceList.length > 0 && newWorkerSchedule.serviceCategory !== "0") {
@@ -142,10 +154,10 @@ const WorkerSchedule = () => {
         }
     }, [newWorkerSchedule, serviceList]);
     
-    useEffect(() => {
-        console.log("OLD: ", workerDetails)
-        console.log("NEW: ", newWorkerSchedule);
-    }, [newWorkerSchedule])
+    // useEffect(() => {
+    //     console.log("OLD: ", workerDetails)
+    //     console.log("NEW: ", newWorkerSchedule);
+    // }, [newWorkerSchedule])
     
     useEffect(() => {
         // console.log("Initial Worker Deets: ", workerDetails);
@@ -158,7 +170,10 @@ const WorkerSchedule = () => {
                     startTime: workerDetails.workerAvailability.startTime
                 }
             })
+            setDayValues(workerDetails.workerAvailability.day);
+            setTimeValues(workerDetails.workerAvailability.startTime);
         }
+
     }, [workerDetails])
 
     useEffect(() => {
@@ -213,7 +228,7 @@ const WorkerSchedule = () => {
                         name="serviceName" 
                         value={newWorkerSchedule.serviceCategory}  
                         id="service-input" 
-                        disabled ={!editMode}
+                        disabled ={true} //CHANGE LATER
                         onChange={(e) => {
                             const newServiceCategory = e.target.value;
 
@@ -251,7 +266,8 @@ const WorkerSchedule = () => {
                                     ...newWorkerSchedule,
                                     workerAvailability: {
                                         ...newWorkerSchedule.workerAvailability,
-                                        areaAssigned: e.target.value
+                                        areaAssigned: e.target.value,
+                                        startTime: []
                                     },
                                 }) 
                             }}
