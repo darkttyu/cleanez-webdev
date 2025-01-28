@@ -1,4 +1,4 @@
-const InputLastName = ({value, onChange}) => {
+const InputLastName = ({value, onChange, disabled=false}) => {
     return (  
         <div className="text-container">
             {/* INPUT HERE */}
@@ -9,6 +9,7 @@ const InputLastName = ({value, onChange}) => {
             name="lastName" 
             value={value}
             onChange={onChange}
+            disabled = {disabled}
             id="lasttname-input"/>
             {/* LABEL HERE */}
             <label 

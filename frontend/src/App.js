@@ -17,6 +17,7 @@ import WorkerAppointments from './pages/UserPages/WorkerAppointments';
 import WorkerSchedule from './pages/UserPages/WorkerSchedule';
 import { useAuth } from './AuthContext';
 import { useEffect, useState } from 'react';
+import ApplicationPage from './pages/ApplicationPages/ApplicationPage';
 
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
                         <Route index element={<Navigate to='/account/profile'/>}/>
                         {setRoleRouting()}
                     </Route>
+                    <Route path='/apply-now' element={<ApplicationPage/>}/>
                 </Routes>
             </div>
         </Router>
