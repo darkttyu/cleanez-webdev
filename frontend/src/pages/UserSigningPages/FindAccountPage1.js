@@ -2,13 +2,20 @@
 // --- Component Import/s
 import SigningPanel from "../../components/SigningPanel";
 import MailAndPhone from "../../components/inputs/EmailAndPhone";
+import SVGIcons from "../../SVGIcons";
 // --- Other/React Import/s
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const FindAccountPanel = () => {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState('');
+
+    const [disableSubmit, setDisableSubmit] = useState(true);
+    const [isSuccesful, setIsSuccesful] = useState(false);
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -17,6 +24,8 @@ const FindAccountPanel = () => {
     const handleResetPassEmail = async (e) => {
         e.preventDefault();
         
+        setDisableSubmit(false);
+
         try {
             const response = await axios.post(
                 'http://localhost:5000/api/auth/forgot-password', 
@@ -25,8 +34,13 @@ const FindAccountPanel = () => {
             );
 
             console.log(response.data);
+
+            setIsSuccesful(true);
+
         } catch (error) {
             console.error("Error verifying email:", error.message);
+        } finally {
+            setDisableSubmit(true);
         }
     };
 
@@ -36,6 +50,19 @@ const FindAccountPanel = () => {
             {/* TOP HALF PROMPT/S */}
             <div className="main-prompt">
                 <div className="prompt-pages">
+                {
+                    isSuccesful ? 
+                    <div className="page">
+                        <div className='success-message'>
+                            <SVGIcons 
+                            selected="checkSuccess" 
+                            size="162" 
+                            color="#06E36D"
+                            />
+                            <h2>Password Successfully Requested.</h2>
+                            <p className="description">Please check your e-mail ( <strong><span>{email}</span></strong> ) to reset your password.</p>
+                        </div>
+                    </div> :
                     <div className="page">
                         <h2>FIND YOUR ACCOUNT</h2>
                         {/* DESCRIPTION HERE */}
@@ -47,9 +74,15 @@ const FindAccountPanel = () => {
                         {/* BUTTON HERE */}
                         <div className="buttons">
                             <Link to="/login" className="prompt-btn cancel">Cancel</Link>
-                            <button className="prompt-btn" type="submit">Verify</button> {/* PRE PABAGO STYLING NITO, YUNG CANCEL AND VERIFY SAME SIZE THEN NASA TAAS YUNG CANCEL THEN BABA YUNG VERIFY */}
+                            <button 
+                            className="prompt-btn" 
+                            disabled={!disableSubmit}
+                            type="submit">
+                                {disableSubmit ? "Verify" : "Verifying..."}
+                            </button>
                         </div>
                     </div>
+                }   
                 </div>
             </div>
         </form>

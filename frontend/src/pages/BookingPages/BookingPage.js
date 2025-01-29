@@ -69,14 +69,19 @@ const BookingPage = () => {
         }
     }
 
+    useEffect(() => {
+        document.title = "CleanEZ | Booking"
+    }, [])
+
     // --- Checks if person is logged-in
     useEffect(() => {
         if (user) {
             validateAndRedirect();
+        } else {
+            navigate('/login');
         }
 
-        document.title = "CleanEZ | Booking"
-    }, [])
+    }, [user])
 
 
     // --- Fetches all Service Type Data
@@ -177,7 +182,7 @@ const BookingPage = () => {
             console.log("Passed Data: ", bookingInfo); 
             console.log("Booking Completed:", response.data.message);
             
-            navigate(`/booking/success`);
+            navigate(`success`);
         } catch (error) {
             if (error.response) {
                 // Server responded with a status other than 200 range
