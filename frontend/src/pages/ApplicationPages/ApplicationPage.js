@@ -74,6 +74,8 @@ const ApplicationPage = () => {
     useEffect(() => {
         if (user) {
             validateAndRedirect();
+        } else {
+            navigate('/login');
         }
     }, [user])
 

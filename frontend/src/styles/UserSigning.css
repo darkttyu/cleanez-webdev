@@ -356,11 +356,38 @@ p {
      opacity: 100%;
 }
 
-/* select {
-     -moz-appearance   : none;
-     -webkit-appearance: none;
+.page .success-message {
+     display        : flex;
+     flex-direction : column;
+     justify-content: center;
+     align-items    : center;
+     gap            : 24px;
+     width          : 100%;
+     border-radius  : 8px;
 }
 
-select::-ms-expand {
-     display: none;
-} */
+@keyframes success-animation {
+     0% {
+          transform: scale(0%) rotate(0deg);
+     }
+
+     88% {
+          transform: scale(112%) rotate(372deg);
+     }
+
+     90% {
+          transform: scale(112%) rotate(372deg);
+     }
+
+     100% {
+          transform: scale(100%) rotate(360deg);
+     }
+}
+
+.page .success-message svg {
+     animation: success-animation 0.8s ease-in-out
+}
+
+.page .success-message span {
+     color: #06E36D;
+}
