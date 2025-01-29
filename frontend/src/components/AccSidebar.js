@@ -107,8 +107,33 @@ const WorkerSide = ({setNavTitle}) => {
 }
 
 const AdminSide = ({setNavTitle}) => {
+    const [activeLink, setActiveLink] = useState(() => {
+        let path = String(window.location.pathname);
+
+        if (path === "/account") return 'Profile';
+
+        path = path.replace('/account/', '');
+        
+        return path.charAt(0).toUpperCase() + path.slice(1);
+        }
+    );
+    const navigate = useNavigate();
+
+    const handleClick = (title) => {
+        setNavTitle(title)
+        setActiveLink(title)
+    }
+
     return (  
         <>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Applicants' ? 'active' : ''}`
+            }
+            to='applicants'
+            onClick={(e) => handleClick('Applicants')}>
+                Applicants
+            </Link></li>
         </>
     );
 }
@@ -124,16 +149,22 @@ const AccSidebar = ({user, setNavTitle}) => {
             return <UserSide setNavTitle={setNavTitle}/>
         } else if (role === 'Worker') {
             return <WorkerSide setNavTitle={setNavTitle}/>
-        } else if (role === 'admin') {
+        } else if (role === 'Admin') {
             return <AdminSide setNavTitle={setNavTitle}/>
         }
     }
 
     const handleLogOut = async () => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/auth/logout`)
-            console.log(response);
+            const role = localStorage.getItem("role");
 
+            const response = ((role === 'User' || role === 'Worker') ? 
+                await axios.post(`http://localhost:5000/api/auth/logout`) :
+                await axios.post(`http://localhost:5000/api/auth/adminLogout`)
+            );
+
+            console.log(response);
+            
             localStorage.removeItem("token");
             localStorage.removeItem("role");
             logout();

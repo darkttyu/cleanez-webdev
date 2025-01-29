@@ -10,7 +10,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import BookingPage from './pages/BookingPages/BookingPage';
 import BookingSuccess from './pages/BookingPages/BookingSuccess';
 import { useNavigate } from 'react-router-dom';
-import AccountLayout from './pages/UserPages/AccountLayout';
+import AccountLayout from './pages/AccountLayout';
 import UserProfile from './pages/UserPages/UserProfile';
 import UserDashboard from './pages/UserPages/UserDashboard';
 import UserAppointments from './pages/UserPages/UserAppointments';
@@ -21,6 +21,7 @@ import { useAuth } from './AuthContext';
 import { useEffect, useState } from 'react';
 import ApplicationPage from './pages/ApplicationPages/ApplicationPage';
 import ApplicationSuccess from './pages/ApplicationPages/ApplicationSuccess';
+import AdminApplicants from './pages/AdminPages/AdminApplicants';
 
 
 function App() {
@@ -35,22 +36,22 @@ function App() {
 
     const setRoleRouting = () => {
         if (role === "" || !role) {
-            return <></>
+            return []
         } else if (role === "user") {
             return (
-                <>
-                    <Route path='profile' element={<UserProfile/>}/>
-                    <Route path='dashboard' element={<UserDashboard/>}/>
+                [
+                    <Route path='profile' element={<UserProfile/>}/>,
+                    <Route path='dashboard' element={<UserDashboard/>}/>,
                     <Route path='appointments' element={<UserAppointments/>}/>
-                </>
+                ]
             );
         } else if (role === "worker") {
             return (
-                <>
-                    <Route path='profile' element={<WorkerProfile/>}/>
-                    <Route path='appointments' element={<WorkerAppointments/>}/>
+                [
+                    <Route path='profile' element={<WorkerProfile/>}/>,
+                    <Route path='appointments' element={<WorkerAppointments/>}/>,
                     <Route path='schedule' element={<WorkerSchedule/>}/>
-                </>
+                ]
             )
         }
     }
@@ -72,10 +73,17 @@ function App() {
                     <Route path='/booking/success' element={<BookingSuccess/>}/>
                     <Route path='/account' element={<AccountLayout/>}>
                         <Route index element={<Navigate to='/account/profile'/>}/>
-                        {setRoleRouting()}
+                        {setRoleRouting()?.map(route => route)}
                     </Route>
                     <Route path='/application' element={<ApplicationPage/>}/>
                     <Route path='/application/success' element={<ApplicationSuccess/>}/>
+                    <Route path='/admin' element={<AccountLayout/>}>
+                        <Route index element={<Navigate to='/admin/applicants'/>}/>
+                        {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
+                        <Route path='applicants' element={<AdminApplicants/>}/>
+                        {/* <Route path='workers' element={<WorkerSchedule/>}/> */}
+                        {/* <Route path='users' element={<WorkerSchedule/>}/> */}
+                    </Route>
                 </Routes>
             </div>
         </Router>

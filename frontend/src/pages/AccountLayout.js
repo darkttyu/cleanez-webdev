@@ -1,9 +1,9 @@
-import AccSidebar from "../../components/AccSidebar";
-import { useAuth } from "../../AuthContext";
+import AccSidebar from "../components/AccSidebar";
+import { useAuth } from "../AuthContext";
 import axios from 'axios';
 import {useState, useEffect } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
-import '../../styles/AccountPage.css';
+import '../styles/AccountPage.css';
 
 const AccountLayout = () => {
     const { user } = useAuth();

@@ -58,13 +58,13 @@ const LoginPanel = ({route}) => {
     const handleLogInSubmission = async (e) => {
         e.preventDefault();
         // --- --- Successfull Login
+        console.log(loginCredentials);
         try {
             const response = await axios.post(`http://localhost:5000/api/auth/${route}`, loginCredentials, {
                 headers: { 'Content-Type': 'application/json' }
               });
 
             // For Data Checking, Comment when Deploying
-            console.log("Passed Data: ", loginCredentials); // Data Checker
             console.log("Login Completed:", response.data);
 
             setIsDisabled(true)
@@ -99,7 +99,7 @@ const LoginPanel = ({route}) => {
             <div className="main-prompt">
                 <div className="prompt-pages">
                     <div className="page">
-                        <h1>LOGIN</h1>
+                        <h1>{(route !== "adminLogin") ? "LOGIN" : "LOGIN AS ADMIN"}</h1>
                         {/* INPUTS HERE */}
                         <div className="inputs">
                             <MailAndPhone value={loginCredentials.login} onChange={handleLogInData}/>
@@ -122,12 +122,16 @@ const LoginPanel = ({route}) => {
                 </div>
             </div>
             {/* BOTTOM HALF PROMPT/S */}
-            <div className="external-prompt">
+            {(route !== "adminLogin") ?
+                <div className="external-prompt">
                 <p className="description">
                     Don't have an account yet? <Link to="/signup" className="prompt-link">
                     Sign Up.</Link>
                 </p>
-            </div>
+            </div> :
+            <></>
+            }
+            
         </form>
     );
 }
