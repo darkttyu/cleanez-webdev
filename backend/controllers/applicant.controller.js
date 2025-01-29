@@ -10,7 +10,7 @@ export const submitApplicationForm = async (req, res) => {
   
   // Retrieve files (resume, ID1, ID2) and fields (serviceCategory, areaAssigned) from the request
   const { resume, ID1, ID2 } = req.files;
-  const { firstName, latName, email, phoneNumber, address, serviceCategory, areaAssigned } = JSON.parse(req.body);
+  const { firstName, latName, email, phoneNumber, address, serviceCategory, areaAssigned } = JSON.parse(req.body.appInfo);
 
     // Check if userId is present (user must be authenticated)
     if (!userId) {
