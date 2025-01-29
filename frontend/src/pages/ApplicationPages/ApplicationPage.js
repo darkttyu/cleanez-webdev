@@ -176,7 +176,7 @@ const ApplicationPage = () => {
             console.log("Passed Data: ", applicantInfo); 
             console.log("Application Completed:", response.data.message);
             
-            navigate(`/booking/success`);
+            navigate(`/application/success`);
         } catch (e) {
             console.log(e);
         } finally {
