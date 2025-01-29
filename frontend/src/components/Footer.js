@@ -20,7 +20,7 @@ const Footer = () => {
                     </div>
                     <div className="footer-misc">
                          <p className="register">
-                              Want to be part of our team? <Link to={user?'/apply-now':'/login'}>Apply Now</Link>.</p>
+                              Want to be part of our team? <Link to={user?'/application':'/login'}>Apply Now</Link>.</p>
                          <p className="copyright">&copy; Copyright 2024. All rights reserved. CleanEZ.</p>
                     </div>
                </div>

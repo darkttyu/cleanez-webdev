@@ -18,6 +18,7 @@ import WorkerSchedule from './pages/UserPages/WorkerSchedule';
 import { useAuth } from './AuthContext';
 import { useEffect, useState } from 'react';
 import ApplicationPage from './pages/ApplicationPages/ApplicationPage';
+import ApplicationSuccess from './pages/ApplicationPages/ApplicationSuccess';
 
 
 function App() {
@@ -70,7 +71,8 @@ function App() {
                         <Route index element={<Navigate to='/account/profile'/>}/>
                         {setRoleRouting()}
                     </Route>
-                    <Route path='/apply-now' element={<ApplicationPage/>}/>
+                    <Route path='/application' element={<ApplicationPage/>}/>
+                    <Route path='/application/success' element={<ApplicationSuccess/>}/>
                 </Routes>
             </div>
         </Router>
