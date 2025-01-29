@@ -4,6 +4,8 @@ import SignupPage from './pages/UserSigningPages/SignupPage';
 import FAQsPage from './pages/FAQsPage';
 import VerificationPage from './pages/UserSigningPages/VerificationPage'
 import FindAccountPage1 from './pages/UserSigningPages/FindAccountPage1';
+import FindAccountPage2 from './pages/UserSigningPages/FindAccountPage2';
+import FindAccountPage3 from './pages/UserSigningPages/FindAccountPage3';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import BookingPage from './pages/BookingPages/BookingPage';
 import BookingSuccess from './pages/BookingPages/BookingSuccess';
@@ -65,6 +67,7 @@ function App() {
                     <Route path='/signup/verify-email' element={<VerificationPage/>} />
                     <Route path="/frequently-asked-questions" element={<FAQsPage />} />
                     <Route path="/forgot-password" element={<FindAccountPage1/>} />
+                    <Route path="/reset-password/:id" element={<FindAccountPage3/>}/>
                     <Route path='/booking' element={<BookingPage/>}/>
                     <Route path='/booking/success' element={<BookingSuccess/>}/>
                     <Route path='/account' element={<AccountLayout/>}>
