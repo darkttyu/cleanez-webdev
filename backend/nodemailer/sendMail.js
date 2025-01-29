@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv'
-import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT, ACTIVATE_USER, DEACTIVATE_USER, DEACTIVATE_WORKER, ACTIVATE_WORKER, WELCOME_WORKER, SEND_USER_BOOKING_CONFIRMATION, SEND_WORKER_BOOKING_CONFIRMATION, REJECT_APPLICANT_EMAIL, WORKER_PAID_EMAIL } from "./emailTemplates.js";
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT, ACTIVATE_USER, DEACTIVATE_USER, DEACTIVATE_WORKER, ACTIVATE_WORKER, WELCOME_WORKER, SEND_USER_BOOKING_CONFIRMATION, SEND_WORKER_BOOKING_CONFIRMATION, REJECT_APPLICANT_EMAIL, WORKER_PAID_EMAIL, APPLICANT_CONFIRMATION_EMAIL } from "./emailTemplates.js";
 import { response } from "express";
 import { assign } from "nodemailer/lib/shared/index.js";
 
@@ -276,7 +276,7 @@ export const sendApplicationRejectionEmail = async (firstName, email) => {
   }
 }
 
-export const sendWorkerPaidAppointmentEmail = async (wFirstName, wLastName, custFName, custLName, serviceName, appDate, block, municipal,
+export const sendWorkerPaidAppointmentEmail = async (wFirstName, wLastName, email, custFName, custLName, serviceName, appDate, block, municipal,
   province, barangay, serviceCost) => {
     try {
       const info = await transporter.sendMail({
@@ -295,13 +295,13 @@ export const sendWorkerPaidAppointmentEmail = async (wFirstName, wLastName, cust
     }
 };
 
-export const sendApplicantConfirmationEmail = async(applicantFirstName, applicantLastName) => {
+export const sendApplicantConfirmationEmail = async(applicantFirstName, applicantLastName, email) => {
   try {
     const info = await transporter.sendMail({
       from: sender,
       to: [email],
       subject: "Application Status Update – Your Application Has Been Reviewed",
-      html: REJECT_APPLICANT_EMAIL.replace("{firstName}", applicantFirstName).replace("{lastName}", applicantLastName)
+      html: APPLICANT_CONFIRMATION_EMAIL.replace("{firstName}", applicantFirstName).replace("{lastName}", applicantLastName)
     });
 
     console.log("Applicant Confirmation Email sent successfully:", info.messageId);

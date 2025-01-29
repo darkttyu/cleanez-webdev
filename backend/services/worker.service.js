@@ -227,7 +227,7 @@ export const markAppointment = async (appointmentId) => {
       await Promise.all(
         workerUserIds.map(async (id) => {
           const workerInfo = await User.findById(id);
-          sendWorkerPaidAppointmentEmail(workerInfo.firstName, workerInfo.lastName, appointment.customerFirstName, 
+          sendWorkerPaidAppointmentEmail(workerInfo.firstName, workerInfo.lastName, workerInfo.email, appointment.customerFirstName, 
             appointment.customerLastName, appointment.serviceDetails.serviceCategory, appointment.scheduleDetails.date, 
             appointment.address.block, appointment.address.municipal, appointment.address.province, appointment.address.barangay,
             appointment.serviceCost)
