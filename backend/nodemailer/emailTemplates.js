@@ -614,7 +614,7 @@ export const WORKER_PAID_EMAIL = `
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center;">
-    <img src="header.png" alt="Header Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
@@ -635,11 +635,55 @@ export const WORKER_PAID_EMAIL = `
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
   </div>
   <div style="text-align: center; margin-top: 10px;">
-    <img src="footer.png" alt="Footer Image" style="max-width: 100%; height: auto;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
   </div>
 </body>
 </html>
-`
+`;
+
+export const APPLICANT_CONFIRMATION_EMAIL = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Received - CleanEZ</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">YOUR APPLICATION HAS BEEN RECEIVED!</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName} {lastName}!</span></p>
+    <p style="text-align: justify;">Thank you for applying to become a CleanEZ worker! We have successfully received your application and our team is currently reviewing it thoroughly. We appreciate your interest in joining our platform and look forward to assessing your qualifications.</p>
+    
+    <p style="font-weight: bold;">What happens next?</p>
+    <ul>
+      <li><strong>Application Review:</strong> Our team will carefully evaluate your application details.</li>
+      <li><strong>Final Decision:</strong> Once your application has been reviewed, we will notify you of the outcome.</li>
+    </ul>
+
+    <p style="text-align: justify;">Please allow some time for our team to process your application. If you have any questions in the meantime, feel free to contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>
+
+    <p>We appreciate your patience and will be in touch with you soon!</p>
+
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+
+`;

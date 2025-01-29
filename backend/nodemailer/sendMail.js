@@ -294,3 +294,18 @@ export const sendWorkerPaidAppointmentEmail = async (wFirstName, wLastName, cust
       console.error("Error sending email:", error);
     }
 };
+
+export const sendApplicantConfirmationEmail = async(applicantFirstName, applicantLastName) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "Application Status Update – Your Application Has Been Reviewed",
+      html: REJECT_APPLICANT_EMAIL.replace("{firstName}", applicantFirstName).replace("{lastName}", applicantLastName)
+    });
+
+    console.log("Applicant Confirmation Email sent successfully:", info.messageId);
+  } catch (error) {
+    console.error("Error Sending Confirmation Email:", error);
+  }
+};

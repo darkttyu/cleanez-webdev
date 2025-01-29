@@ -336,13 +336,21 @@ export const adminLogin = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid Credentials" });
     }
 
-    // Validate password
-    const isPasswordValid = await bcryptjs.compare(password, admin.password);
+        // Validate password
+        if(admin.password.startsWith("$2a$") || admin.password.startsWith("$2b$")) {
+          const isPasswordValid = await bcryptjs.compare(password, admin.password);
 
-    if (!isPasswordValid) {
-      return res.status(400).json({ success: false, message: "Invalid Credentials" });
-    }
+          if (!isPasswordValid) {
+            return res.status(400).json({ success: false, message: "Invalid Credentials"});
+          }
+        } else {
+            const isMatch = password === admin.password;
 
+            if (!isMatch) {
+              return res.status(400).json({ success: false, message: "Invalid Credentials"});
+            }
+        }
+        
     // Generate token and set cookie
     generateTokenAndSetCookie(res, admin._id);
 
