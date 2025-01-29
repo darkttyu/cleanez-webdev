@@ -1,15 +1,19 @@
-import AccSidebar from "../components/AccSidebar";
-import { useAuth } from "../AuthContext";
+import AccSidebar from "../../components/AccSidebar";
+import { useAuth } from "../../AuthContext";
 import axios from 'axios';
 import {useState, useEffect } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
-import '../styles/AccountPage.css';
+import '../../styles/AccountPage.css';
 
 const AccountLayout = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    const [navTitle, setNavTitle] = useState('Profile');
+    const role = localStorage.getItem('role');
+
+    const [navTitle, setNavTitle] = useState(
+        role !== 'Admin' ? 'Profile' : 'Applicants'
+    );
 
     useEffect(() => {
         document.title = 'CleanEZ | Account'
@@ -17,13 +21,16 @@ const AccountLayout = () => {
 
     useEffect(() => {
         if (!user) {
-            navigate('/home');
+            navigate((role === 'User' || role === 'Worker') ? 
+                '/home' :
+                '/adminLogin'
+            );
         }
     }, [user])
 
     return (  
         <div className="account-page-layout">
-            <AccSidebar user={user} setNavTitle={setNavTitle}/>
+            <AccSidebar setNavTitle={setNavTitle}/>
             <div className="account-page-right">
                 <nav className="navbar">
                 <h1 className='nav-title'>{navTitle}</h1>

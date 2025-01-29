@@ -110,9 +110,9 @@ const AdminSide = ({setNavTitle}) => {
     const [activeLink, setActiveLink] = useState(() => {
         let path = String(window.location.pathname);
 
-        if (path === "/account") return 'Profile';
+        if (path === "/admin") return 'Applicants';
 
-        path = path.replace('/account/', '');
+        path = path.replace('/admin/', '');
         
         return path.charAt(0).toUpperCase() + path.slice(1);
         }
@@ -134,13 +134,23 @@ const AdminSide = ({setNavTitle}) => {
             onClick={(e) => handleClick('Applicants')}>
                 Applicants
             </Link></li>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Workers' ? 'active' : ''}`
+            }
+            to='workers'
+            onClick={(e) => handleClick('Workers')}>
+                Workers
+            </Link></li>
         </>
     );
 }
 
-const AccSidebar = ({user, setNavTitle}) => {
+const AccSidebar = ({setNavTitle}) => {
     const { logout } = useAuth();
     const navigate = useNavigate();
+
+    const role = localStorage.getItem("role");
 
     const accountSideDisplay = () => {
         const role = localStorage.getItem("role")
@@ -156,7 +166,6 @@ const AccSidebar = ({user, setNavTitle}) => {
 
     const handleLogOut = async () => {
         try {
-            const role = localStorage.getItem("role");
 
             const response = ((role === 'User' || role === 'Worker') ? 
                 await axios.post(`http://localhost:5000/api/auth/logout`) :
@@ -168,7 +177,12 @@ const AccSidebar = ({user, setNavTitle}) => {
             localStorage.removeItem("token");
             localStorage.removeItem("role");
             logout();
-            navigate('/home');
+            navigate((role === 'User' || role === 'Worker') ? 
+                '/home' :
+                '/adminLogin'
+            );
+            
+
         } catch (error) {
             console.log('Logout Failed: ', error)
         }
@@ -176,7 +190,10 @@ const AccSidebar = ({user, setNavTitle}) => {
 
     return (  
         <div className="account-page-left">
-            <Link to="/home">
+            <Link to={(role === 'User' || role === 'Worker') ? 
+                '/home' :
+                '/adminLogin'
+            }>
                 <img className="sidebar-logo" src={logo} alt="Logo" />
             </Link>
             <div className="sidebar-content">
@@ -184,11 +201,15 @@ const AccSidebar = ({user, setNavTitle}) => {
                     {accountSideDisplay()}
                 </ul>
                 <div className="sidebar-return-container">
-                    <Link 
-                    className="sidebar-return"
-                    to="/home">
-                        Return to Home
-                    </Link>
+                    {role !== 'Admin' ? 
+                        <Link 
+                        className="sidebar-return"
+                        to="/home">
+                            Return to Home
+                        </Link> :
+                        <></>
+                    }
+                    
                     <Link 
                     className="sidebar-return"
                     to="/home"

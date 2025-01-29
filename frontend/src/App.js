@@ -10,7 +10,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import BookingPage from './pages/BookingPages/BookingPage';
 import BookingSuccess from './pages/BookingPages/BookingSuccess';
 import { useNavigate } from 'react-router-dom';
-import AccountLayout from './pages/AccountLayout';
+import AccountLayout from './pages/UserPages/AccountLayout';
 import UserProfile from './pages/UserPages/UserProfile';
 import UserDashboard from './pages/UserPages/UserDashboard';
 import UserAppointments from './pages/UserPages/UserAppointments';
@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import ApplicationPage from './pages/ApplicationPages/ApplicationPage';
 import ApplicationSuccess from './pages/ApplicationPages/ApplicationSuccess';
 import AdminApplicants from './pages/AdminPages/AdminApplicants';
+import AdminWorker from './pages/AdminPages/AdminWorker';
 
 
 function App() {
@@ -81,7 +82,7 @@ function App() {
                         <Route index element={<Navigate to='/admin/applicants'/>}/>
                         {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
                         <Route path='applicants' element={<AdminApplicants/>}/>
-                        {/* <Route path='workers' element={<WorkerSchedule/>}/> */}
+                        <Route path='workers' element={<AdminWorker/>}/>
                         {/* <Route path='users' element={<WorkerSchedule/>}/> */}
                     </Route>
                 </Routes>

@@ -15,16 +15,16 @@ export const AuthProvider = ({ children }) => {
         let isMounted = true;
 
         const fetchUserData = async() => {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                console.log("No token found. User is not logged in.");
-                setUser(null);
-                return;
-            }
-
             const role = localStorage.getItem("role");
             if(!role) {
                 console.log("No role found. User is not logged in.");
+                return;
+            }
+
+            const token = localStorage.getItem("token");
+            if (!token && role === 'Admin') {
+                console.log("No token found. User is not logged in.");
+                setUser(null);
                 return;
             }
 

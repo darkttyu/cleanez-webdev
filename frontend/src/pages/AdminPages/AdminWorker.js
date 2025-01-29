@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const AdminApplicants = () => {
-    const [allApplicantList, setAllApplicantList] = useState([]);
+const AdmindWorker = () => {
+    const [allWorkerList, setAllWorkerList] = useState([]);
     const [currentList, setCurrentList] = useState([])
     
     const fetchAllApplicants = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/getAllApplicants`);
+            const response = await axios.get(`http://localhost:5000/api/admin/findAllWorkers`);
 
-            setAllApplicantList(response.data.applicants)
+            setAllWorkerList(response.data.worker)
         } catch (e) {
             console.log(e);
         }
@@ -20,18 +20,18 @@ const AdminApplicants = () => {
     }, [])
 
     useEffect(() => {
-        console.log("All Applicant List: ", allApplicantList);
-        setCurrentList(allApplicantList);
-    }, [allApplicantList])
+        console.log("All Worker List: ", allWorkerList);
+        setCurrentList(allWorkerList);
+    }, [allWorkerList])
 
     useEffect(() => {
         console.log("Current List: ", currentList)
     }, [currentList])
 
     const handleSearch = (search) => {
-        setCurrentList(allApplicantList.filter((applicant) => 
-            applicant.firstName.toLowerCase().includes(search.toLowerCase()) || 
-            applicant.lastName.toLowerCase().includes(search.toLowerCase())
+        setCurrentList(allWorkerList.filter((worker) => 
+            worker.userId.firstName.toLowerCase().includes(search.toLowerCase()) || 
+            worker.userId.lastName.toLowerCase().includes(search.toLowerCase())
         ));
     };
     
@@ -52,28 +52,32 @@ const AdminApplicants = () => {
                     <table className="dashboard-list-table">
                         <thead className="dashboard-thead">
                             <tr>
-                                <th className="dashboard-th">First Name</th>
-                                <th className="dashboard-th">Last Name</th>
-                                <th className="dashboard-th">Resume</th>
+                                <th className="dashboard-th">Name</th>
+                                <th className="dashboard-th">Service Category</th>
+                                <th className="dashboard-th">Address</th>
+                                <th className="dashboard-th">Earnings</th>
                                 <th className="dashboard-th">Status</th>
                                 <th className="dashboard-th">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {currentList.map((applicant, index) => (
+                        {currentList.map((worker, index) => (
                             <tr 
                             key={index} 
                             className="dashboard-tbody-tr"
                             onClick={(e) => {}}>
-                                <td className="dashboard-tbody-td">{applicant.firstName}</td>
-                                <td className="dashboard-tbody-td">{applicant.lastName}</td>
                                 <td className="dashboard-tbody-td">
-                                    
+                                    {worker.userId.firstName} {worker.userId.lastName}
                                 </td>
+                                <td className="dashboard-tbody-td">{worker.serviceCategory}</td>
+                                <td className="dashboard-tbody-td">
+                                    {worker.userId.address.barangay}, {worker.userId.address.municipal}, {worker.userId.address.province} 
+                                </td>
+                                <td className="dashboard-tbody-td"></td>
                                 <td className="dashboard-tbody-td">
                                     <div className={`dashboard-status 
-                                        ${String(applicant.applicationDetails.applicationStatus).toLowerCase()}`}>
-                                            {applicant.applicationDetails.applicationStatus}
+                                        ${String(worker.userId.status).toLowerCase()}`}>
+                                            {worker.userId.status}
                                     </div>
                                 </td>
                                 <td className="dashboard-tbody-td">
@@ -91,4 +95,4 @@ const AdminApplicants = () => {
     );
 }
  
-export default AdminApplicants;
+export default AdmindWorker;

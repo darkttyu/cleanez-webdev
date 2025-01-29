@@ -69,18 +69,16 @@ const LoginPanel = ({route}) => {
 
             setIsDisabled(true)
 
-            if (response.status === 200) {
-                setIsDisabled(false)
-                if (route === "login") {
-                    const token = response.data.token; // Token from the response
-                    localStorage.setItem("token", token); // Token saved in Local Storage
-                    localStorage.setItem("role", response.data.user.role);
-                    login(response.data.user)
-                    navigate(`/home`);
-                } else if (route === "adminLogin") {
-                    login(response.data.admin)
-                    navigate(`/admin`)
-                }
+            if (route === "login") {
+                const token = response.data.token; // Token from the response
+                localStorage.setItem("token", token); // Token saved in Local Storage
+                localStorage.setItem("role", response.data.user.role);
+                login(response.data.user)
+                navigate(`/home`);
+            } else if (route === "adminLogin") { // Token saved in Local Storage
+                localStorage.setItem("role", response.data.admin.role);
+                login(response.data.admin)
+                navigate(`/admin`)
             }
         // --- --- Failed Login
         } catch (error) {
