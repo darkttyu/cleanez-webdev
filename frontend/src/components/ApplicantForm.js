@@ -371,15 +371,12 @@ const ServiceInfo = ({applicantInfo, setApplicantInfo, setIsInfoComplete, servic
     );
 }
 
-const FileSubmission = ({}) => {
+const FileSubmission = ({selectedFiles, setSelectedFiles, setIsInfoComplete}) => {
+    // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Input Reference
     const inputRef = useRef();
-
-    const [selectedFiles, setSelectedFiles] = useState({
-        resume: null,
-        ID1: null,
-        ID2: null
-    });
-
+     
+    // --- Handle File Upload
     const handleOnChange = (event) => {
         const filesArray = Array.from(event.target.files);
 
@@ -416,9 +413,49 @@ const FileSubmission = ({}) => {
         }
     }
 
+    // --- File Reference
     const onChooseFile = () => {
         inputRef.current.click();
     }
+
+    // --- File Type Icon Renderer
+    const setFileTypeIcon = (type) => {
+        const fileType = String(type);
+        if (fileType === "application/pdf") {
+            return (
+                <SVGIcons 
+                selected="filetypePDF"
+                size="24px"
+                color="#CC3363"/>
+            )
+            
+        } else if (fileType === "image/png") {
+            return (
+                <SVGIcons 
+                selected="filetypePNG"
+                size="24px"
+                color="#931FBE"/>
+            )
+        } else if (fileType === "image/jpeg") {
+            return (
+                <SVGIcons 
+                selected="filetypeJPG"
+                size="24px"
+                color="#F9A024"/>
+            )
+        }
+    }
+
+    useEffect(() => {
+        if (selectedFiles.resume && selectedFiles.ID1 && selectedFiles.ID2) {
+            console.log("File Uploads are Complete")
+            console.log(selectedFiles);
+            setIsInfoComplete(true);
+        } else {
+            console.log("Failed to retrieve File Uploads")
+            setIsInfoComplete(false);
+        }
+    }, [selectedFiles])
 
     return (
         <div className="booking-page" id="service-booking-page">
@@ -429,7 +466,7 @@ const FileSubmission = ({}) => {
                 type="file" 
                 ref={inputRef} 
                 style={{display: "none"}} 
-                accept="image/png, image/jpg, application/pdf"
+                accept="image/png, image/jpeg, application/pdf"
                 onChange={handleOnChange} 
                 multiple/>
 
@@ -448,6 +485,9 @@ const FileSubmission = ({}) => {
                 <div className="application-files">
                     {selectedFiles.resume ?
                         <div className="selected-file">
+                            <div className="file-icon">
+                                {setFileTypeIcon(selectedFiles.resume.type)}
+                            </div>
                             <div className="file-text">
                                 <p>{selectedFiles.resume.name}</p>
                                 <p>{(selectedFiles.resume.size/(1024*1024)).toFixed(2)} mb</p>
@@ -457,16 +497,21 @@ const FileSubmission = ({}) => {
                     }
                     {selectedFiles.ID1 ?
                         <div className="selected-file">
+                            <div className="file-icon">
+                                {setFileTypeIcon(selectedFiles.ID1.type)}
+                            </div>
                             <div className="file-text">
                                 <p>{selectedFiles.ID1.name}</p>
                                 <p>{(selectedFiles.ID1.size/(1024*1024)).toFixed(2)} mb</p>
-                            </div>
-                            
+                            </div>  
                         </div> :
                         <></>
                     }
                     {selectedFiles.ID2 ?
                         <div className="selected-file">
+                            <div className="file-icon">
+                                {setFileTypeIcon(selectedFiles.ID2.type)}
+                            </div>
                             <div className="file-text">
                                 <p>{selectedFiles.ID2.name}</p>
                                 <p>{(selectedFiles.ID2.size/(1024*1024)).toFixed(2)} mb</p>

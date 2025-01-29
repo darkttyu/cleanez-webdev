@@ -515,6 +515,22 @@
     gap           : 12px;
 }
 
+.selected-file {
+    display    : flex;
+    align-items: center;
+    gap        : 20px;
+}
+
+.file-icon {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+    height         : 48px;
+    width          : 64px;
+    border         : 1px solid #4b4b4b80;
+    border-radius  : 16px;
+}
+
 .file-text {
     display       : flex;
     flex-direction: column;
