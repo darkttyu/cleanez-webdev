@@ -324,6 +324,9 @@ p {
 }
 
 .error-message.show-error {
+     color    : red;
+     margin   : -1rem 0;
+     overflow : hidden;
      display  : inline;
      animation: show-error 0.4s;
 }

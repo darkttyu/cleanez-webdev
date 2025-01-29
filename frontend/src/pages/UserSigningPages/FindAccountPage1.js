@@ -36,7 +36,9 @@ const FindAccountPanel = () => {
             console.log(response.data);
 
             setIsSuccesful(true);
-
+            setTimeout(() => {
+                navigate("/home");
+            }, 5000);
         } catch (error) {
             console.error("Error verifying email:", error.message);
         } finally {
@@ -60,7 +62,9 @@ const FindAccountPanel = () => {
                             color="#06E36D"
                             />
                             <h2>Password Successfully Requested.</h2>
-                            <p className="description">Please check your e-mail ( <strong><span>{email}</span></strong> ) to reset your password.</p>
+                            <p className="description">Please check your e-mail ( <strong><span>{email}</span></strong> ) to reset your password.
+                            <br /><br />
+                            You are now being redirected to the Home Page in 5 seconds...</p>
                         </div>
                     </div> :
                     <div className="page">
