@@ -5,7 +5,7 @@ import { Appointment } from "../models/appointment.model.js";
 import bcryptjs from 'bcryptjs';
 import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail } from "../nodemailer/sendMail.js";
 import * as generator from 'generate-password';
-import { fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceDeleteUser, serviceDeleteWorker, serviceUpdateUserStatus, updateStatus, updateUser } from "../services/admin.service.js";
+import { fetchApplicants, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceDeleteUser, serviceDeleteWorker, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant } from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -185,144 +185,27 @@ export const insertService = async (req, res) => {
   }
 };
 
-// Dashboard Controllers 
-export const getWorkerCount = async (req, res) => {
-  try {
-    const activeWorkers = await User.countDocuments({role: "Worker", status: "Active"});
-    return res.status(200).json({success: true, count: activeWorkers})
-  } catch (error) {
-    return res.status(500).json({success: false, error: error});
-  }
-};
-
-export const getYearlyEarnings = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getMonthlyEarnings = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getWeeklyEarnings = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getYearlyAppointments = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getMontlyAppointment = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getWeeklyAppointment = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getYearlyEarningsByService = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getMonthlyEarningsByService = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getWeeklyEarningsByService = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-
 // Applicant Controllers 
 export const getAllApplicants = async (req, res) => {
   try {
-    const applicants = await User.find({role: "Applicant"});
-
-    if(!applicants) {
-      return res.status(404).json({success: false, message: "No Applicant Found."})
-    }
-    
-    return res.status(200).json({success: true, message: "Fetched Applicants Lists.", applicants: applicants})
-
+    const applicants = await fetchApplicants();
+    return res.status(200).json({success: true, message: "Fetched Applicants Lists.", applicants: applicants});
   } catch (error) {
-    return res.status(500).json({success: false, error: error})
+    return res.status(400).json({success: false, error: message.error});
   }
 };
 
 export const getClickedApplicant = async (req, res) => {
-  const applicantId = req.params.id;
   
   try {
     // Gets specific user info based on id sent 
-    const specificApplicant = await User.findOne({_id: new Object(applicantId), role: "Applicant"});
-
-    if(!specificApplicant) {
-      return res.status(404).json({success: false, message: "Applicant does not exist."});
-    }
-
-    // Filters the user info to only show the necessary fields
-    const filteredApplicantInfo = {
-      userId: specificApplicant._id,
-      email: specificApplicant.email,
-      firstName: specificApplicant.firstName,
-      lastName: specificApplicant.lastName,
-      address: specificApplicant.address,
-      phoneNumber: specificApplicant.phoneNumber,
-      gender: specificApplicant.gender,
-      birthDate: specificApplicant.birthDate,
-      applicantDetails: specificApplicant.applicationDetails // Includes all application details, including files that are need to be converted to the frontend
-    };
-
-    // Formats the birthdate to a more readable format
-    const formattedBirthDate = format(new Date(specificApplicant.birthDate), "dd/mm/yyyy");
-    
-    // Returns the updated user info with the formatted birthdate
-    const updatedApplicantInfo = {
-        ...filteredApplicantInfo, 
-        birthDate: formattedBirthDate
-      }
-    
+    const applicant = await viewApplicant(req.params.id);
+ 
     // console.log(updatedApplicantInfo);
-    res.status(200).json({success: true, message:"Successfully Fetched User Information", applicant: updatedApplicantInfo});
-
+    res.status(200).json({success: true, message:"Successfully Fetched User Information", applicant: applicant});
   } catch (error) {
     console.log("Error in Fetching Specific User", error);
-    res.status(500).json({success:false, message:"Server Error"});
+    res.status(400).json({success:false, message:"Server Error"});
   }
   
 };
@@ -416,6 +299,88 @@ export const rejectApplicant = async (req, res) => {
 
   } catch (error) {
     return res.status(500).json({success: false, message: "Server Error", error: error.message})
+  }
+};
+
+// Dashboard Controllers 
+export const getWorkerCount = async (req, res) => {
+  try {
+    const activeWorkers = await User.countDocuments({role: "Worker", status: "Active"});
+    return res.status(200).json({success: true, count: activeWorkers})
+  } catch (error) {
+    return res.status(500).json({success: false, error: error});
+  }
+};
+
+export const getYearlyEarnings = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getMonthlyEarnings = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getWeeklyEarnings = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getYearlyAppointments = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getMontlyAppointment = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getWeeklyAppointment = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getYearlyEarningsByService = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getMonthlyEarningsByService = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+};
+
+export const getWeeklyEarningsByService = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
   }
 };
 
