@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import moment from "moment";
-import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendUserDeactivationEmail, sendUserActivationEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import bcryptjs from 'bcryptjs';
 import * as generator from 'generate-password';
@@ -552,5 +552,81 @@ export const viewApplicant = async(userId) => {
         }
 
       return updatedApplicantInfo;
-      
+};
+
+export const serviceAcceptApplicant = async(userId) => {
+  const applicant = await User.findOne({_id: new Object(userId), role: "Applicant"});
+    if(!applicant) {
+      throw new Error("Bad Request. Applicant not Found.");
+    }
+
+     const service = await Service.findOne(
+        {
+          serviceName: applicant.applicationDetails.serviceCategory,
+          "areaDetails.sizeOfArea": applicant.applicationDetails.areaAssigned
+        },
+        {
+          areaDetails: { $elemMatch: { sizeOfArea: applicant.applicationDetails.areaAssigned } }
+        }
+      );
+  
+        if(!service) {
+          throw new Error("Bad Request. Service does not exist.")
+        }
+
+      const areaDetails = service.areaDetails[0];
+
+      const worker = new Worker({
+        userId: userId,
+        serviceCategory: applicant.applicationDetails.serviceCategory,
+        isApplicantVerified: "Verified",
+        workerAvailability: {
+          areaAssigned: areaDetails.sizeOfArea,
+          day: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+          startTime: areaDetails.startTime
+        },
+        totalEarnings: 0,
+        rating: 0,
+        assignedAppointments: []
+      })
+
+      const updateUserRole = await User.findByIdAndUpdate(
+        userId,
+        {
+          role: "Worker",
+          $unset: { applicationDetails: {} }
+        }
+      )
+  
+        if(!updateUserRole) {
+          throw new Error("Bad Request. Error in Updating User Role.");
+        }
+  
+        await worker.save();
+        sendApplicationAcceptanceEmail(applicant.firstName, applicant.email);
+        return true;
+};
+
+export const serviceRejectApplicant = async(userId) => {
+  const applicant = await User.findOne({_id: new Object(userId), role: "Applicant"})
+
+    if(!applicant) {
+      throw new Error("Applicant not Found.");
+    }
+    
+    const updateUserRole = await User.findByIdAndUpdate(
+      userId,
+      {
+        role: "User",
+        $unset: { applicationDetails: {} }
+      }
+    )
+
+      if(!updateUserRole) {
+        throw new Error("Bad Request. Error in Removing Application Details and Role Reset..")
+      }
+
+      // SEND REJECTION EMAIL TO USER
+      return true;
+
 };

@@ -5,7 +5,7 @@ import { Appointment } from "../models/appointment.model.js";
 import bcryptjs from 'bcryptjs';
 import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail } from "../nodemailer/sendMail.js";
 import * as generator from 'generate-password';
-import { fetchApplicants, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceDeleteUser, serviceDeleteWorker, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant } from "../services/admin.service.js";
+import { fetchApplicants, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant } from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -211,94 +211,26 @@ export const getClickedApplicant = async (req, res) => {
 };
 
 export const acceptApplicant = async (req, res) => {
-  const applicantId = req.params.id;
-
   try {
-    const applicant = await User.findOne({_id: new Object(applicantId), role: "Applicant"})
-
-    if(!applicant) {
-      return res.status(404).json({success: false, message: "No Applicant Found."});
-    }
-
-    const service = await Service.findOne(
-      {
-        serviceName: applicant.applicationDetails.serviceCategory,
-        "areaDetails.sizeOfArea": applicant.applicationDetails.areaAssigned
-      },
-      {
-        areaDetails: { $elemMatch: { sizeOfArea: applicant.applicationDetails.areaAssigned } }
+    const acceptedApplicant = await serviceAcceptApplicant(req.params.id)
+      
+      if(acceptedApplicant){
+        return res.status(200).json({success: true, message: "Applicant accepted as Worker."});
       }
-    );
-
-    if(!service) {
-      return res.status(404).json({success: false, message: "Service does not exist.", error: error.message});
-    }
-
-    const areaDetails = service.areaDetails[0];
-
-    const worker = new Worker({
-      userId: applicantId,
-      serviceCategory: applicant.applicationDetails.serviceCategory,
-      isApplicantVerified: "Verified",
-      workerAvailability: {
-        areaAssigned: areaDetails.sizeOfArea,
-        day: [],
-        startTime: areaDetails.startTime
-      },
-      totalEarnings: 0,
-      rating: 0,
-      assignedAppointments: []
-    })
-
-    const updateUserRole = await User.findByIdAndUpdate(
-      applicantId,
-      {
-        role: "Worker",
-        $unset: { applicationDetails: {} }
-      }
-    )
-
-    if(!updateUserRole) {
-      return res.status(400).json({success: false, message: "Error in Updating User Information."})
-    }
-
-    await worker.save();
-
-    // SEND ACCEPTANCE EMAIL TO USER
-    return res.status(200).json({success: true, message: "Applicant accepted as Worker.", worker: worker});
-
   } catch (error) {
-    return res.status(500).json({success: false, message: "Server Error", error: error.message})
+    return res.status(400).json({success: false, message: error.message })
   }
 };
 
 export const rejectApplicant = async (req, res) => {
-  const applicantId = req.params.id;
-
   try {
-    const applicant = await User.findOne({_id: new Object(applicantId), role: "Applicant"})
+    const rejectedApplicant = await serviceRejectApplicant(req.params.id);
 
-    if(!applicant) {
-      return res.status(404).json({success: false, message: "No Applicant Found."});
-    }
-
-    const updateUserRole = await User.findByIdAndUpdate(
-      applicantId,
-      {
-        role: "User",
-        $unset: { applicationDetails: {} }
+      if(!rejectedApplicant){
+        return res.status(200).json({success: true, message: "Applicant Rejected."});
       }
-    )
-
-    if(!updateUserRole) {
-      return res.status(400).json({success: false, message: "Error in Updating User Information."})
-    }
-
-    // SEND REJECTION EMAIL TO USER
-    return res.status(200).json({success: true, message: "Applicant Rejected."});
-
   } catch (error) {
-    return res.status(500).json({success: false, message: "Server Error", error: error.message})
+    return res.status(500).json({success: false, message: error.message})
   }
 };
 

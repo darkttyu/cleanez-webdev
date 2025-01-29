@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import moment from "moment";
+import { sendWorkerPaidAppointmentEmail } from "../nodemailer/sendMail.js";
 
 const formatTime = (time) => {
   // Extract hours and minutes from the input time
@@ -191,7 +192,7 @@ export const markAppointment = async (appointmentId) => {
     },
     { new: true } 
   );
-    if(!appointmentId){
+    if(!appointment){
       throw new Error("Appointment does not exist.");
     }
 
@@ -223,6 +224,15 @@ export const markAppointment = async (appointmentId) => {
         })
       );
     
+      await Promise.all(
+        workerUserIds.map(async (id) => {
+          const workerInfo = await User.findById(id);
+          sendWorkerPaidAppointmentEmail(workerInfo.firstName, workerInfo.lastName, appointment.customerFirstName, 
+            appointment.customerLastName, appointment.serviceDetails.serviceCategory, appointment.scheduleDetails.date, 
+            appointment.address.block, appointment.address.municipal, appointment.address.province, appointment.address.barangay,
+            appointment.serviceCost)
+        })
+      );
     return appointment;
 };
 
