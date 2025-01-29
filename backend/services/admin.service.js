@@ -512,3 +512,45 @@ export const serviceUpdateUserStatus = async (userId) => {
           return true;
       }
 };
+
+// Applicants 
+export const fetchApplicants = async() => {
+  const applicantList = await User.find({ role: "Applicant" });
+    if(!applicantList){
+      throw new Error("Bad Request. Error Fetching Applicant List");
+    }
+
+    return applicantList;
+};
+
+export const viewApplicant = async(userId) => {
+  const applicant = await User.findOne({_id: new Object(userId), role: "Applicant"});
+    if(!applicant){
+      throw new Error("Bad Request. Error Viewing Applicant Data.");
+    }
+
+      // Filters the user info to only show the necessary fields
+      const filteredApplicantInfo = {
+        userId: applicant._id,
+        email: applicant.email,
+        firstName: applicant.firstName,
+        lastName: applicant.lastName,
+        address: applicant.address,
+        phoneNumber: applicant.phoneNumber,
+        gender: applicant.gender,
+        birthDate: applicant.birthDate,
+        applicantDetails: applicant.applicationDetails // Includes all application details, including files that are need to be converted to the frontend
+      };
+  
+      // Formats the birthdate to a more readable format
+      const formattedBirthDate = format(new Date(specificApplicant.birthDate), "dd/mm/yyyy");
+      
+      // Returns the updated user info with the formatted birthdate
+      const updatedApplicantInfo = {
+          ...filteredApplicantInfo, 
+          birthDate: formattedBirthDate
+        }
+
+      return updatedApplicantInfo;
+      
+};
