@@ -371,4 +371,159 @@ const ServiceInfo = ({applicantInfo, setApplicantInfo, setIsInfoComplete, servic
     );
 }
 
-export {PersonalInfo, ServiceInfo /*, FileSubmission*/};
+const FileSubmission = ({selectedFiles, setSelectedFiles, setIsInfoComplete}) => {
+    // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    // --- Input Reference
+    const inputRef = useRef();
+     
+    // --- Handle File Upload
+    const handleOnChange = (event) => {
+        const filesArray = Array.from(event.target.files);
+
+        if (filesArray.length !== 3) {
+            alert("You need to only select 3 files.");
+            return;
+        }
+        
+        let newFiles = { resume: null, ID1: null, ID2: null };
+
+        filesArray.forEach((file) => {
+            if (file.type === 'application/pdf' && !newFiles.resume) {
+                newFiles.resume = file;
+            } else if (
+                (file.type === 'image/jpeg' || file.type === 'image/png') &&
+                !newFiles.ID1
+            ) {
+                newFiles.ID1 = file;
+            } else if (
+                (file.type === 'image/jpeg' || file.type === 'image/png') &&
+                !newFiles.ID2
+            ) {
+                newFiles.ID2 = file;
+            }
+        });
+
+        console.log("New Files: ", newFiles);
+
+        if (newFiles.resume && newFiles.ID1 && newFiles.ID2) {
+            setSelectedFiles(newFiles);
+        } else {
+            alert("Please upload 1 PDF resume and 2 valid ID images (JPG/PNG).");
+            setSelectedFiles({ resume: null, ID1: null, ID2: null });
+        }
+    }
+
+    // --- File Reference
+    const onChooseFile = () => {
+        inputRef.current.click();
+    }
+
+    // --- File Type Icon Renderer
+    const setFileTypeIcon = (type) => {
+        const fileType = String(type);
+        if (fileType === "application/pdf") {
+            return (
+                <SVGIcons 
+                selected="filetypePDF"
+                size="24px"
+                color="#CC3363"/>
+            )
+            
+        } else if (fileType === "image/png") {
+            return (
+                <SVGIcons 
+                selected="filetypePNG"
+                size="24px"
+                color="#931FBE"/>
+            )
+        } else if (fileType === "image/jpeg") {
+            return (
+                <SVGIcons 
+                selected="filetypeJPG"
+                size="24px"
+                color="#F9A024"/>
+            )
+        }
+    }
+
+    useEffect(() => {
+        if (selectedFiles.resume && selectedFiles.ID1 && selectedFiles.ID2) {
+            console.log("File Uploads are Complete")
+            console.log(selectedFiles);
+            setIsInfoComplete(true);
+        } else {
+            console.log("Failed to retrieve File Uploads")
+            setIsInfoComplete(false);
+        }
+    }, [selectedFiles])
+
+    return (
+        <div className="booking-page" id="service-booking-page">
+            <h2>Resume and Valid IDs</h2>
+            <div className="booking-grid col-one">
+                {/* Hidden Input Element */}
+                <input 
+                type="file" 
+                ref={inputRef} 
+                style={{display: "none"}} 
+                accept="image/png, image/jpeg, application/pdf"
+                onChange={handleOnChange} 
+                multiple/>
+
+                <button 
+                className="application-file-btn" 
+                type="button" 
+                onClick={onChooseFile}>
+                    <SVGIcons 
+                    selected="uploadFile"
+                    size="100px"
+                    color="#06E36D"/>
+                    <p><span>Click here</span> to upload your resume and (2) valid IDs or drag and drop your files.</p>
+                    <p>Supported Format: PDF, JPG, PNG (maximum of 10 mb each)</p>
+                </button>
+
+                <div className="application-files">
+                    {selectedFiles.resume ?
+                        <div className="selected-file">
+                            <div className="file-icon">
+                                {setFileTypeIcon(selectedFiles.resume.type)}
+                            </div>
+                            <div className="file-text">
+                                <p>{selectedFiles.resume.name}</p>
+                                <p>{(selectedFiles.resume.size/(1024*1024)).toFixed(2)} mb</p>
+                            </div>
+                        </div> :
+                        <></>
+                    }
+                    {selectedFiles.ID1 ?
+                        <div className="selected-file">
+                            <div className="file-icon">
+                                {setFileTypeIcon(selectedFiles.ID1.type)}
+                            </div>
+                            <div className="file-text">
+                                <p>{selectedFiles.ID1.name}</p>
+                                <p>{(selectedFiles.ID1.size/(1024*1024)).toFixed(2)} mb</p>
+                            </div>  
+                        </div> :
+                        <></>
+                    }
+                    {selectedFiles.ID2 ?
+                        <div className="selected-file">
+                            <div className="file-icon">
+                                {setFileTypeIcon(selectedFiles.ID2.type)}
+                            </div>
+                            <div className="file-text">
+                                <p>{selectedFiles.ID2.name}</p>
+                                <p>{(selectedFiles.ID2.size/(1024*1024)).toFixed(2)} mb</p>
+                            </div>
+                            
+                        </div> :
+                        <></>
+                    }
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export {PersonalInfo, ServiceInfo, FileSubmission};

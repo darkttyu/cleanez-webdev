@@ -3,7 +3,7 @@ import { useAuth } from '../../AuthContext';
 import NavLogo from '../../images/logos/nav-logo.png'
 import '../../styles/BookingPage.css';
 import SVGIcons from "../../SVGIcons";
-import {PersonalInfo, ServiceInfo} from "../../components/ApplicantForm";
+import {PersonalInfo, ServiceInfo, FileSubmission} from "../../components/ApplicantForm";
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,7 +13,7 @@ const ApplicationPage = () => {
     // --- Context Authenticator
     const { user } = useAuth();
     const navigate = useNavigate();
-
+    // --- Main Variables
     const [serviceList, setServicesList] = useState([])
     const [applicantInfo, setApplicantInfo] = useState({
         firstName: '',
@@ -29,15 +29,19 @@ const ApplicationPage = () => {
             barangay: '',
         }
     });
-
+    const [selectedFiles, setSelectedFiles] = useState({
+        resume: null,
+        ID1: null,
+        ID2: null
+    });
+    // --- Other Variables
     const [page, setPage] = useState(0);
     const [showSubmit, setShowSubmit] = useState(false);
     const [disableSubmit, setDisabledSubmit] = useState(false);
     const [progressbar, setProgressbar] = useState('');
     const [isInfoComplete, setIsInfoComplete] = useState(false);
 
-
-
+    // --- User Autofill Checkers
     const validateAndRedirect = () => {
         try {
             if (user) {
@@ -64,12 +68,14 @@ const ApplicationPage = () => {
     }
 
     useEffect(() => {
+        document.title = "CleanEZ | Application"
+    }, [])
+
+    useEffect(() => {
         if (user) {
             validateAndRedirect();
         }
-
-        document.title = "CleanEZ | Application"
-    }, [])
+    }, [user])
 
     // --- Fetches all Service Type Data
     useEffect(() => {
@@ -108,7 +114,10 @@ const ApplicationPage = () => {
             )
         } else if (page === 2) {
             return (
-                <></>
+                <FileSubmission 
+                selectedFiles={selectedFiles}
+                setSelectedFiles={setSelectedFiles}
+                setIsInfoComplete={setIsInfoComplete}/>
             )
         } 
     }
@@ -128,6 +137,52 @@ const ApplicationPage = () => {
             return () => clearTimeout(timer);
         } 
     }, [page])
+
+
+    // --- Creates Form
+    const updateData = async (appInfo, selFiles) => {
+        const form = new FormData();
+        
+        console.log("FORM FILES: ", appInfo, selFiles.resume, selFiles.ID1, selFiles.ID2);
+
+        form.append("appInfo", JSON.stringify(appInfo));
+        form.append("resume", selFiles.resume);
+        form.append("ID1", selFiles.ID1);
+        form.append("ID2", selFiles.ID2);
+
+        return form;
+    }
+
+    // --- Handle Application Submission
+    const handleApplicationSubmission = async (e) => {
+        try {
+            e.preventDefault();
+            setDisabledSubmit(true);
+
+            const token = localStorage.getItem("token");
+
+            const formData = await updateData(applicantInfo, selectedFiles);
+
+            const response = await axios.post(
+                `http://localhost:5000/api/applicant/submitApplicationForm`,
+                formData,
+                {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+        
+            console.log("Passed Data: ", applicantInfo); 
+            console.log("Application Completed:", response.data.message);
+            
+            navigate(`/booking/success`);
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setDisabledSubmit(false);
+        }
+    }
 
     return (  
         <>
@@ -155,7 +210,7 @@ const ApplicationPage = () => {
                         ))}
                     </div>
                 </header>
-                <form className='booking-container'  method="POST" onSubmit={(e) => {}}>
+                <form className='booking-container'  method="POST" onSubmit={handleApplicationSubmission}>
                     <div className='booking-container-content'>
                         {pageDisplay()}
                     </div>
@@ -175,7 +230,7 @@ const ApplicationPage = () => {
                             </button>
                         ) : (<></>)}
                         
-                        {(page !== 4 && isInfoComplete) ? (
+                        {(page !== 2 && isInfoComplete) ? (
                             <button
                             type="button"
                             className="booking-btn right" 
@@ -187,17 +242,17 @@ const ApplicationPage = () => {
                                 size="40"
                                 color="#4B4B4B"/>
                             </button>
-                        ) : (
-                            showSubmit && (
-                                <button 
-                                type="submit"
-                                className='booking-submit-btn booking-btn right'
-                                disabled={disableSubmit}
-                                >
-                                    {disableSubmit? "Submitting..." : "Confirm and Submit"}
-                                </button>
-                            )
-                        )}
+                        ) : (<></>)}
+
+                        {(page === 2 && isInfoComplete) ? (
+                            <button 
+                            type="submit"
+                            className='booking-submit-btn booking-btn right'
+                            disabled={disableSubmit}
+                            >
+                                {disableSubmit? "Submitting..." : "Confirm and Submit"}
+                            </button>
+                        ) : (<></>)}
                     </div>
                 </form>
             </div>
