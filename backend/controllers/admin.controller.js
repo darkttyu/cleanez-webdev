@@ -75,7 +75,14 @@ export const deleteWorker = async (req, res) => {
 // User Controllers
 export const findAllUsers = async (req, res) => {
   try {
-    const users = await fetchUserList();
+    let {page = 1, pageSize = 5} = req.query;
+
+    page = parseInt(page, 10);
+    pageSize = parseInt(pageSize, 10)
+
+    const arrayIndex = (page - 1) * pageSize
+    
+    const users = await fetchUserList(arrayIndex, pageSize);
     return res.status(200).json({success: true, message: "Fetched Users", userList: users})
   
   } catch (error) {

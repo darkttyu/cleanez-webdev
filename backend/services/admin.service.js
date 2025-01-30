@@ -234,12 +234,15 @@ export const serviceDeleteWorker = async(userId) => {
 };
 
 // User 
-export const fetchUserList = async () => {
+export const fetchUserList = async (arrayIndex, pageSize) => {
   // Gets all the User information and stores it in an array of objects
-  const userList = await User.find();
-    if(!userList){
-      throw new Error("Error in Fetching Users.");
-    }
+  const userList = await User.find()
+    .skip(arrayIndex)
+    .limit(pageSize)
+    .lean();
+      if(!userList){
+        throw new Error("Error in Fetching Users.");
+      }
 
   // Map allows us to manipulate arrays and transforming them into a new array.
   const filteredUserInfo = userList.map(user => ({
