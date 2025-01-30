@@ -11,8 +11,10 @@ import fs from 'fs';
 import { fileURLToPath } from "url";
 
 // Workers
-export const fetchWorkers = async() => {
+export const fetchWorkers = async(arrayIndex, pageSize) => {
   const workers = await Worker.find()
+      .skip(arrayIndex)
+      .limit(pageSize)
       .populate({
         path: "userId", // Populates user data (firstName, lastName, address, status).
         select: "firstName lastName address status",
@@ -517,8 +519,11 @@ export const serviceUpdateUserStatus = async (userId) => {
 };
 
 // Applicants 
-export const fetchApplicants = async() => {
-  const applicantList = await User.find({ role: "Applicant" });
+export const fetchApplicants = async(arrayIndex, pageSize) => {
+  const applicantList = await User.find({ role: "Applicant" })
+    .skip(arrayIndex)
+    .limit(pageSize)
+    .lean();
     if(!applicantList){
       throw new Error("Bad Request. Error Fetching Applicant List");
     }
@@ -636,7 +641,11 @@ export const serviceRejectApplicant = async(userId) => {
 
 // Appointments 
 export const fetchAppointments = async () => {
-  const appointmentList = await Appointment.find().lean();
+  const appointmentList = await Appointment.find()
+    .skip(arrayIndex)
+    .skip(pageSize)
+    .lean();
+    
     if(!appointmentList){
       throw new Error("Bad Request. Appointment List not Found.");
     }

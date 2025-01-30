@@ -11,7 +11,16 @@ import { fetchApplicants, fetchAppointments, fetchUserList, fetchUsers, fetchWor
 // Worker Controllers
 export const findAllWorkers = async (req, res) => {
   try {
-    const workers = await fetchWorkers();
+    let {page = 1, pageSize = 5} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+
+    // Converts it to an integer with base 10 values
+    page = parseInt(page, 10);
+    pageSize = parseInt(pageSize, 10)
+
+    // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
+    const arrayIndex = (page - 1) * pageSize
+
+    const workers = await fetchWorkers(arrayIndex, pageSize);
     return res.status(200).json({ success: true, message: "Successfully Fetched Worker List", worker: workers});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -83,7 +92,7 @@ export const findAllUsers = async (req, res) => {
 
     // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
     const arrayIndex = (page - 1) * pageSize
-    
+
     const users = await fetchUserList(arrayIndex, pageSize);
     return res.status(200).json({success: true, message: "Fetched Users", userList: users})
   
@@ -197,7 +206,16 @@ export const insertService = async (req, res) => {
 // Applicant Controllers 
 export const getAllApplicants = async (req, res) => {
   try {
-    const applicants = await fetchApplicants();
+    let {page = 1, pageSize = 5} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+
+    // Converts it to an integer with base 10 values
+    page = parseInt(page, 10);
+    pageSize = parseInt(pageSize, 10)
+
+    // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
+    const arrayIndex = (page - 1) * pageSize
+
+    const applicants = await fetchApplicants(arrayIndex, pageSize);
     return res.status(200).json({success: true, message: "Fetched Applicants Lists.", applicants: applicants});
   } catch (error) {
     return res.status(400).json({success: false, error: message.error});
@@ -328,7 +346,16 @@ export const getWeeklyEarningsByService = async (req, res) => {
 // Appointments
 export const getAppointments = async (req, res) => {
   try {
-    const appointment = await fetchAppointments();
+    let {page = 1, pageSize = 5} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+
+    // Converts it to an integer with base 10 values
+    page = parseInt(page, 10);
+    pageSize = parseInt(pageSize, 10)
+
+    // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
+    const arrayIndex = (page - 1) * pageSize
+
+    const appointment = await fetchAppointments(arrayIndex, pageSize);
       if(appointment){
         return res.status(200).json({success: true, message: "Fetched Appointments List.", appointmentList: appointment});
       }

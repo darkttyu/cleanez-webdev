@@ -23,6 +23,7 @@ import ApplicationPage from './pages/ApplicationPages/ApplicationPage';
 import ApplicationSuccess from './pages/ApplicationPages/ApplicationSuccess';
 import AdminApplicants from './pages/AdminPages/AdminApplicants';
 import AdminWorker from './pages/AdminPages/AdminWorker';
+import AdminUsers from './pages/AdminPages/AdminUsers';
 
 
 function App() {
@@ -84,7 +85,7 @@ function App() {
                         {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
                         <Route path='applicants' element={<AdminApplicants/>}/>
                         <Route path='workers' element={<AdminWorker/>}/>
-                        {/* <Route path='users' element={<WorkerSchedule/>}/> */}
+                        <Route path='users' element={<AdminUsers/>}/>
                     </Route>
                 </Routes>
             </div>

@@ -6,13 +6,13 @@
     background-color       : #60606077;
     top                    : 0;
     z-index                : 99999;
-    height                 : 100%;
+    min-height             : inherit;
     width                  : 100%;
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter        : blur(4px);
     display                : flex;
     justify-content        : center;
-    align-items            : center;
+    padding                : 24px 0;
 }
 
 .appointment-info-box {
@@ -153,6 +153,7 @@
     display   : flex;
     width     : 100%;
     min-height: 100vh;
+    max-height: 100vh;
 }
 
 .account-page-left {
@@ -387,7 +388,6 @@
 }
 
 .dashboard-list-container {
-    width           : 100%;
     padding         : 24px;
     background-color: #fff;
     border-radius   : 8px;
@@ -395,7 +395,8 @@
 }
 
 .dashboard-list-table {
-    width: 100%;
+    width   : 100%;
+    overflow: auto;
 }
 
 .dashboard-thead {
@@ -408,7 +409,7 @@
     font-size   : 20px;
     font-weight : 600;
     color       : var(--color2b);
-    padding     : 20px 0;
+    padding     : 20px 16px;
     border-color: #f8f8f8;
 }
 
@@ -425,9 +426,9 @@
 .dashboard-tbody-td {
     font-family: var(--font2);
     font-size  : 16px;
-    text-align : center;
     color      : var(--monoc4);
     position   : relative;
+    padding    : 0 16px;
 }
 
 .dashboard-status {
