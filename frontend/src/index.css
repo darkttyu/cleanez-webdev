@@ -123,3 +123,11 @@ h3 {
   font-weight: 700;
   text-align : center;
 }
+
+.tb-left {
+  text-align: left;
+}
+
+.tb-center {
+  text-align: center;
+}

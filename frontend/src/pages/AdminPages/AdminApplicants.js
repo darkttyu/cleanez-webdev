@@ -36,6 +36,23 @@ const AdminApplicants = () => {
     };
     
 
+    const handleDownload = (applicant) => {
+        const binaryData = applicant.applicationDetails.resume.data.data
+
+        const blob = new Blob([new Uint8Array(binaryData)], {type: 'application/pdf'});
+
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${applicant.firstName}${applicant.lastName}_Resume.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        URL.revokeObjectURL(url);
+    }
+
     return (  
         <div className="dashboard-page">
             <section className="dashboard-upcoming-container">
@@ -52,11 +69,10 @@ const AdminApplicants = () => {
                     <table className="dashboard-list-table">
                         <thead className="dashboard-thead">
                             <tr>
-                                <th className="dashboard-th">First Name</th>
-                                <th className="dashboard-th">Last Name</th>
-                                <th className="dashboard-th">Resume</th>
-                                <th className="dashboard-th">Status</th>
-                                <th className="dashboard-th">Actions</th>
+                                <th className="dashboard-th tb-left">First Name</th>
+                                <th className="dashboard-th tb-left">Last Name</th>
+                                <th className="dashboard-th tb-center">Resume</th>
+                                <th className="dashboard-th tb-center">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,19 +81,18 @@ const AdminApplicants = () => {
                             key={index} 
                             className="dashboard-tbody-tr"
                             onClick={(e) => {}}>
-                                <td className="dashboard-tbody-td">{applicant.firstName}</td>
-                                <td className="dashboard-tbody-td">{applicant.lastName}</td>
-                                <td className="dashboard-tbody-td">
-                                    
+                                <td className="dashboard-tbody-td tb-left">{applicant.firstName}</td>
+                                <td className="dashboard-tbody-td tb-left">{applicant.lastName}</td>
+                                <td className="dashboard-tbody-td tb-center">
+                                    <button onClick={(e) => handleDownload(applicant)}>
+                                        Download Resume
+                                    </button>
                                 </td>
-                                <td className="dashboard-tbody-td">
+                                <td className="dashboard-tbody-td tb-center">
                                     <div className={`dashboard-status 
                                         ${String(applicant.applicationDetails.applicationStatus).toLowerCase()}`}>
                                             {applicant.applicationDetails.applicationStatus}
                                     </div>
-                                </td>
-                                <td className="dashboard-tbody-td">
-
                                 </td>
                             </tr> 
                         ))}

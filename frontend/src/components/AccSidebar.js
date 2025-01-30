@@ -142,6 +142,14 @@ const AdminSide = ({setNavTitle}) => {
             onClick={(e) => handleClick('Workers')}>
                 Workers
             </Link></li>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Users' ? 'active' : ''}`
+            }
+            to='users'
+            onClick={(e) => handleClick('Users')}>
+                Users
+            </Link></li>
         </>
     );
 }
