@@ -29,7 +29,16 @@ export const fetchWorker = async(id) => {
         throw new Error("Bad Request. User is not a worker.");
       }
   
-  return user;
+  const worker = await Worker.findOne({ userId: new Object(id)});
+      if(!worker){
+        throw new Error("Bad Request. Worker not Found.");
+      }
+  
+  const workerInfo = {
+    user: user, 
+    totalEarnings: worker.totalEarnings
+  }
+  return workerInfo;
 };
 
 export const fetchWorkerDetails = async(id) => {
