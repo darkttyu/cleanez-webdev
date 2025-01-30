@@ -1,8 +1,11 @@
 import {useState, useEffect } from "react";
 import SVGIcons from "../../SVGIcons";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AdminUsers = () => {
+    const navigate = useNavigate();
+
     const [allUserList, setAllUserList] = useState([]);
     const [currentList, setCurrentList] = useState([])
     
@@ -97,7 +100,7 @@ const AdminUsers = () => {
                             <tr 
                             key={index} 
                             className="dashboard-tbody-tr"
-                            onClick={(e) => {}}>
+                            onClick={(e) => {navigate(`${user.userId}`)}}>
                                 <td className="dashboard-tbody-td tb-left">
                                     {user.firstname} {user.lastName}
                                 </td>

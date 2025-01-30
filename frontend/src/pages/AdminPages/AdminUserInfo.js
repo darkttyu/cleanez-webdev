@@ -8,7 +8,9 @@ const AdminUserInfo = () => {
     const navigate = useNavigate();
 
     const [userInfo, setUserInfo] = useState(null);
+    const [newUserInfo, setNewUserInfo] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [editMode, setEditMode] = useState(false);
 
     const fetchUserInfo = async () => {
         try {
@@ -27,11 +29,80 @@ const AdminUserInfo = () => {
         fetchUserInfo();
     }, [])
 
+    const handleEditMode = () => {
+        setNewUserInfo({
+            email: userInfo.email,
+            firstName: userInfo.firstName,
+            lastName: userInfo.lastName,
+            address: {
+                block: userInfo.address.block,
+                province: userInfo.address.province,
+                municipal: userInfo.address.municipal,
+                barangay: userInfo.address.barangay
+            },
+            phoneNumber: userInfo.phoneNumber,
+            gender: userInfo.gender,
+            birthDate: userInfo.birthDate 
+        });
+        setEditMode(true);
+    }
+
+    const handleCancel = () => {
+        setNewUserInfo(null);
+        setEditMode(false);
+    }
+
+    const handleSave = async (id) => {
+        try {
+            const response = await axios.put(`http://localhost:5000/api/admin/editUserInfo/${id}`,
+                newUserInfo,
+                {
+                    headers: {'Content-Type': 'application/json'}
+                }
+            );
+
+            console.log(response);
+
+            setNewUserInfo(null);
+            setEditMode(false);
+            fetchUserInfo();
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const showActionButtons = () => {
+        if (editMode) {
+            return (
+                <>
+                    <button 
+                    className="act-btn cancel"
+                    onClick={handleCancel}>
+                        Cancel
+                    </button>
+                    <button 
+                    className="act-btn complete"
+                    onClick={(e) => handleSave(userInfo.userId)}>
+                        Save
+                    </button>
+                </>
+            )
+        } else {
+            return (
+                <button 
+                    className="act-btn complete"
+                    onClick={handleEditMode}>
+                        Edit
+                    </button>
+            )
+        }
+    }
+
     return (  
         <div className="schedule-page">
         {userInfo ? 
             <div className="schedule-container">
-                <h2>Applicant Data</h2>
+                <h2>User Data</h2>
                 <div className="schedule-inputs" id="service-inputs">
                     {/* FIRST NAME */}
                     <div className="profile-input-container">
@@ -41,8 +112,14 @@ const AdminUserInfo = () => {
                         <input 
                         className="input" 
                         type="text"  
-                        value={userInfo.firstName}
-                        disabled/>
+                        value={(newUserInfo) ? newUserInfo.firstName : userInfo.firstName}
+                        disabled={!editMode}
+                        onChange={(e) => {
+                            setNewUserInfo({
+                                ...newUserInfo,
+                                firstName: e.target.value
+                            })
+                        }}/>
                     </div>
 
                     {/* LAST NAME */}
@@ -53,8 +130,14 @@ const AdminUserInfo = () => {
                         <input 
                         className="input" 
                         type="text" 
-                        value={userInfo.lastName}
-                        disabled/>
+                        value={(newUserInfo) ? newUserInfo.lastName : userInfo.lastName}
+                        disabled={!editMode}
+                        onChange={(e) => {
+                            setNewUserInfo({
+                                ...newUserInfo,
+                                lastName: e.target.value
+                            })
+                        }}/>
                     </div>
                                                 
                     {/* BIRTHDAY */}
@@ -63,7 +146,7 @@ const AdminUserInfo = () => {
                             Birthdate
                         </label>
                         <input 
-                        className="date" 
+                        className="input" 
                         type="text" 
                         value={userInfo.birthDate}
                         disabled/>
@@ -149,7 +232,7 @@ const AdminUserInfo = () => {
                         <input 
                         className="input" 
                         type="text" 
-                        value={applicantInfo.address.barangay}
+                        value={userInfo.address.barangay}
                         disabled/>
                     </div>
                 </div>
@@ -157,7 +240,7 @@ const AdminUserInfo = () => {
                     <button 
                     type="button"
                     className="appointment-return"
-                    onClick={(e) => {navigate('/admin/applicants');}}>
+                    onClick={(e) => {navigate('/admin/users');}}>
                         <SVGIcons
                         selected="previousArrow"
                         size="36px"
@@ -166,7 +249,7 @@ const AdminUserInfo = () => {
                     {isSubmitting ?
                         <></> :
                         <div className="appointment-actions">
-                            {showActionButtons(applicantInfo.applicantDetails.applicationStatus)}
+                            {showActionButtons()}
                         </div>
                     }
                     

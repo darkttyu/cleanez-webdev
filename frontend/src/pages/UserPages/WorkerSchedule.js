@@ -374,20 +374,20 @@ const WorkerSchedule = () => {
             {!editMode ?
                 <button
                 type="button"
-                className="schedule-btn green"
+                className="act-btn complete"
                 onClick={(e) => setEditMode(true)}>
                     Edit Schedule
                 </button> :
                 <>
                     <button
                     type="button"
-                    className="schedule-btn red"
+                    className="act-btn cancel"
                     onClick={handleScheduleCancel}>
                         Cancel
                     </button>
                     <button
                     type="button"
-                    className="schedule-btn green"
+                    className="act-btn complete"
                     onClick={handleScheduleSave}>
                         Save Changes
                     </button>
