@@ -25,7 +25,6 @@ const AdminApplicantInfo = () => {
     
     useEffect(() => {
         fetchApplicantInfo();
-        navigate('/admin/applicants');
     }, [])
     
     const handleDownload = (file, type) => {

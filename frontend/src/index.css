@@ -73,6 +73,8 @@ td {
   box-shadow   : 0 4px 4px #00000040;
   transition   : all 0.2s ease-out;
   cursor       : pointer;
+  min-width    : 100px;
+  text-align   : center;
 }
 
 .act-btn.complete {

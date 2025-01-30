@@ -58,12 +58,12 @@ const AdminUsers = () => {
                     <table className="dashboard-list-table">
                         <thead className="dashboard-thead">
                             <tr>
-                                <th className="dashboard-th">Name</th>
-                                <th className="dashboard-th">Address</th>
-                                <th className="dashboard-th">Status</th>
-                                <th className="dashboard-th">Verified</th>
-                                <th className="dashboard-th">Last Logged In</th>
-                                <th className="dashboard-th">Actions</th>
+                                <th className="dashboard-th tb-left">Name</th>
+                                <th className="dashboard-th tb-left">Address</th>
+                                <th className="dashboard-th tb-center">Status</th>
+                                <th className="dashboard-th tb-center">Verified</th>
+                                <th className="dashboard-th tb-center">Last Logged In</th>
+                                <th className="dashboard-th tb-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,20 +72,20 @@ const AdminUsers = () => {
                             key={index} 
                             className="dashboard-tbody-tr"
                             onClick={(e) => {}}>
-                                <td className="dashboard-tbody-td">
+                                <td className="dashboard-tbody-td tb-left">
                                     {user.firstname} {user.lastName}
                                 </td>
-                                <td className="dashboard-tbody-td">
+                                <td className="dashboard-tbody-td tb-left">
                                     {user.address.barangay}, {user.address.municipal}, {user.userId.province} 
                                 </td>
-                                <td className="dashboard-tbody-td">
+                                <td className="dashboard-tbody-td tb-center">
                                     <div className={`dashboard-status 
                                     ${String(user.status).toLowerCase()}`}>
                                         {user.status}
                                     </div>
                                 </td>
                                     
-                                <td className="dashboard-tbody-td">
+                                <td className="dashboard-tbody-td tb-center">
                                 {(user.isVerified) ? 
                                     <SVGIcons 
                                     selected="badgeVerified"
@@ -97,10 +97,10 @@ const AdminUsers = () => {
                                     color="#CC3363"/>
                                 }
                                 </td>
-                                <td className="dashboard-tbody-td">
+                                <td className="dashboard-tbody-td tb-center">
                                     {user.lastLogin.replace(", ", " ")}
                                 </td>
-                                <td className="dashboard-tbody-td">
+                                <td className="dashboard-tbody-td tb-center">
                                     
                                 </td>
                             </tr> 
