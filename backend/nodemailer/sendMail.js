@@ -282,7 +282,7 @@ export const sendWorkerPaidAppointmentEmail = async (wFirstName, wLastName, emai
       const info = await transporter.sendMail({
         from: sender,
         to: [email],
-        subject: "Application Status Update – Your Application Has Been Reviewed",
+        subject: "Payment Received for your Completed Appointment!",
         html: WORKER_PAID_EMAIL.replace("{workerFirstName}", wFirstName).replace("{workerLastName}", wLastName)
           .replace("{custFName}", custFName).replace("{custLName}", custLName).replace("{serviceName}", serviceName)
           .replace("{appointmentDate}", appDate).replace("{block}", block).replace("{municipal}", municipal)

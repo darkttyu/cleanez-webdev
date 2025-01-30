@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import moment from "moment";
-import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import bcryptjs from 'bcryptjs';
 import * as generator from 'generate-password';
@@ -626,7 +626,7 @@ export const serviceRejectApplicant = async(userId) => {
         throw new Error("Bad Request. Error in Removing Application Details and Role Reset..")
       }
 
-      // SEND REJECTION EMAIL TO USER
+      sendApplicationRejectionEmail(applicant.firstName, applicant.email);
       return true;
 
 };
