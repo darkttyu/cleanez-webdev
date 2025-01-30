@@ -37,24 +37,7 @@ const AdminApplicants = () => {
             applicant.lastName.toLowerCase().includes(search.toLowerCase())
         ));
     };
-    
 
-    const handleDownload = (applicant) => {
-        const binaryData = applicant.applicationDetails.resume.data.data
-
-        const blob = new Blob([new Uint8Array(binaryData)], {type: 'application/pdf'});
-
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${applicant.firstName}${applicant.lastName}_Resume.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        URL.revokeObjectURL(url);
-    }
 
     return (  
         <div className="dashboard-page">
@@ -74,7 +57,6 @@ const AdminApplicants = () => {
                             <tr>
                                 <th className="dashboard-th tb-left">First Name</th>
                                 <th className="dashboard-th tb-left">Last Name</th>
-                                <th className="dashboard-th tb-center">Resume</th>
                                 <th className="dashboard-th tb-center">Status</th>
                             </tr>
                         </thead>
@@ -86,11 +68,6 @@ const AdminApplicants = () => {
                             onClick={(e) => {navigate(`${applicant._id}`)}}>
                                 <td className="dashboard-tbody-td tb-left">{applicant.firstName}</td>
                                 <td className="dashboard-tbody-td tb-left">{applicant.lastName}</td>
-                                <td className="dashboard-tbody-td tb-center">
-                                    <button onClick={(e) => handleDownload(applicant)}>
-                                        Download Resume
-                                    </button>
-                                </td>
                                 <td className="dashboard-tbody-td tb-center">
                                     <div className={`dashboard-status 
                                         ${String(applicant.applicationDetails.applicationStatus).toLowerCase()}`}>

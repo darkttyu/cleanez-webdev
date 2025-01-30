@@ -72,6 +72,7 @@ td {
   font-weight  : 500;
   box-shadow   : 0 4px 4px #00000040;
   transition   : all 0.2s ease-out;
+  cursor       : pointer;
 }
 
 .act-btn.complete {

@@ -616,3 +616,8 @@
 .admin-searchbar-container {
     width: 100%;
 }
+
+.profile-input-container>.selected-file:hover * {
+    cursor: pointer;
+    color : #0ec262;
+}
