@@ -6,12 +6,12 @@ const AdminUsers = () => {
     const [allUserList, setAllUserList] = useState([]);
     const [currentList, setCurrentList] = useState([])
     
-    const fetchAllUsers = async () => {
+    const fetchAllUsers = async (page, size) => {
         try {
             const response = await axios.get(`http://localhost:5000/api/admin/findAllUsers`, 
                 {params: { 
-                    page: 1, 
-                    pageSize: 10 }
+                    page: page, 
+                    pageSize: size }
                 }
             );
 
@@ -22,7 +22,7 @@ const AdminUsers = () => {
     }
 
     useEffect(() => {
-        fetchAllUsers();
+        fetchAllUsers(1, 10);
     }, [])
 
     useEffect(() => {
@@ -41,6 +41,18 @@ const AdminUsers = () => {
         ));
     };
     
+    const handleDeleteButton = async (id) => {
+        console.log(id);
+        try {
+            const response = await axios.delete(`http://localhost:5000/api/admin/deleteUser/${id}`);
+
+            console.log(response);
+
+            fetchAllUsers(1, 10);
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     return (  
         <div className="dashboard-page">
@@ -101,7 +113,11 @@ const AdminUsers = () => {
                                     {user.lastLogin.replace(", ", " ")}
                                 </td>
                                 <td className="dashboard-tbody-td tb-center">
-                                    
+                                    <SVGIcons 
+                                    selected="trash"
+                                    size="24px"
+                                    color="#CC3363"
+                                    onClick={(e) => {handleDeleteButton(user.userId)}}/>
                                 </td>
                             </tr> 
                         ))}
