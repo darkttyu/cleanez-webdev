@@ -58,29 +58,27 @@ const LoginPanel = ({route}) => {
     const handleLogInSubmission = async (e) => {
         e.preventDefault();
         // --- --- Successfull Login
+        console.log(loginCredentials);
         try {
             const response = await axios.post(`http://localhost:5000/api/auth/${route}`, loginCredentials, {
                 headers: { 'Content-Type': 'application/json' }
               });
 
             // For Data Checking, Comment when Deploying
-            console.log("Passed Data: ", loginCredentials); // Data Checker
             console.log("Login Completed:", response.data);
 
             setIsDisabled(true)
 
-            if (response.status === 200) {
-                setIsDisabled(false)
-                if (route === "login") {
-                    const token = response.data.token; // Token from the response
-                    localStorage.setItem("token", token); // Token saved in Local Storage
-                    localStorage.setItem("role", response.data.user.role);
-                    login(response.data.user)
-                    navigate(`/home`);
-                } else if (route === "adminLogin") {
-                    login(response.data.admin)
-                    navigate(`/admin`)
-                }
+            if (route === "login") {
+                const token = response.data.token; // Token from the response
+                localStorage.setItem("token", token); // Token saved in Local Storage
+                localStorage.setItem("role", response.data.user.role);
+                login(response.data.user)
+                navigate(`/home`);
+            } else if (route === "adminLogin") { // Token saved in Local Storage
+                localStorage.setItem("role", response.data.admin.role);
+                login(response.data.admin)
+                navigate(`/admin`)
             }
         // --- --- Failed Login
         } catch (error) {
@@ -99,7 +97,7 @@ const LoginPanel = ({route}) => {
             <div className="main-prompt">
                 <div className="prompt-pages">
                     <div className="page">
-                        <h1>LOGIN</h1>
+                        <h1>{(route !== "adminLogin") ? "LOGIN" : "LOGIN AS ADMIN"}</h1>
                         {/* INPUTS HERE */}
                         <div className="inputs">
                             <MailAndPhone value={loginCredentials.login} onChange={handleLogInData}/>
@@ -122,12 +120,16 @@ const LoginPanel = ({route}) => {
                 </div>
             </div>
             {/* BOTTOM HALF PROMPT/S */}
-            <div className="external-prompt">
+            {(route !== "adminLogin") ?
+                <div className="external-prompt">
                 <p className="description">
                     Don't have an account yet? <Link to="/signup" className="prompt-link">
                     Sign Up.</Link>
                 </p>
-            </div>
+            </div> :
+            <></>
+            }
+            
         </form>
     );
 }
