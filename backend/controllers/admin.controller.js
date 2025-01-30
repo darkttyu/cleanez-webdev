@@ -237,7 +237,6 @@ export const getClickedApplicant = async (req, res) => {
 export const acceptApplicant = async (req, res) => {
   try {
     const acceptedApplicant = await serviceAcceptApplicant(req.params.id)
-      
       if(acceptedApplicant){
         return res.status(200).json({success: true, message: "Applicant accepted as Worker."});
       }
@@ -249,8 +248,7 @@ export const acceptApplicant = async (req, res) => {
 export const rejectApplicant = async (req, res) => {
   try {
     const rejectedApplicant = await serviceRejectApplicant(req.params.id);
-
-      if(!rejectedApplicant){
+      if(rejectedApplicant){
         return res.status(200).json({success: true, message: "Applicant Rejected."});
       }
   } catch (error) {
