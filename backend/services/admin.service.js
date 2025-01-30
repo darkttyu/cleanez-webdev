@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import moment from "moment";
-import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendWorkerPaidAppointmentEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import bcryptjs from 'bcryptjs';
 import * as generator from 'generate-password';
@@ -551,7 +551,7 @@ export const viewApplicant = async(userId) => {
       };
   
       // Formats the birthdate to a more readable format
-      const formattedBirthDate = format(new Date(specificApplicant.birthDate), "dd/mm/yyyy");
+      const formattedBirthDate = format(new Date(applicant.birthDate), "dd/mm/yyyy");
       
       // Returns the updated user info with the formatted birthdate
       const updatedApplicantInfo = {
@@ -719,4 +719,6 @@ export const serviceMarkAppointmentAsCompleted = async (appointmentId) => {
                 appointment.serviceCost)
             })
           );
+
+          return true;
 };
