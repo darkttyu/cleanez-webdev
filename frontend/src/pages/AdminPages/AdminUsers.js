@@ -6,6 +6,8 @@ const AdminUsers = () => {
     const [allUserList, setAllUserList] = useState([]);
     const [currentList, setCurrentList] = useState([])
     
+    const [currentPage, setCurrentPage] = useState(1);
+
     const fetchAllUsers = async (page, size) => {
         try {
             const response = await axios.get(`http://localhost:5000/api/admin/findAllUsers`, 
@@ -53,6 +55,18 @@ const AdminUsers = () => {
             console.log(e);
         }
     }
+
+    const handlePages = (destination) => {
+        if (destination === "next" && !(currentList.length === 0 || currentList.length < 10)) {
+            setCurrentPage(currentPage + 1)
+        } else if (destination === "prev" && currentPage != 1) {
+            setCurrentPage( currentPage - 1)
+        }
+    }
+
+    useEffect(() => {
+        fetchAllUsers(currentPage, 10);
+    }, [currentPage])
 
     return (  
         <div className="dashboard-page">
@@ -125,6 +139,19 @@ const AdminUsers = () => {
                        
                         </tbody>
                     </table>
+                    <div className="dashboard-list-navigation">
+                        <SVGIcons 
+                        selected="previousArrow"
+                        size="32px"
+                        color="#222222"
+                        onClick={(e) => handlePages("prev")}/>
+                        <h2>{currentPage}</h2>
+                        <SVGIcons 
+                        selected="forwardArrow"
+                        size="32px"
+                        color="#222222"
+                        onClick={(e) => handlePages("next")}/>
+                    </div>
                 </div>
             </section>
         </div>

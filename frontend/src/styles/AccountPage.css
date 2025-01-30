@@ -621,3 +621,10 @@
     cursor: pointer;
     color : #0ec262;
 }
+
+.dashboard-list-navigation {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+    padding        : 24px 0 0;
+}
