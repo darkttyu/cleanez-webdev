@@ -155,7 +155,7 @@ const AccSidebar = ({setNavTitle}) => {
     const accountSideDisplay = () => {
         const role = localStorage.getItem("role")
 
-        if (role === 'User') {
+        if (role === 'User' || role === 'Applicant') {
             return <UserSide setNavTitle={setNavTitle}/>
         } else if (role === 'Worker') {
             return <WorkerSide setNavTitle={setNavTitle}/>
@@ -166,8 +166,9 @@ const AccSidebar = ({setNavTitle}) => {
 
     const handleLogOut = async () => {
         try {
+            const role = localStorage.getItem("role");
 
-            const response = ((role === 'User' || role === 'Worker') ? 
+            const response = ((role === 'User' || role === 'Worker' || role === 'Applicant') ? 
                 await axios.post(`http://localhost:5000/api/auth/logout`) :
                 await axios.post(`http://localhost:5000/api/auth/adminLogout`)
             );
@@ -177,7 +178,7 @@ const AccSidebar = ({setNavTitle}) => {
             localStorage.removeItem("token");
             localStorage.removeItem("role");
             logout();
-            navigate((role === 'User' || role === 'Worker') ? 
+            navigate((role === 'User' || role === 'Worker' || role === 'Applicant') ? 
                 '/home' :
                 '/adminLogin'
             );
@@ -190,7 +191,7 @@ const AccSidebar = ({setNavTitle}) => {
 
     return (  
         <div className="account-page-left">
-            <Link to={(role === 'User' || role === 'Worker') ? 
+            <Link to={(role === 'User' || role === 'Worker' || role === 'Applicant') ? 
                 '/home' :
                 '/adminLogin'
             }>

@@ -21,6 +21,8 @@ export const AuthProvider = ({ children }) => {
                 return;
             }
 
+            console.log("Fetch User Data: Role ", role)
+
             const token = localStorage.getItem("token");
             if (!token && role === 'Admin') {
                 console.log("No token found. User is not logged in.");
@@ -28,9 +30,11 @@ export const AuthProvider = ({ children }) => {
                 return;
             }
 
+            console.log("Fetch User Data: Token ", token)
+
             try {
                 let response;
-                if (role === 'User') {
+                if (role === 'User' || role === 'Applicant') {
                     console.log("Log in in as a User");
                     response = await axios.get(`http://localhost:5000/api/user/getAccountInformation`,{
                         headers: { 'Authorization': `Bearer ${token}` }

@@ -21,7 +21,7 @@ const AccountLayout = () => {
 
     useEffect(() => {
         if (!user) {
-            navigate((role === 'User' || role === 'Worker') ? 
+            navigate((role === 'User' || role === 'Worker' || role === 'Applicant') ? 
                 '/home' :
                 '/adminLogin'
             );

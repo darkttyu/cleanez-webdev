@@ -5,15 +5,11 @@ import '../styles/HomePage.css'
 import {Header, Services, About, Founders} from '../components/HomeContent';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { useEffect, useState } from 'react';
-import { useAuth } from '../AuthContext';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useEffect } from 'react';
+
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const HomePage = () => {
-    const { user } = useAuth();
-    
     useEffect(() => {
         document.title = 'CleanEZ | Home'
     }, [])

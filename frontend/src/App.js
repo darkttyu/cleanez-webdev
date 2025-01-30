@@ -36,23 +36,24 @@ function App() {
     }, [user])
 
     const setRoleRouting = () => {
+        console.log("Role Route: ",role)
         if (role === "" || !role) {
             return []
-        } else if (role === "user") {
+        } else if (role === "user" || role === "applicant") {
             return (
-                [
+                <>
                     <Route path='profile' element={<UserProfile/>}/>,
                     <Route path='dashboard' element={<UserDashboard/>}/>,
                     <Route path='appointments' element={<UserAppointments/>}/>
-                ]
+                </>
             );
         } else if (role === "worker") {
             return (
-                [
+                <>
                     <Route path='profile' element={<WorkerProfile/>}/>,
                     <Route path='appointments' element={<WorkerAppointments/>}/>,
                     <Route path='schedule' element={<WorkerSchedule/>}/>
-                ]
+                </>
             )
         }
     }
@@ -74,7 +75,7 @@ function App() {
                     <Route path='/booking/success' element={<BookingSuccess/>}/>
                     <Route path='/account' element={<AccountLayout/>}>
                         <Route index element={<Navigate to='/account/profile'/>}/>
-                        {setRoleRouting()?.map(route => route)}
+                        {setRoleRouting()}
                     </Route>
                     <Route path='/application' element={<ApplicationPage/>}/>
                     <Route path='/application/success' element={<ApplicationSuccess/>}/>
