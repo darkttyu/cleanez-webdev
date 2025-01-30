@@ -7,7 +7,8 @@ import { addUser, addWorker, clickedUser, deleteUser, editUserInfo,
   updateWorkerStatus,
   updateUserStatus,
   getAppointments,
-  markAppointmentAsComplete
+  markAppointmentAsComplete,
+  markAppointmentAsCancelled
 } from '../controllers/admin.controller.js';
 import { uploadProfile } from "../middleware/profileUpload.js";
 import { roundToNearestHours } from 'date-fns';
@@ -20,6 +21,8 @@ router.get("/getWorkerCount", getWorkerCount);
 // Appointments Tab
 router.get("/getAppointments", getAppointments);
 router.put("/markAppointmentAsComplete/:id", markAppointmentAsComplete);
+router.put("/markAppointmentAsCancelled/:id", markAppointmentAsCancelled)
+router.get("/getAppointment/:id");
 
 // Applicants Tab
 router.get("/getAllApplicants", getAllApplicants);

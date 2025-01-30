@@ -10,6 +10,21 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from "url";
 
+const formatTime = (time) => {
+  // Extract hours and minutes from the input time
+  let hours = parseInt(time.substring(0, 2), 10); // First two characters are hours
+  let minutes = time.substring(2, 4); // Last two characters are minutes
+
+  // Determine AM or PM
+  const period = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  hours = hours % 12 || 12;
+
+  // Format the time string
+  return `${hours.toString().padStart(2, '0')}:${minutes} ${period}`;
+};
+
 // Workers
 export const fetchWorkers = async(arrayIndex, pageSize) => {
   const workers = await Worker.find()
@@ -364,7 +379,7 @@ export const getUser = async (userId) => {
       profilePicture: user.profilePicture
     };
     
-    const formattedBirthDate = format(new Date(user.birthDate), "dd/mm/yyyy");
+    const formattedBirthDate = format(new Date(user.birthDate), "MM/dd/yyyy");
         
         // Returns the updated user info with the formatted birthdate
         const updatedUserInfo = {
@@ -551,7 +566,7 @@ export const viewApplicant = async(userId) => {
       };
   
       // Formats the birthdate to a more readable format
-      const formattedBirthDate = format(new Date(applicant.birthDate), "dd/mm/yyyy");
+      const formattedBirthDate = format(new Date(applicant.birthDate), "MM/dd/yyyy");
       
       // Returns the updated user info with the formatted birthdate
       const updatedApplicantInfo = {
@@ -721,4 +736,73 @@ export const serviceMarkAppointmentAsCompleted = async (appointmentId) => {
           );
 
           return true;
+};
+
+export const serviceMarkAppointmentAsCancelled = async (appointmentId) => {
+  const appointment = await Appointment.findById(appointmentId).lean();
+    if(!appointment) {
+      throw new Error("Bad Request. Error in Fetching Appointment.");
+    }
+
+      if(appointment.paymentStatus === "Paid" || appointment.appointmentStatus === "Completed"){
+        throw new Error("Bad Request. Can not cancelled already processed appointments.");
+      }
+
+      // Updates the status of the appointment
+      await Appointment.findByIdAndUpdate(
+        appointmentId,
+          {
+            "appointmentStatus": "Cancelled",
+            "paymentStatus": "Cancelled"
+          }
+      ).lean();
+
+      // Worker Update 
+    let workerList = []
+    appointment.assignedWorkers.forEach(worker => {
+      workerList.push(worker);
+    })
+      // Loops through the workerList array to get the workers to be updated.
+      for(const workerId of workerList) {
+          const workerInfo = await Worker.findById(workerId);
+          if(workerInfo && workerInfo.assignedAppointments) {
+            await Worker.findByIdAndUpdate(
+              workerId,
+              {
+                $pull: { assignedAppointments: 
+                  { 
+                    "appointmentId": appointmentId
+                  },
+                }
+              }
+            )
+            console.log("Updated Worker Assigned Appointment");
+            // SEND CANCELLATION EMAIL TO WORKERS
+          }
+      }
+
+      // SEND CANCELLATION EMAIL TO USER
+      return true;
+};
+
+export const fetchAppointment = async (appointmentId) => {
+  const appointment = await Appointment.findById(appointmentId);
+    if(!appointment){
+      throw new Error("Bad Request. Errr in Fetching Appointment Details.");
+    }
+  
+  const formattedTime = formatTime(appointment.scheduleDetails.startTime);
+
+  const appointmentDetails = {
+    customerFirstName: appointment.customerFirstName,
+    customerLastName: appointment.customerLastName,
+    phoneNumber: appointment.phoneNumber,
+    serviceCategory: appointment.serviceDetails.serviceCategory,
+    areaAssigned: appointment.serviceDetails.areaAssigned,
+    serviceCost: appointment.serviceCost,
+    appointmentDate: new Date(appointment.scheduleDetails.date),
+    appointmentTime: formattedTime
+  }
+
+  return appointmentDetails;
 };

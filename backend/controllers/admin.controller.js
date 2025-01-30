@@ -2,10 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
 import { Appointment } from "../models/appointment.model.js";
-import bcryptjs from 'bcryptjs';
-import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail } from "../nodemailer/sendMail.js";
-import * as generator from 'generate-password';
-import { fetchApplicants, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant } from "../services/admin.service.js";
+import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant } from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -366,15 +363,36 @@ export const getAppointments = async (req, res) => {
 
 export const markAppointmentAsComplete = async (req, res) => {
   try {
-    const markedAppointment = serviceMarkAppointmentAsCompleted(req.params.id);
+    const markedAppointment = await serviceMarkAppointmentAsCompleted(req.params.id);
       if(markedAppointment){
         return res.status(200).json({success: true, message: "Marked Appointment as Completed."})
       }
   } catch (error) {
-    
+      return res.status(400).json({success: false, message: error.message})
   }
 };
 
+export const markAppointmentAsCancelled = async (req, res) => {
+  try {
+    const cancelledAppointment = await serviceMarkAppointmentAsCancelled(req.params.id);
+      if(!cancelledAppointment){
+        return res.status(200).json({success: false, message: "Marked Appointment as Cancelled."});
+      }
+  } catch (error) {
+    return res.status(400).json({succes: false, message: error.message})
+  }
+};
+
+export const getAppointment = async (req, res) => {
+  try {
+    const appointmentDetails = await fetchAppointment(req.params.id);
+      if(appointmentDetails){
+        return res.status(200).json({success: true, message: "Fetched Appointment Details.", appointment: appointmentDetails})
+      }
+  } catch (error) {
+    return res.status(400).json({succes: false, message: error.message})
+  }
+};
 
 /*
 export const addField = async (req, res) => {

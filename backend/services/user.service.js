@@ -216,7 +216,7 @@ export const markAppointmentAsCancelled = async(appointmentId) => {
     ).lean();
 
     // Increases the Count of Cancellations Made
-    const increaseFlagCount = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       appointment.userId,
       {
         $inc: { cancelledAppointment: 1 }
@@ -242,10 +242,12 @@ export const markAppointmentAsCancelled = async(appointmentId) => {
                   }
                 }
               )
+              // SEND CANCELLATION TO WORKERS
               console.log("Updated Worker Assigned Appointment");
             }
         }
 
+        // SEND CANCELLATION EMAL TO USER
         return cancelledAppointment;
 };
 
