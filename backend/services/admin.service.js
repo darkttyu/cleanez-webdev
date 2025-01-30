@@ -640,12 +640,12 @@ export const serviceRejectApplicant = async(userId) => {
 };
 
 // Appointments 
-export const fetchAppointments = async () => {
+export const fetchAppointments = async (arrayIndex, pageSize) => {
   const appointmentList = await Appointment.find()
     .skip(arrayIndex)
     .skip(pageSize)
     .lean();
-    
+
     if(!appointmentList){
       throw new Error("Bad Request. Appointment List not Found.");
     }
