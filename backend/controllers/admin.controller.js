@@ -62,7 +62,7 @@ export const editWorkerSchedule = async (req, res) => {
 
 export const updateWorkerStatus = async (req, res) => {
   try {
-    const updatedWorker = await updateStatus(req.param.id);
+    const updatedWorker = await updateStatus(req.params.id);
     return res.status(200).json({success: true, message: "Updated Worker Status.", worker: updatedWorker });
   } catch (error) {
     return res.status(400).json({success: false, message: error.message})
@@ -102,7 +102,7 @@ export const findAllUsers = async (req, res) => {
 
 export const addUser = async (req, res) => {  
   try {
-    const newUser = postUser(req.body);
+    const newUser = await postUser(req.body);
     
     res.status(201).json({success: true,message: "User Created Successfully", user: { ...newUser._doc, password: undefined, }
       })
@@ -127,6 +127,7 @@ export const clickedUser = async(req, res) => {
 export const editUserInfo = async(req, res) => {
   // Multipart-form
     try {
+      const accountInfo = JSON.parse(req.body.accInfo);
       const updatedUser = await updateUser(req.params.id, accountInfo, req.files?.profile);
       // Returns a success message if the user info is updated
       res.status(200).json({ success: true, message: "Successfully Updated User Information!", user: updatedUser })
@@ -140,9 +141,11 @@ export const deleteUser = async(req, res) => {
   try {
     const user = await serviceDeleteUser(req.params.id);
 
-    if(user){
-      return res.status(200).json({ success: true, message: "User Deleted Successfully." })
+    if(!user){
+      return res.status(404).json({ success: false, message: "User Not Found." })
     }
+
+    return res.status(200).json({ success: true, message: "User Deleted Successfully.", user: user})
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });
   }

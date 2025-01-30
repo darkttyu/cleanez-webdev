@@ -485,8 +485,8 @@ export const serviceDeleteUser = async (userId) => {
     }
   
     // Sends an account deletion email to the user
-    sendAccountDeletion(deleteUser.firstName, deleteUser.email);
-    return true;
+    sendAccountDeletion(deleteUserInformation.firstName, deleteUserInformation.email);
+    return deleteUserInformation;
 };
 
 export const serviceUpdateUserStatus = async (userId) => {
