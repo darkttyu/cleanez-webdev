@@ -75,11 +75,13 @@ export const deleteWorker = async (req, res) => {
 // User Controllers
 export const findAllUsers = async (req, res) => {
   try {
-    let {page = 1, pageSize = 5} = req.query;
+    let {page = 1, pageSize = 5} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
+    // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
     pageSize = parseInt(pageSize, 10)
 
+    // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
     const arrayIndex = (page - 1) * pageSize
     
     const users = await fetchUserList(arrayIndex, pageSize);
