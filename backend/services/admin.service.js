@@ -630,3 +630,81 @@ export const serviceRejectApplicant = async(userId) => {
       return true;
 
 };
+
+// Appointments 
+export const fetchAppointments = async () => {
+  const appointmentList = await Appointment.find().lean();
+    if(!appointmentList){
+      throw new Error("Bad Request. Appointment List not Found.");
+    }
+
+    const filteredAppointments = appointmentList.map(({ customerFirstName, customerLastName, serviceDetails, scheduleDetails, appointmentStatus, paymentStatus }) => {
+      let slicedDate = '';
+      
+      if (scheduleDetails.date instanceof Date) {
+          slicedDate = scheduleDetails.date.toISOString().slice(0, 10);
+      }
+  
+      return {
+          customerName: customerFirstName + ' ' + customerLastName,  
+          serviceName: serviceDetails.serviceCategory,  
+          date: slicedDate,  
+          appointmentStatus: appointmentStatus,  
+          paymentStatus: paymentStatus  
+      };
+  });
+    return filteredAppointments;
+};
+
+export const serviceMarkAppointmentAsCompleted = async (appointmentId) => {
+  const appointment = await Appointment.findByIdAndUpdate(
+    appointmentId,
+      {
+        "appointmentStatus": "Completed",
+        "paymentStatus": "Paid"
+      },
+    { new: true }
+  )
+
+    if(!appointment){
+      throw new Error("Appointment does not exist.");
+    }
+
+        // Extract worker IDs from the assignedWorkers array in the appointment
+        const workerId = appointment.assignedWorkers.map((worker) => worker._id);
+          
+        // Fetch the userId of each worker using their worker ID
+        const workerUserIds = await Promise.all(
+          workerId.map(async (id) => {
+            const worker = await Worker.findById(id); // Fetch worker details by ID
+            return worker.userId; // Return the userId of the worker
+          })
+      );
+    
+        // Divides the service cost to the number of assigned workers for the service.
+        // Adds the amount to the totalEarnings of each worker.
+        // Also removes the appointment from the assigned workers, meaning that they have completed the service.
+        const distributedAmount = appointment.serviceCost / appointment.assignedWorkers.length;
+          await Promise.all(
+            workerUserIds.map(async (id) => {
+              await Worker.findOneAndUpdate(
+                { userId: new Object(id) }, 
+                {
+                  $inc: { "totalEarnings": distributedAmount },
+                  $pull: { "assignedAppointments": { "appointmentId": appointmentId }}
+                },
+                { new: true }
+              ); 
+            })
+          );
+        
+          await Promise.all(
+            workerUserIds.map(async (id) => {
+              const workerInfo = await User.findById(id);
+              sendWorkerPaidAppointmentEmail(workerInfo.firstName, workerInfo.lastName, workerInfo.email, appointment.customerFirstName, 
+                appointment.customerLastName, appointment.serviceDetails.serviceCategory, appointment.scheduleDetails.date, 
+                appointment.address.block, appointment.address.municipal, appointment.address.province, appointment.address.barangay,
+                appointment.serviceCost)
+            })
+          );
+};

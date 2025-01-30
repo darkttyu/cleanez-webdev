@@ -5,9 +5,11 @@ import { addUser, addWorker, clickedUser, deleteUser, editUserInfo,
   getWorkerCount, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant,
   getUserDetails,
   updateWorkerStatus,
-  updateUserStatus
+  updateUserStatus,
+  getAppointments
 } from '../controllers/admin.controller.js';
 import { uploadProfile } from "../middleware/profileUpload.js";
+import { roundToNearestHours } from 'date-fns';
 
 const router = express.Router();
 
@@ -15,8 +17,13 @@ const router = express.Router();
 router.get("/getWorkerCount", getWorkerCount);
 
 // Appointments Tab
+router.get("/getAppointments", getAppointments);
 
 // Applicants Tab
+router.get("/getAllApplicants", getAllApplicants);
+router.get("/getClickedApplicant", getClickedApplicant);
+router.put("/acceptApplicant", acceptApplicant);
+router.put("/rejectApplicant", rejectApplicant);
 
 // Worker Tab
 router.get("/findAllWorkers", findAllWorkers);

@@ -5,7 +5,7 @@ import { Appointment } from "../models/appointment.model.js";
 import bcryptjs from 'bcryptjs';
 import { adminWelcomeEmail, sendAccountDeletion, sendUserActivationEmail, sendUserDeactivationEmail } from "../nodemailer/sendMail.js";
 import * as generator from 'generate-password';
-import { fetchApplicants, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant } from "../services/admin.service.js";
+import { fetchApplicants, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant } from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -315,6 +315,23 @@ export const getWeeklyEarningsByService = async (req, res) => {
     
   }
 };
+
+// Appointments
+export const getAppointments = async (req, res) => {
+  try {
+    const appointment = await fetchAppointments();
+      if(appointment){
+        return res.status(200).json({success: true, message: "Fetched Appointments List.", appointmentList: appointment});
+      }
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message});
+  }
+};
+
+export const markAppointmentAsComplete = async (req, res) => {
+
+};
+
 
 /*
 export const addField = async (req, res) => {

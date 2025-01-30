@@ -627,7 +627,7 @@ export const WORKER_PAID_EMAIL = `
       <li><strong>Service:</strong> <span style="font-weight: bold; color: #4CAF50;">{serviceName}</span></li>
       <li><strong>Appointment Date:</strong> <span style="font-weight: bold; color: #4CAF50;">{appointmentDate}</span></li>
       <li><strong>Location:</strong> <span style="font-weight: bold; color: #4CAF50;">{block} {barangay} {municipal} {province}</span></li>
-      <li><strong>Total Amount Paid:</strong> <span style="font-weight: bold; color: #4CAF50;">{serviceCost}</span></li>
+      <li><strong>Total Amount Paid:</strong> <span style="font-weight: bold; color: #4CAF50;">Php. {serviceCost}</span></li>
     </ul>
     <p style="text-align: justify;">Please make sure to review the appointment details thoroughly and arrive at the client’s location on time. If there are any special instructions or requirements provided by the client, they will be visible in your worker portal.</p>
     <p style="text-align: justify;">For any questions or concerns, feel free to contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>
