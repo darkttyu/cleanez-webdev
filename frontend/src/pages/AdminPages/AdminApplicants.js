@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const AdminApplicants = () => {
     const [allApplicantList, setAllApplicantList] = useState([]);
     const [currentList, setCurrentList] = useState([])
-    
+
+    const navigate = useNavigate();
+
     const fetchAllApplicants = async () => {
         try {
             const response = await axios.get(`http://localhost:5000/api/admin/getAllApplicants`);
@@ -80,7 +83,7 @@ const AdminApplicants = () => {
                             <tr 
                             key={index} 
                             className="dashboard-tbody-tr"
-                            onClick={(e) => {}}>
+                            onClick={(e) => {navigate(`${applicant._id}`)}}>
                                 <td className="dashboard-tbody-td tb-left">{applicant.firstName}</td>
                                 <td className="dashboard-tbody-td tb-left">{applicant.lastName}</td>
                                 <td className="dashboard-tbody-td tb-center">

@@ -8,7 +8,7 @@ import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fe
 // Worker Controllers
 export const findAllWorkers = async (req, res) => {
   try {
-    let {page = 1, pageSize = 5} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
@@ -81,7 +81,7 @@ export const deleteWorker = async (req, res) => {
 // User Controllers
 export const findAllUsers = async (req, res) => {
   try {
-    let {page = 1, pageSize = 5} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
@@ -203,7 +203,7 @@ export const insertService = async (req, res) => {
 // Applicant Controllers 
 export const getAllApplicants = async (req, res) => {
   try {
-    let {page = 1, pageSize = 5} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
@@ -343,7 +343,7 @@ export const getWeeklyEarningsByService = async (req, res) => {
 // Appointments
 export const getAppointments = async (req, res) => {
   try {
-    let {page = 1, pageSize = 5} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);

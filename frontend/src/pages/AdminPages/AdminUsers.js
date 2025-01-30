@@ -6,9 +6,14 @@ const AdminUsers = () => {
     const [allUserList, setAllUserList] = useState([]);
     const [currentList, setCurrentList] = useState([])
     
-    const fetchAllApplicants = async () => {
+    const fetchAllUsers = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/findAllUsers`);
+            const response = await axios.get(`http://localhost:5000/api/admin/findAllUsers`, 
+                {params: { 
+                    page: 1, 
+                    pageSize: 10 }
+                }
+            );
 
             setAllUserList(response.data.userList)
         } catch (e) {
@@ -17,7 +22,7 @@ const AdminUsers = () => {
     }
 
     useEffect(() => {
-        fetchAllApplicants();
+        fetchAllUsers();
     }, [])
 
     useEffect(() => {

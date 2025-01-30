@@ -24,6 +24,7 @@ import ApplicationSuccess from './pages/ApplicationPages/ApplicationSuccess';
 import AdminApplicants from './pages/AdminPages/AdminApplicants';
 import AdminWorker from './pages/AdminPages/AdminWorker';
 import AdminUsers from './pages/AdminPages/AdminUsers';
+import AdminApplicantInfo from './pages/AdminPages/AdminApplicantInfo';
 
 
 function App() {
@@ -83,7 +84,10 @@ function App() {
                     <Route path='/admin' element={<AccountLayout/>}>
                         <Route index element={<Navigate to='/admin/applicants'/>}/>
                         {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
-                        <Route path='applicants' element={<AdminApplicants/>}/>
+                        <Route path='applicants' element={<AdminApplicants/>}/> 
+                        <Route path='applicants/:id' element={<AdminApplicantInfo/>}/>
+
+                        
                         <Route path='workers' element={<AdminWorker/>}/>
                         <Route path='users' element={<AdminUsers/>}/>
                     </Route>
