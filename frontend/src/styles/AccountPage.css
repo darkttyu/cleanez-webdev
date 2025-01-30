@@ -349,7 +349,7 @@
     gap             : 48px;
     background-color: #F8F8F8;
     width           : 100%;
-    height          : calc(100vh - 90px);
+    min-height      : calc(100vh - 90px);
 }
 
 .dashboard-header {
@@ -374,8 +374,11 @@
 }
 
 .dashboard-upcoming-container {
-    max-width: 1180px;
-    width    : 80%;
+    display       : flex;
+    flex-direction: column;
+    gap           : 24px;
+    max-width     : 1180px;
+    width         : 80%;
 }
 
 .dashboard-upcoming-container>h2 {
@@ -436,7 +439,8 @@
 }
 
 .dashboard-status.completed,
-.dashboard-status.paid {
+.dashboard-status.paid,
+.dashboard-status.active {
     background-color: #06E36D;
     color           : white;
 }
@@ -606,4 +610,8 @@
 
 .schedule-btn.red {
     background-color: #CC3363;
+}
+
+.admin-searchbar-container {
+    width: 100%;
 }

@@ -21,6 +21,8 @@ import { useAuth } from './AuthContext';
 import { useEffect, useState } from 'react';
 import ApplicationPage from './pages/ApplicationPages/ApplicationPage';
 import ApplicationSuccess from './pages/ApplicationPages/ApplicationSuccess';
+import AdminApplicants from './pages/AdminPages/AdminApplicants';
+import AdminWorker from './pages/AdminPages/AdminWorker';
 
 
 function App() {
@@ -34,21 +36,22 @@ function App() {
     }, [user])
 
     const setRoleRouting = () => {
+        console.log("Role Route: ",role)
         if (role === "" || !role) {
-            return <></>
-        } else if (role === "user") {
+            return []
+        } else if (role === "user" || role === "applicant") {
             return (
                 <>
-                    <Route path='profile' element={<UserProfile/>}/>
-                    <Route path='dashboard' element={<UserDashboard/>}/>
+                    <Route path='profile' element={<UserProfile/>}/>,
+                    <Route path='dashboard' element={<UserDashboard/>}/>,
                     <Route path='appointments' element={<UserAppointments/>}/>
                 </>
             );
         } else if (role === "worker") {
             return (
                 <>
-                    <Route path='profile' element={<WorkerProfile/>}/>
-                    <Route path='appointments' element={<WorkerAppointments/>}/>
+                    <Route path='profile' element={<WorkerProfile/>}/>,
+                    <Route path='appointments' element={<WorkerAppointments/>}/>,
                     <Route path='schedule' element={<WorkerSchedule/>}/>
                 </>
             )
@@ -76,6 +79,13 @@ function App() {
                     </Route>
                     <Route path='/application' element={<ApplicationPage/>}/>
                     <Route path='/application/success' element={<ApplicationSuccess/>}/>
+                    <Route path='/admin' element={<AccountLayout/>}>
+                        <Route index element={<Navigate to='/admin/applicants'/>}/>
+                        {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
+                        <Route path='applicants' element={<AdminApplicants/>}/>
+                        <Route path='workers' element={<AdminWorker/>}/>
+                        {/* <Route path='users' element={<WorkerSchedule/>}/> */}
+                    </Route>
                 </Routes>
             </div>
         </Router>
