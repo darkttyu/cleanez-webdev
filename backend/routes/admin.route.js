@@ -8,10 +8,10 @@ import { addUser, addWorker, clickedUser, deleteUser, editUserInfo,
   updateUserStatus,
   getAppointments,
   markAppointmentAsComplete,
-  markAppointmentAsCancelled
+  markAppointmentAsCancelled,
+  getAppointment
 } from '../controllers/admin.controller.js';
 import { uploadProfile } from "../middleware/profileUpload.js";
-import { roundToNearestHours } from 'date-fns';
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.get("/getWorkerCount", getWorkerCount);
 router.get("/getAppointments", getAppointments);
 router.put("/markAppointmentAsComplete/:id", markAppointmentAsComplete);
 router.put("/markAppointmentAsCancelled/:id", markAppointmentAsCancelled)
-router.get("/getAppointment/:id");
+router.get("/getAppointment/:id", getAppointment);
 
 // Applicants Tab
 router.get("/getAllApplicants", getAllApplicants);

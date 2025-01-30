@@ -791,17 +791,38 @@ export const fetchAppointment = async (appointmentId) => {
       throw new Error("Bad Request. Errr in Fetching Appointment Details.");
     }
   
+    let slicedDate = '';
+      
+    if(appointment.scheduleDetails.date instanceof Date) {
+        slicedDate = appointment.scheduleDetails.date.toISOString().slice(0, 10);
+    }
+     
   const formattedTime = formatTime(appointment.scheduleDetails.startTime);
+
+  let workerNames = [];
+  for(const workerId of appointment.assignedWorkers){
+    const worker = await Worker.findById(workerId);
+    const user = await User.findById(worker.userId);
+
+    workerNames.push(user.firstName + ' ' + user.lastName);
+  }
 
   const appointmentDetails = {
     customerFirstName: appointment.customerFirstName,
     customerLastName: appointment.customerLastName,
+    address: {
+      block: appointment.address.block,
+      municipal: appointment.address.municipal,
+      province: appointment.address.province,
+      barangay: appointment.address.barangay
+    },
     phoneNumber: appointment.phoneNumber,
     serviceCategory: appointment.serviceDetails.serviceCategory,
     areaAssigned: appointment.serviceDetails.areaAssigned,
     serviceCost: appointment.serviceCost,
-    appointmentDate: new Date(appointment.scheduleDetails.date),
-    appointmentTime: formattedTime
+    appointmentDate: slicedDate,
+    appointmentTime: formattedTime,
+    assignedWorkers: workerNames
   }
 
   return appointmentDetails;
