@@ -127,7 +127,7 @@ export const clickedUser = async(req, res) => {
 export const editUserInfo = async(req, res) => {
   // Multipart-form
     try {
-      const accountInfo = JSON.parse(req.body.accInfo);
+      const accountInfo = JSON.parse(req.body.newUserInfo);
       const updatedUser = await updateUser(req.params.id, accountInfo, req.files?.profile);
       // Returns a success message if the user info is updated
       res.status(200).json({ success: true, message: "Successfully Updated User Information!", user: updatedUser })
