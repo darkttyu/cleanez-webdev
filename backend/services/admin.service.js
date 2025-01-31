@@ -48,8 +48,8 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
   } else {
     const filteredWorkers = await Worker.find({
       $or: [
-        { firstName: { $regex: keyword, $options: "i" }},
-        { lastName: { $regex: keyword, $options: "i" }}
+        { "userId.firstName": { $regex: keyword, $options: "i" }},
+        { "userId.lastName": { $regex: keyword, $options: "i" }}
       ]
     })
       .skip(arrayIndex)
