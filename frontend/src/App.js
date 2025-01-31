@@ -28,6 +28,7 @@ import AdminApplicantInfo from './pages/AdminPages/AdminApplicantInfo';
 import AdminUserInfo from './pages/AdminPages/AdminUserInfo';
 import AdminUserNew from './pages/AdminPages/AdminUserNew';
 import AdminWorkerInfo from './pages/AdminPages/AdminWorkerInfo';
+import AdminWorkerNew from './pages/AdminPages/AdminWorkerNew';
 
 
 function App() {
@@ -90,11 +91,15 @@ function App() {
                         {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
                         <Route path='applicants' element={<AdminApplicants/>}/> 
                         <Route path='applicants/:id' element={<AdminApplicantInfo/>}/>
+                        
                         <Route path='workers' element={<AdminWorker/>}/>
                         <Route path='workers/:id' element={<AdminWorkerInfo/>}/>
+                        
                         <Route path='users' element={<AdminUsers/>}/>
+                        <Route path='users/new-user' element={<AdminUserNew/>}/>
+                        <Route path='users/new-worker/:id' element={<AdminWorkerNew/>}/>
                         <Route path='users/:id' element={<AdminUserInfo/>}/>
-                        <Route path='users/new' element={<AdminUserNew/>}/>
+                        
                     </Route>
                 </Routes>
             </div>

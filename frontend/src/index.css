@@ -86,6 +86,13 @@ td {
   color           : white;
 }
 
+.act-btn.complete.activated {
+  background-color: white;
+  color           : #06E36D;
+  border          : 2px solid #06E36D;
+  box-shadow      : none;
+}
+
 .act-btn.rate {
   background-color: #FFDB4B;
   color           : #222222;

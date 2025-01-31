@@ -44,6 +44,7 @@ const AdminUserInfo = () => {
     useEffect(() => {
         if (userInfo) {
             setProfileURL(profileConvert(userInfo.profilePicture.data.data));
+            console.log(userInfo.role)
         }
     }, [userInfo])
 
@@ -137,7 +138,23 @@ const AdminUserInfo = () => {
         {userInfo ? 
             <div className="schedule-container">
                 <div className="title-profile">
-                    <h2>User Data</h2>
+                    <div className="title-button">
+                        <h2>User Data</h2>
+                        {(userInfo.role !== "Worker") ?
+                            <button 
+                            type="button"
+                            className="act-btn complete"
+                            onClick={(e) => {navigate(`/admin/users/new-worker/${userInfo.userId}`)}}>
+                                Turn user into a Worker
+                            </button> :
+                            <button 
+                            type="button"
+                            className="act-btn complete activated"
+                            disabled>
+                                User is already a Worker
+                            </button> 
+                        }
+                    </div>
 
                     <div className="profile-image-container">
                         <img src={profileURL} alt="" className="profile-image"/>

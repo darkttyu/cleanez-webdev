@@ -31,12 +31,12 @@ const AdminUsers = () => {
     }, [])
 
     useEffect(() => {
-        console.log("All User List: ", allUserList);
+        // console.log("All User List: ", allUserList);
         setCurrentList(allUserList);
     }, [allUserList])
 
     useEffect(() => {
-        console.log("Current List: ", currentList)
+        // console.log("Current List: ", currentList)
     }, [currentList])
 
     const handleSearch = (search) => {
@@ -47,11 +47,11 @@ const AdminUsers = () => {
     };
     
     const handleDeleteButton = async (id) => {
-        console.log(id);
+        // console.log(id);
         try {
             const response = await axios.delete(`http://localhost:5000/api/admin/deleteUser/${id}`);
 
-            console.log(response);
+            // console.log(response);
 
             fetchAllUsers(1, 10);
         } catch (e) {

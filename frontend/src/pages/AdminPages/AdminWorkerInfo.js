@@ -37,6 +37,8 @@ const AdminWorkerInfo = () => {
 
             console.log(response);
             setWorkerInfo({
+                firstName: response.data.worker.userId.firstName,
+                lastName: response.data.worker.userId.lastName,
                 workerId: workId,
                 serviceCategory: workerService,
                 areaAssigned: workerArea,
@@ -211,6 +213,7 @@ const AdminWorkerInfo = () => {
         <div className="schedule-page">
             {workerInfo ?
             <>
+                <h2>{workerInfo.firstName} {workerInfo.lastName}</h2>
                 <section className="schedule-container">
                     <h2>Worker Schedule</h2>
                     <div className="schedule-inputs" id="schedule-inputs">
