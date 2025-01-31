@@ -727,10 +727,6 @@ export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
       .lean();
   } else {
     appointmentList = await Appointment.find({
-      'scheduleDetails.date': {
-        $gte: new Date(dateKeyword + "T00:00:00.000Z"),
-        $lt: new Date(dateKeyword + "T23:59:59.999Z")
-      },
         $or: [
           { customerFirstName: { $regex: keyword, $options: "i" }},
           { customerLastName: { $regex: keyword, $options: "i"}}
