@@ -716,17 +716,36 @@ export const serviceRejectApplicant = async(userId) => {
 };
 
 // Appointments 
-export const fetchAppointments = async (arrayIndex, pageSize) => {
-  const appointmentList = await Appointment.find()
+export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
+  let appointmentList;
+  const dateKeyword = keyword;
+
+  if(keyword === ''){
+    appointmentList =await Appointment.find()
+      .skip(arrayIndex)
+      .skip(pageSize)
+      .lean();
+  } else {
+    appointmentList = await Appointment.find({
+      'scheduleDetails.date': {
+        $gte: new Date(dateKeyword + "T00:00:00.000Z"),
+        $lt: new Date(dateKeyword + "T23:59:59.999Z")
+      },
+        $or: [
+          { customerFirstName: { $regex: keyword, $options: "i" }},
+          { customerLastName: { $regex: keyword, $options: "i"}}
+        ]
+    })
     .skip(arrayIndex)
     .skip(pageSize)
     .lean();
-
+  }
+  
     if(!appointmentList){
       throw new Error("Bad Request. Appointment List not Found.");
     }
 
-    const filteredAppointments = appointmentList.map(({ customerFirstName, customerLastName, serviceDetails, scheduleDetails, appointmentStatus, paymentStatus }) => {
+    const filteredAppointments = appointmentList.map(({ _id, customerFirstName, customerLastName, serviceDetails, scheduleDetails, appointmentStatus, paymentStatus }) => {
       let slicedDate = '';
       
       if (scheduleDetails.date instanceof Date) {
@@ -734,6 +753,7 @@ export const fetchAppointments = async (arrayIndex, pageSize) => {
       }
   
       return {
+          appointmentId: _id,
           customerName: customerFirstName + ' ' + customerLastName,  
           serviceName: serviceDetails.serviceCategory,  
           date: slicedDate,  
