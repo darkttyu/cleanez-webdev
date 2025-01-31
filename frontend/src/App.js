@@ -38,6 +38,7 @@ function App() {
         if (user) {
             setRole(String(user.role).toLowerCase());
         }
+        console.log("merp");
     }, [user])
 
     const setRoleRouting = () => {
