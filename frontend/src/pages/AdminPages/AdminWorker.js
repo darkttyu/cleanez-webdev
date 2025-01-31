@@ -11,12 +11,15 @@ const AdmindWorker = () => {
     
     const [currentPage, setCurrentPage] = useState(1);
 
-    const fetchAllWorkers = async (page, size) => {
+    const [searchWord, setSearchWord] = useState('');
+
+    const fetchAllWorkers = async (page, size = 10, search = '') => {
         try {
             const response = await axios.get(`http://localhost:5000/api/admin/findAllWorkers`, 
                 {params: { 
                     page: page, 
-                    pageSize: size }
+                    pageSize: size ,
+                    keyword: search}
                 }
             );
 
@@ -27,25 +30,18 @@ const AdmindWorker = () => {
     }
 
     useEffect(() => {
-        fetchAllWorkers(1, 10);
+        fetchAllWorkers(1, 10, searchWord);
     }, [])
 
     useEffect(() => {
-        // console.log("All Worker List: ", allWorkerList);
+        console.log("All Worker List: ", allWorkerList);
         setCurrentList(allWorkerList);
     }, [allWorkerList])
 
     useEffect(() => {
-        // console.log("Current List: ", currentList)
+        console.log("Current List: ", currentList)
     }, [currentList])
 
-    const handleSearch = (search) => {
-        setCurrentList(allWorkerList.filter((worker) => 
-            worker.userId.firstName.toLowerCase().includes(search.toLowerCase()) || 
-            worker.userId.lastName.toLowerCase().includes(search.toLowerCase())
-        ));
-    };
-    
     const handleDeleteButton = async (id) => {
         console.log(id);
         try {
@@ -68,7 +64,12 @@ const AdmindWorker = () => {
     }
 
     useEffect(() => {
-        fetchAllWorkers(currentPage, 10);
+        console.log(searchWord);
+        fetchAllWorkers(1, 10, searchWord);
+    }, [searchWord])
+
+    useEffect(() => {
+        fetchAllWorkers(currentPage, 10, searchWord);
     }, [currentPage])
     
     return (  
@@ -81,7 +82,7 @@ const AdmindWorker = () => {
                     className="dashboard-searchbar"
                     name="dashboard-searchbar" 
                     id="dashboard-searchbar" 
-                    onChange={(e) => handleSearch(e.target.value)}/>
+                    onChange={(e) => setSearchWord(e.target.value)}/>
                 </div>
                 <div className="dashboard-list-container">
                     <table className="dashboard-list-table">
@@ -96,7 +97,7 @@ const AdmindWorker = () => {
                             </tr>
                         </thead>
                         <tbody>
-                        {currentList.map((worker, index) => (
+                        {currentList?.map((worker, index) => (
                             <tr 
                             key={index} 
                             className="dashboard-tbody-tr"

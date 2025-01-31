@@ -29,6 +29,7 @@ import AdminUserInfo from './pages/AdminPages/AdminUserInfo';
 import AdminUserNew from './pages/AdminPages/AdminUserNew';
 import AdminWorkerInfo from './pages/AdminPages/AdminWorkerInfo';
 import AdminWorkerNew from './pages/AdminPages/AdminWorkerNew';
+import AdminAppointments from './pages/AdminPages/AdminAppointments';
 
 
 function App() {
@@ -87,8 +88,10 @@ function App() {
                     <Route path='/application' element={<ApplicationPage/>}/>
                     <Route path='/application/success' element={<ApplicationSuccess/>}/>
                     <Route path='/admin' element={<AccountLayout/>}>
-                        <Route index element={<Navigate to='/admin/applicants'/>}/>
+                        <Route index element={<Navigate to='/admin/appointments'/>}/>
                         {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
+                        <Route path='appointments' element={<AdminAppointments/>}/>
+
                         <Route path='applicants' element={<AdminApplicants/>}/> 
                         <Route path='applicants/:id' element={<AdminApplicantInfo/>}/>
                         
