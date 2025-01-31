@@ -28,7 +28,7 @@ const formatTime = (time) => {
 
 // Workers
 export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
-
+  
   if(keyword === ''){
     const workers = await Worker.find()
       .skip(arrayIndex)
@@ -46,17 +46,16 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
 
     return workers;
   } else {
-    const filteredWorkers = await Worker.find()
+    const filteredWorkers = await Worker.find({
+      $or: [
+        { firstName: { $regex: keyword, $options: "i" }},
+        { lastName: { $regex: keyword, $options: "i" }}
+      ]
+    })
       .skip(arrayIndex)
       .limit(pageSize)
       .populate({
         path: "userId", // Populates user data (firstName, lastName, address, status).
-        match: {
-          $or: [
-            { firstName: { $regex: keyword, $options: "i" }},
-            { lastName: { $regex: keyword, $options: "i" }}
-          ]
-        },
         select: "firstName lastName address status",
       })
       .select("serviceCategory totalEarnings"); // Selects only specified fields from Worker.
