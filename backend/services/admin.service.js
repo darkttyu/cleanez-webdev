@@ -32,7 +32,7 @@ export const fetchWorkers = async(arrayIndex, pageSize) => {
       .skip(arrayIndex)
       .limit(pageSize)
       .populate({
-        path: "userId", // Populates user data (firstName, lastName, address, status).
+        path: "user", // Populates user data (firstName, lastName, address, status).
         select: "firstName lastName address status",
       })
       .select("serviceCategory totalEarnings"); // Selects only specified fields from Worker.
