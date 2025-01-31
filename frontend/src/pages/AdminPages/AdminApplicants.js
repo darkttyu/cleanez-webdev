@@ -23,12 +23,12 @@ const AdminApplicants = () => {
     }, [])
 
     useEffect(() => {
-        console.log("All Applicant List: ", allApplicantList);
+        // console.log("All Applicant List: ", allApplicantList);
         setCurrentList(allApplicantList);
     }, [allApplicantList])
 
     useEffect(() => {
-        console.log("Current List: ", currentList)
+        // console.log("Current List: ", currentList)
     }, [currentList])
 
     const handleSearch = (search) => {

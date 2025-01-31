@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
 import { Appointment } from "../models/appointment.model.js";
-import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant } from "../services/admin.service.js";
+import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule} from "../services/admin.service.js";
 
 
 // Worker Controllers
