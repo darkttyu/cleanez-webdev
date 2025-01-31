@@ -58,6 +58,30 @@ const AdminAppointments = () => {
         fetchAllAppointments(currentPage, 10, searchWord);
     }, [currentPage])
 
+    const handleCancelAppt = async (id) => {
+        try {
+            const response = await axios.put(`http://localhost:5000/api/admin/markAppointmentAsCancelled/${id}`);
+
+            console.log(response);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            fetchAllAppointments(1, 10, searchWord);
+        }
+    }
+
+    const handleCompleteAppt = async (id) => {
+        try {
+            const response = await axios.put(`http://localhost:5000/api/admin/markAppointmentAsComplete/${id}`);
+
+            console.log(response);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            fetchAllAppointments(1, 10, searchWord);
+        }
+    }
+
     return (  
         <div className="dashboard-page">
             <section className="dashboard-upcoming-container">
@@ -108,11 +132,21 @@ const AdminAppointments = () => {
                                     </div>
                                 </td>
                                 <td className="dashboard-tbody-td tb-center">
-                                    <SVGIcons 
-                                    selected="trash"
-                                    size="24px"
-                                    color="#CC3363"
-                                    onClick={(e) => {handleDeleteButton(worker.userId._id)}}/>
+                                {(appt.appointmentStatus === "Scheduled" && appt.paymentStatus === "Pending") ?
+                                    <div className="check-cross-actions">
+                                        <SVGIcons 
+                                        selected="circleCheck"
+                                        size="20px"
+                                        color="#06E36D"
+                                        onClick={(e) => handleCompleteAppt(appt.appointmentId)}/>
+                                        <SVGIcons 
+                                        selected="circleCross"
+                                        size="20px"
+                                        color="#CC3363"
+                                        onClick={(e) => handleCancelAppt(appt.appointmentId)}/>
+                                    </div> :
+                                    <></>
+                                }
                                 </td>
                             </tr> 
                         ))}

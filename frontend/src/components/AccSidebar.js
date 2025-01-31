@@ -207,9 +207,14 @@ const AccSidebar = ({setNavTitle}) => {
 
     return (  
         <div className="account-page-left">
-            <Link to={(role === 'User' || role === 'Worker' || role === 'Applicant') ? 
+            <Link 
+            to={(role === 'User' || role === 'Worker' || role === 'Applicant') ? 
                 '/home' :
                 '/adminLogin'
+            }
+            onClick={(role === 'User' || role === 'Worker' || role === 'Applicant') ? 
+                (e) => {} :
+                handleLogOut
             }>
                 <img className="sidebar-logo" src={logo} alt="Logo" />
             </Link>

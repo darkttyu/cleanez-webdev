@@ -4,6 +4,7 @@ import SigningPanel from "../../components/SigningPanel";
 import SecurityCode from "../../components/inputs/SecurityCode";
 // --- Other/React Import/s
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
 
@@ -21,6 +22,7 @@ const FindAccountPanel = () => {
     // --- Submit Button Disabler
     const [isButtonDisabled, setisButtonDisabled] = useState(true);
 
+    const navigate = useNavigate();
 
     // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Checks if all boxes are full everytime [code] is updated.
@@ -48,11 +50,7 @@ const FindAccountPanel = () => {
     
             console.log(response.data);
     
-            /*
-            if (response.status === 201) {
-                // for handling and navigation after verification email
-            }
-            */
+            navigate('/login');
         } catch (error) {
             console.error("Error verifying email:", error.response?.data || error.message);
         }
