@@ -226,7 +226,7 @@ export const updateStatus = async(userId) => {
 };
 
 export const serviceDeleteWorker = async(userId) => {
-  const checkWorkerAppointment = await Worker.findOne({userId: userid});
+  const checkWorkerAppointment = await Worker.findOne({userId: userId});
     if(checkWorkerAppointment.assignedAppointments.length > 0){
       throw new Error("Cannot Delete Worker. Worker still has Assigned Appointments")
     }
