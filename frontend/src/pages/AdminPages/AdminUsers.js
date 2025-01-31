@@ -7,16 +7,19 @@ const AdminUsers = () => {
     const navigate = useNavigate();
 
     const [allUserList, setAllUserList] = useState([]);
-    const [currentList, setCurrentList] = useState([])
+    const [currentList, setCurrentList] = useState([]);
     
     const [currentPage, setCurrentPage] = useState(1);
 
-    const fetchAllUsers = async (page, size) => {
+    const [searchWord, setSearchWord] = useState('');
+
+    const fetchAllUsers = async (page, size, search = '') => {
         try {
             const response = await axios.get(`http://localhost:5000/api/admin/findAllUsers`, 
                 {params: { 
                     page: page, 
-                    pageSize: size }
+                    pageSize: size ,
+                    keyword: search}
                 }
             );
 
@@ -27,7 +30,7 @@ const AdminUsers = () => {
     }
 
     useEffect(() => {
-        fetchAllUsers(1, 10);
+        fetchAllUsers(1, 10, searchWord);
     }, [])
 
     useEffect(() => {
@@ -68,7 +71,11 @@ const AdminUsers = () => {
     }
 
     useEffect(() => {
-        fetchAllUsers(currentPage, 10);
+        fetchAllUsers(1, 10, searchWord);
+    }, [searchWord])
+
+    useEffect(() => {
+        fetchAllUsers(currentPage, 10, searchWord);
     }, [currentPage])
 
     return (  
@@ -81,7 +88,7 @@ const AdminUsers = () => {
                     className="dashboard-searchbar"
                     name="dashboard-searchbar" 
                     id="dashboard-searchbar" 
-                    onChange={(e) => handleSearch(e.target.value)}/>
+                    onChange={(e) => setSearchWord(e.target.value)}/>
 
                     <button
                     type="button"

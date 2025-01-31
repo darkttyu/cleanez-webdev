@@ -64,7 +64,6 @@ const AdmindWorker = () => {
     }
 
     useEffect(() => {
-        console.log(searchWord);
         fetchAllWorkers(1, 10, searchWord);
     }, [searchWord])
 
