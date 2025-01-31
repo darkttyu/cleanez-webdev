@@ -294,7 +294,7 @@ export const markAppointmentAsComplete = async (req, res) => {
 export const markAppointmentAsCancelled = async (req, res) => {
   try {
     const cancelledAppointment = await serviceMarkAppointmentAsCancelled(req.params.id);
-      if(!cancelledAppointment){
+      if(cancelledAppointment){
         return res.status(200).json({success: false, message: "Marked Appointment as Cancelled."});
       }
   } catch (error) {
