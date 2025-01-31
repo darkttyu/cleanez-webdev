@@ -31,12 +31,12 @@ const AdmindWorker = () => {
     }, [])
 
     useEffect(() => {
-        console.log("All Worker List: ", allWorkerList);
+        // console.log("All Worker List: ", allWorkerList);
         setCurrentList(allWorkerList);
     }, [allWorkerList])
 
     useEffect(() => {
-        console.log("Current List: ", currentList)
+        // console.log("Current List: ", currentList)
     }, [currentList])
 
     const handleSearch = (search) => {
@@ -82,13 +82,6 @@ const AdmindWorker = () => {
                     name="dashboard-searchbar" 
                     id="dashboard-searchbar" 
                     onChange={(e) => handleSearch(e.target.value)}/>
-
-                    <button
-                    type="button"
-                    className="act-btn complete add-new"
-                    onClick={(e) => navigate('/admin/workers')}>
-                        Add New Worker
-                    </button>
                 </div>
                 <div className="dashboard-list-container">
                     <table className="dashboard-list-table">
@@ -108,8 +101,9 @@ const AdmindWorker = () => {
                             key={index} 
                             className="dashboard-tbody-tr"
                             onClick={(e) => {
-                                console.log("WorkerID", worker.userId._id);
-                                console.log("UserID", worker._id);
+                                navigate(worker.userId._id)
+                                // console.log("userId._id: ", worker.userId._id)
+                                // console.log("_id: ", worker._id)
                             }}>
                                 <td className="dashboard-tbody-td tb-left">
                                     {worker.userId.firstName} {worker.userId.lastName}

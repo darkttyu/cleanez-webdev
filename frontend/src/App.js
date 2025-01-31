@@ -26,6 +26,8 @@ import AdminWorker from './pages/AdminPages/AdminWorker';
 import AdminUsers from './pages/AdminPages/AdminUsers';
 import AdminApplicantInfo from './pages/AdminPages/AdminApplicantInfo';
 import AdminUserInfo from './pages/AdminPages/AdminUserInfo';
+import AdminUserNew from './pages/AdminPages/AdminUserNew';
+import AdminWorkerInfo from './pages/AdminPages/AdminWorkerInfo';
 
 
 function App() {
@@ -88,8 +90,10 @@ function App() {
                         <Route path='applicants' element={<AdminApplicants/>}/> 
                         <Route path='applicants/:id' element={<AdminApplicantInfo/>}/>
                         <Route path='workers' element={<AdminWorker/>}/>
+                        <Route path='workers/:id' element={<AdminWorkerInfo/>}/>
                         <Route path='users' element={<AdminUsers/>}/>
                         <Route path='users/:id' element={<AdminUserInfo/>}/>
+                        <Route path='users/new' element={<AdminUserNew/>}/>
                     </Route>
                 </Routes>
             </div>
