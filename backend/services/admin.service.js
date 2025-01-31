@@ -277,13 +277,24 @@ export const serviceDeleteWorker = async(userId) => {
 };
 
 // User 
-export const fetchUserList = async (arrayIndex, pageSize) => {
+export const fetchUserList = async (arrayIndex, pageSize, keyword) => {
+  let userList;
+  if(keyword === ''){
+    userList = await User.find()
+      .skip(arrayIndex)
+      .limit(pageSize)
+      .lean();
+  } else {
+    userList = await User.find({
+      $or: [
+        { firstName: {$regex: keyword, $options: 'i'} },
+        { lastName: {$regex: keyword, $options: 'i'} }
+      ]
+    }).skip(arrayIndex).limit(pageSize).lean();
+  }
+
   // Gets all the User information and stores it in an array of objects
-  const userList = await User.find()
-    .skip(arrayIndex)
-    .limit(pageSize)
-    .lean();
-      if(!userList){
+      if(!userList || userList.length === 0){
         throw new Error("Error in Fetching Users.");
       }
 
@@ -561,15 +572,26 @@ export const serviceUpdateUserStatus = async (userId) => {
 };
 
 // Applicants 
-export const fetchApplicants = async(arrayIndex, pageSize) => {
-  const applicantList = await User.find({ role: "Applicant" })
+export const fetchApplicants = async(arrayIndex, pageSize, keyword) => {
+  let applicantList;
+  if(keyword === ''){
+    applicantList = await User.find({ role: "Applicant" })
     .skip(arrayIndex)
     .limit(pageSize)
     .lean();
+  } else {
+    applicantList = await User.find({
+      $or: [
+        { customerFirstName: { $regex: keyword, $options: "i"}}, 
+        { customerLastName: { $regex: keyword, $options: "i"}}
+      ]
+    }).skip(arrayIndex).skip(pageSize).lean();
+  }
+
     if(!applicantList){
       throw new Error("Bad Request. Error Fetching Applicant List");
     }
-
+    
     return applicantList;
 };
 

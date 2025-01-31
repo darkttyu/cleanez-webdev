@@ -81,7 +81,7 @@ export const deleteWorker = async (req, res) => {
 // User Controllers
 export const findAllUsers = async (req, res) => {
   try {
-    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10, keyword = ''} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
@@ -90,7 +90,7 @@ export const findAllUsers = async (req, res) => {
     // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
     const arrayIndex = (page - 1) * pageSize
 
-    const users = await fetchUserList(arrayIndex, pageSize);
+    const users = await fetchUserList(arrayIndex, pageSize, keyword);
     return res.status(200).json({success: true, message: "Fetched Users", userList: users})
   
   } catch (error) {
@@ -206,7 +206,7 @@ export const insertService = async (req, res) => {
 // Applicant Controllers 
 export const getAllApplicants = async (req, res) => {
   try {
-    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10, keyword = ''} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
@@ -215,7 +215,7 @@ export const getAllApplicants = async (req, res) => {
     // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
     const arrayIndex = (page - 1) * pageSize
 
-    const applicants = await fetchApplicants(arrayIndex, pageSize);
+    const applicants = await fetchApplicants(arrayIndex, pageSize, keyword);
     return res.status(200).json({success: true, message: "Fetched Applicants Lists.", applicants: applicants});
   } catch (error) {
     return res.status(400).json({success: false, error: message.error});
