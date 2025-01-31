@@ -59,7 +59,7 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
         {
           $match: {
             $or: [
-              { "userId.firstName": { $regex: keyword, $options: "i" }},
+              { "userId.firstName": { $regex: keyword.split(' ')[0], $options: "i" }},
               { "userId.lastName": { $regex: keyword, $options: "i" }}
             ]
           }
@@ -586,20 +586,31 @@ export const serviceUpdateUserStatus = async (userId) => {
 // Applicants 
 export const fetchApplicants = async(arrayIndex, pageSize, keyword) => {
   let applicantList;
-  if(keyword === ''){
+  const wordSplit = keyword.split(' ');
+  
+  if (keyword === '') {
     applicantList = await User.find({ role: "Applicant" })
-    .skip(arrayIndex)
-    .limit(pageSize)
-    .lean();
-  } else {
+      .skip(arrayIndex)
+      .limit(pageSize)
+      .lean();
+  } else if (wordSplit.length === 1) {
     applicantList = await User.find({
       role: "Applicant",
       $or: [
-        { firstName: { $regex: keyword, $options: "i"}}, 
-        { lastName: { $regex: keyword, $options: "i"}}
+        { firstName: { $regex: wordSplit[0], $options: "i" } },
+        { lastName: { $regex: wordSplit[0], $options: "i" } }
+      ]
+    }).skip(arrayIndex).limit(pageSize).lean();
+  } else if (wordSplit.length > 1) {
+    applicantList = await User.find({
+      role: "Applicant",
+      $or: [
+        { firstName: { $regex: wordSplit[0], $options: "i" } },
+        { lastName: { $regex: wordSplit[1], $options: "i" } }
       ]
     }).skip(arrayIndex).limit(pageSize).lean();
   }
+  
 
     if(!applicantList){
       throw new Error("Bad Request. Error Fetching Applicant List");
@@ -719,23 +730,32 @@ export const serviceRejectApplicant = async(userId) => {
 // Appointments 
 export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
   let appointmentList;
-  const dateKeyword = keyword;
-
+  const wordSplit = keyword.split(' ')
   if(keyword === ''){
     appointmentList =await Appointment.find()
       .skip(arrayIndex)
       .skip(pageSize)
       .lean();
-  } else {
+  } else if (wordSplit.length === 1) {
     appointmentList = await Appointment.find({
         $or: [
-          { customerFirstName: { $regex: keyword, $options: "i" }},
-          { customerLastName: { $regex: keyword, $options: "i"}}
+          { customerFirstName: { $regex: wordSplit[0], $options: "i" }},
+          { customerLastName: { $regex: wordSplit[0], $options: "i"}},
+          
         ]
-    })
-    .skip(arrayIndex)
+    }).skip(arrayIndex)
     .skip(pageSize)
     .lean();
+  } else if (wordSplit.length > 1){
+    appointmentList = await Appointment.find({
+      $or: [
+        { customerFirstName: { $regex: wordSplit[0], $options: "i" }},
+        { customerLastName: { $regex: wordSplit[1], $options: "i"}},
+        
+      ]
+  }).skip(arrayIndex)
+      .skip(pageSize)
+      .lean();
   }
   
     if(!appointmentList){
