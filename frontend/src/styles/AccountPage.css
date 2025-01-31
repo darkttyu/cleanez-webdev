@@ -662,3 +662,22 @@
     justify-content: space-around;
     align-items    : center;
 }
+
+.appointment-inputs {
+    display: grid;
+    gap    : 12px;
+}
+
+.appointment-container {
+    display       : flex;
+    flex-direction: column;
+    gap           : 12px;
+}
+
+.appointment-inputs.grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.appointment-inputs.grid-2 {
+    grid-template-columns: 1fr 1fr;
+}

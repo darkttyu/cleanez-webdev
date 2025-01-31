@@ -30,6 +30,7 @@ import AdminUserNew from './pages/AdminPages/AdminUserNew';
 import AdminWorkerInfo from './pages/AdminPages/AdminWorkerInfo';
 import AdminWorkerNew from './pages/AdminPages/AdminWorkerNew';
 import AdminAppointments from './pages/AdminPages/AdminAppointments';
+import AdminAppointmentInfo from './pages/AdminPages/AdminAppointmentInfo';
 
 
 function App() {
@@ -91,6 +92,7 @@ function App() {
                         <Route index element={<Navigate to='/admin/appointments'/>}/>
                         {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
                         <Route path='appointments' element={<AdminAppointments/>}/>
+                        <Route path='appointments/:id' element={<AdminAppointmentInfo/>}/>
 
                         <Route path='applicants' element={<AdminApplicants/>}/> 
                         <Route path='applicants/:id' element={<AdminApplicantInfo/>}/>
