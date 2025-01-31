@@ -46,9 +46,9 @@ const AdminApplicants = () => {
                     <input 
                     type="text" 
                     placeholder="Search"
-                    className="question-searchbar"
-                    name="question-searchbar" 
-                    id="question-searchbar" 
+                    className="dashboard-searchbar"
+                    name="dashboard-searchbar" 
+                    id="dashboard-searchbar" 
                     onChange={(e) => handleSearch(e.target.value)}/>
                 </div>
                 <div className="dashboard-list-container">

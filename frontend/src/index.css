@@ -77,6 +77,10 @@ td {
   text-align   : center;
 }
 
+.act-btn.add-new {
+  min-width: 144px;
+}
+
 .act-btn.complete {
   background-color: #06E36D;
   color           : white;

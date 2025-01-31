@@ -78,10 +78,17 @@ const AdminUsers = () => {
                     <input 
                     type="text" 
                     placeholder="Search"
-                    className="question-searchbar"
-                    name="question-searchbar" 
-                    id="question-searchbar" 
+                    className="dashboard-searchbar"
+                    name="dashboard-searchbar" 
+                    id="dashboard-searchbar" 
                     onChange={(e) => handleSearch(e.target.value)}/>
+
+                    <button
+                    type="button"
+                    className="act-btn complete add-new"
+                    onClick={(e) => navigate('/admin/users')}>
+                        Add New User
+                    </button>
                 </div>
                 <div className="dashboard-list-container">
                     <table className="dashboard-list-table">

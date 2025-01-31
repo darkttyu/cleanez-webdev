@@ -70,7 +70,7 @@ const AdmindWorker = () => {
     useEffect(() => {
         fetchAllWorkers(currentPage, 10);
     }, [currentPage])
-
+    
     return (  
         <div className="dashboard-page">
             <section className="dashboard-upcoming-container">
@@ -78,15 +78,15 @@ const AdmindWorker = () => {
                     <input 
                     type="text" 
                     placeholder="Search"
-                    className="question-searchbar"
-                    name="question-searchbar" 
-                    id="question-searchbar" 
+                    className="dashboard-searchbar"
+                    name="dashboard-searchbar" 
+                    id="dashboard-searchbar" 
                     onChange={(e) => handleSearch(e.target.value)}/>
 
                     <button
                     type="button"
-                    className="act-btn complete"
-                    onClick={(e) => navigate('/work')}>
+                    className="act-btn complete add-new"
+                    onClick={(e) => navigate('/admin/workers')}>
                         Add New Worker
                     </button>
                 </div>
@@ -107,7 +107,10 @@ const AdmindWorker = () => {
                             <tr 
                             key={index} 
                             className="dashboard-tbody-tr"
-                            onClick={(e) => {}}>
+                            onClick={(e) => {
+                                console.log("WorkerID", worker.userId._id);
+                                console.log("UserID", worker._id);
+                            }}>
                                 <td className="dashboard-tbody-td tb-left">
                                     {worker.userId.firstName} {worker.userId.lastName}
                                 </td>
@@ -127,7 +130,7 @@ const AdmindWorker = () => {
                                     selected="trash"
                                     size="24px"
                                     color="#CC3363"
-                                    onClick={(e) => {handleDeleteButton(worker._id)}}/>
+                                    onClick={(e) => {handleDeleteButton(worker.userId._id)}}/>
                                 </td>
                             </tr> 
                         ))}
