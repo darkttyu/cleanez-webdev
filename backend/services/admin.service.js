@@ -373,6 +373,7 @@ export const getUser = async (userId) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      role: user.role,
       address: user.address,
       phoneNumber: user.phoneNumber,
       gender: user.gender,
@@ -400,7 +401,7 @@ export const updateUser = async (userId, body, profile) => {
     if(!currentUser) {
       throw new Error("Bad Request. User does not exist.")
     }
-    
+
       if(profile && profile.length > 0){
         profile = {
           data: profile[0].buffer,
