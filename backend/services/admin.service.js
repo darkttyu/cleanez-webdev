@@ -46,24 +46,37 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
 
     return workers;
   } else {
-    const filteredWorkers = await Worker.find({
-      $or: [
-        { "userId.firstName": { $regex: keyword, $options: "i" }},
-        { "userId.lastName": { $regex: keyword, $options: "i" }}
-      ]
-    })
-      .skip(arrayIndex)
-      .limit(pageSize)
-      .populate({
-        path: "userId", // Populates user data (firstName, lastName, address, status).
-        select: "firstName lastName address status",
-      })
-      .select("serviceCategory totalEarnings"); // Selects only specified fields from Worker.
-
-        if(!filteredWorkers){
-          throw new Error("No Worker Found.");
+      const filteredWorkers = await Worker.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userId"
+          }
+        },
+        { $unwind: "$userId" },
+        {
+          $match: {
+            $or: [
+              { "userId.firstName": { $regex: keyword, $options: "i" }},
+              { "userId.lastName": { $regex: keyword, $options: "i" }}
+            ]
+          }
+        },
+        { $skip: arrayIndex },
+        { $limit: pageSize },
+        {
+          $project: {
+            "$userId.firstName": 1,
+            "$userId.lastName": 1,
+            "$userId.address": 1, 
+            "$userId.status": 1,
+            serviceCategory: 1,
+            totalEarnings: 1
+          }
         }
-
+      ])
         return filteredWorkers;
   }
   
