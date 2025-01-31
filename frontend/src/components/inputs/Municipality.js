@@ -1,4 +1,4 @@
-const InputMunicipality = ({value, data, onChange}) => {
+const InputMunicipality = ({value, data, onChange, disabled=false}) => {
     return(
         <div className="text-container">
             {/* INPUT HERE */}
@@ -11,6 +11,7 @@ const InputMunicipality = ({value, data, onChange}) => {
                 onChange={(e) => {
                     onChange(e);  
                 }}
+                disabled = {disabled}
             >
                 {/* SELECT OPTIONS */}
                 <option value="0">Select Municipality</option>

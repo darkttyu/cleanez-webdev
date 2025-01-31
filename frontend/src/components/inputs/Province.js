@@ -1,4 +1,4 @@
-const InputProvince = ({ value, data, onChange}) => {
+const InputProvince = ({ value, data, onChange, disabled=false}) => {
     
     return (  
         <div className="text-container">
@@ -10,6 +10,7 @@ const InputProvince = ({ value, data, onChange}) => {
                 onChange={(e) => {
                     onChange(e);  
                 }}
+                disabled = {disabled}
             >
                 {/* SELECT OPTIONS */}
                 <option value="0">Select Province</option>

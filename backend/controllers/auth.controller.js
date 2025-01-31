@@ -161,20 +161,28 @@ export const login = async (req, res) => {
         return res.status(400).json({ success: false, message: "Invalid Credentials" });
       }
 
-      // Validate password
-      const isPasswordValid = await bcryptjs.compare(password, user.password);
+        // Validate password
+        if(user.password.startsWith("$2a$") || user.password.startsWith("$2b$")) {
+          const isPasswordValid = await bcryptjs.compare(password, user.password);
 
-      if (!isPasswordValid) {
-        return res.status(400).json({ success: false, message: "Invalid Credentials"});
-      }
+          if (!isPasswordValid) {
+            return res.status(400).json({ success: false, message: "Invalid Credentials"});
+          }
+        } else {
+            const isMatch = password === user.password;
 
-      if(!user.isVerified) {
-        return res.status(400).json({ success: false, message: "Account not Verified"});
-      }
+            if (!isMatch) {
+              return res.status(400).json({ success: false, message: "Invalid Credentials"});
+            }
+        }
+    
+            if(!user.isVerified) {
+              return res.status(400).json({ success: false, message: "Account not Verified"});
+            }
 
-      if(user.status == "Inactive") {
-        return res.status(400).json({success: false, message: "Login Failed. Account Inactive. Contact Admin for Account Reactivation"});
-      }
+              if(user.status == "Inactive") {
+                return res.status(400).json({success: false, message: "Login Failed. Account Inactive. Contact Admin for Account Reactivation"});
+              }
 
       // Generate token and set cookie
       const token = generateTokenAndSetCookie(res, user._id);
@@ -328,13 +336,21 @@ export const adminLogin = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid Credentials" });
     }
 
-    // Validate password
-    const isPasswordValid = await bcryptjs.compare(password, admin.password);
+        // Validate password
+        if(admin.password.startsWith("$2a$") || admin.password.startsWith("$2b$")) {
+          const isPasswordValid = await bcryptjs.compare(password, admin.password);
 
-    if (!isPasswordValid) {
-      return res.status(400).json({ success: false, message: "Invalid Credentials" });
-    }
+          if (!isPasswordValid) {
+            return res.status(400).json({ success: false, message: "Invalid Credentials"});
+          }
+        } else {
+            const isMatch = password === admin.password;
 
+            if (!isMatch) {
+              return res.status(400).json({ success: false, message: "Invalid Credentials"});
+            }
+        }
+        
     // Generate token and set cookie
     generateTokenAndSetCookie(res, admin._id);
 

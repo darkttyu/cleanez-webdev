@@ -531,3 +531,159 @@ export const SEND_WORKER_BOOKING_CONFIRMATION =  `
 </body>
 </html>
 `;
+
+export const ACCEPT_APPLICANT_EMAIL = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Congratulations! You’re Accepted</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">CONGRATULATIONS, WELCOME TO THE TEAM!</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName}!</span></p>
+    <p style="text-align: justify;">We’re thrilled to inform you that your application to join CleanEZ has been accepted! Welcome to our team of dedicated professionals who are committed to delivering exceptional cleaning services and making a positive impact in our clients’ lives.</p>
+    <p style="font-weight: bold;">What’s next?</p>
+    <ol>
+      <li><strong>Account Setup:</strong> Use your initial CleanEZ login credentials provided below to access the worker portal.</li>
+      <li><strong>Orientation:</strong> Familiarize yourself with our guidelines and best practices, available in the portal.</li>
+      <li><strong>Start Accepting Jobs:</strong> Browse available tasks and choose those that fit your schedule and expertise.</li>
+    </ol>
+    <p>If you have any questions or require assistance, feel free to reach out to us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>
+    <p>We’re excited to have you on board and can’t wait to see the amazing work you’ll do. Welcome to the CleanEZ family!</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;
+
+export const REJECT_APPLICANT_EMAIL = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You for Your Application</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">THANK YOU FOR YOUR APPLICATION</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName}!</span></p>
+    <p style="text-align: justify;">Thank you for applying to join CleanEZ. We truly appreciate the time and effort you took to submit your application and express your interest in being a part of our team.</p>
+    <p style="text-align: justify;">After careful consideration and review of all applications, we regret to inform you that we have decided to move forward with other candidates for this opportunity.</p>
+    <p style="text-align: justify;">This decision was not an easy one, as we were impressed by your background and achievements. While this particular role may not be the right fit, we encourage you to keep an eye on our careers page for future opportunities that may align with your skills and aspirations.</p>
+    <p style="text-align: justify;">If you have any questions or would like feedback on your application, feel free to contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>. We’d be happy to assist you further.</p>
+    <p style="text-align: justify;">Thank you again for considering CleanEZ. We wish you all the best in your job search and future endeavors.</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;
+
+export const WORKER_PAID_EMAIL = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointment Payment Notification</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">APPOINTMENT PAID</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{workerFirstName} {workerLastName}!</span></p>
+    <p style="text-align: justify;">We’re pleased to inform you that the payment for an upcoming appointment assigned to you has been successfully processed. Below are the details of the appointment:</p>
+    <ul>
+      <li><strong>Client Name:</strong> <span style="font-weight: bold; color: #4CAF50;">{custFName} {custLName}</span></li>
+      <li><strong>Service:</strong> <span style="font-weight: bold; color: #4CAF50;">{serviceName}</span></li>
+      <li><strong>Appointment Date:</strong> <span style="font-weight: bold; color: #4CAF50;">{appointmentDate}</span></li>
+      <li><strong>Location:</strong> <span style="font-weight: bold; color: #4CAF50;">{block} {barangay} {municipal} {province}</span></li>
+      <li><strong>Total Amount Paid:</strong> <span style="font-weight: bold; color: #4CAF50;">Php. {serviceCost}</span></li>
+    </ul>
+    <p style="text-align: justify;">Please make sure to review the appointment details thoroughly and arrive at the client’s location on time. If there are any special instructions or requirements provided by the client, they will be visible in your worker portal.</p>
+    <p style="text-align: justify;">For any questions or concerns, feel free to contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>
+    <p>Thank you for your dedication and commitment to providing top-notch service. Let’s make this appointment a success!</p>
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;
+
+export const APPLICANT_CONFIRMATION_EMAIL = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Received - CleanEZ</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center;">
+    <img src="https://drive.google.com/uc?id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" style="max-width: 100%; height: auto;">
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <span style="font-size: large; font-weight: bold; color: #20063B;">YOUR APPLICATION HAS BEEN RECEIVED!</span>
+    </div>
+    <p>Hello, <span style="font-weight: bold; color: #4CAF50;">{firstName} {lastName}!</span></p>
+    <p style="text-align: justify;">Thank you for applying to become a CleanEZ worker! We have successfully received your application and our team is currently reviewing it thoroughly. We appreciate your interest in joining our platform and look forward to assessing your qualifications.</p>
+    
+    <p style="font-weight: bold;">What happens next?</p>
+    <ul>
+      <li><strong>Application Review:</strong> Our team will carefully evaluate your application details.</li>
+      <li><strong>Final Decision:</strong> Once your application has been reviewed, we will notify you of the outcome.</li>
+    </ul>
+
+    <p style="text-align: justify;">Please allow some time for our team to process your application. If you have any questions in the meantime, feel free to contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>
+
+    <p>We appreciate your patience and will be in touch with you soon!</p>
+
+    <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
+  </div>
+
+  <div style="text-align: center; margin-top: 10px;">
+    <img src="https://drive.google.com/uc?id=1xotvLl_V7k0oQi6B5b9RFE8g4_PIhExX" alt="Footer Image" style="max-width: 100%; height: auto;">
+  </div>
+
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+
+`;

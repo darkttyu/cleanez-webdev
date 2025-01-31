@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import moment from "moment";
+import { sendWorkerPaidAppointmentEmail } from "../nodemailer/sendMail.js";
 
 const formatTime = (time) => {
   // Extract hours and minutes from the input time
@@ -21,16 +22,33 @@ const formatTime = (time) => {
 // Profile 
 export const fetchWorker = async(id) => {
   const user = await User.findById({ _id: new Object(id) });
-
     if(!user){
       throw new Error("User does not exist.");
     }
       if(user.role !== "Worker"){
         throw new Error("Bad Request. User is not a worker.");
       }
+  
+  const worker = await Worker.findOne({ userId: new Object(id)});
+      if(!worker){
+        throw new Error("Bad Request. Worker not Found.");
+      }
+  
+  const workerInfo = {
+    user: user, 
+    totalEarnings: worker.totalEarnings
+  }
+  return workerInfo;
+};
 
-  console.log(user);
-  return user;
+export const fetchWorkerDetails = async(id) => {
+  const worker = await Worker.findOne({"userId": new Object(id)});
+    if(!worker){
+      throw new Error("Worker Information does not exist.");
+    }
+    
+  // console.log(worker);
+  return worker;
 };
 
 export const updateWorker = async(id, body, profile) => {
@@ -183,7 +201,7 @@ export const markAppointment = async (appointmentId) => {
     },
     { new: true } 
   );
-    if(!appointmentId){
+    if(!appointment){
       throw new Error("Appointment does not exist.");
     }
 
@@ -215,6 +233,15 @@ export const markAppointment = async (appointmentId) => {
         })
       );
     
+      await Promise.all(
+        workerUserIds.map(async (id) => {
+          const workerInfo = await User.findById(id);
+          sendWorkerPaidAppointmentEmail(workerInfo.firstName, workerInfo.lastName, workerInfo.email, appointment.customerFirstName, 
+            appointment.customerLastName, appointment.serviceDetails.serviceCategory, appointment.scheduleDetails.date, 
+            appointment.address.block, appointment.address.municipal, appointment.address.province, appointment.address.barangay,
+            appointment.serviceCost)
+        })
+      );
     return appointment;
 };
 
@@ -235,26 +262,31 @@ export const updateWorkerService = async(id, body) => {
             throw new Error("Bad Request. Worker still has assigned appointments.")
           }
         }
-    
-    const updateWorkerServiceInfo = {
-      "serviceCategory": serviceCategory,
-      "workerAvailability.areaAssigned": workerAvailability.areaAssigned,
-      "workerAvailability.day": workerAvailability.day,
-      "workerAvailability.startTime": workerAvailability.startTime
-    }
 
-    // Updates the worker service info if it passes all validations.
-    const updatedWorkerService = await Worker.findOneAndUpdate(
-      { userId: id },
-      updateWorkerServiceInfo,
-      { new: true}
-    )
-
-      if(!updatedWorkerService){
-        throw new Error("Error in Updating Worker Service Information.")
-      }
-
-    return updatedWorkerService;
+        if((workerAvailability.day.length === 0 && workerAvailability.startTime.length === 0) || (workerAvailability.day.length > 0 && workerAvailability.startTime.length > 0)){
+          const updateWorkerServiceInfo = {
+            "serviceCategory": serviceCategory,
+            "workerAvailability.areaAssigned": workerAvailability.areaAssigned,
+            "workerAvailability.day": workerAvailability.day,
+            "workerAvailability.startTime": workerAvailability.startTime
+          }
+      
+          // Updates the worker service info if it passes all validations.
+          const updatedWorkerService = await Worker.findOneAndUpdate(
+            { userId: id },
+            updateWorkerServiceInfo,
+            { new: true}
+          )
+      
+            if(!updatedWorkerService){
+              throw new Error("Error in Updating Worker Service Information.")
+            }
+      
+          return updatedWorkerService;
+          
+        } else {
+          throw new Error("Bad Request. You must fill both fields or unselect them all.")
+        }
 };
 
 // Earnings 

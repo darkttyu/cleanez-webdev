@@ -1,6 +1,7 @@
 import { Appointment } from "../models/appointment.model.js";
 import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
+import { sendApplicantConfirmationEmail } from "../nodemailer/sendMail.js";
 
 // User 
 export const submitApplicationForm = async (req, res) => {
@@ -10,7 +11,7 @@ export const submitApplicationForm = async (req, res) => {
   
   // Retrieve files (resume, ID1, ID2) and fields (serviceCategory, areaAssigned) from the request
   const { resume, ID1, ID2 } = req.files;
-  const { email, serviceCategory, areaAssigned } = JSON.parse(req.body);
+  const { firstName, latName, email, phoneNumber, address, serviceCategory, areaAssigned } = JSON.parse(req.body.appInfo);
 
     // Check if userId is present (user must be authenticated)
     if (!userId) {
@@ -45,6 +46,10 @@ export const submitApplicationForm = async (req, res) => {
     }
 
   // Update user's role to "Applicant" and set application details
+  user.address.block = address.block;
+  user.address.municipal = address.municipal;
+  user.address.province = address.province;
+  user.address.barangay = address.barangay;
   user.role = "Applicant";
   user.applicationDetails.serviceCategory = serviceCategory; // Set the service category
   user.applicationDetails.areaAssigned = areaAssigned; // Set the assigned area
@@ -66,6 +71,7 @@ export const submitApplicationForm = async (req, res) => {
 
   // Save the updated user object to the database
   await user.save();
+  sendApplicantConfirmationEmail(user.firstName, user.lastName, user.email);
 
   // Respond with a success message upon successful submission
   res.status(200).json({success: true, message: "Application Form Submitted Successfully"});

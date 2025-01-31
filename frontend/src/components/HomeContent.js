@@ -4,13 +4,15 @@ import homepage1 from '../images/assets/homepage1.jpg'
 import homepage2 from '../images/assets/homepage2.jpg'
 import homepage3 from '../images/assets/homepage3.jpg'
 import aboutus1 from '../images/assets/aboutus1.jpg'
-import placeholder from '../images/assets/placeholder.jpg'
+import placeholder from '../images/assets/founder0.jpg'
 import services1 from '../images/assets/services1.jpg';
 import services2 from '../images/assets/services2.jpg';
 import services3 from '../images/assets/services3.jpg';
 import services4 from '../images/assets/services4.jpg';
 import services5 from '../images/assets/services5.jpg';
 import services6 from '../images/assets/services6.png';
+import founder3 from '../images/assets/founder3.jpg';
+import founder4 from '../images/assets/founder4.jpg';
 
 const Header = () => {
     const homeContent = [
@@ -163,7 +165,7 @@ const Founders = () => {
                 email: "kassandrarychelle@gmail.com"
             }
         },
-        {name: "Carl Matthew Fernandez", pos: "Placeholder Position", image: placeholder,
+        {name: "Carl Matthew Fernandez", pos: "Placeholder Position", image: founder3,
             contacts: {
                 linkedin: "https://www.linkedin.com/in/darkttyu/",
                 twitter: "https://x.com/darkttyu",
@@ -172,7 +174,7 @@ const Founders = () => {
                 email: "ctrlfrz0710@gmail.com"
             }
         },
-        {name: "Rein Andre Furagganan", pos: "Placeholder Position", image: placeholder,
+        {name: "Rein Andre Furagganan", pos: "Placeholder Position", image: founder4,
             contacts: {
                 linkedin: "https://www.linkedin.com/in/reinadf164/",
                 twitter: "https://x.com/reinchisdog",
@@ -185,11 +187,11 @@ const Founders = () => {
 
     return (
          <section className="main-section founders dark-bg" id="founders">
-              <h3>Meet the Founders</h3>
+              <h3>Meet the Developers</h3>
               <div className="founder-items">
               {founders.map((founder, index) => (
                    <div className="founder-item" key={index}>
-                        <img className="founder-image" src={founder.image} alt=""/>
+                        <img className="founder-image" src={founder.image} alt={placeholder}/>
                         <div className="founder-label">
                              <p className="founder-name">{founder.name}</p>
                              <p className="founder-pos">{founder.pos}</p>

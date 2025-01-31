@@ -10,14 +10,13 @@ import axios from "axios";
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const UserProfile = () => {
-     // --- Convert Binary Data to Profile URL
-     const profileConvert = (profile) => {
+    // --- Convert Binary Data to Profile URL
+    const profileConvert = (profile) => {
 
-        const dataType = profile.contentType
         const binaryData = new Uint8Array(profile.data.data);
         const base64String = btoa(String.fromCharCode(...binaryData));
 
-        return `data:${dataType};base64,${base64String}`;
+        return `data:image/jpeg;base64,${base64String}`;
     }
 
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
@@ -174,7 +173,6 @@ const UserProfile = () => {
     }
 
     // --- Creates Form
-
     const updateData = async (accInfo, profile) => {
         const form = new FormData();
         console.log(accInfo);
@@ -237,7 +235,7 @@ const UserProfile = () => {
                         <img src={profileURL} alt="" className="profile-image"/>
                         {!isDisabled ? (
                             <input type="file" 
-                            accept="image/"
+                            accept="image/jpeg"
                             onChange={(e) => {
                                 const file = e.target.files[0]
                                 setProfileURL(URL.createObjectURL(file));

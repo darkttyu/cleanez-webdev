@@ -6,7 +6,16 @@ import { useAuth } from "../AuthContext";
 import axios from "axios";
 
 const UserSide = ({setNavTitle}) => {
-    const [activeLink, setActiveLink] = useState('Profile');
+    const [activeLink, setActiveLink] = useState(() => {
+        let path = String(window.location.pathname);
+
+        if (path === "/account") return 'Profile';
+
+        path = path.replace('/account/', '');
+        
+        return path.charAt(0).toUpperCase() + path.slice(1);
+        }
+    );
     const navigate = useNavigate();
 
     const handleClick = (title) => {
@@ -48,70 +57,141 @@ const UserSide = ({setNavTitle}) => {
 }
 
 const WorkerSide = ({setNavTitle}) => {
+    const [activeLink, setActiveLink] = useState(() => {
+            let path = String(window.location.pathname);
+
+            if (path === "/account") return 'Profile';
+
+            path = path.replace('/account/', '');
+            
+            return path.charAt(0).toUpperCase() + path.slice(1);
+        }
+    );
+    const navigate = useNavigate();
+
+    const handleClick = (title) => {
+        setNavTitle(title)
+        setActiveLink(title)
+    }
+
     return (  
         <>
             <li><Link 
-            className="link-item active"
-            onClick={(e) => setNavTitle('Profile')}>
-                
-                <p className="link-title">Profile</p>
+            className={
+                `link-item ${activeLink === 'Profile' ? 'active' : ''}`
+            }
+            to='profile'
+            onClick={(e) => handleClick('Profile')}>
+                Profile
             </Link></li>
             <li><Link 
-            className="link-item"
-            onClick={(e) => setNavTitle('Dashboard')}>
+            className={
+                `link-item ${activeLink === 'Appointments' ? 'active' : ''}`
+            }
+            to='appointments'
+            onClick={(e) => handleClick('Appointments')}>
                 
-                <p className="link-title">Dashboard</p>
+                Appointments
             </Link></li>
-            <li><Link className="link-item"
-            onClick={(e) => setNavTitle('Appointments')}>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Schedule' ? 'active' : ''}`
+            }
+            to='schedule'
+            onClick={(e) => handleClick('Schedule')}>
                 
-                <p className="link-title">Appointments</p>
+                Schedule
             </Link></li>
         </>
     );
 }
 
 const AdminSide = ({setNavTitle}) => {
+    const [activeLink, setActiveLink] = useState(() => {
+        let path = String(window.location.pathname);
+
+        if (path === "/admin") return 'Applicants';
+
+        path = path.replace('/admin/', '');
+        
+        return path.charAt(0).toUpperCase() + path.slice(1);
+        }
+    );
+    const navigate = useNavigate();
+
+    const handleClick = (title) => {
+        setNavTitle(title)
+        setActiveLink(title)
+    }
+
     return (  
         <>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Applicants' ? 'active' : ''}`
+            }
+            to='applicants'
+            onClick={(e) => handleClick('Applicants')}>
+                Applicants
+            </Link></li>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Workers' ? 'active' : ''}`
+            }
+            to='workers'
+            onClick={(e) => handleClick('Workers')}>
+                Workers
+            </Link></li>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Users' ? 'active' : ''}`
+            }
+            to='users'
+            onClick={(e) => handleClick('Users')}>
+                Users
+            </Link></li>
         </>
     );
 }
 
-const AccSidebar = ({user, setNavTitle}) => {
+const AccSidebar = ({setNavTitle}) => {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        try {
-            if (user.role) console.log(user.role)
-            else throw new Error("Session Timed Out")
-        } catch (e) {
-            console.log(e);
-            navigate('/home');
-        }
-    }, [user])
+    const role = localStorage.getItem("role");
 
-    const accountSideDisplay = (role) => {
-        const currRole = String(role).toLowerCase()
+    const accountSideDisplay = () => {
+        const role = localStorage.getItem("role")
 
-        if (currRole === 'user') {
+        if (role === 'User' || role === 'Applicant') {
             return <UserSide setNavTitle={setNavTitle}/>
-        } else if (currRole === 'worker') {
+        } else if (role === 'Worker') {
             return <WorkerSide setNavTitle={setNavTitle}/>
-        } else if (currRole === 'admin') {
+        } else if (role === 'Admin') {
             return <AdminSide setNavTitle={setNavTitle}/>
         }
     }
 
     const handleLogOut = async () => {
         try {
-            const response = await axios.post(`https://cleanez-api.vercel.app/api/auth/logout`)
-            console.log(response);
+            const role = localStorage.getItem("role");
 
-            localStorage.removeItem("token")
+            const response = ((role === 'User' || role === 'Worker' || role === 'Applicant') ? 
+                await axios.post(`https://cleanez-api.vercel.app/api/auth/logout`) :
+                await axios.post(`https://cleanez-api.vercel.app/api/auth/adminLogout`)
+            );
+
+            console.log(response);
+            
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
             logout();
-            navigate('/home');
+            navigate((role === 'User' || role === 'Worker' || role === 'Applicant') ? 
+                '/home' :
+                '/adminLogin'
+            );
+            
+
         } catch (error) {
             console.log('Logout Failed: ', error)
         }
@@ -119,19 +199,26 @@ const AccSidebar = ({user, setNavTitle}) => {
 
     return (  
         <div className="account-page-left">
-            <Link to={user ? `/home/${user._id}` : "/home"}>
+            <Link to={(role === 'User' || role === 'Worker' || role === 'Applicant') ? 
+                '/home' :
+                '/adminLogin'
+            }>
                 <img className="sidebar-logo" src={logo} alt="Logo" />
             </Link>
             <div className="sidebar-content">
                 <ul className="sidebar-links">
-                    {accountSideDisplay(user.role)}
+                    {accountSideDisplay()}
                 </ul>
                 <div className="sidebar-return-container">
-                    <Link 
-                    className="sidebar-return"
-                    to="/home">
-                        Return to Home
-                    </Link>
+                    {role !== 'Admin' ? 
+                        <Link 
+                        className="sidebar-return"
+                        to="/home">
+                            Return to Home
+                        </Link> :
+                        <></>
+                    }
+                    
                     <Link 
                     className="sidebar-return"
                     to="/home"

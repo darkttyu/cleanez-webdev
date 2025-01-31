@@ -177,7 +177,8 @@ const PersonalInfo = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => {
                             ...bookingInfo, 
                             customerFirstName: e.target.value
                         })
-                    }}    
+                    }}
+                    disabled = {true}
                 />
                 <LastName 
                     value={bookingInfo.customerLastName}
@@ -186,7 +187,8 @@ const PersonalInfo = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => {
                             ...bookingInfo, 
                             customerLastName: e.target.value
                         })
-                    }}   
+                    }}
+                    disabled = {true}
                 />
                 <Phone 
                     value={bookingInfo.phoneNumber}
@@ -195,7 +197,8 @@ const PersonalInfo = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => {
                             ...bookingInfo, 
                             phoneNumber: e.target.value
                         })
-                    }}   
+                    }}
+                    disabled = {true}
                 />
             </div>
             <h2>Address</h2>

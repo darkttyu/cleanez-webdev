@@ -200,7 +200,7 @@ const FAQsPage = () => {
     // --- Searchbar Value
     const [searchWords, setSearchWords] = useState([]);
     // --- FAQ List compared to Searchbar Value
-    const [filteredDetails, setFilteredDetails] = useState([]);
+    const [filteredDetails, setFilteredDetails] = useState(details);
 
 
     // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
@@ -208,12 +208,24 @@ const FAQsPage = () => {
     const handleSearch = (value) => {
         setSearchWords((value.trim()).split(' '));
     }
-    // --- Filters the FAQ List                                 { FIX THIS }
-    useEffect(() => {
-        console.log(searchWords)
-    }, [searchWords])
 
-    
+    // --- Filters the FAQ List
+    useEffect(() => {
+        if (searchWords.length === 0) {
+            setFilteredDetails(details);
+        } else {
+            const filtered = details.filter((detail) =>
+                searchWords.some((word) =>
+                    detail.questions.eng.toLowerCase().includes(word.toLowerCase()) ||
+                    detail.questions.fil.toLowerCase().includes(word.toLowerCase()) ||
+                    detail.answers.eng.toLowerCase().includes(word.toLowerCase()) ||
+                    detail.answers.fil.toLowerCase().includes(word.toLowerCase())
+                )
+            );
+            setFilteredDetails(filtered);
+        }
+    }, [searchWords]);
+
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <div>
@@ -234,7 +246,7 @@ const FAQsPage = () => {
                 
             </header>
             <main className="questions-container">
-                {details.map((detail, index) => (
+                {filteredDetails.map((detail, index) => (
                     <FAQuestionBox questions={detail.questions} answers={detail.answers} key={index} />
                 ))}
             </main>

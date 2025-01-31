@@ -1,4 +1,4 @@
-const InputEmail = ({value, onChange}) => {
+const InputEmail = ({value, onChange, disabled=false}) => {
     return (  
         <div className="text-container">
             {/* INPUT HERE */}
@@ -9,6 +9,7 @@ const InputEmail = ({value, onChange}) => {
             name="email" 
             value={value}
             onChange={onChange}
+            disabled = {disabled}
             id="mail-input"/>
             {/* LABEL HERE */}
             <label 

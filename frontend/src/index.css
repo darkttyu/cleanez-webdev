@@ -72,6 +72,9 @@ td {
   font-weight  : 500;
   box-shadow   : 0 4px 4px #00000040;
   transition   : all 0.2s ease-out;
+  cursor       : pointer;
+  min-width    : 100px;
+  text-align   : center;
 }
 
 .act-btn.complete {
@@ -107,4 +110,27 @@ td {
   width   : 100%;
   position: absolute;
   z-index : -1;
+}
+
+h2 {
+  font-family: var(--font1);
+  font-size  : 24px;
+  font-weight: 700;
+  text-align : center;
+  color      : #20063B;
+}
+
+h3 {
+  font-family: var(--font1);
+  font-size  : 16px;
+  font-weight: 700;
+  text-align : center;
+}
+
+.tb-left {
+  text-align: left;
+}
+
+.tb-center {
+  text-align: center;
 }

@@ -1,4 +1,4 @@
-const InputPasswordConfirm = () => {
+const InputPasswordConfirm = ({value, onChange}) => {
     return (
         <div className="text-container">
             {/* INPUT HERE */}
@@ -7,7 +7,9 @@ const InputPasswordConfirm = () => {
             type="password" 
             placeholder="Confirm Password" 
             name="confirm-password-input" 
-            id="confirm-password-input" />
+            id="confirm-password-input" 
+            value={value}
+            onChange={(onChange)}/>
             {/* LABEL HERE */}
             <label 
             className="text-label"

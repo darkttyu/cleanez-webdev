@@ -11,7 +11,7 @@ import axios from 'axios';
 const BookingPage = () => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Context Authenticator
-    const {user} = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
     // --- Main Information Variables
     const [serviceList, setServicesList] = useState([]);
@@ -45,38 +45,44 @@ const BookingPage = () => {
     const [isInfoComplete, setIsInfoComplete] = useState(false);
 
     // Functions --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    // --- Checks if person is logged-in
-    useEffect(() => {
-        const validateAndRedirect = () => {
-            try {
-                if (
-                    user.firstName 
-                ) {
-                    setBookingInfo({
-                        ...bookingInfo,
-                        customerFirstName: user.firstName,
-                        customerLastName: user.lastName,
-                        phoneNumber: user.phoneNumber,
-                        address: {
-                            block: user.address.block,
-                            province: user.address.province,
-                            municipal: user.address.municipal,
-                            barangay: user.address.barangay
-                        }
-                    })
-                } else {
-                    throw new Error("Missing required fields");
-                }
-            } catch (e) {
-                console.log("Validation failed, User not signed in: ", e.message);
-                navigate('/login');
+    const validateAndRedirect = () => {
+        try {
+            if (user) {
+                setBookingInfo({
+                    ...bookingInfo,
+                    customerFirstName: user.firstName,
+                    customerLastName: user.lastName,
+                    phoneNumber: user.phoneNumber,
+                    address: {
+                        block: user.address.block,
+                        province: user.address.province,
+                        municipal: user.address.municipal,
+                        barangay: user.address.barangay
+                    }
+                })
+            } else {
+                throw new Error("Missing required fields");
             }
+        } catch (e) {
+            console.log("Validation failed, User not signed in: ", e.message);
+            navigate('/login');
         }
+    }
 
-        validateAndRedirect();
-
+    useEffect(() => {
         document.title = "CleanEZ | Booking"
     }, [])
+
+    // --- Checks if person is logged-in
+    useEffect(() => {
+        if (user) {
+            validateAndRedirect();
+        } else {
+            navigate('/login');
+        }
+
+    }, [user])
+
 
     // --- Fetches all Service Type Data
     useEffect(() => {
@@ -176,7 +182,7 @@ const BookingPage = () => {
             console.log("Passed Data: ", bookingInfo); 
             console.log("Booking Completed:", response.data.message);
             
-            navigate(`/booking/success`);
+            navigate(`success`);
         } catch (error) {
             if (error.response) {
                 // Server responded with a status other than 200 range
@@ -196,7 +202,7 @@ const BookingPage = () => {
     return (  
         <>
             <nav className="navbar">
-                <Link to={user ? `/home/${user._id}` : "/home"}>
+                <Link to="/home">
                     <img className="nav-logo" src={NavLogo} alt="Logo" />
                 </Link>
                 <div className='nav-divider'></div>

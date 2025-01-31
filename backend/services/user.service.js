@@ -58,11 +58,9 @@ export const updateUser = async(id, body, profile) => {
               updatedData.profilePicture = profile;
             }
 
-          
           const updatedUserInfo = await User.findByIdAndUpdate(id, updatedData, { new: true });
-          console.log(updatedUserInfo);
             if(!updatedUserInfo) {
-              throw new Error("Error in Updating User Information.");
+              throw new Error("Bad Request. Error in Updating User Information.");
             }
 
             const updatedUser = {
@@ -218,7 +216,7 @@ export const markAppointmentAsCancelled = async(appointmentId) => {
     ).lean();
 
     // Increases the Count of Cancellations Made
-    const increaseFlagCount = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       appointment.userId,
       {
         $inc: { cancelledAppointment: 1 }
@@ -244,10 +242,12 @@ export const markAppointmentAsCancelled = async(appointmentId) => {
                   }
                 }
               )
+              // SEND CANCELLATION TO WORKERS
               console.log("Updated Worker Assigned Appointment");
             }
         }
 
+        // SEND CANCELLATION EMAL TO USER
         return cancelledAppointment;
 };
 
@@ -315,7 +315,7 @@ export const viewAllAppointments = async(id) => {
   // Filters the appointment information to get only needed data from each appointment.
   const filteredAppointments = await Promise.all(
     userAppointments.map(async (appointment) => {
-      const { _id, serviceDetails, scheduleDetails, appointmentRating, appointmentStatus,  } = await Appointment.findById(appointment._id)
+      const { _id, serviceDetails, scheduleDetails, appointmentRating, appointmentStatus,  paymentStatus } = await Appointment.findById(appointment._id)
 
         // Slices the date to a more readable format (eg. 2025-01-01)
         let slicedDate ='';
@@ -329,6 +329,7 @@ export const viewAllAppointments = async(id) => {
               scheduledTime: scheduleDetails.time,
               rating: appointmentRating,
               appointmentStatus,
+              paymentStatus
             }
     })
   )

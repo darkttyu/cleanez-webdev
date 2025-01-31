@@ -1,5 +1,5 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-import AppointmentInfo from "../../components/AppointmentInfo";
+import UserAppointmentInfo from "../../components/UserAppointmentInfo";
 import RatingBox from "../../components/RatingBox";
 // --- Other/React Import/s
 import { useEffect, useState } from "react";
@@ -34,8 +34,6 @@ const UserAppointments = () => {
     }
 
     useEffect(() => {
-        
-
         fetchAppointments();
     }, [])
 
@@ -58,7 +56,7 @@ const UserAppointments = () => {
             fetchAppointments={fetchAppointments}/> :
             <></>
             }
-            {showAppInfo ? <AppointmentInfo appID={appID} setShowAppInfo={setShowAppInfo}/> : <></>}
+            {showAppInfo ? <UserAppointmentInfo appID={appID} setShowAppInfo={setShowAppInfo}/> : <></>}
             <div className="dashboard-page">
                 <section className="dashboard-upcoming-container">
                     <h2>Appointments History</h2>
@@ -69,7 +67,8 @@ const UserAppointments = () => {
                                     <th className="dashboard-th">Service</th>
                                     <th className="dashboard-th">Date</th>
                                     <th className="dashboard-th">Rating</th>
-                                    <th className="dashboard-th">Status</th>
+                                    <th className="dashboard-th">Appointment</th>
+                                    <th className="dashboard-th">Payment</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,6 +85,12 @@ const UserAppointments = () => {
                                         <div className={`dashboard-status 
                                         ${String(data.appointmentStatus).toLowerCase()}`}>
                                             {data.appointmentStatus}
+                                        </div>
+                                    </td>
+                                    <td className="dashboard-tbody-td ">
+                                        <div className={`dashboard-status 
+                                        ${String(data.paymentStatus).toLowerCase()}`}>
+                                            {data.paymentStatus}
                                         </div>
                                     </td>
                                 </tr>

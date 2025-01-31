@@ -1,14 +1,22 @@
-import { fetchAppointments, fetchWorker, markAppointment, 
+import { fetchAppointments, fetchWorker, fetchWorkerDetails, markAppointment, 
   updateWorker, updateWorkerService, viewAppointment } from "../services/worker.service.js";
 
 // Profile
 export const getWorkerAccountInformation = async (req, res) => {
-
   try {
     const worker = await fetchWorker(req.userId);
     return res.status(200).json({success: true, message: "Fetched User Information", user: worker});
   } catch (error) {
     return res.status(400).json({success: false, message: error.message });
+  }
+};
+
+export const getWorkerDetails = async (req, res) => {
+  try {
+    const workerDetails = await fetchWorkerDetails(req.userId);
+    return res.status(200).json({success: true, message: "Fetched Worker Information.", worker: workerDetails})
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message});
   }
 };
 

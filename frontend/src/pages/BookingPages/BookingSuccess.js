@@ -11,7 +11,7 @@ const BookingSuccess = () => {
     return (  
         <>
             <nav className="navbar">
-                <Link to={user ? `/home/${user._id}` : "/home"}>
+                <Link to="/home">
                     <img className="nav-logo" src={NavLogo} alt="Logo" />
                 </Link>
                 <div className='nav-divider'></div>
@@ -30,7 +30,7 @@ const BookingSuccess = () => {
                         <br/>
                         Please check your email for details.</p>
                     </div>
-                    <Link to={user ? `/home/${user._id}` : "/home"}>
+                    <Link to="/home">
                         Go back to Home
                     </Link>
                 </div>

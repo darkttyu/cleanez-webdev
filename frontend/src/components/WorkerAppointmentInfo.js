@@ -3,7 +3,7 @@ import axios from "axios";
 import SVGIcons from "../SVGIcons";
 
 
-const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointment, completeAppointment}) => {
+const WorkerAppointmentInfo  = ({appID, setShowAppInfo, paidAppointment}) => {
     const [data, setData] = useState({
         _id: "",
         userId: "",
@@ -39,9 +39,17 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
     useEffect(() => {
         const fetchAppointment = async (id) => {
             try {
-                const response = await axios.get(`https://cleanez-api.vercel.app/api/user/viewAppointment/${id}`);
-    
-                setData(response.data.data);
+                const userresponse = await axios.get(`http://localhost:5000/api/user/viewAppointment/${id}`);
+                
+                const token = localStorage.getItem("token");
+                const workerresponse = await axios.get(`http://localhost:5000/api/worker/viewWorkerAppointment/${id}`,{
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("User", userresponse.data.data);
+                console.log("Worker", workerresponse.data.data);
+                setData(userresponse.data.data);
             } catch (e) {
                 console.log(e);
             }
@@ -50,43 +58,20 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
         fetchAppointment(appID);
     }, [])
 
-    const showActionButtons = (currStatus, currRating) => {
-        const status = String(currStatus).toLowerCase();
+    const showActionButtons = (currPayment) => {
+        const pymt = String(currPayment).toLowerCase();
 
-        if (status === "completed" && currRating === 0) {
+        if (pymt === "cancelled" || pymt === "paid") {
+            return (
+                <></>
+            );
+        } else if (pymt === "pending") {
             return (
                 <button 
-                className="act-btn rate"
-                onClick={(e) => {
-                    setShowAppInfo(false);
-                    setShowRating(true);
-                }}>
-                    Rate Workers
-                </button>
-            );
-        }
-        else if (status === "completed" && currRating > 0) {
-            return (
-                <></>
-            );
-        } else if (status === "cancelled") {
-            return (
-                <></>
-            );
-        } else if (status === "scheduled") {
-            return (
-                <>
-                    <button 
-                    className="act-btn cancel"
-                    onClick={(e) => cancelAppointment(appID)}>
-                        Cancel Appointments
-                    </button>
-                    <button 
                     className="act-btn complete"
-                    onClick={(e) => completeAppointment(appID)}>
-                        Mark as Complete
-                    </button>
-                </>
+                    onClick={(e) => paidAppointment(appID)}>
+                        Mark as Paid
+                </button>
             );
         }
     }
@@ -112,7 +97,7 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
                     {/* Personal Information */}
                     <section className="appointment-data-box">
                         <div className="appointment-data-line">
-                            <p className="title">Full Name</p>
+                            <p className="title">Client Name</p>
                             <div className="data">
                                 <p>{data.customerFirstName} {data.customerLastName}</p>
                             </div>
@@ -192,7 +177,7 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
                         color="#222222"/>
                     </button>
                     <div className="appointment-actions">
-                        {showActionButtons(data.appointmentStatus, data.appointmentRating)}
+                        {showActionButtons(data.paymentStatus)}
                     </div>
                 </div>
             </section>
@@ -200,4 +185,4 @@ const AppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointmen
     );
 }
  
-export default AppointmentInfo;
+export default WorkerAppointmentInfo;

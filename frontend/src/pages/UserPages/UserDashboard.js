@@ -1,5 +1,5 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-import AppointmentInfo from "../../components/AppointmentInfo";
+import UserAppointmentInfo from "../../components/UserAppointmentInfo";
 import RatingBox from "../../components/RatingBox";
 // --- Other/React Import/s
 import { useEffect, useState } from "react";
@@ -86,7 +86,7 @@ const UserDashboard = () => {
             <></>
             }
             {showAppInfo ? 
-            <AppointmentInfo 
+            <UserAppointmentInfo 
             appID={appID} 
             setShowAppInfo={setShowAppInfo}
             setShowRating={setShowRating}
@@ -114,27 +114,39 @@ const UserDashboard = () => {
                                     <th className="dashboard-th">Date</th>
                                     <th className="dashboard-th">Time</th>
                                     <th className="dashboard-th">Rating</th>
-                                    <th className="dashboard-th">Status</th>
+                                    <th className="dashboard-th">Appointment</th>
+                                    <th className="dashboard-th">Payment</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {upcomingData.upcomingAppointment.map((data, index) => (
-                                <tr 
-                                key={index} 
-                                className="dashboard-tbody-tr"
-                                onClick={(e) => {
-                                    showAppointment(data._id)}}>
-                                    <td className="dashboard-tbody-td">{data.serviceDetails}</td>
-                                    <td className="dashboard-tbody-td">{data.scheduledDate.replaceAll('-', '/')}</td>
-                                    <td className="dashboard-tbody-td">{data.scheduledTime}</td>
-                                    <td className="dashboard-tbody-td">{data.rating}</td>
-                                    <td className="dashboard-tbody-td ">
-                                        <div className={`dashboard-status 
-                                        ${String(data.appointmentStatus).toLowerCase()}`}>
-                                            {data.appointmentStatus}
-                                        </div>
-                                    </td>
-                                </tr>
+                                !(data.paymentStatus === "Paid" ||
+                                 data.appointmentStatus === "Cancelled"
+                                ) ? 
+                                    <tr 
+                                    key={index} 
+                                    className="dashboard-tbody-tr"
+                                    onClick={(e) => {
+                                        showAppointment(data._id)}}>
+                                        <td className="dashboard-tbody-td">{data.serviceDetails}</td>
+                                        <td className="dashboard-tbody-td">{data.scheduledDate.replaceAll('-', '/')}</td>
+                                        <td className="dashboard-tbody-td">{data.scheduledTime}</td>
+                                        <td className="dashboard-tbody-td">{data.rating}</td>
+                                        <td className="dashboard-tbody-td ">
+                                            <div className={`dashboard-status 
+                                            ${String(data.appointmentStatus).toLowerCase()}`}>
+                                                {data.appointmentStatus}
+                                            </div>
+                                        </td>
+                                        <td className="dashboard-tbody-td ">
+                                            <div className={`dashboard-status 
+                                            ${String(data.paymentStatus).toLowerCase()}`}>
+                                                {data.paymentStatus}
+                                            </div>
+                                        </td>
+                                    </tr> :
+                                    <>
+                                    </>
                             ))}
                             </tbody>
                         </table>
