@@ -83,7 +83,7 @@ const ApplicationPage = () => {
     useEffect(() => {
         const fetchServicesList = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/appointment/getServices`, {
+                const response = await axios.get(`https://cleanez-api.vercel.app/api/appointment/getServices`, {
                     headers: { 
                         'Content-Type': 'application/json',
                     }
@@ -166,7 +166,7 @@ const ApplicationPage = () => {
             const formData = await updateData(applicantInfo, selectedFiles);
 
             const response = await axios.post(
-                `http://localhost:5000/api/applicant/submitApplicationForm`,
+                `https://cleanez-api.vercel.app/api/applicant/submitApplicationForm`,
                 formData,
                 {
                     headers: { 

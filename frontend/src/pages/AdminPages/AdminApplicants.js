@@ -10,7 +10,7 @@ const AdminApplicants = () => {
 
     const fetchAllApplicants = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/getAllApplicants`);
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/getAllApplicants`);
 
             setAllApplicantList(response.data.applicants)
         } catch (e) {

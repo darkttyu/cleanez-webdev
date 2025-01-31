@@ -39,10 +39,10 @@ const WorkerAppointmentInfo  = ({appID, setShowAppInfo, paidAppointment}) => {
     useEffect(() => {
         const fetchAppointment = async (id) => {
             try {
-                const userresponse = await axios.get(`http://localhost:5000/api/user/viewAppointment/${id}`);
+                const userresponse = await axios.get(`https://cleanez-api.vercel.app/api/user/viewAppointment/${id}`);
                 
                 const token = localStorage.getItem("token");
-                const workerresponse = await axios.get(`http://localhost:5000/api/worker/viewWorkerAppointment/${id}`,{
+                const workerresponse = await axios.get(`https://cleanez-api.vercel.app/api/worker/viewWorkerAppointment/${id}`,{
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

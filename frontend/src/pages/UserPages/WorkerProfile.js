@@ -194,7 +194,7 @@ const WorkerProfile = () => {
             const formData = await updateData(accountInfo, profileFile);
 
             const updateResponse = await 
-            axios.put(`http://localhost:5000/api/worker/editWorkerAccountInformation`, 
+            axios.put(`https://cleanez-api.vercel.app/api/worker/editWorkerAccountInformation`, 
                 formData, 
                 {
                     headers: { 
@@ -205,7 +205,7 @@ const WorkerProfile = () => {
 
             console.log(updateResponse);
             
-            const getResponse = await axios.get(`http://localhost:5000/api/worker/getWorkerAccountInformation`,
+            const getResponse = await axios.get(`https://cleanez-api.vercel.app/api/worker/getWorkerAccountInformation`,
                 {
                     headers: { 
                         'Authorization': `Bearer ${token}`
