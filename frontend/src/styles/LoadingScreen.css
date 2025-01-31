@@ -1,0 +1,67 @@
+.loading-screen {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+    position       : fixed;
+    width          : 100%;
+    height         : 100%;
+    z-index        : 9999;
+    transition     : opacity 0.5s ease-in-out;
+}
+
+.loading-screen.fade-out {
+    opacity       : 0;
+    pointer-events: none;
+}
+
+.loading-screen.bg-green {
+    background-color: #06E36D;
+}
+
+.ellipse-loading {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+    gap            : 16px;
+}
+
+@keyframes ellipseAnimation {
+    0% {
+        transform: translateY(0);
+    }
+
+    80% {
+        transform: translateY(100%);
+    }
+
+    100% {
+        transform: translateY(-10%);
+    }
+}
+
+.ellipse-container {
+    display    : flex;
+    align-items: center;
+    height     : 20px;
+    animation  : ellipseAnimation 1s ease-in-out infinite;
+}
+
+.ellipse-container:nth-of-type(2) {
+    animation-delay: 0.25s;
+}
+
+.ellipse-container:nth-of-type(3) {
+    animation-delay: 0.50s;
+}
+
+.ellipse-container:nth-of-type(4) {
+    animation-delay: 0.75s;
+}
+
+.ellipse-loading .ellipse {
+    background-color: #20063B;
+    aspect-ratio    : 1/1;
+    height          : 16px;
+    border-radius   : 16px;
+
+}

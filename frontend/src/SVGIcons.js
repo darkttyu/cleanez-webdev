@@ -1,4 +1,4 @@
-const SVGIcons = ({selected, size, color, strokewidth, stroke, onClick}) => {
+const SVGIcons = ({selected, size, color, strokewidth, stroke, onClick, className}) => {
      const icons = {
           linkedin: {
                viewBox: "0 0 30 30",
@@ -97,6 +97,10 @@ const SVGIcons = ({selected, size, color, strokewidth, stroke, onClick}) => {
           circleCross: {
                viewBox: "0 0 16 16",
                path: <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z" fill={color}/>
+          },
+          loadingCat1: {
+               viewBox: "0 0 197 199",
+               path: <path d="M21.0074 116.324C29.0074 78.3238 53.6741 59.1572 65.0074 54.3238C65.0074 40.8238 96.0073 -8.67617 108.007 1.32383C120.007 11.3238 119.507 24.8238 123.007 44.3238C178.507 57.8238 183.507 92.8238 186.007 102.324C197.007 103.324 197.007 119.324 196.007 125.824C195.007 132.324 162.507 133.324 156.507 133.324C156.507 180.324 183.507 173.824 175.007 184.824C168.207 193.624 152.507 190.157 145.507 187.324C140.174 190.99 125.207 198.424 108.007 198.824C86.5073 199.324 60.0073 185.324 50.5073 181.324C41.0073 177.324 13.0073 165.324 13.5073 160.324C13.9073 156.324 20.3407 151.99 23.5074 150.324C15.5074 149.49 -0.392593 146.824 0.00740729 142.824C0.507407 137.824 10.5074 128.324 21.0074 116.324Z" fill={color}/>
           }
      }
 
@@ -108,6 +112,7 @@ const SVGIcons = ({selected, size, color, strokewidth, stroke, onClick}) => {
 
      return (  
           <svg
+               className= {className? className : ''}
                strokeWidth = {strokewidth? strokewidth : 0}
                stroke = {stroke? stroke : ""}
                width = {size}
