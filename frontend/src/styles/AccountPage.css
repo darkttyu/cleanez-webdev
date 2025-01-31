@@ -656,3 +656,9 @@
     justify-content: center;
     gap            : 24px;
 }
+
+.check-cross-actions {
+    display        : flex;
+    justify-content: space-around;
+    align-items    : center;
+}
