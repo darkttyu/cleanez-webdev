@@ -1,25 +1,36 @@
 import { useEffect, useState } from "react";
+import SVGIcons from "../../SVGIcons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const AdminApplicants = () => {
+    const navigate = useNavigate();
+
     const [allApplicantList, setAllApplicantList] = useState([]);
     const [currentList, setCurrentList] = useState([])
 
-    const navigate = useNavigate();
+    const [currentPage, setCurrentPage] = useState(1);
 
-    const fetchAllApplicants = async () => {
+    const [searchWord, setSearchWord] = useState('');
+
+    const fetchAllApplicants = async (page, size = 10, search = '') => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/getAllApplicants`);
+            const response = await axios.get(`http://localhost:5000/api/admin/getAllApplicants`,
+                {params: { 
+                    page: page, 
+                    pageSize: size ,
+                    keyword: search}
+                }
+            );
 
-            setAllApplicantList(response.data.applicants)
+            setAllApplicantList(response.data.applicants);
         } catch (e) {
             console.log(e);
         }
     }
 
     useEffect(() => {
-        fetchAllApplicants();
+        fetchAllApplicants(1, 10, searchWord);
     }, [])
 
     useEffect(() => {
@@ -31,12 +42,21 @@ const AdminApplicants = () => {
         // console.log("Current List: ", currentList)
     }, [currentList])
 
-    const handleSearch = (search) => {
-        setCurrentList(allApplicantList.filter((applicant) => 
-            applicant.firstName.toLowerCase().includes(search.toLowerCase()) || 
-            applicant.lastName.toLowerCase().includes(search.toLowerCase())
-        ));
-    };
+    const handlePages = (destination) => {
+        if (destination === "next" && !(currentList.length === 0 || currentList.length < 10)) {
+            setCurrentPage(currentPage + 1)
+        } else if (destination === "prev" && currentPage != 1) {
+            setCurrentPage( currentPage - 1)
+        }
+    }
+
+    useEffect(() => {
+        fetchAllApplicants(1, 10, searchWord);
+    }, [searchWord])
+
+    useEffect(() => {
+        fetchAllApplicants(currentPage, 10, searchWord);
+    }, [currentPage])
 
 
     return (  
@@ -49,7 +69,7 @@ const AdminApplicants = () => {
                     className="dashboard-searchbar"
                     name="dashboard-searchbar" 
                     id="dashboard-searchbar" 
-                    onChange={(e) => handleSearch(e.target.value)}/>
+                    onChange={(e) => setSearchWord(e.target.value)}/>
                 </div>
                 <div className="dashboard-list-container">
                     <table className="dashboard-list-table">
@@ -80,6 +100,19 @@ const AdminApplicants = () => {
                        
                         </tbody>
                     </table>
+                    <div className="dashboard-list-navigation">
+                        <SVGIcons 
+                        selected="previousArrow"
+                        size="32px"
+                        color="#222222"
+                        onClick={(e) => handlePages("prev")}/>
+                        <h2>{currentPage}</h2>
+                        <SVGIcons 
+                        selected="forwardArrow"
+                        size="32px"
+                        color="#222222"
+                        onClick={(e) => handlePages("next")}/>
+                    </div>
                 </div>
             </section>
         </div>
