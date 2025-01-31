@@ -19,7 +19,8 @@ const AdminWorker = () => {
                 {params: { 
                     page: page, 
                     pageSize: size ,
-                    keyword: search}
+                    keyword: search
+                }
                 }
             );
 
