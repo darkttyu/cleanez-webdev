@@ -259,92 +259,10 @@ export const rejectApplicant = async (req, res) => {
   }
 };
 
-// Dashboard Controllers 
-export const getWorkerCount = async (req, res) => {
-  try {
-    const activeWorkers = await User.countDocuments({role: "Worker", status: "Active"});
-    return res.status(200).json({success: true, count: activeWorkers})
-  } catch (error) {
-    return res.status(500).json({success: false, error: error});
-  }
-};
-
-export const getYearlyEarnings = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getMonthlyEarnings = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getWeeklyEarnings = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getYearlyAppointments = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getMontlyAppointment = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getWeeklyAppointment = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getYearlyEarningsByService = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getMonthlyEarningsByService = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getWeeklyEarningsByService = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
 // Appointments
 export const getAppointments = async (req, res) => {
   try {
-    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10, keyword = ''} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
@@ -353,7 +271,7 @@ export const getAppointments = async (req, res) => {
     // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
     const arrayIndex = (page - 1) * pageSize
 
-    const appointment = await fetchAppointments(arrayIndex, pageSize);
+    const appointment = await fetchAppointments(arrayIndex, pageSize, keyword);
       if(appointment){
         return res.status(200).json({success: true, message: "Fetched Appointments List.", appointmentList: appointment});
       }

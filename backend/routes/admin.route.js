@@ -1,8 +1,7 @@
 import express from 'express';
 import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, 
   findAllUsers, findAllWorkers, clickedWorker, editWorkerSchedule, 
-  deleteWorker, insertService, 
-  getWorkerCount, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant,
+  deleteWorker, insertService, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant,
   getUserDetails,
   updateWorkerStatus,
   updateUserStatus,
@@ -14,9 +13,6 @@ import { addUser, addWorker, clickedUser, deleteUser, editUserInfo,
 import { uploadProfile } from "../middleware/profileUpload.js";
 
 const router = express.Router();
-
-// Dashboard Tab
-router.get("/getWorkerCount", getWorkerCount);
 
 // Appointments Tab
 router.get("/getAppointments", getAppointments);

@@ -593,9 +593,10 @@ export const fetchApplicants = async(arrayIndex, pageSize, keyword) => {
     .lean();
   } else {
     applicantList = await User.find({
+      role: "Applicant",
       $or: [
-        { customerFirstName: { $regex: keyword, $options: "i"}}, 
-        { customerLastName: { $regex: keyword, $options: "i"}}
+        { firstName: { $regex: keyword, $options: "i"}}, 
+        { lastName: { $regex: keyword, $options: "i"}}
       ]
     }).skip(arrayIndex).limit(pageSize).lean();
   }
