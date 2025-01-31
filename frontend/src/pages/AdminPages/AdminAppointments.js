@@ -13,9 +13,15 @@ const AdminAppointments = () => {
 
     const [searchWord, setSearchWord] = useState('');
 
-    const fetchAllAppointments = async () => {
+    const fetchAllAppointments = async (page, size=10, search='') => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/getAppointments`);
+            const response = await axios.get(`http://localhost:5000/api/admin/getAppointments`,
+                {params: { 
+                    page: page, 
+                    pageSize: size ,
+                    keyword: search}
+                }
+            );
 
             setAppointmentList(response.data.appointmentList);
         } catch (e) {
@@ -33,12 +39,24 @@ const AdminAppointments = () => {
     }
 
     useEffect(() => {
-        fetchAllAppointments();
+        fetchAllAppointments(1, 10, searchWord);
     }, []);
 
     useEffect(() => {
         setCurrentList(AppointmentList);
     }, [AppointmentList])
+
+    useEffect(() => {
+        // console.log("Current List: ", currentList)
+    }, [currentList])
+
+    useEffect(() => {
+        fetchAllAppointments(1, 10, searchWord);
+    }, [searchWord])
+
+    useEffect(() => {
+        fetchAllAppointments(currentPage, 10, searchWord);
+    }, [currentPage])
 
     return (  
         <div className="dashboard-page">
