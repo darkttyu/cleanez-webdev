@@ -32,7 +32,7 @@ export const fetchWorkers = async(arrayIndex, pageSize) => {
       .skip(arrayIndex)
       .limit(pageSize)
       .populate({
-        path: "user", // Populates user data (firstName, lastName, address, status).
+        path: "userId", // Populates user data (firstName, lastName, address, status).
         select: "firstName lastName address status",
       })
       .select("serviceCategory totalEarnings"); // Selects only specified fields from Worker.
@@ -226,7 +226,7 @@ export const updateStatus = async(userId) => {
 };
 
 export const serviceDeleteWorker = async(userId) => {
-  const checkWorkerAppointment = await Worker.findOne({userId: userid});
+  const checkWorkerAppointment = await Worker.findOne({userId: userId});
     if(checkWorkerAppointment.assignedAppointments.length > 0){
       throw new Error("Cannot Delete Worker. Worker still has Assigned Appointments")
     }
