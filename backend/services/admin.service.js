@@ -585,13 +585,13 @@ export const fetchApplicants = async(arrayIndex, pageSize, keyword) => {
         { customerFirstName: { $regex: keyword, $options: "i"}}, 
         { customerLastName: { $regex: keyword, $options: "i"}}
       ]
-    }).skip(arrayIndex).skip(pageSize).lean();
+    }).skip(arrayIndex).limit(pageSize).lean();
   }
 
     if(!applicantList){
       throw new Error("Bad Request. Error Fetching Applicant List");
     }
-    
+
     return applicantList;
 };
 
