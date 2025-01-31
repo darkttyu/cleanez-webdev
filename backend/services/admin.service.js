@@ -46,7 +46,8 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
 
     return workers;
   } else {
-    const filteredWorkers = await Worker.find().skip(arrayIndex)
+    const filteredWorkers = await Worker.find()
+      .skip(arrayIndex)
       .limit(pageSize)
       .populate({
         path: "userId", // Populates user data (firstName, lastName, address, status).
