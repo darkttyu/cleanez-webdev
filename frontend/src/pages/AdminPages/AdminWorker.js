@@ -3,7 +3,7 @@ import SVGIcons from "../../SVGIcons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const AdmindWorker = () => {
+const AdminWorker = () => {
     const navigate = useNavigate();
     
     const [allWorkerList, setAllWorkerList] = useState([]);
@@ -34,12 +34,12 @@ const AdmindWorker = () => {
     }, [])
 
     useEffect(() => {
-        console.log("All Worker List: ", allWorkerList);
+        // console.log("All Worker List: ", allWorkerList);
         setCurrentList(allWorkerList);
     }, [allWorkerList])
 
     useEffect(() => {
-        console.log("Current List: ", currentList)
+        // console.log("Current List: ", currentList)
     }, [currentList])
 
     const handleDeleteButton = async (id) => {
@@ -151,4 +151,4 @@ const AdmindWorker = () => {
     );
 }
  
-export default AdmindWorker;
+export default AdminWorker;
