@@ -8,7 +8,7 @@ import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fe
 // Worker Controllers
 export const findAllWorkers = async (req, res) => {
   try {
-    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10, keyword = ''} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
@@ -17,7 +17,7 @@ export const findAllWorkers = async (req, res) => {
     // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
     const arrayIndex = (page - 1) * pageSize
 
-    const workers = await fetchWorkers(arrayIndex, pageSize);
+    const workers = await fetchWorkers(arrayIndex, pageSize, keyword);
     return res.status(200).json({ success: true, message: "Successfully Fetched Worker List", worker: workers});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

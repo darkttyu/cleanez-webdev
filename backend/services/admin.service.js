@@ -27,8 +27,10 @@ const formatTime = (time) => {
 };
 
 // Workers
-export const fetchWorkers = async(arrayIndex, pageSize) => {
-  const workers = await Worker.find()
+export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
+
+  if(keyword === ''){
+    const workers = await Worker.find()
       .skip(arrayIndex)
       .limit(pageSize)
       .populate({
@@ -42,7 +44,28 @@ export const fetchWorkers = async(arrayIndex, pageSize) => {
         throw new Error("Workers not Found");
       }
 
-  return workers;
+    return workers;
+  } else {
+    const filteredWorkers = await Worker.find({
+      $or: [
+        { firstName: { $regex: keyword, $options: "i" }},
+        { lastName: { $regex: keyword, $options: "i" }}
+      ]
+    }).skip(arrayIndex)
+      .limit(pageSize)
+      .populate({
+        path: "userId", // Populates user data (firstName, lastName, address, status).
+        select: "firstName lastName address status",
+      })
+      .select("serviceCategory totalEarnings"); // Selects only specified fields from Worker.
+
+        if(!filteredWorkers){
+          throw new Error("No Worker Found.");
+        }
+
+        return filteredWorkers;
+  }
+  
 };
 
 export const fetchUsers = async() => {
