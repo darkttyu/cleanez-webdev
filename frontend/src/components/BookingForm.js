@@ -833,6 +833,16 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
 }
  
 const Review = ({bookingInfo}) => {
+    const getWorkerName = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:5000/api/appointment/getWorkerInformation/${id}`)
+
+            console.log(response);
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return (
         <div className="booking-page" id="review-booking-page">
             <h2>Review and Confirm your Information</h2>
@@ -878,7 +888,7 @@ const Review = ({bookingInfo}) => {
                     <p className="title">Workers</p>
                     <div className="data">
                         {bookingInfo.assignedWorkers.map((worker, index) => (
-                            <p key={index}>{worker}</p>
+                            <p key={index}>{getWorkerName(worker)}</p>
                         ))}
                     </div>
                 </div>

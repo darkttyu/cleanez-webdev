@@ -13,7 +13,7 @@ const AdminAppointments = () => {
 
     const [searchWord, setSearchWord] = useState('');
 
-    const fetchAllAppointments = async (page, size=10, search='') => {
+    const fetchAllAppointments = async (page, size, search) => {
         try {
             const response = await axios.get(`http://localhost:5000/api/admin/getAppointments`,
                 {params: { 
@@ -43,11 +43,12 @@ const AdminAppointments = () => {
     }, []);
 
     useEffect(() => {
+        console.log(AppointmentList);
         setCurrentList(AppointmentList);
     }, [AppointmentList])
 
     useEffect(() => {
-        // console.log("Current List: ", currentList)
+        console.log("Current List: ", currentList)
     }, [currentList])
 
     useEffect(() => {

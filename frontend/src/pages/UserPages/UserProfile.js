@@ -187,12 +187,11 @@ const UserProfile = () => {
     const handleProfileChange = (event) => {
         const file = event.target.files[0]
 
-        if (file) {
-            const imageURL = URL.createObjectURL(file);
+        const imageURL = URL.createObjectURL(file);
 
-            setProfileURL(imageURL);
-            setProfileFile(file)
-        }   
+        setProfileURL(imageURL);
+        setProfileFile(file)
+        
     }
 
     // --- Toggles Editing Mode on Button Click
@@ -209,6 +208,10 @@ const UserProfile = () => {
         provinceAuto();
         municipalAuto();
         barangayAuto();
+
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
     }
 
     const updateData = async (accInfo, profile) => {

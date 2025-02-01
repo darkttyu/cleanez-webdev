@@ -29,7 +29,8 @@ export const fetchUser = async(id) => {
 };
 
 export const updateUser = async(id, body, profile) => {
-  const { birthDate, gender, phoneNumber, email, block, province, municipal, barangay} = body;
+  const { birthDate, gender, phoneNumber, email, address} = body;
+  const { block, province,municipal, barangay} = address;
     const user = await User.findById({ _id: new Object(id) });
       if(!user){
         throw new Error("User does not exist");

@@ -35,7 +35,7 @@ const AdminWorker = () => {
     }, [])
 
     useEffect(() => {
-        // console.log("All Worker List: ", allWorkerList);
+        console.log("All Worker List: ", allWorkerList);
         setCurrentList(allWorkerList);
     }, [allWorkerList])
 
