@@ -833,6 +833,30 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
 }
  
 const Review = ({bookingInfo}) => {
+    const [workerNames, setWorkerNames] = useState([]);
+
+    useEffect(() => {
+        const fetchWorkerName = async () => {
+            const names = [];
+            for (let i = 0; i < bookingInfo.assignedWorkers.length; i++) {
+                try {
+                    const response = await axios.get(`http://localhost:5000/api/appointment/getWorkerInformation/${bookingInfo.assignedWorkers[i]}`);
+
+                    const first  = response.data.worker.userInformation.firstName;
+                    const last = response.data.worker.userInformation.lastName;
+
+                    names[i] = `${first} ${last}`;
+                } catch (e) {
+
+                    names[i] = `Unknown`;
+                }
+            }
+            setWorkerNames(names)
+        };
+
+        fetchWorkerName();
+    }, [bookingInfo.assignedWorkers])
+
     return (
         <div className="booking-page" id="review-booking-page">
             <h2>Review and Confirm your Information</h2>
@@ -877,7 +901,9 @@ const Review = ({bookingInfo}) => {
                 <div className="review-info-line">
                     <p className="title">Workers</p>
                     <div className="data">
-                        {bookingInfo.assignedWorkers.map((worker, index) => (
+                        {workerNames.length === 0 ?
+                        "Loading Workers..." :
+                        workerNames.map((worker, index) => (
                             <p key={index}>{worker}</p>
                         ))}
                     </div>

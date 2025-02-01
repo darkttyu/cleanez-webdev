@@ -73,8 +73,9 @@ const WorkerProfile = () => {
 
     // Tracks Account Info Changes
     useEffect(() => {
-        if (accountInfo) {
+        if (accountInfo && isDisabled) {
             setProfileURL(profileConvert(accountInfo.profilePicture.data.data));
+        } else if (accountInfo && !isDisabled){
             provinceAuto();
             municipalAuto();
             barangayAuto();
@@ -192,12 +193,11 @@ const WorkerProfile = () => {
     const handleProfileChange = (event) => {
         const file = event.target.files[0]
 
-        if (file) {
-            const imageURL = URL.createObjectURL(file);
+        const imageURL = URL.createObjectURL(file);
 
-            setProfileURL(imageURL);
-            setProfileFile(file)
-        }   
+        setProfileURL(imageURL);
+        setProfileFile(file)
+           
     }
 
     // --- Toggles Editing Mode on Button Click
@@ -214,6 +214,10 @@ const WorkerProfile = () => {
         provinceAuto();
         municipalAuto();
         barangayAuto();
+
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
     }
 
     const updateData = async (accInfo, profile) => {
