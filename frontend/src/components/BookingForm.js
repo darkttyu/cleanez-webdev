@@ -857,6 +857,22 @@ const Review = ({bookingInfo}) => {
         fetchWorkerName();
     }, [bookingInfo.assignedWorkers])
 
+    const convertTime = (time) => {
+        const hour = parseInt(time.slice(0, 2)); // Extract and convert the hour part to a number
+        const mins = time.slice(2); // Extract the minutes part as is
+    
+        if (hour === 0) {
+            return `12:${mins} AM`; // Midnight
+        } else if (hour < 12) {
+            return `${hour.toString().padStart(2, '0')}:${mins} AM`; // Morning
+        } else if (hour === 12) {
+            return `12:${mins} PM`; // Noon
+        } else {
+            const convertedHour = (hour - 12).toString().padStart(2, '0'); // Convert to 12-hour format and pad with 0
+            return `${convertedHour}:${mins} PM`; // Afternoon and evening
+        }
+    };
+
     return (
         <div className="booking-page" id="review-booking-page">
             <h2>Review and Confirm your Information</h2>
@@ -895,7 +911,7 @@ const Review = ({bookingInfo}) => {
                 <div className="review-info-line">
                     <p className="title">Time</p>
                     <div className="data">
-                        <p>{bookingInfo.scheduleDetails.startTime}</p>
+                        <p>{convertTime(bookingInfo.scheduleDetails.startTime)}</p>
                     </div>
                 </div>
                 <div className="review-info-line">
