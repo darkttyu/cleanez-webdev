@@ -710,7 +710,7 @@ export const USER_APTCANCELLATION_EMAIL = `
       <li><strong>Service:</strong> <span style="font-weight: bold; color: #4CAF50;">{serviceName}</span></li>
       <li><strong>Appointment Date:</strong> <span style="font-weight: bold; color: #4CAF50;">{appointmentDate}</span></li>
       <li><strong>Time:</strong> <span style="font-weight: bold; color: #4CAF50;">{appointmentTime}</span></li>
-      <li><strong>Location:</strong> <span style="font-weight: bold; color: #4CAF50;">{block} {barangay} {municipal} {province} </span></li>
+      <li><strong>Location:</strong> <span style="font-weight: bold; color: #4CAF50;">{block} {barangay} {municipal}, {province} </span></li>
     </ul>
     <p style="text-align: justify;">If this cancellation was made in error or if you wish to reschedule, please contact us at your earliest convenience.</p>
     <p>If you have any questions or need further assistance, feel free to reach out to us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a>.</p>
@@ -749,7 +749,7 @@ export const WORKER_APTCANCELLATION_EMAIL = `
       <li><strong>Service:</strong> <span style="font-weight: bold; color: #4CAF50;">{serviceName}</span></li>
       <li><strong>Appointment Date:</strong> <span style="font-weight: bold; color: #4CAF50;">{appointmentDate}</span></li>
       <li><strong>Time:</strong> <span style="font-weight: bold; color: #4CAF50;">{appointmentTime}</span></li>
-      <li><strong>Location:</strong> <span style="font-weight: bold; color: #4CAF50;">{appointmentAddress}</span></li>
+      <li><strong>Location:</strong> <span style="font-weight: bold; color: #4CAF50;">{block} {barangay} {municipal}, {province}</span></li>
       <li><strong>User:</strong> <span style="font-weight: bold; color: #4CAF50;">{customerFirstName} {customerLastName}</span></li>
     </ul>
     <p style="text-align: justify;">We apologize for any inconvenience this may cause. The appointment has been removed from your schedule. If you have any questions or concerns regarding this cancellation, please feel free to reach out to us.</p>

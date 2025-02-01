@@ -3,7 +3,7 @@ import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import { Service } from "../models/service.model.js";
 import moment from "moment";
-import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendWorkerPaidAppointmentEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail, sendUserAppointmentCancellationEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendWorkerPaidAppointmentEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail, sendUserAppointmentCancellationEmail, sendWorkerAppointmentCancellationEmail} from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import bcryptjs from 'bcryptjs';
 import * as generator from 'generate-password';

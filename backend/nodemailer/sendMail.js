@@ -315,7 +315,7 @@ export const sendUserAppointmentCancellationEmail = async(email, customerFirstNa
     const info = await transporter.sendMail({
       from: sender,
       to: [email],
-      subject: "APpointment cancellation Successful!",
+      subject: "Appointment Cancellation Successful!",
       html: USER_APTCANCELLATION_EMAIL.replace("{customerFirstName}", customerFirstName).replace("{customerLastName}", customerLastName)
         .replace("{serviceName}", serviceName).replace("{appointmentDate}", appointmentDate).replace("{appointmentTime}", appointmentTime)
         .replace("{block}", block).replace("{barangay}", barangay).replace("{municipal}", municipal).replace("{province}", province)
