@@ -920,11 +920,15 @@ export const fetchAppointment = async (appointmentId) => {
   let workerNames = [];
   for(const workerId of appointment.assignedWorkers){
     const worker = await Worker.findById(workerId);
+      if(!worker){
+        continue;
+      }
     const user = await User.findById(worker.userId);
-
-    workerNames.push(user.firstName + ' ' + user.lastName);
+    
+      if(user){
+        workerNames.push(user.firstName + ' ' + user.lastName);
+      }
   }
-
   const appointmentDetails = {
     customerFirstName: appointment.customerFirstName,
     customerLastName: appointment.customerLastName,
@@ -943,5 +947,6 @@ export const fetchAppointment = async (appointmentId) => {
     assignedWorkers: workerNames
   }
 
+  console.log(appointmentDetails)
   return appointmentDetails;
 };
