@@ -39,15 +39,18 @@ function App() {
 
     useEffect(() => {
         if (user) {
-            setRole(String(user.role).toLowerCase());
+            if (user.role) {
+                setRole(String(user.role).toLowerCase());
+            } else {
+                setRole(String(localStorage.getItem('role')).toLowerCase());
+            }            
         }
-        console.log("merp");
     }, [user])
 
     const setRoleRouting = () => {
-        console.log("Role Route: ",role)
+        console.log("Role Routing: ", role);
         if (role === "" || !role) {
-            return []
+            return ;
         } else if (role === "user" || role === "applicant") {
             return (
                 <>

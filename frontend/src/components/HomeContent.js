@@ -64,39 +64,40 @@ const Header = () => {
 }
 
 const Services = () => {
-const servicesContent = [
-    {
-        image: services1,
-        title: "Residential Cleaning",
-        desc: "Make your home shining, shimmering, splendid with CleanEZ Residential services. Our team will handle all the cleaning, leaving every corner of your home spotless and fresh, making it feel brand new.",
-        price: "₱1000"
-    }, {
-        image: services2,
-        title: "Deep Cleaning",
-        desc: "Turn your home to its best look with CleanEZ Deep Cleaning services. Designed for a thorough top-to-bottom clean, our service targets all dirts and grime that are missed during regular cleaning.",
-        price: "₱2000"
-    }, {
-        image: services3,
-        title: "Move-In/Out Cleaning",
-        desc: "With CleanEZs Moving Cleaning service, we aim to make this process of moving in and out easier, ensuring that your new space is in spectacular condition. Whether you are moving in or out, trust us to handle all the cleaning, so you don’t have to worry about anything.",
-        price: "₱2000"
-    }, {
-        image: services4,
-        title: "Post-Renovation Cleaning",
-        desc: "After a home renovation, your home may look stunning, but it often comes with leftover mess all over your home. With CleanEZs Post Renovation Cleaning service, we aim to transform your home into a fresh and new look, free from construction dust and residues.",
-        price: "₱5000"
-    }, {
-        image: services5,
-        title: "Office Cleaning",
-        desc: "A clean office provides a productive and healthy environment, and with our Office Cleaning service, we are here to help keep your workplaces spotless and professional, ensuring that it will be welcoming for clients, employees, and visitors alike.",
-        price: "₱1000"
-    }, {
-        image: services6,
-        title: "Window Cleaning",
-        desc: "Let the sunlight shine bright with CleanEZs Window Cleaning Service, we ensure that your windows will be spotless and crystal clear, giving your home or office a brighter, cleaner look inside and out.",
-        price: "₱500"
-    }
-];
+    const role = localStorage.getItem('role');
+    const servicesContent = [
+        {
+            image: services1,
+            title: "Residential Cleaning",
+            desc: "Make your home shining, shimmering, splendid with CleanEZ Residential services. Our team will handle all the cleaning, leaving every corner of your home spotless and fresh, making it feel brand new.",
+            price: "₱1000"
+        }, {
+            image: services2,
+            title: "Deep Cleaning",
+            desc: "Turn your home to its best look with CleanEZ Deep Cleaning services. Designed for a thorough top-to-bottom clean, our service targets all dirts and grime that are missed during regular cleaning.",
+            price: "₱2000"
+        }, {
+            image: services3,
+            title: "Move-In/Out Cleaning",
+            desc: "With CleanEZs Moving Cleaning service, we aim to make this process of moving in and out easier, ensuring that your new space is in spectacular condition. Whether you are moving in or out, trust us to handle all the cleaning, so you don’t have to worry about anything.",
+            price: "₱2000"
+        }, {
+            image: services4,
+            title: "Post-Renovation Cleaning",
+            desc: "After a home renovation, your home may look stunning, but it often comes with leftover mess all over your home. With CleanEZs Post Renovation Cleaning service, we aim to transform your home into a fresh and new look, free from construction dust and residues.",
+            price: "₱5000"
+        }, {
+            image: services5,
+            title: "Office Cleaning",
+            desc: "A clean office provides a productive and healthy environment, and with our Office Cleaning service, we are here to help keep your workplaces spotless and professional, ensuring that it will be welcoming for clients, employees, and visitors alike.",
+            price: "₱1000"
+        }, {
+            image: services6,
+            title: "Window Cleaning",
+            desc: "Let the sunlight shine bright with CleanEZs Window Cleaning Service, we ensure that your windows will be spotless and crystal clear, giving your home or office a brighter, cleaner look inside and out.",
+            price: "₱500"
+        }
+    ];
 
     return ( 
         <section className="main-section services" id="services">
@@ -112,7 +113,11 @@ const servicesContent = [
                             </div>
                             <div className="pricings">
                                 <p>Starts at <span>{service.price}</span></p>
-                                <a href="">Book Now</a>
+                                {role !== 'Worker' ?
+                                <a href="">Book Now</a> :
+                                <></>
+                                }
+                                
                             </div>
                         </div> 
                     </div>
