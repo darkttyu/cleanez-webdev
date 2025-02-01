@@ -916,7 +916,7 @@ export const fetchAppointment = async (appointmentId) => {
     },
     phoneNumber: appointment.phoneNumber,
     serviceCategory: appointment.serviceDetails.serviceCategory,
-    areaAssigned: appointment.serviceDetails.areaAssigned,
+    areaAssigned: appointment.serviceDetails.sizeOfArea,
     serviceCost: appointment.serviceCost,
     appointmentDate: slicedDate,
     appointmentTime: formattedTime,

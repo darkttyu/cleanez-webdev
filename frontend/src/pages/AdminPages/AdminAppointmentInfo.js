@@ -89,7 +89,7 @@ const AdminAppointmentInfo = () => {
                                 <input 
                                 className="input" 
                                 type="text"  
-                                value={''}
+                                value={appointmentInfo.areaAssigned}
                                 disabled/>
                             </div>
                             
