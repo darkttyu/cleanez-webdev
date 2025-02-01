@@ -31,6 +31,8 @@ const Header = () => {
         }
     ]
 
+    const role = localStorage.getItem("role");
+
     return (  
         <header className="main-section header" id="home">
             {/* Navigation Header */}
@@ -44,7 +46,7 @@ const Header = () => {
                                 <p>{content.subquote}</p>
                             </div>
                         </div>
-                        {index === 0 ? (
+                        {index === 0 && role !== 'Worker' ? (
                             <div className="header-button">
                                 <a href="#" className="button">Book Now</a>
                             </div>
