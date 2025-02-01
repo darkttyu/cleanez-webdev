@@ -683,7 +683,6 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
         }
     })
 
-
     // Function --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     //Sets the only needed data for fetching workers
     useEffect(() => {
@@ -752,15 +751,24 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
         if (bookingInfo.assignedWorkers) {
             setSelectedWorkers(bookingInfo.assignedWorkers);
         }
-    }, [workersList])
+    }, [])
 
     const workerSelect = (worker, isSelected) => {
-        if (isSelected) {
-            setSelectedWorkers(selectedWorkers.filter((w) => w !== worker._id))
-        }  else if (selectedWorkers.length != workerNumbers) {
-            setSelectedWorkers([...selectedWorkers, worker._id]);
-        }
-    }
+        setSelectedWorkers((prevSelected) => {
+            const updatedWorkers = isSelected
+                ? prevSelected.filter((w) => w !== worker._id)
+                : prevSelected.length < workerNumbers ? [...prevSelected, worker._id] : prevSelected;
+            
+            setBookingInfo((prev) => ({
+                ...prev,
+                assignedWorkers: updatedWorkers
+            }));
+    
+            return updatedWorkers;
+        });
+    };
+    
+
 
     useEffect(() => {
         if (selectedWorkers.length == workerNumbers){
