@@ -111,7 +111,7 @@ const AdminWorker = () => {
                                 </td>
                                 <td className="dashboard-tbody-td tb-left">{worker.serviceCategory}</td>
                                 <td className="dashboard-tbody-td tb-left">
-                                    {/* {worker.userId.address.barangay}, {worker.userId.address.municipal}, {worker.userId.address.province}  */}
+                                    {worker.userId.address.barangay}, {worker.userId.address.municipal}, {worker.userId.address.province} 
                                 </td>
                                 <td className="dashboard-tbody-td tb-left">&#8369; {parseFloat(worker.totalEarnings).toFixed(2)}</td>
                                 <td className="dashboard-tbody-td tb-center">
