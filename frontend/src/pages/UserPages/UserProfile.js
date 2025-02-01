@@ -63,8 +63,6 @@ const UserProfile = () => {
     }
 
     // Loads Data on DOM Load
-
-
     useEffect(() => {
         document.title = 'CleanEZ | Profile'
         fetchUserInfo();
