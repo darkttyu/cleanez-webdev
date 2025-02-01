@@ -12,7 +12,6 @@ export const getAccountInformation = async (req, res) => {
 };
 
 export const editAccountInformation = async (req, res) => {
-    console.log(req.body.accInfo)
     try {
       const accountInfo = JSON.parse(req.body.accInfo);
       const updatedUser = await updateUser(req.userId, accountInfo, req.files?.profile);
