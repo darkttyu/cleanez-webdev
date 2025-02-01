@@ -93,7 +93,7 @@ const AdminUsers = () => {
                     <button
                     type="button"
                     className="act-btn complete add-new"
-                    onClick={(e) => navigate('new')}>
+                    onClick={(e) => navigate('new-user')}>
                         Add New User
                     </button>
                 </div>

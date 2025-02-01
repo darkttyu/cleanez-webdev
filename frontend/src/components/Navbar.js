@@ -11,6 +11,8 @@ const Navbar = () => {
     const { user, setUser, logout } = useAuth(); // Access user from context
     const navigate = useNavigate();
 
+    const role = localStorage.getItem('role');
+
     const handleLogOut = async () => {
         try {
             const response = await axios.post(`http://localhost:5000/api/auth/logout`)
@@ -47,7 +49,9 @@ const Navbar = () => {
                 ) : (
                     <Link to="/login" className="nav-link">Login</Link>
                 )}
-                <Link to={user ? `/booking` : "/login"}className="nav-link book-btn">Book Now</Link>
+                {role !== 'Worker' ?
+                <Link to={user ? `/booking` : "/login"}className="nav-link book-btn">Book Now</Link> :
+                <></>}
             </div>
         </nav>
     );
