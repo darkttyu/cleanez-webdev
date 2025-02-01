@@ -776,7 +776,7 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
 
     return (
         <div className="booking-page" id="cleaners-booking-page">
-            <h2>Available Cleaners Need You</h2>
+            <h2>Available Cleaners Near You</h2>
             <p className='subheading'>Please Choose [ <strong>{selectedWorkers.length}</strong> / <strong>{workerNumbers}</strong> ] Workers</p>
             <div className="avail-workers-list">
                 {responseSuccess 
