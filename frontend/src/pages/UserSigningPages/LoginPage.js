@@ -58,7 +58,6 @@ const LoginPanel = ({route}) => {
     const handleLogInSubmission = async (e) => {
         e.preventDefault();
         // --- --- Successfull Login
-        console.log(loginCredentials);
         try {
             const response = await axios.post(`http://localhost:5000/api/auth/${route}`, loginCredentials, {
                 headers: { 'Content-Type': 'application/json' }

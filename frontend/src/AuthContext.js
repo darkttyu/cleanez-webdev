@@ -48,8 +48,8 @@ export const AuthProvider = ({ children }) => {
                 }
                 
                 if (isMounted) {
-                    console.log(response.data.user);
-                    setUser({...response.data.user});
+                    console.log(response.data.user.user);
+                    setUser({...response.data.user.user});
                 }
 
             } catch (e) {

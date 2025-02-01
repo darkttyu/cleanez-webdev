@@ -1,8 +1,9 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 // --- Component Import/s
 import header from "../../images/assets/bg-signing-nograin.svg"
+import SVGIcons from "../../SVGIcons";
 // --- Other/React Import/s
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../AuthContext";
 import {regions, provinces, cities, barangays} from "select-philippines-address";
 import axios from "axios";
@@ -10,8 +11,10 @@ import axios from "axios";
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const UserProfile = () => {
+    const inputRef = useRef();
+
     // --- Convert Binary Data to Profile URL
-    const profileConvert = (profile) => {
+    const profileConvert = async(profile) => {
 
         const binaryData = new Uint8Array(profile.data.data);
         const base64String = btoa(String.fromCharCode(...binaryData));
@@ -223,6 +226,15 @@ const UserProfile = () => {
         }
     }
 
+    const handleOnChange = (e) => {
+        const file = e.target.files[0]
+        setProfileURL(URL.createObjectURL(file));
+        setProfileFile(file)
+    }
+
+    const onChooseFile = () => {
+        inputRef.current.click();
+    }
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
@@ -232,15 +244,23 @@ const UserProfile = () => {
             <div className="profile-main">
                 <div className="profile-image-text">
                     <div className="profile-image-container">
+                        <input type="file" 
+                        className="profile-upload-input"
+                        accept="image/jpeg"
+                        style={{display: "none"}} 
+                        ref={inputRef}
+                        onChange={handleOnChange}/>
                         <img src={profileURL} alt="" className="profile-image"/>
                         {!isDisabled ? (
-                            <input type="file" 
-                            accept="image/jpeg"
-                            onChange={(e) => {
-                                const file = e.target.files[0]
-                                setProfileURL(URL.createObjectURL(file));
-                                setProfileFile(file)
-                            }}/>
+                            <button
+                            className="profile-upload-button" 
+                            type="button"
+                            onClick={onChooseFile}>
+                                <SVGIcons 
+                                selected="profileButton"
+                                size="60px"
+                                color="white"/>
+                            </button>  
                         ):(
                             <></>
                         )}
