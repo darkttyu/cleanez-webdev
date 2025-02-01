@@ -3,7 +3,7 @@ import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import { Service } from "../models/service.model.js";
 import moment from "moment";
-import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendWorkerPaidAppointmentEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendWorkerPaidAppointmentEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail, sendUserAppointmentCancellationEmail } from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import bcryptjs from 'bcryptjs';
 import * as generator from 'generate-password';
@@ -875,11 +875,33 @@ export const serviceMarkAppointmentAsCancelled = async (appointmentId) => {
               }
             )
             console.log("Updated Worker Assigned Appointment");
+            
+            let slicedDate = '';
+      
+              if (appointment.scheduleDetails.date instanceof Date) {
+                  slicedDate = appointment.scheduleDetails.date.toISOString().slice(0, 10);
+              }
+
+            const formattedTime = formatTime(appointment.scheduleDetails.startTime)
+            const user = await User.findById(workerInfo.userId);
+
             // SEND CANCELLATION EMAIL TO WORKERS
+            sendWorkerAppointmentCancellationEmail(user.email, user.firstName, user.lastName, appointment.serviceDetails.serviceCategory,
+              slicedDate, formattedTime, appointment.customerFirstName, appointment.customerLastName)
           }
       }
 
+      let slicedDate = '';
+      
+        if (appointment.scheduleDetails.date instanceof Date) {
+            slicedDate = appointment.scheduleDetails.date.toISOString().slice(0, 10);
+        }
+      const formattedTime = formatTime(appointment.scheduleDetails.startTime)
+      
+      const user = await User.findById(appointment.userId);
+
       // SEND CANCELLATION EMAIL TO USER
+      sendUserAppointmentCancellationEmail(user.email, appointment.customerFirstName, appointment.customerLastName, appointment.serviceDetails.serviceCategory, slicedDate, formattedTime, appointment.address.block, appointment.address.barangay, appointment.address.municipal, appointment.address.province)
       return true;
 };
 
