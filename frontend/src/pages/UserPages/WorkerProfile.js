@@ -83,6 +83,7 @@ const WorkerProfile = () => {
     }, [accountInfo])
     
 
+    
     // --- Fetches Address Data
     // --- --- Regions
     useEffect(() => {
