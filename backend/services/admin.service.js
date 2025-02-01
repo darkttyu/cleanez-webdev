@@ -946,7 +946,6 @@ export const fetchAppointment = async (appointmentId) => {
     appointmentTime: formattedTime,
     assignedWorkers: workerNames
   }
-
-  console.log(appointmentDetails)
+  
   return appointmentDetails;
 };
