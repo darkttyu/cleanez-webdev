@@ -442,8 +442,10 @@ export const getUser = async (userId) => {
 
 export const updateUser = async (userId, body, profile) => {
 
-  const { email, firstName, lastName, birthDate, gender, phoneNumber, address } = body
+  const { email, firstName, lastName, birthDate, gender, phoneNumber, address } = body;
+  const {block, municipal, province, barangay } = address;
 
+  console.log(profile);
   // Checks if the user exists
   const currentUser = await User.findOne({_id: new Object(userId)})
     if(!currentUser) {
@@ -478,19 +480,15 @@ export const updateUser = async (userId, body, profile) => {
       birthDate,
       gender,
       phoneNumber, 
-      address: {
-        "block": address.block,
-        "province": address.province,
-        "municipal": address.municipal,
-        "barangay": address.barangay
-      }
+      "address.block": block,
+      "address.province": province,
+      "address.municipal": municipal,
+      "address.barangay": barangay,
+      profilePicture: profile
     },
     { new: true}
   );
 
-    if(profile){
-      updatedUserInfo.profilePicture = profile;
-    }
       if(!updatedUserInfo) {
         throw new Error("Failed to update user.");
       }
