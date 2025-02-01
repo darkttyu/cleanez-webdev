@@ -39,18 +39,22 @@ export const AuthProvider = ({ children }) => {
                     response = await axios.get(`http://localhost:5000/api/user/getAccountInformation`,{
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
+                    if (isMounted) {
+                        console.log(response.data.user);
+                        setUser({...response.data.user});
+                    }
                 } else if (role === 'Worker') {
                     console.log("Log in in as a Worker");
                     response = await axios.get(`http://localhost:5000/api/worker/getWorkerAccountInformation`,{
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
-
+                    if (isMounted) {
+                        console.log(response.data.user.user);
+                        setUser({...response.data.user.user});
+                    }
                 }
                 
-                if (isMounted) {
-                    console.log(response.data.user.user);
-                    setUser({...response.data.user.user});
-                }
+                
 
             } catch (e) {
                 console.log(e);
