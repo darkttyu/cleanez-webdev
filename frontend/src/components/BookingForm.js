@@ -833,15 +833,29 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
 }
  
 const Review = ({bookingInfo}) => {
-    const getWorkerName = async (id) => {
-        try {
-            const response = await axios.get(`http://localhost:5000/api/appointment/getWorkerInformation/${id}`)
+    const [workerNames, setWorkerNames] = useState([]);
 
-            console.log(response);
-        } catch (e) {
-            console.log(e);
-        }
-    };
+    useEffect(() => {
+        const fetchWorkerName = async () => {
+            const names = [];
+            for (let i = 0; i < bookingInfo.assignedWorkers.length; i++) {
+                try {
+                    const response = await axios.get(`http://localhost:5000/api/appointment/getWorkerInformation/${bookingInfo.assignedWorkers[i]}`);
+
+                    const first  = response.data.worker.userInformation.firstName;
+                    const last = response.data.worker.userInformation.lastName;
+
+                    names[i] = `${first} ${last}`;
+                } catch (e) {
+
+                    names[i] = `Unknown`;
+                }
+            }
+            setWorkerNames(names)
+        };
+
+        fetchWorkerName();
+    }, [bookingInfo.assignedWorkers])
 
     return (
         <div className="booking-page" id="review-booking-page">
@@ -887,8 +901,10 @@ const Review = ({bookingInfo}) => {
                 <div className="review-info-line">
                     <p className="title">Workers</p>
                     <div className="data">
-                        {bookingInfo.assignedWorkers.map((worker, index) => (
-                            <p key={index}>{getWorkerName(worker)}</p>
+                        {workerNames.length === 0 ?
+                        "Loading Workers..." :
+                        workerNames.map((worker, index) => (
+                            <p key={index}>{worker}</p>
                         ))}
                     </div>
                 </div>
