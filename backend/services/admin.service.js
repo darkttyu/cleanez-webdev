@@ -782,7 +782,12 @@ export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
           paymentStatus: paymentStatus  
       };
   });
-    return filteredAppointments;
+    
+    const sortedAppointments = filteredAppointments.sort((a, b) => {
+      return new Date(a.date) - new Date(b.date)
+    })
+    
+    return sortedAppointments;
 };
 
 export const serviceMarkAppointmentAsCompleted = async (appointmentId) => {
