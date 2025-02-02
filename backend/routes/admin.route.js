@@ -8,7 +8,8 @@ import { addUser, addWorker, clickedUser, deleteUser, editUserInfo,
   getAppointments,
   markAppointmentAsComplete,
   markAppointmentAsCancelled,
-  getAppointment
+  getAppointment,
+  getEmails
 } from '../controllers/admin.controller.js';
 import { uploadProfile } from "../middleware/profileUpload.js";
 
@@ -47,6 +48,7 @@ router.put("/updateUserStatus/:id", updateUserStatus); // Sets Status of User to
 
 // router.put("/addField", addField);
 // router.put("/updateProfile", uploadProfile, updateProfile)
+router.get("/getEmails", getEmails);
 
 // Service 
 router.post("/insertService", insertService);

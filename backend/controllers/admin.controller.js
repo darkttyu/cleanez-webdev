@@ -362,3 +362,19 @@ export const addField = async (req, res) => {
 
 //   return res.status(200).json({success: true, message: updatedProfile})
 // }
+
+export const getEmails = async (req, res) => {
+  let emails = []
+  try {
+    const users = await User.find().lean();
+      if(!users) {
+        throw new Error("Users not Found")
+      }
+
+    emails = users.map(user => [user.email, user.role]);
+
+    return res.status(200).json({success: true, email: emails})
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message});
+  }
+};

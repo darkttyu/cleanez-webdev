@@ -949,3 +949,4 @@ export const fetchAppointment = async (appointmentId) => {
   
   return appointmentDetails;
 };
+
