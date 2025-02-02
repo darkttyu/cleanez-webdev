@@ -76,6 +76,7 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
         { $limit: pageSize },
         {
           $project: {
+            "userId._id": 1,
             "userId.firstName": 1,
             "userId.lastName": 1,
             "userId.address": 1, 
