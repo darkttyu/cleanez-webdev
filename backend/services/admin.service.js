@@ -42,7 +42,17 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
         throw new Error("Bad Request. Workers not Found");
       }
 
-    return workers;
+    const sortedWorkers = workers.sort((a, b) => {
+      if (a.serviceCategory < b.serviceCategory){
+        return -1;
+      } else if (a.serviceCategory > b.serviceCategory) {
+        return 1;
+      } else {
+        return 0;
+      }
+    })
+
+    return sortedWorkers;
   } else {
       const filteredWorkers = await Worker.aggregate([
         {
