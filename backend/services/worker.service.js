@@ -36,6 +36,7 @@ export const fetchWorker = async(id) => {
   
   const workerInfo = {
     user: user, 
+    rating: worker.rating,
     totalEarnings: worker.totalEarnings
   }
   return workerInfo;
