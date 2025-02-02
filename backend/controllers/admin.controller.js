@@ -95,7 +95,7 @@ export const findAllUsers = async (req, res) => {
   
   } catch (error) {
     console.log("Error in Fetching Users", error);
-    res.status(500).json({ success: false, message: error.message});
+    res.status(400).json({ success: false, message: error.message});
   }
   
 };

@@ -289,16 +289,24 @@ export const serviceDeleteWorker = async(userId) => {
 // User 
 export const fetchUserList = async (arrayIndex, pageSize, keyword) => {
   let userList;
+  const wordSplit = keyword.split(' ');
   if(keyword === ''){
     userList = await User.find()
       .skip(arrayIndex)
       .limit(pageSize)
       .lean();
-  } else {
+  } else if (wordSplit.length === 1) {
     userList = await User.find({
       $or: [
-        { firstName: {$regex: keyword, $options: 'i'} },
-        { lastName: {$regex: keyword, $options: 'i'} }
+        { firstName: {$regex: wordSplit[0], $options: 'i'} },
+        { lastName: {$regex: wordSplit[0], $options: 'i'} }
+      ]
+    }).skip(arrayIndex).limit(pageSize).lean();
+  } else if (wordSplit.length > 1){
+    userList = await User.find({
+      $or: [
+        { firstName: {$regex: wordSplit[0], $options: 'i'} },
+        { lastName: {$regex: wordSplit[1], $options: 'i'} }
       ]
     }).skip(arrayIndex).limit(pageSize).lean();
   }
