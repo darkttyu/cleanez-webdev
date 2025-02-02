@@ -114,7 +114,7 @@ const AdminWorkerNew = () => {
             )
 
             console.log("New Worker Added: ", response);
-            navigate('/admin/workers');
+            navigate('/admin/users');
         } catch (e) {
             console.log(e)
         }
