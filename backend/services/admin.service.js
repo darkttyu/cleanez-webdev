@@ -312,7 +312,7 @@ export const fetchUserList = async (arrayIndex, pageSize, keyword) => {
   }
 
   // Gets all the User information and stores it in an array of objects
-      if(!userList || userList.length === 0){
+      if(!userList){
         throw new Error("Error in Fetching Users.");
       }
 
