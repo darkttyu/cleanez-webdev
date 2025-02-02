@@ -48,7 +48,7 @@ const UserProfile = () => {
             const token = localStorage.getItem("token");
 
             const getResponse = await 
-            axios.get(`http://localhost:5000/api/user/getAccountInformation`, 
+            axios.get(`https://cleanez-api.vercel.app/api/user/getAccountInformation`, 
                 {
                     headers: { 
                         'Authorization': `Bearer ${token}`
