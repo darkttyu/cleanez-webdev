@@ -39,7 +39,7 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
 
     // console.log(JSON.stringify(workers, null, 2)); // Debugging: Print worker list for readability.
       if(!workers){
-        throw new Error("Workers not Found");
+        throw new Error("Bad Request. Workers not Found");
       }
 
     return workers;
@@ -736,13 +736,13 @@ export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
   let appointmentList;
   const wordSplit = keyword.split(' ')
   if(keyword === ''){
-    appointmentList =await Appointment.find()
+    appointmentList = await Appointment.find()
       .skip(arrayIndex)
       .skip(pageSize)
       .lean();
   } else if (wordSplit.length === 1) {
     appointmentList = await Appointment.find({
-        $or: [
+        $and: [
           { customerFirstName: { $regex: wordSplit[0], $options: "i" }},
           { customerLastName: { $regex: wordSplit[0], $options: "i"}},
           
@@ -752,7 +752,7 @@ export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
     .lean();
   } else if (wordSplit.length > 1){
     appointmentList = await Appointment.find({
-      $or: [
+      $and: [
         { customerFirstName: { $regex: wordSplit[0], $options: "i" }},
         { customerLastName: { $regex: wordSplit[1], $options: "i"}},
         
