@@ -297,14 +297,14 @@ export const fetchUserList = async (arrayIndex, pageSize, keyword) => {
       .lean();
   } else if (wordSplit.length === 1) {
     userList = await User.find({
-      $or: [
+      $and: [
         { firstName: {$regex: wordSplit[0], $options: 'i'} },
         { lastName: {$regex: wordSplit[0], $options: 'i'} }
       ]
     }).skip(arrayIndex).limit(pageSize).lean();
   } else if (wordSplit.length > 1){
     userList = await User.find({
-      $or: [
+      $and: [
         { firstName: {$regex: wordSplit[0], $options: 'i'} },
         { lastName: {$regex: wordSplit[1], $options: 'i'} }
       ]
