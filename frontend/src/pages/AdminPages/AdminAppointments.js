@@ -14,6 +14,9 @@ const AdminAppointments = () => {
     const [searchWord, setSearchWord] = useState('');
 
     const fetchAllAppointments = async (page, size, search) => {
+            console.log("Page: ", page);
+            console.log("Size: ", size);
+            console.log("Search: ", search);
         try {
             const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/getAppointments`,
                 {params: { 
