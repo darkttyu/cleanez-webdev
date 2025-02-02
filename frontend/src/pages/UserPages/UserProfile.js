@@ -1,8 +1,10 @@
 // Import Statements --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 // --- Component Import/s
 import header from "../../images/assets/bg-signing-nograin.svg"
+import SVGIcons from "../../SVGIcons";
 // --- Other/React Import/s
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../AuthContext";
 import {regions, provinces, cities, barangays} from "select-philippines-address";
 import axios from "axios";
@@ -10,26 +12,18 @@ import axios from "axios";
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const UserProfile = () => {
-    // --- Convert Binary Data to Profile URL
-    const profileConvert = (profile) => {
-
-        const binaryData = new Uint8Array(profile.data.data);
-        const base64String = btoa(String.fromCharCode(...binaryData));
-
-        return `data:image/jpeg;base64,${base64String}`;
-    }
+    const inputRef = useRef();
 
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    // --- Context Authenticator
-    const { user, setUser } = useAuth();
     // --- Account Information
-    const [accountInfo, setAccountInfo] = useState({...user})
+    const [accountInfo, setAccountInfo] = useState(null)
     // --- Profile URL for loading current Profile Picture
-    const [profileURL, setProfileURL] = useState(profileConvert(user.profilePicture));
+    const [profileURL, setProfileURL] = useState(null);
     // --- Profile File Information
-    const [profileFile, setProfileFile] = useState({});
+    const [profileFile, setProfileFile] = useState(null);
     // --- Editing Mode Toggler
     const [isDisabled, setIsDisabled] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     // --- Address Variables
     const [regionData, setRegionData] = useState([]);
     const [provinceData, setProvinceData] = useState([]);
@@ -40,13 +34,50 @@ const UserProfile = () => {
     const [selectedCity, setSelectedCity] = useState('0');
     const [selectedBrgy, setSelectedBrgy] = useState('0');
     
-    
-    // Functions  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    // --- Updates Profile Information on Load
+
+    const profileConvert = (buffer) => {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        bytes.forEach(byte => binary += String.fromCharCode(byte));
+        
+        return `data:image/jpeg;base64,${btoa(binary)}`;
+    };
+
+    const fetchUserInfo = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const getResponse = await 
+            axios.get(`http://localhost:5000/api/user/getAccountInformation`, 
+                {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            setAccountInfo(getResponse.data.user);
+        } catch (e) {
+
+        }
+    }
+
+    // Loads Data on DOM Load
     useEffect(() => {
-        setAccountInfo({ ...user });
-    }, [user]);
+        document.title = 'CleanEZ | Profile'
+        fetchUserInfo();
+    }, [])
     
+    // Tracks Account Info Changes
+    useEffect(() => {
+        if (accountInfo) {
+            setProfileURL(profileConvert(accountInfo.profilePicture.data.data));
+            provinceAuto();
+            municipalAuto();
+            barangayAuto();
+            console.log("UPDATED ACCOUNT INFO:", accountInfo);
+        }
+    }, [accountInfo])
 
     // --- Fetches Address Data
     // --- --- Regions
@@ -85,6 +116,9 @@ const UserProfile = () => {
     }, [regionData]); 
     // --- --- Municipalities
     const listMunicipalities = (province) => {
+        setSelectedCity('0');
+        setSelectedBrgy('0');
+        setBarangayData([]);
         const code = province.slice(0,4)
         cities(code).then((res) => {
             setMunicipalData(res);
@@ -92,6 +126,7 @@ const UserProfile = () => {
     }
     // --- --- Barangays
     const listBarangays = (municipal) => {
+        setSelectedBrgy('0');
         const code = municipal.slice(0,6)
         barangays(code).then((res) => {
             setBarangayData(res);
@@ -99,84 +134,88 @@ const UserProfile = () => {
     }
 
     // --- Sets Autofill of Province, Municipal and Barangay on DOM Load
-    // --- --- Province
-    useEffect(() => {
+    const provinceAuto = () => {
         provinceData.forEach((p, index) => {
-            if (p.province_name === user.address.province) {
+            if (p.province_name === accountInfo?.address.province) {
                 const provinceValue = p.province_code + p.province_name;
+                // console.log("Province Value: ", provinceValue);
                 listMunicipalities(provinceValue);
                 setSelectedProv(provinceValue);
-                setAccountInfo({
-                    ...accountInfo,
-                    address: {
-                        ...accountInfo.address,
-                        province: p.province_name
-                    }
-                });
             }
         })
+    }
+
+    const municipalAuto = () => {
+        municipalData.forEach((m, index) => {
+            if (m.city_name === accountInfo?.address.municipal) {
+                const municipalValue = m.city_code + m.city_name;
+                // console.log("Municipal Value: ", municipalValue);
+                listBarangays(municipalValue);
+                setSelectedCity(municipalValue);
+            }
+        })
+    }
+
+    const barangayAuto = () => {
+        barangayData.forEach((b, index) => {
+            if (b.brgy_name === accountInfo?.address.barangay) {
+                const barangayValue = b.brgy_code + b.brgy_name;
+                // console.log("Barangay Value: ", barangayValue);
+                setSelectedBrgy(barangayValue);
+            }
+        })
+    }
+
+    // --- --- Province
+    useEffect(() => {
+        provinceAuto();
     }, [provinceData]);
     // --- --- Municipal
     useEffect(() => { 
-        setSelectedCity('0');
-        setSelectedBrgy('0');
-        setBarangayData([]);
-
-        municipalData.forEach((m, index) => {
-            if (m.city_name === user.address.municipal) {
-                const municipalValue = m.city_code + m.city_name;
-                listBarangays(municipalValue);
-                setSelectedCity(municipalValue);
-                setAccountInfo({
-                    ...accountInfo,
-                    address: {
-                        ...accountInfo.address,
-                        municipal: m.city_name
-                    }
-                });
-            }
-        })
-  
+        municipalAuto();
     }, [municipalData]);
     // --- --- Barangay
     useEffect(() => {
-        barangayData.forEach((b, index) => {
-            if (b.brgy_name === user.address.barangay) {
-                const barangayValue = b.brgy_code + b.brgy_name;
-                setSelectedBrgy(barangayValue);
-                setAccountInfo({
-                    ...accountInfo,
-                    address: {
-                        ...accountInfo.address,
-                        barangay: b.brgy_name
-                    }
-                });
-            }
-        })
+        barangayAuto();
     }, [barangayData]);
+
     
+    const handleProfileClick = () => {
+        inputRef.current.click()
+    }
+
+    const handleProfileChange = (event) => {
+        const file = event.target.files[0]
+
+        const imageURL = URL.createObjectURL(file);
+
+        setProfileURL(imageURL);
+        setProfileFile(file)
+        
+    }
+
     // --- Toggles Editing Mode on Button Click
     const editProfile = () => {
         setIsDisabled(!isDisabled);
     }
 
-    // --- Save or Cancel Profile Information on Button Click
-    const saveProfile = (option) => {
-        if (option === 1) {
-            console.log("cancelled");
-            setAccountInfo({...user});
-            setProfileURL(profileConvert(user.profilePicture))
-            setIsDisabled(!isDisabled);
-        } else if (option === 2) {
-            updateAccountInformation();
+    // --- Cancel Button
+    const handleCancel = () => {
+        setAccountInfo(accountInfo);
+        setProfileURL(profileConvert(accountInfo.profilePicture.data.data))
+        setProfileFile(null);
+        setIsDisabled(!isDisabled);
+        provinceAuto();
+        municipalAuto();
+        barangayAuto();
+
+        if (inputRef.current) {
+            inputRef.current.value = '';
         }
     }
 
-    // --- Creates Form
     const updateData = async (accInfo, profile) => {
         const form = new FormData();
-        console.log(accInfo);
-
         form.append("accInfo", JSON.stringify(accInfo))
         
         if(profile){
@@ -186,11 +225,10 @@ const UserProfile = () => {
         return form;
     }
 
-    // --- Updates Account Information
-    const updateAccountInformation = async () => {
+    // -- Save Button
+    const handleSave = async () => {
         try {
             const token = localStorage.getItem("token");
-            
             const formData = await updateData(accountInfo, profileFile);
 
             const updateResponse = await 
@@ -203,23 +241,10 @@ const UserProfile = () => {
                 }
             );
 
-            console.log(updateResponse);
-            
-            const getResponse = await axios.get(`https://cleanez-api.vercel.app/api/user/getAccountInformation`,
-                {
-                    headers: { 
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-
-            console.log(getResponse);
-            setUser(getResponse.data.user);
-
+            fetchUserInfo();
             setIsDisabled(!isDisabled);
-        // --- --- Failed Update Account Information
-        } catch (error) {
-            console.log(error)
+        } catch (e) {
+            console.log(e)
         }
     }
 
@@ -227,299 +252,319 @@ const UserProfile = () => {
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <div className="profile-page">
-            <img src={header} alt="" className="profile-header"/>
+            {accountInfo ?
+            <>
+                <img src={header} alt="" className="profile-header"/>
 
-            <div className="profile-main">
-                <div className="profile-image-text">
-                    <div className="profile-image-container">
-                        <img src={profileURL} alt="" className="profile-image"/>
-                        {!isDisabled ? (
+                <div className="profile-main">
+                    <div className="profile-image-text">
+                        <div className="profile-image-container">
                             <input type="file" 
+                            className="profile-upload-input"
                             accept="image/jpeg"
-                            onChange={(e) => {
-                                const file = e.target.files[0]
-                                setProfileURL(URL.createObjectURL(file));
-                                setProfileFile(file)
-                            }}/>
-                        ):(
-                            <></>
-                        )}
-                    </div>
-                    <div className="profile-text">
-                        <p className="profile-name">{user.firstName} {user.lastName}</p>
-                        <div className="profile-edit-options">
-                        {isDisabled ? (
-                            <button 
-                            className="profile-edit"
-                            onClick={editProfile}>
-                                Edit Profile
-                            </button>
-                        ):(
-                            <>
+                            style={{display: "none"}} 
+                            ref={inputRef}
+                            onChange={handleProfileChange}/>
+                            <img src={profileURL} alt="" className="profile-image"/>
+                            {!isDisabled ? (
                                 <button
-                                className="profile-cancel"
-                                onClick={(e) => saveProfile(1)}>
-                                    Cancel
+                                className="profile-upload-button" 
+                                type="button"
+                                onClick={handleProfileClick}>
+                                    <SVGIcons 
+                                    selected="profileButton"
+                                    size="60px"
+                                    color="white"/>
+                                </button>  
+                            ):(
+                                <></>
+                            )}
+                        </div>
+                        <div className="profile-text">
+                            <p className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</p>
+                            <div className="profile-edit-options">
+                            {isDisabled ? (
+                                <button 
+                                className="profile-edit"
+                                onClick={editProfile}>
+                                    Edit Profile
                                 </button>
-                                <button
-                                className="profile-save"
-                                onClick={(e) => saveProfile(2)}>
-                                    Save
-                                </button>
-                            </>
-                        )}
+                            ):(
+                                <>
+                                    <button
+                                    className="profile-cancel"
+                                    onClick={handleCancel}>
+                                        Cancel
+                                    </button>
+                                    <button
+                                    className="profile-save"
+                                    onClick={handleSave}>
+                                        Save
+                                    </button>
+                                </>
+                            )}
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <hr />
+                    
+                    <hr />
 
-                <section className="profile-information">
-                    {/* Birthday */}
-                    <div className="profile-input-container">
-                        {/* LABEL HERE */}
-                        <label 
-                        className="profile-label"
-                        htmlFor="birthdate-input">
-                            Birthday
-                        </label>
-                        {/* INPUT HERE */}
-                        <input 
-                        className="input" 
-                        type="date" 
-                        placeholder="Birthdate" 
-                        name="birthDate" 
-                        value={accountInfo.birthDate.slice(0, 10)}
-                        onChange={(e) => {
-                            setAccountInfo({
-                                ...accountInfo,
-                                birthDate: e.target.value
-                            })
-                        }}
-                        disabled={isDisabled}
-                        id="birthdate-input" 
-                        min="1860-01-01" 
-                        max="2025-12-30"/>
-                    </div> 
-
-                    {/* Gender */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="gender-input">
-                            Gender
-                        </label>
-                        <select 
-                        className="input" 
-                        name="gender" 
-                        value = {accountInfo.gender}
-                        id="gender-input" 
-                        onChange={(e) => {
-                            setAccountInfo({
-                                ...accountInfo,
-                                gender: e.target.value
-                            })
-                        }}
-                        disabled={isDisabled}
-                        >
-                            {/* SELECT OPTIONS */}
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Disclosed">Rather Not Say</option>
-                        </select>
-                    </div> 
-
-                    {/* Phone Number */}
-                    <div className="profile-input-container">
-                        {/* LABEL HERE */}
-                        <label 
-                        className="profile-label"
-                        htmlFor="phone-input">
-                            Phone Number
-                        </label>
-                        {/* INPUT HERE */}
-                        <input 
-                        className="input" 
-                        type="text" 
-                        placeholder="Phone Number" 
-                        name="phone" 
-                        value={accountInfo.phoneNumber}
-                        onChange={(e) => {
-                            setAccountInfo({
-                                ...accountInfo,
-                                phoneNumber: e.target.value
-                            })
-                        }}
-                        disabled={true}
-                        id="phone-input" />
-                    </div> 
-
-                    {/* Email */}
-                    <div className="profile-input-container">
-                        {/* LABEL HERE */}
-                        <label 
-                        className="profile-label"
-                        htmlFor="email-input">
-                            Email
-                        </label>
-                        {/* INPUT HERE */}
-                        <input 
-                        className="input" 
-                        type="email" 
-                        placeholder="Email" 
-                        name="email" 
-                        value={accountInfo.email}
-                        onChange={(e) => {
-                            setAccountInfo({
-                                ...accountInfo,
-                                email: e.target.value
-                            })
-                        }}
-                        disabled={true}
-                        id="email-input" />
-                    </div> 
-
-                    {/* Block No. */}
-                    <div className="profile-input-container">
-                        {/* LABEL HERE */}
-                        <label 
-                        className="profile-label" 
-                        htmlFor="address-input">
-                            Block / No. / Street
-                        </label>
-                        {/* INPUT HERE */}
-                        <input 
-                        className="input" 
-                        type="text" 
-                        placeholder="Block / No. / Street" 
-                        name="block"
-                        value={accountInfo.address.block} 
-                        onChange={(e) => {
-                            setAccountInfo({
-                                ...accountInfo,
-                                address: {
-                                    ...accountInfo.address,
-                                    block: e.target.value
-                                }
-                            })
-                        }}
-                        disabled={isDisabled}
-                        id="address-input" />
-                    </div> 
-
-                    {/* Province */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="address-input">
-                            Province
-                        </label>
-                        <select 
+                    <section className="profile-information">
+                        {/* Birthday */}
+                        <div className="profile-input-container">
+                            {/* LABEL HERE */}
+                            <label 
+                            className="profile-label"
+                            htmlFor="birthdate-input">
+                                Birthday
+                            </label>
+                            {/* INPUT HERE */}
+                            <input 
                             className="input" 
-                            name="province" 
-                            value = {selectedProv}
-                            id="province-input" 
+                            type="date" 
+                            placeholder="Birthdate" 
+                            name="birthDate" 
+                            value={accountInfo.birthDate.slice(0, 10)}
                             onChange={(e) => {
-                                listMunicipalities(e.target.value)
+                                setAccountInfo({
+                                    ...accountInfo,
+                                    birthDate: e.target.value
+                                })
+                            }}
+                            disabled={isDisabled}
+                            id="birthdate-input" 
+                            min="1860-01-01" 
+                            max="2025-12-30"/>
+                        </div> 
+
+                        {/* Gender */}
+                        <div className="profile-input-container">
+                            <label className="profile-label" htmlFor="gender-input">
+                                Gender
+                            </label>
+                            <select 
+                            className="input" 
+                            name="gender" 
+                            value = {accountInfo.gender}
+                            id="gender-input" 
+                            onChange={(e) => {
+                                setAccountInfo({
+                                    ...accountInfo,
+                                    gender: e.target.value
+                                })
+                            }}
+                            disabled={isDisabled}
+                            >
+                                {/* SELECT OPTIONS */}
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Disclosed">Rather Not Say</option>
+                            </select>
+                        </div> 
+
+                        {/* Phone Number */}
+                        <div className="profile-input-container">
+                            {/* LABEL HERE */}
+                            <label 
+                            className="profile-label"
+                            htmlFor="phone-input">
+                                Phone Number
+                            </label>
+                            {/* INPUT HERE */}
+                            <input 
+                            className="input" 
+                            type="text" 
+                            placeholder="Phone Number" 
+                            name="phone" 
+                            value={accountInfo.phoneNumber}
+                            onChange={(e) => {
+                                setAccountInfo({
+                                    ...accountInfo,
+                                    phoneNumber: e.target.value
+                                })
+                            }}
+                            disabled={true}
+                            id="phone-input" />
+                        </div> 
+
+                        {/* Email */}
+                        <div className="profile-input-container">
+                            {/* LABEL HERE */}
+                            <label 
+                            className="profile-label"
+                            htmlFor="email-input">
+                                Email
+                            </label>
+                            {/* INPUT HERE */}
+                            <input 
+                            className="input" 
+                            type="email" 
+                            placeholder="Email" 
+                            name="email" 
+                            value={accountInfo.email}
+                            onChange={(e) => {
+                                setAccountInfo({
+                                    ...accountInfo,
+                                    email: e.target.value
+                                })
+                            }}
+                            disabled={true}
+                            id="email-input" />
+                        </div> 
+
+                        {/* Block No. */}
+                        <div className="profile-input-container">
+                            {/* LABEL HERE */}
+                            <label 
+                            className="profile-label" 
+                            htmlFor="address-input">
+                                Block / No. / Street
+                            </label>
+                            {/* INPUT HERE */}
+                            <input 
+                            className="input" 
+                            type="text" 
+                            placeholder="Block / No. / Street" 
+                            name="block"
+                            value={accountInfo.address.block} 
+                            onChange={(e) => {
                                 setAccountInfo({
                                     ...accountInfo,
                                     address: {
                                         ...accountInfo.address,
-                                        province: e.target.value.slice(0, 4)
+                                        block: e.target.value
                                     }
-                                })    
+                                })
                             }}
                             disabled={isDisabled}
-                        >
-                            {/* SELECT OPTIONS */}
-                            <option value="0">Select Province</option>
-                            {provinceData.map((p, index) => (
-                                <option 
-                                    key={index} 
-                                    value={p.province_code + p.province_name}
-                                >
-                                    {p.province_name}
-                                </option>
-                            ))}
-                        </select>
-                    </div> 
+                            id="address-input" />
+                        </div> 
 
-                    {/* Municipality */}
-                    <div className="profile-input-container">
-                        {/* LABEL HERE */}
-                        <label 
-                        className="profile-label" 
-                        htmlFor="address-input">
-                            Municipal
-                        </label>
-                        {/* INPUT HERE */}
-                        <select 
-                        className="input" 
-                        type="text" 
-                        name="municipal"
-                        value= {selectedCity}
-                        id="municipality-input"
-                        onChange={(e) => {
-                            listBarangays(e.target.value)
-                            setAccountInfo({
-                                ...accountInfo,
-                                address: {
-                                    ...accountInfo.address,
-                                    municipality: e.target.value.slice(0, 6)
-                                }
-                            })   
-                        }}
-                        disabled={isDisabled}
-                        >
-                            {/* SELECT OPTIONS */}
-                            <option value="0">Select Municipality</option>
-                            {municipalData.map((m, index) => (
-                                <option 
-                                key={index} 
-                                value={m.city_code + m.city_name}
+                        {/* Province */}
+                        <div className="profile-input-container">
+                            <label className="profile-label" htmlFor="address-input">
+                                Province
+                            </label>
+                            <select 
+                                className="input" 
+                                name="province" 
+                                value = {selectedProv}
+                                id="province-input" 
+                                onChange={(e) => {
+                                    setSelectedProv(e.target.value);
+                                    listMunicipalities(e.target.value) 
+                                    setAccountInfo({
+                                        ...accountInfo,
+                                        address: {
+                                            ...accountInfo.address,
+                                            province: e.target.value.slice(4),
+                                            municipal: "0",
+                                            barangay: "0"
+                                        }
+                                    })  
+                                }}
+                                disabled={isDisabled}
                             >
-                                {m.city_name}
-                            </option>
-                            ))}
-                        </select>
-                    </div> 
+                                {/* SELECT OPTIONS */}
+                                <option value="0">Select Province</option>
+                                {provinceData.map((p, index) => (
+                                    <option 
+                                        key={index} 
+                                        value={p.province_code + p.province_name}
+                                    >
+                                        {p.province_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div> 
 
-                    {/* Barangay */}
-                    <div className="profile-input-container">
-                        {/* LABEL HERE */}
-                        <label 
-                        className="profile-label" 
-                        htmlFor="address-input">
-                            Barangay
-                        </label>
-                        {/* INPUT HERE */}
-                        <select 
-                        className="input" 
-                        type="text" 
-                        name="barangay" 
-                        value={selectedBrgy}
-                        id="barangay-input"
-                        onChange={(e) => {
-                            setAccountInfo({
-                                ...accountInfo,
-                                address: {
-                                    ...accountInfo.address,
-                                    barangay: e.target.value.slice(0, 9)
-                                }
-                            })   
-                        }}
-                        disabled={isDisabled}
-                        >
-                            {/* SELECT OPTIONS */}
-                            <option value="0">Select Barangay</option>
-                            {barangayData.map((b, index) => (
-                                <option 
+                        {/* Municipality */}
+                        <div className="profile-input-container">
+                            {/* LABEL HERE */}
+                            <label 
+                            className="profile-label" 
+                            htmlFor="address-input">
+                                Municipal
+                            </label>
+                            {/* INPUT HERE */}
+                            <select 
+                            className="input" 
+                            type="text" 
+                            name="municipal"
+                            value= {selectedCity}
+                            id="municipality-input"
+                            onChange={(e) => {
+                                setSelectedCity(e.target.value);
+                                listBarangays(e.target.value)
+                                setAccountInfo({
+                                    ...accountInfo,
+                                    address: {
+                                        ...accountInfo.address,
+                                        municipal: e.target.value.slice(6),
+                                        barangay: "0"
+                                    }
+                                })   
+                            }}
+                            disabled={isDisabled}
+                            >
+                                {/* SELECT OPTIONS */}
+                                <option value="0">Select Municipality</option>
+                                {municipalData.map((m, index) => (
+                                    <option 
                                     key={index} 
-                                    value={b.brgy_code + b.brgy_name}
+                                    value={m.city_code + m.city_name}
                                 >
-                                    {b.brgy_name}
+                                    {m.city_name}
                                 </option>
-                            ))}
-                        </select>
-                    </div> 
-                </section>
-            </div>
+                                ))}
+                            </select>
+                        </div> 
+
+                        {/* Barangay */}
+                        <div className="profile-input-container">
+                            {/* LABEL HERE */}
+                            <label 
+                            className="profile-label" 
+                            htmlFor="address-input">
+                                Barangay
+                            </label>
+                            {/* INPUT HERE */}
+                            <select 
+                            className="input" 
+                            type="text" 
+                            name="barangay" 
+                            value={selectedBrgy}
+                            id="barangay-input"
+                            onChange={(e) => {
+                                setSelectedBrgy(e.target.value);
+                                setAccountInfo({
+                                    ...accountInfo,
+                                    address: {
+                                        ...accountInfo.address,
+                                        barangay: e.target.value.slice(9)
+                                    }
+                                })   
+                            }}
+                            disabled={isDisabled}
+                            >
+                                {/* SELECT OPTIONS */}
+                                <option value="0">Select Barangay</option>
+                                {barangayData.map((b, index) => (
+                                    <option 
+                                        key={index} 
+                                        value={b.brgy_code + b.brgy_name}
+                                    >
+                                        {b.brgy_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div> 
+                    </section>
+                </div>
+            </> :
+            <></>
+            }
+            
         </div>
     );
 }

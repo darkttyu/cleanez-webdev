@@ -110,7 +110,7 @@ const AdminSide = ({setNavTitle}) => {
     const [activeLink, setActiveLink] = useState(() => {
         let path = String(window.location.pathname);
 
-        if (path === "/admin") return 'Applicants';
+        if (path === "/admin") return 'Appointments';
 
         path = path.replace('/admin/', '');
         
@@ -126,6 +126,14 @@ const AdminSide = ({setNavTitle}) => {
 
     return (  
         <>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Appointments' ? 'active' : ''}`
+            }
+            to='appointments'
+            onClick={(e) => handleClick('Appointments')}>
+                Appointments
+            </Link></li>
             <li><Link 
             className={
                 `link-item ${activeLink === 'Applicants' ? 'active' : ''}`
@@ -199,9 +207,14 @@ const AccSidebar = ({setNavTitle}) => {
 
     return (  
         <div className="account-page-left">
-            <Link to={(role === 'User' || role === 'Worker' || role === 'Applicant') ? 
+            <Link 
+            to={(role === 'User' || role === 'Worker' || role === 'Applicant') ? 
                 '/home' :
                 '/adminLogin'
+            }
+            onClick={(role === 'User' || role === 'Worker' || role === 'Applicant') ? 
+                (e) => {} :
+                handleLogOut
             }>
                 <img className="sidebar-logo" src={logo} alt="Logo" />
             </Link>

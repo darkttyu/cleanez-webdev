@@ -25,6 +25,11 @@ const WorkerSchedule = () => {
     const [editMode, setEditMode] = useState(false);
 
     useEffect(() => {
+        fetchWorkerDetail();
+        fetchServices();
+    }, []);
+
+    useEffect(() => {
         console.log(timeList);
     }, [timeList])
 
@@ -175,11 +180,6 @@ const WorkerSchedule = () => {
         }
 
     }, [workerDetails])
-
-    useEffect(() => {
-        fetchWorkerDetail();
-        fetchServices();
-    }, []);
 
     const handleScheduleCancel = () => {
         setNewWorkerSchedule({

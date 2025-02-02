@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
 import { Appointment } from "../models/appointment.model.js";
-import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant } from "../services/admin.service.js";
+import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule} from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -81,7 +81,7 @@ export const deleteWorker = async (req, res) => {
 // User Controllers
 export const findAllUsers = async (req, res) => {
   try {
-    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10, keyword = ''} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
@@ -90,7 +90,7 @@ export const findAllUsers = async (req, res) => {
     // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
     const arrayIndex = (page - 1) * pageSize
 
-    const users = await fetchUserList(arrayIndex, pageSize);
+    const users = await fetchUserList(arrayIndex, pageSize, keyword);
     return res.status(200).json({success: true, message: "Fetched Users", userList: users})
   
   } catch (error) {
@@ -127,7 +127,7 @@ export const clickedUser = async(req, res) => {
 export const editUserInfo = async(req, res) => {
   // Multipart-form
     try {
-      const accountInfo = JSON.parse(req.body.newUserInfo);
+      const accountInfo = Object.assign({}, JSON.parse(req.body.accInfo));
       const updatedUser = await updateUser(req.params.id, accountInfo, req.files?.profile);
       // Returns a success message if the user info is updated
       res.status(200).json({ success: true, message: "Successfully Updated User Information!", user: updatedUser })
@@ -259,92 +259,10 @@ export const rejectApplicant = async (req, res) => {
   }
 };
 
-// Dashboard Controllers 
-export const getWorkerCount = async (req, res) => {
-  try {
-    const activeWorkers = await User.countDocuments({role: "Worker", status: "Active"});
-    return res.status(200).json({success: true, count: activeWorkers})
-  } catch (error) {
-    return res.status(500).json({success: false, error: error});
-  }
-};
-
-export const getYearlyEarnings = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getMonthlyEarnings = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getWeeklyEarnings = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getYearlyAppointments = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getMontlyAppointment = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getWeeklyAppointment = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getYearlyEarningsByService = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getMonthlyEarningsByService = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
-export const getWeeklyEarningsByService = async (req, res) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
-
 // Appointments
 export const getAppointments = async (req, res) => {
   try {
-    let {page = 1, pageSize = 10} = req.query; // Default values are 1 and 5 if no values are sent from the URL
+    let {page = 1, pageSize = 10, keyword = ''} = req.query; // Default values are 1 and 5 if no values are sent from the URL
 
     // Converts it to an integer with base 10 values
     page = parseInt(page, 10);
@@ -353,7 +271,7 @@ export const getAppointments = async (req, res) => {
     // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
     const arrayIndex = (page - 1) * pageSize
 
-    const appointment = await fetchAppointments(arrayIndex, pageSize);
+    const appointment = await fetchAppointments(arrayIndex, pageSize, keyword);
       if(appointment){
         return res.status(200).json({success: true, message: "Fetched Appointments List.", appointmentList: appointment});
       }
@@ -376,7 +294,7 @@ export const markAppointmentAsComplete = async (req, res) => {
 export const markAppointmentAsCancelled = async (req, res) => {
   try {
     const cancelledAppointment = await serviceMarkAppointmentAsCancelled(req.params.id);
-      if(!cancelledAppointment){
+      if(cancelledAppointment){
         return res.status(200).json({success: false, message: "Marked Appointment as Cancelled."});
       }
   } catch (error) {

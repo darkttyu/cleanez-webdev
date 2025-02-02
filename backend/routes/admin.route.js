@@ -1,22 +1,13 @@
 import express from 'express';
 import { addUser, addWorker, clickedUser, deleteUser, editUserInfo, 
-  findAllUsers, findAllWorkers, clickedWorker, editWorkerSchedule, 
-  deleteWorker, insertService, 
-  getWorkerCount, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant,
-  getUserDetails,
-  updateWorkerStatus,
-  updateUserStatus,
-  getAppointments,
-  markAppointmentAsComplete,
-  markAppointmentAsCancelled,
-  getAppointment
+  findAllUsers, findAllWorkers, clickedWorker, editWorkerSchedule, deleteWorker, 
+  insertService, getAllApplicants, getClickedApplicant, acceptApplicant, rejectApplicant,
+  getUserDetails, updateWorkerStatus, updateUserStatus, getAppointments, markAppointmentAsComplete, 
+  markAppointmentAsCancelled, getAppointment
 } from '../controllers/admin.controller.js';
 import { uploadProfile } from "../middleware/profileUpload.js";
 
 const router = express.Router();
-
-// Dashboard Tab
-router.get("/getWorkerCount", getWorkerCount);
 
 // Appointments Tab
 router.get("/getAppointments", getAppointments);

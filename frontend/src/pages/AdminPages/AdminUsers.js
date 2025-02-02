@@ -7,16 +7,19 @@ const AdminUsers = () => {
     const navigate = useNavigate();
 
     const [allUserList, setAllUserList] = useState([]);
-    const [currentList, setCurrentList] = useState([])
+    const [currentList, setCurrentList] = useState([]);
     
     const [currentPage, setCurrentPage] = useState(1);
 
-    const fetchAllUsers = async (page, size) => {
+    const [searchWord, setSearchWord] = useState('');
+
+    const fetchAllUsers = async (page, size, search = '') => {
         try {
             const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/findAllUsers`, 
                 {params: { 
                     page: page, 
-                    pageSize: size }
+                    pageSize: size ,
+                    keyword: search}
                 }
             );
 
@@ -27,16 +30,16 @@ const AdminUsers = () => {
     }
 
     useEffect(() => {
-        fetchAllUsers(1, 10);
+        fetchAllUsers(1, 10, searchWord);
     }, [])
 
     useEffect(() => {
-        console.log("All User List: ", allUserList);
+        // console.log("All User List: ", allUserList);
         setCurrentList(allUserList);
     }, [allUserList])
 
     useEffect(() => {
-        console.log("Current List: ", currentList)
+        // console.log("Current List: ", currentList)
     }, [currentList])
 
     const handleSearch = (search) => {
@@ -47,11 +50,11 @@ const AdminUsers = () => {
     };
     
     const handleDeleteButton = async (id) => {
-        console.log(id);
+        // console.log(id);
         try {
             const response = await axios.delete(`https://cleanez-api.vercel.app/api/admin/deleteUser/${id}`);
 
-            console.log(response);
+            // console.log(response);
 
             fetchAllUsers(1, 10);
         } catch (e) {
@@ -68,7 +71,11 @@ const AdminUsers = () => {
     }
 
     useEffect(() => {
-        fetchAllUsers(currentPage, 10);
+        fetchAllUsers(1, 10, searchWord);
+    }, [searchWord])
+
+    useEffect(() => {
+        fetchAllUsers(currentPage, 10, searchWord);
     }, [currentPage])
 
     return (  
@@ -78,10 +85,17 @@ const AdminUsers = () => {
                     <input 
                     type="text" 
                     placeholder="Search"
-                    className="question-searchbar"
-                    name="question-searchbar" 
-                    id="question-searchbar" 
-                    onChange={(e) => handleSearch(e.target.value)}/>
+                    className="dashboard-searchbar"
+                    name="dashboard-searchbar" 
+                    id="dashboard-searchbar" 
+                    onChange={(e) => setSearchWord(e.target.value)}/>
+
+                    <button
+                    type="button"
+                    className="act-btn complete add-new"
+                    onClick={(e) => navigate('new-user')}>
+                        Add New User
+                    </button>
                 </div>
                 <div className="dashboard-list-container">
                     <table className="dashboard-list-table">

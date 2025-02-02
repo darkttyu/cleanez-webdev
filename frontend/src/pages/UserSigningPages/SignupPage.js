@@ -198,7 +198,8 @@ const SignupPanel = () => {
                 address: {
                     ...signUpData.address,
                     province: signUpData.address.province.slice(4),  
-                    municipal: signUpData.address.municipal.slice(6)
+                    municipal: signUpData.address.municipal.slice(6),
+                    barangay: signUpData.address.barangay.slice(9)
                 }
             };
             const response = await axios.post('https://cleanez-api.vercel.app/api/auth/signup', updatedSignUpData, {

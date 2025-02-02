@@ -12,7 +12,7 @@ const AccountLayout = () => {
     const role = localStorage.getItem('role');
 
     const [navTitle, setNavTitle] = useState(
-        role !== 'Admin' ? 'Profile' : 'Applicants'
+        role !== 'Admin' ? 'Profile' : 'Appointments'
     );
 
     useEffect(() => {

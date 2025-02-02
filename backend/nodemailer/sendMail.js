@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv'
-import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT, ACTIVATE_USER, DEACTIVATE_USER, DEACTIVATE_WORKER, ACTIVATE_WORKER, WELCOME_WORKER, SEND_USER_BOOKING_CONFIRMATION, SEND_WORKER_BOOKING_CONFIRMATION, REJECT_APPLICANT_EMAIL, WORKER_PAID_EMAIL, APPLICANT_CONFIRMATION_EMAIL } from "./emailTemplates.js";
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, WELCOMING_EMAIL, ADMIN_WELCOMING_EMAIL, DELETE_ACCOUNT, ACTIVATE_USER, DEACTIVATE_USER, DEACTIVATE_WORKER, ACTIVATE_WORKER, WELCOME_WORKER, SEND_USER_BOOKING_CONFIRMATION, SEND_WORKER_BOOKING_CONFIRMATION, REJECT_APPLICANT_EMAIL, WORKER_PAID_EMAIL, APPLICANT_CONFIRMATION_EMAIL, USER_APTCANCELLATION_EMAIL, WORKER_APTCANCELLATION_EMAIL } from "./emailTemplates.js";
 import { response } from "express";
 import { assign } from "nodemailer/lib/shared/index.js";
 
@@ -308,4 +308,40 @@ export const sendApplicantConfirmationEmail = async(applicantFirstName, applican
   } catch (error) {
     console.error("Error Sending Confirmation Email:", error);
   }
+};
+
+export const sendUserAppointmentCancellationEmail = async(email, customerFirstName, customerLastName, serviceName, appointmentDate, appointmentTime, block, barangay, municipal, province) => {
+  try {
+    const info = await transporter.sendMail({
+      from: sender,
+      to: [email],
+      subject: "Appointment Cancellation Successful!",
+      html: USER_APTCANCELLATION_EMAIL.replace("{customerFirstName}", customerFirstName).replace("{customerLastName}", customerLastName)
+        .replace("{serviceName}", serviceName).replace("{appointmentDate}", appointmentDate).replace("{appointmentTime}", appointmentTime)
+        .replace("{block}", block).replace("{barangay}", barangay).replace("{municipal}", municipal).replace("{province}", province)
+    });
+
+    console.log("User Appointment Cancellation Email sent successfully:", info.messageId);
+  } catch (error) {
+    console.error("Error Sending Cancellation Email:", error);
+  }
+};
+
+export const sendWorkerAppointmentCancellationEmail = async(email, firstName, lastName, serviceName,
+  appointmentDate, appointmentTime, customerFirstName, customerLastName) => {
+    try {
+      const info = await transporter.sendMail({
+        from: sender,
+        to: [email],
+        subject: "Appointment Status - Your Scheduled Appointment has been Cancelled.",
+        html: WORKER_APTCANCELLATION_EMAIL.replace("{firstName}", firstName).replace("{lastName}", lastName)
+        .replace("{serviceName}", serviceName).replace("{appointmentDate}", appointmentDate)
+        .replace("{appointmentTime}", appointmentTime).replace("{customerFirstName}", customerFirstName)
+        .replace("{customerLastName}", customerLastName)
+      });
+  
+      console.log("Worker Cancellation Email sent successfully:", info.messageId);
+    } catch (error) {
+      console.error("Error Sending Cancellation Email:", error);
+    }
 };

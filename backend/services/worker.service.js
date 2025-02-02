@@ -67,7 +67,8 @@ export const updateWorker = async(id, body, profile) => {
             };
         }
     
-    const { birthDate, gender, phoneNumber, email, block, province, municipal, barangay } = body; // Extract the request body.
+    const { birthDate, gender, phoneNumber, email, address } = body; // Extract the request body.
+    const { block, province, municipal, barangay } = address;
 
     // Updates the user info based on the id and the updated user info
     const updatedData = {

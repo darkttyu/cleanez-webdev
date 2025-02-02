@@ -2,8 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import { Service } from "../models/service.model.js";
-import moment from "moment";
-import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendWorkerPaidAppointmentEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail } from "../nodemailer/sendMail.js";
+import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendWorkerPaidAppointmentEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail, sendUserAppointmentCancellationEmail, sendWorkerAppointmentCancellationEmail} from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import bcryptjs from 'bcryptjs';
 import * as generator from 'generate-password';
@@ -28,7 +27,6 @@ const formatTime = (time) => {
 
 // Workers
 export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
-
   if(keyword === ''){
     const workers = await Worker.find()
       .skip(arrayIndex)
@@ -46,22 +44,38 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
 
     return workers;
   } else {
-    const filteredWorkers = await Worker.find({
-      $or: [
-        { firstName: { $regex: keyword, $options: "i" }},
-        { lastName: { $regex: keyword, $options: "i" }}
-      ]
-    }).skip(arrayIndex)
-      .limit(pageSize)
-      .populate({
-        path: "userId", // Populates user data (firstName, lastName, address, status).
-        select: "firstName lastName address status",
-      })
-      .select("serviceCategory totalEarnings"); // Selects only specified fields from Worker.
-
-        if(!filteredWorkers){
-          throw new Error("No Worker Found.");
+      const filteredWorkers = await Worker.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userId"
+          }
+        },
+        { $unwind: "$userId" },
+        {
+          $match: {
+            $or: [
+              { "userId.firstName": { $regex: keyword.split(' ')[0], $options: "i" }},
+              { "userId.lastName": { $regex: keyword, $options: "i" }}
+            ]
+          }
+        },
+        { $skip: arrayIndex },
+        { $limit: pageSize },
+        {
+          $project: {
+            "userId.firstName": 1,
+            "userId.lastName": 1,
+            "userId.address": 1, 
+            "userId.status": 1,
+            serviceCategory: 1,
+            totalEarnings: 1
+          }
         }
+      ])
+        return filteredWorkers;
   }
   
 };
@@ -273,13 +287,24 @@ export const serviceDeleteWorker = async(userId) => {
 };
 
 // User 
-export const fetchUserList = async (arrayIndex, pageSize) => {
+export const fetchUserList = async (arrayIndex, pageSize, keyword) => {
+  let userList;
+  if(keyword === ''){
+    userList = await User.find()
+      .skip(arrayIndex)
+      .limit(pageSize)
+      .lean();
+  } else {
+    userList = await User.find({
+      $or: [
+        { firstName: {$regex: keyword, $options: 'i'} },
+        { lastName: {$regex: keyword, $options: 'i'} }
+      ]
+    }).skip(arrayIndex).limit(pageSize).lean();
+  }
+
   // Gets all the User information and stores it in an array of objects
-  const userList = await User.find()
-    .skip(arrayIndex)
-    .limit(pageSize)
-    .lean();
-      if(!userList){
+      if(!userList || userList.length === 0){
         throw new Error("Error in Fetching Users.");
       }
 
@@ -394,6 +419,7 @@ export const getUser = async (userId) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      role: user.role,
       address: user.address,
       phoneNumber: user.phoneNumber,
       gender: user.gender,
@@ -414,8 +440,10 @@ export const getUser = async (userId) => {
 
 export const updateUser = async (userId, body, profile) => {
 
-  const { email, firstName, lastName, birthDate, gender, phoneNumber, address } = body
+  const { email, firstName, lastName, birthDate, gender, phoneNumber, address } = body;
+  const {block, municipal, province, barangay } = address;
 
+  console.log(profile);
   // Checks if the user exists
   const currentUser = await User.findOne({_id: new Object(userId)})
     if(!currentUser) {
@@ -450,19 +478,15 @@ export const updateUser = async (userId, body, profile) => {
       birthDate,
       gender,
       phoneNumber, 
-      address: {
-        "block": address.block,
-        "province": address.province,
-        "municipal": address.municipal,
-        "barangay": address.barangay
-      }
+      "address.block": block,
+      "address.province": province,
+      "address.municipal": municipal,
+      "address.barangay": barangay,
+      profilePicture: profile
     },
     { new: true}
   );
 
-    if(profile){
-      updatedUserInfo.profilePicture = profile;
-    }
       if(!updatedUserInfo) {
         throw new Error("Failed to update user.");
       }
@@ -556,11 +580,34 @@ export const serviceUpdateUserStatus = async (userId) => {
 };
 
 // Applicants 
-export const fetchApplicants = async(arrayIndex, pageSize) => {
-  const applicantList = await User.find({ role: "Applicant" })
-    .skip(arrayIndex)
-    .limit(pageSize)
-    .lean();
+export const fetchApplicants = async(arrayIndex, pageSize, keyword) => {
+  let applicantList;
+  const wordSplit = keyword.split(' ');
+  
+  if (keyword === '') {
+    applicantList = await User.find({ role: "Applicant" })
+      .skip(arrayIndex)
+      .limit(pageSize)
+      .lean();
+  } else if (wordSplit.length === 1) {
+    applicantList = await User.find({
+      role: "Applicant",
+      $or: [
+        { firstName: { $regex: wordSplit[0], $options: "i" } },
+        { lastName: { $regex: wordSplit[0], $options: "i" } }
+      ]
+    }).skip(arrayIndex).limit(pageSize).lean();
+  } else if (wordSplit.length > 1) {
+    applicantList = await User.find({
+      role: "Applicant",
+      $or: [
+        { firstName: { $regex: wordSplit[0], $options: "i" } },
+        { lastName: { $regex: wordSplit[1], $options: "i" } }
+      ]
+    }).skip(arrayIndex).limit(pageSize).lean();
+  }
+  
+
     if(!applicantList){
       throw new Error("Bad Request. Error Fetching Applicant List");
     }
@@ -677,17 +724,41 @@ export const serviceRejectApplicant = async(userId) => {
 };
 
 // Appointments 
-export const fetchAppointments = async (arrayIndex, pageSize) => {
-  const appointmentList = await Appointment.find()
-    .skip(arrayIndex)
+export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
+  let appointmentList;
+  const wordSplit = keyword.split(' ')
+  if(keyword === ''){
+    appointmentList =await Appointment.find()
+      .skip(arrayIndex)
+      .skip(pageSize)
+      .lean();
+  } else if (wordSplit.length === 1) {
+    appointmentList = await Appointment.find({
+        $or: [
+          { customerFirstName: { $regex: wordSplit[0], $options: "i" }},
+          { customerLastName: { $regex: wordSplit[0], $options: "i"}},
+          
+        ]
+    }).skip(arrayIndex)
     .skip(pageSize)
     .lean();
-
+  } else if (wordSplit.length > 1){
+    appointmentList = await Appointment.find({
+      $or: [
+        { customerFirstName: { $regex: wordSplit[0], $options: "i" }},
+        { customerLastName: { $regex: wordSplit[1], $options: "i"}},
+        
+      ]
+  }).skip(arrayIndex)
+      .skip(pageSize)
+      .lean();
+  }
+  
     if(!appointmentList){
       throw new Error("Bad Request. Appointment List not Found.");
     }
 
-    const filteredAppointments = appointmentList.map(({ customerFirstName, customerLastName, serviceDetails, scheduleDetails, appointmentStatus, paymentStatus }) => {
+    const filteredAppointments = appointmentList.map(({ _id, customerFirstName, customerLastName, serviceDetails, scheduleDetails, appointmentStatus, paymentStatus }) => {
       let slicedDate = '';
       
       if (scheduleDetails.date instanceof Date) {
@@ -695,6 +766,7 @@ export const fetchAppointments = async (arrayIndex, pageSize) => {
       }
   
       return {
+          appointmentId: _id,
           customerName: customerFirstName + ' ' + customerLastName,  
           serviceName: serviceDetails.serviceCategory,  
           date: slicedDate,  
@@ -799,11 +871,33 @@ export const serviceMarkAppointmentAsCancelled = async (appointmentId) => {
               }
             )
             console.log("Updated Worker Assigned Appointment");
+            
+            let slicedDate = '';
+      
+              if (appointment.scheduleDetails.date instanceof Date) {
+                  slicedDate = appointment.scheduleDetails.date.toISOString().slice(0, 10);
+              }
+
+            const formattedTime = formatTime(appointment.scheduleDetails.startTime)
+            const user = await User.findById(workerInfo.userId);
+
             // SEND CANCELLATION EMAIL TO WORKERS
+            sendWorkerAppointmentCancellationEmail(user.email, user.firstName, user.lastName, appointment.serviceDetails.serviceCategory,
+              slicedDate, formattedTime, appointment.customerFirstName, appointment.customerLastName)
           }
       }
 
+      let slicedDate = '';
+      
+        if (appointment.scheduleDetails.date instanceof Date) {
+            slicedDate = appointment.scheduleDetails.date.toISOString().slice(0, 10);
+        }
+      const formattedTime = formatTime(appointment.scheduleDetails.startTime)
+      
+      const user = await User.findById(appointment.userId);
+
       // SEND CANCELLATION EMAIL TO USER
+      sendUserAppointmentCancellationEmail(user.email, appointment.customerFirstName, appointment.customerLastName, appointment.serviceDetails.serviceCategory, slicedDate, formattedTime, appointment.address.block, appointment.address.barangay, appointment.address.municipal, appointment.address.province)
       return true;
 };
 
@@ -824,11 +918,15 @@ export const fetchAppointment = async (appointmentId) => {
   let workerNames = [];
   for(const workerId of appointment.assignedWorkers){
     const worker = await Worker.findById(workerId);
+      if(!worker){
+        continue;
+      }
     const user = await User.findById(worker.userId);
-
-    workerNames.push(user.firstName + ' ' + user.lastName);
+    
+      if(user){
+        workerNames.push(user.firstName + ' ' + user.lastName);
+      }
   }
-
   const appointmentDetails = {
     customerFirstName: appointment.customerFirstName,
     customerLastName: appointment.customerLastName,
@@ -840,12 +938,12 @@ export const fetchAppointment = async (appointmentId) => {
     },
     phoneNumber: appointment.phoneNumber,
     serviceCategory: appointment.serviceDetails.serviceCategory,
-    areaAssigned: appointment.serviceDetails.areaAssigned,
+    areaAssigned: appointment.serviceDetails.sizeOfArea,
     serviceCost: appointment.serviceCost,
     appointmentDate: slicedDate,
     appointmentTime: formattedTime,
     assignedWorkers: workerNames
   }
-
+  
   return appointmentDetails;
 };

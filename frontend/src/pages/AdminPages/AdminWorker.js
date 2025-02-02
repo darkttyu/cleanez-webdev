@@ -3,7 +3,7 @@ import SVGIcons from "../../SVGIcons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const AdmindWorker = () => {
+const AdminWorker = () => {
     const navigate = useNavigate();
     
     const [allWorkerList, setAllWorkerList] = useState([]);
@@ -11,12 +11,16 @@ const AdmindWorker = () => {
     
     const [currentPage, setCurrentPage] = useState(1);
 
-    const fetchAllWorkers = async (page, size) => {
+    const [searchWord, setSearchWord] = useState('');
+
+    const fetchAllWorkers = async (page, size = 10, search = '') => {
         try {
             const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/findAllWorkers`, 
                 {params: { 
                     page: page, 
-                    pageSize: size }
+                    pageSize: size ,
+                    keyword: search
+                }
                 }
             );
 
@@ -27,7 +31,7 @@ const AdmindWorker = () => {
     }
 
     useEffect(() => {
-        fetchAllWorkers(1, 10);
+        fetchAllWorkers(1, 10, searchWord);
     }, [])
 
     useEffect(() => {
@@ -36,16 +40,9 @@ const AdmindWorker = () => {
     }, [allWorkerList])
 
     useEffect(() => {
-        console.log("Current List: ", currentList)
+        // console.log("Current List: ", currentList)
     }, [currentList])
 
-    const handleSearch = (search) => {
-        setCurrentList(allWorkerList.filter((worker) => 
-            worker.userId.firstName.toLowerCase().includes(search.toLowerCase()) || 
-            worker.userId.lastName.toLowerCase().includes(search.toLowerCase())
-        ));
-    };
-    
     const handleDeleteButton = async (id) => {
         console.log(id);
         try {
@@ -68,9 +65,13 @@ const AdmindWorker = () => {
     }
 
     useEffect(() => {
-        fetchAllWorkers(currentPage, 10);
-    }, [currentPage])
+        fetchAllWorkers(1, 10, searchWord);
+    }, [searchWord])
 
+    useEffect(() => {
+        fetchAllWorkers(currentPage, 10, searchWord);
+    }, [currentPage])
+    
     return (  
         <div className="dashboard-page">
             <section className="dashboard-upcoming-container">
@@ -78,17 +79,10 @@ const AdmindWorker = () => {
                     <input 
                     type="text" 
                     placeholder="Search"
-                    className="question-searchbar"
-                    name="question-searchbar" 
-                    id="question-searchbar" 
-                    onChange={(e) => handleSearch(e.target.value)}/>
-
-                    <button
-                    type="button"
-                    className="act-btn complete"
-                    onClick={(e) => navigate('/work')}>
-                        Add New Worker
-                    </button>
+                    className="dashboard-searchbar"
+                    name="dashboard-searchbar" 
+                    id="dashboard-searchbar" 
+                    onChange={(e) => setSearchWord(e.target.value)}/>
                 </div>
                 <div className="dashboard-list-container">
                     <table className="dashboard-list-table">
@@ -103,11 +97,15 @@ const AdmindWorker = () => {
                             </tr>
                         </thead>
                         <tbody>
-                        {currentList.map((worker, index) => (
+                        {currentList?.map((worker, index) => (
                             <tr 
                             key={index} 
                             className="dashboard-tbody-tr"
-                            onClick={(e) => {}}>
+                            onClick={(e) => {
+                                navigate(worker.userId._id)
+                                // console.log("userId._id: ", worker.userId._id)
+                                // console.log("_id: ", worker._id)
+                            }}>
                                 <td className="dashboard-tbody-td tb-left">
                                     {worker.userId.firstName} {worker.userId.lastName}
                                 </td>
@@ -127,7 +125,7 @@ const AdmindWorker = () => {
                                     selected="trash"
                                     size="24px"
                                     color="#CC3363"
-                                    onClick={(e) => {handleDeleteButton(worker._id)}}/>
+                                    onClick={(e) => {handleDeleteButton(worker.userId._id)}}/>
                                 </td>
                             </tr> 
                         ))}
@@ -154,4 +152,4 @@ const AdmindWorker = () => {
     );
 }
  
-export default AdmindWorker;
+export default AdminWorker;

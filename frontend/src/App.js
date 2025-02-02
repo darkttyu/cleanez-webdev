@@ -26,6 +26,11 @@ import AdminWorker from './pages/AdminPages/AdminWorker';
 import AdminUsers from './pages/AdminPages/AdminUsers';
 import AdminApplicantInfo from './pages/AdminPages/AdminApplicantInfo';
 import AdminUserInfo from './pages/AdminPages/AdminUserInfo';
+import AdminUserNew from './pages/AdminPages/AdminUserNew';
+import AdminWorkerInfo from './pages/AdminPages/AdminWorkerInfo';
+import AdminWorkerNew from './pages/AdminPages/AdminWorkerNew';
+import AdminAppointments from './pages/AdminPages/AdminAppointments';
+import AdminAppointmentInfo from './pages/AdminPages/AdminAppointmentInfo';
 
 
 function App() {
@@ -34,14 +39,18 @@ function App() {
 
     useEffect(() => {
         if (user) {
-            setRole(String(user.role).toLowerCase());
+            if (user.role) {
+                setRole(String(user.role).toLowerCase());
+            } else {
+                setRole(String(localStorage.getItem('role')).toLowerCase());
+            }            
         }
     }, [user])
 
     const setRoleRouting = () => {
-        console.log("Role Route: ",role)
+        console.log("Role Routing: ", role);
         if (role === "" || !role) {
-            return []
+            return ;
         } else if (role === "user" || role === "applicant") {
             return (
                 <>
@@ -83,13 +92,22 @@ function App() {
                     <Route path='/application' element={<ApplicationPage/>}/>
                     <Route path='/application/success' element={<ApplicationSuccess/>}/>
                     <Route path='/admin' element={<AccountLayout/>}>
-                        <Route index element={<Navigate to='/admin/applicants'/>}/>
+                        <Route index element={<Navigate to='/admin/appointments'/>}/>
                         {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
+                        <Route path='appointments' element={<AdminAppointments/>}/>
+                        <Route path='appointments/:id' element={<AdminAppointmentInfo/>}/>
+
                         <Route path='applicants' element={<AdminApplicants/>}/> 
                         <Route path='applicants/:id' element={<AdminApplicantInfo/>}/>
+                        
                         <Route path='workers' element={<AdminWorker/>}/>
+                        <Route path='workers/:id' element={<AdminWorkerInfo/>}/>
+                        
                         <Route path='users' element={<AdminUsers/>}/>
+                        <Route path='users/new-user' element={<AdminUserNew/>}/>
+                        <Route path='users/new-worker/:id' element={<AdminWorkerNew/>}/>
                         <Route path='users/:id' element={<AdminUserInfo/>}/>
+                        
                     </Route>
                 </Routes>
             </div>

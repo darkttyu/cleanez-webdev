@@ -4,6 +4,15 @@ import axios from "axios";
 import SVGIcons from '../../SVGIcons'
 
 const AdminUserInfo = () => {
+    // --- Convert Binary Data to Profile URL
+    const profileConvert = (data) => {
+
+        const binaryData = new Uint8Array(data);
+        const base64String = btoa(String.fromCharCode(...binaryData));
+
+        return `data:image/jpeg;base64,${base64String}`;
+    }
+
     let { id } = useParams();
     const navigate = useNavigate();
 
@@ -11,6 +20,9 @@ const AdminUserInfo = () => {
     const [newUserInfo, setNewUserInfo] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [editMode, setEditMode] = useState(false);
+
+    const [profileURL, setProfileURL] = useState(null);
+    const [profileFile, setProfileFile] = useState({});
 
     const fetchUserInfo = async () => {
         try {
@@ -28,6 +40,13 @@ const AdminUserInfo = () => {
     useEffect(() => {
         fetchUserInfo();
     }, [])
+
+    useEffect(() => {
+        if (userInfo) {
+            setProfileURL(profileConvert(userInfo.profilePicture.data.data));
+            console.log(userInfo.role)
+        }
+    }, [userInfo])
 
     const handleEditMode = () => {
         setNewUserInfo({
@@ -48,26 +67,42 @@ const AdminUserInfo = () => {
     }
 
     const handleCancel = () => {
+        setProfileURL(profileConvert(userInfo.profilePicture.data.data));
         setNewUserInfo(null);
         setEditMode(false);
     }
 
+    const updateData = async (accInfo, profile) => {
+        const form = new FormData();
+        form.append("accInfo", JSON.stringify(accInfo))
+        
+        if(profile){
+            form.append("profile", profile)
+        }
+        
+        console.log(accInfo);
+        console.log(profile);
+
+        return form;
+    }
+
     const handleSave = async (id) => {
         try {
-            const response = await axios.put(`https://cleanez-api.vercel.app/api/admin/editUserInfo/${id}`,
-                newUserInfo,
-                {
-                    headers: {'Content-Type': 'application/json'}
-                }
-            );
+            setIsSubmitting(true);
+
+            const formData = await updateData(newUserInfo, profileFile);
+
+            const response = await axios.put(`https://cleanez-api.vercel.app/api/admin/editUserInfo/${id}`, formData);
 
             console.log(response);
 
-            setNewUserInfo(null);
             setEditMode(false);
+            setNewUserInfo(null);
             fetchUserInfo();
         } catch (e) {
             console.log(e)
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -102,7 +137,41 @@ const AdminUserInfo = () => {
         <div className="schedule-page">
         {userInfo ? 
             <div className="schedule-container">
-                <h2>User Data</h2>
+                <div className="title-profile">
+                    <div className="title-button">
+                        <h2>User Data</h2>
+                        {(userInfo.role !== "Worker") ?
+                            <button 
+                            type="button"
+                            className="act-btn complete"
+                            onClick={(e) => {navigate(`/admin/users/new-worker/${userInfo.userId}`)}}>
+                                Turn user into a Worker
+                            </button> :
+                            <button 
+                            type="button"
+                            className="act-btn complete activated"
+                            disabled>
+                                User is already a Worker
+                            </button> 
+                        }
+                    </div>
+
+                    <div className="profile-image-container">
+                        <img src={profileURL} alt="" className="profile-image"/>
+                        {editMode ? (
+                            <input type="file" 
+                            accept="image/jpeg"
+                            onChange={(e) => {
+                                const file = e.target.files[0]
+                                setProfileURL(URL.createObjectURL(file));
+                                setProfileFile(file)
+                            }}/>
+                        ):(
+                            <></>
+                        )}
+                    </div>
+                </div>
+                
                 <div className="schedule-inputs" id="service-inputs">
                     {/* FIRST NAME */}
                     <div className="profile-input-container">
