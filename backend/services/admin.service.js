@@ -738,7 +738,7 @@ export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
   if(keyword === ''){
     appointmentList = await Appointment.find()
       .skip(arrayIndex)
-      .skip(pageSize)
+      .limit(pageSize)
       .lean();
   } else if (wordSplit.length === 1) {
     appointmentList = await Appointment.find({
@@ -748,7 +748,7 @@ export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
           
         ]
     }).skip(arrayIndex)
-    .skip(pageSize)
+    .limit(pageSize)
     .lean();
   } else if (wordSplit.length > 1){
     appointmentList = await Appointment.find({
@@ -758,7 +758,7 @@ export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
         
       ]
   }).skip(arrayIndex)
-      .skip(pageSize)
+      .limit(pageSize)
       .lean();
   }
   
