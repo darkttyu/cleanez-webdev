@@ -43,7 +43,7 @@ const FindAccountPanel = () => {
     
         try {
             const response = await axios.post(
-                'https://cleanez-api.vercel.app/api/auth/verify-email', 
+                'http://localhost:5000/api/auth/verify-email', 
                 { code: verificationCode }, 
                 { headers: { 'Content-Type': 'application/json' } }
             );

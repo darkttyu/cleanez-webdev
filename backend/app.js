@@ -24,12 +24,24 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS middleware configuration for handling cross-origin requests
+const allowedOrigins = [
+  "http://localhost:3000", // Local frontend
+  "https://cleanez.vercel.app" // Deployed frontend
+];
+
 app.use(cors({
-  origin: "https://cleanez.vercel.app", // Allow requests from the frontend
-  methods: ['GET', 'POST', 'PUT', 'OPTIONS', 'DELETE'], // Allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers in requests
-  credentials: true // Allow credentials (cookies, HTTP authentication) in requests
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
+
 
 app.options('*', cors());
 
@@ -43,6 +55,12 @@ app.use("/api/worker", workerRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running');
+});
+
+const PORT = process.env.PORT || 5000; // Use the port from .env or default to 5000
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 // Export the app for Vercel

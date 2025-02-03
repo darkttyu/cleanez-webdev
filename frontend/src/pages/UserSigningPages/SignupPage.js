@@ -202,7 +202,7 @@ const SignupPanel = () => {
                     barangay: signUpData.address.barangay.slice(9)
                 }
             };
-            const response = await axios.post('https://cleanez-api.vercel.app/api/auth/signup', updatedSignUpData, {
+            const response = await axios.post('http://localhost:5000/api/auth/signup', updatedSignUpData, {
                 headers: { 'Content-Type': 'application/json' }
               });
 
