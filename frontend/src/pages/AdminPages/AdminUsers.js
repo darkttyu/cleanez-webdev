@@ -15,7 +15,7 @@ const AdminUsers = () => {
 
     const fetchAllUsers = async (page, size, search = '') => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/findAllUsers`, 
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/findAllUsers`, 
                 {params: { 
                     page: page, 
                     pageSize: size ,
@@ -52,7 +52,7 @@ const AdminUsers = () => {
     const handleDeleteButton = async (id) => {
         // console.log(id);
         try {
-            const response = await axios.delete(`http://localhost:5000/api/admin/deleteUser/${id}`);
+            const response = await axios.delete(`https://cleanez-api.vercel.app/api/admin/deleteUser/${id}`);
 
             // console.log(response);
 

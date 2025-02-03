@@ -2,7 +2,6 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import { Service } from "../models/service.model.js";
-import moment from "moment";
 import { adminWelcomeEmail, adminWelcomeWorkerEmail, sendAccountDeletion, sendWorkerActivationEmail, sendWorkerDeactivationEmail, sendWorkerPaidAppointmentEmail, sendUserDeactivationEmail, sendUserActivationEmail, sendApplicationAcceptanceEmail, sendApplicationRejectionEmail, sendUserAppointmentCancellationEmail, sendWorkerAppointmentCancellationEmail} from "../nodemailer/sendMail.js";
 import { format } from 'date-fns';
 import bcryptjs from 'bcryptjs';
@@ -28,7 +27,6 @@ const formatTime = (time) => {
 
 // Workers
 export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
-  
   if(keyword === ''){
     const workers = await Worker.find()
       .skip(arrayIndex)
@@ -41,10 +39,20 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
 
     // console.log(JSON.stringify(workers, null, 2)); // Debugging: Print worker list for readability.
       if(!workers){
-        throw new Error("Workers not Found");
+        throw new Error("Bad Request. Workers not Found");
       }
 
-    return workers;
+    const sortedWorkers = workers.sort((a, b) => {
+      if (a.serviceCategory < b.serviceCategory){
+        return -1;
+      } else if (a.serviceCategory > b.serviceCategory) {
+        return 1;
+      } else {
+        return 0;
+      }
+    })
+
+    return sortedWorkers;
   } else {
       const filteredWorkers = await Worker.aggregate([
         {
@@ -68,6 +76,7 @@ export const fetchWorkers = async(arrayIndex, pageSize, keyword) => {
         { $limit: pageSize },
         {
           $project: {
+            "userId._id": 1,
             "userId.firstName": 1,
             "userId.lastName": 1,
             "userId.address": 1, 
@@ -291,22 +300,30 @@ export const serviceDeleteWorker = async(userId) => {
 // User 
 export const fetchUserList = async (arrayIndex, pageSize, keyword) => {
   let userList;
+  const wordSplit = keyword.split(' ');
   if(keyword === ''){
     userList = await User.find()
       .skip(arrayIndex)
       .limit(pageSize)
       .lean();
-  } else {
+  } else if (wordSplit.length === 1) {
     userList = await User.find({
-      $or: [
-        { firstName: {$regex: keyword, $options: 'i'} },
-        { lastName: {$regex: keyword, $options: 'i'} }
+      $and: [
+        { firstName: {$regex: wordSplit[0], $options: 'i'} },
+        { lastName: {$regex: wordSplit[0], $options: 'i'} }
+      ]
+    }).skip(arrayIndex).limit(pageSize).lean();
+  } else if (wordSplit.length > 1){
+    userList = await User.find({
+      $and: [
+        { firstName: {$regex: wordSplit[0], $options: 'i'} },
+        { lastName: {$regex: wordSplit[1], $options: 'i'} }
       ]
     }).skip(arrayIndex).limit(pageSize).lean();
   }
 
   // Gets all the User information and stores it in an array of objects
-      if(!userList || userList.length === 0){
+      if(!userList){
         throw new Error("Error in Fetching Users.");
       }
 
@@ -730,29 +747,29 @@ export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
   let appointmentList;
   const wordSplit = keyword.split(' ')
   if(keyword === ''){
-    appointmentList =await Appointment.find()
+    appointmentList = await Appointment.find()
       .skip(arrayIndex)
-      .skip(pageSize)
+      .limit(pageSize)
       .lean();
   } else if (wordSplit.length === 1) {
     appointmentList = await Appointment.find({
-        $or: [
+        $and: [
           { customerFirstName: { $regex: wordSplit[0], $options: "i" }},
           { customerLastName: { $regex: wordSplit[0], $options: "i"}},
           
         ]
     }).skip(arrayIndex)
-    .skip(pageSize)
+    .limit(pageSize)
     .lean();
   } else if (wordSplit.length > 1){
     appointmentList = await Appointment.find({
-      $or: [
+      $and: [
         { customerFirstName: { $regex: wordSplit[0], $options: "i" }},
         { customerLastName: { $regex: wordSplit[1], $options: "i"}},
         
       ]
   }).skip(arrayIndex)
-      .skip(pageSize)
+      .limit(pageSize)
       .lean();
   }
   
@@ -776,7 +793,12 @@ export const fetchAppointments = async (arrayIndex, pageSize, keyword) => {
           paymentStatus: paymentStatus  
       };
   });
-    return filteredAppointments;
+    
+    const sortedAppointments = filteredAppointments.sort((a, b) => {
+      return new Date(a.date) - new Date(b.date)
+    })
+    
+    return sortedAppointments;
 };
 
 export const serviceMarkAppointmentAsCompleted = async (appointmentId) => {

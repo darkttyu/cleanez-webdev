@@ -28,7 +28,7 @@ const FindAccountPanel = () => {
 
         try {
             const response = await axios.post(
-                'http://localhost:5000/api/auth/forgot-password', 
+                'https://cleanez-api.vercel.app/api/auth/forgot-password', 
                 { email }, 
                 { headers: { 'Content-Type': 'application/json' } }
             );
@@ -61,7 +61,7 @@ const FindAccountPanel = () => {
                             size="162" 
                             color="#06E36D"
                             />
-                            <h2>Password Successfully Requested.</h2>
+                            <h2>Password Reset Successfully Requested.</h2>
                             <p className="description">Please check your e-mail ( <strong><span>{email}</span></strong> ) to reset your password.
                             <br /><br />
                             You are now being redirected to the Home Page in 5 seconds...</p>

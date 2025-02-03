@@ -185,8 +185,8 @@ const AccSidebar = ({setNavTitle}) => {
             const role = localStorage.getItem("role");
 
             const response = ((role === 'User' || role === 'Worker' || role === 'Applicant') ? 
-                await axios.post(`http://localhost:5000/api/auth/logout`) :
-                await axios.post(`http://localhost:5000/api/auth/adminLogout`)
+                await axios.post(`https://cleanez-api.vercel.app/api/auth/logout`) :
+                await axios.post(`https://cleanez-api.vercel.app/api/auth/adminLogout`)
             );
 
             console.log(response);

@@ -12,7 +12,7 @@ const AdminAppointmentInfo = () => {
 
     const fetchAppointmentInfo = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/getAppointment/${id}`);
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/getAppointment/${id}`);
 
             console.log(response.data.appointment);
             setAppointmentInfo(response.data.appointment);

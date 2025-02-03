@@ -299,7 +299,7 @@ const ServiceInfo = ({applicantInfo, setApplicantInfo, setIsInfoComplete, servic
     // Fetch Area and Workers for selected Service
     const fetchArea = async (service) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/appointment/getSpecificService/${service}`, {
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/appointment/getSpecificService/${service}`, {
                 headers: { 
                     'Content-Type': 'application/json',
                 }

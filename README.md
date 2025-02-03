@@ -64,6 +64,6 @@ This document outlines all the tasks and challenges that Rein and Carl encounter
 
 ## Business Rules
 - A worker can only work in one service category and area.
-- A user/customer can only set 1 appointment per service per day to prevent overbooking. [TO CHANGE]
+- A user/customer can only set 1 appointment per service per day to prevent overbooking.
 - A user can only cancel an appointment after 20 mins of booking it to prevent false bookings.
 - A user must set an appointment a day before the actual appointment.

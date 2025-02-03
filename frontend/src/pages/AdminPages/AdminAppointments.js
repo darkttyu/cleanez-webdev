@@ -14,8 +14,11 @@ const AdminAppointments = () => {
     const [searchWord, setSearchWord] = useState('');
 
     const fetchAllAppointments = async (page, size, search) => {
+            console.log("Page: ", page);
+            console.log("Size: ", size);
+            console.log("Search: ", search);
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/getAppointments`,
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/getAppointments`,
                 {params: { 
                     page: page, 
                     pageSize: size ,
@@ -61,7 +64,7 @@ const AdminAppointments = () => {
 
     const handleCancelAppt = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/admin/markAppointmentAsCancelled/${id}`);
+            const response = await axios.put(`https://cleanez-api.vercel.app/api/admin/markAppointmentAsCancelled/${id}`);
 
             console.log(response);
         } catch (e) {
@@ -73,7 +76,7 @@ const AdminAppointments = () => {
 
     const handleCompleteAppt = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/admin/markAppointmentAsComplete/${id}`);
+            const response = await axios.put(`https://cleanez-api.vercel.app/api/admin/markAppointmentAsComplete/${id}`);
 
             console.log(response);
         } catch (e) {

@@ -95,7 +95,7 @@ export const findAllUsers = async (req, res) => {
   
   } catch (error) {
     console.log("Error in Fetching Users", error);
-    res.status(500).json({ success: false, message: error.message});
+    res.status(400).json({ success: false, message: error.message});
   }
   
 };
@@ -271,6 +271,7 @@ export const getAppointments = async (req, res) => {
     // Computes for the arrayIndex. Eg. (1 - 1) * 5 = 0 etc..
     const arrayIndex = (page - 1) * pageSize
 
+    console.log(arrayIndex, pageSize, keyword);
     const appointment = await fetchAppointments(arrayIndex, pageSize, keyword);
       if(appointment){
         return res.status(200).json({success: true, message: "Fetched Appointments List.", appointmentList: appointment});

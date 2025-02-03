@@ -27,7 +27,7 @@ const AdminWorkerNew = () => {
     const fetchUserInfo = async () => {
         try {
             console.log(id);
-            const response = await axios.get(`http://localhost:5000/api/admin/clickedUser/${id}`)
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/clickedUser/${id}`)
 
             console.log(response.data.user);
             setUserInfo(response.data.user);
@@ -39,7 +39,7 @@ const AdminWorkerNew = () => {
 
     const fetchServices = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/appointment/getServices`);
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/appointment/getServices`);
 
             // console.log(response.data.services);
             setServiceList(response.data.services);
@@ -109,12 +109,12 @@ const AdminWorkerNew = () => {
     const handleAdd = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:5000/api/admin/addWorker',
+                'https://cleanez-api.vercel.app/api/admin/addWorker',
                 newWorkInfo
             )
 
             console.log("New Worker Added: ", response);
-            navigate('/admin/workers');
+            navigate('/admin/users');
         } catch (e) {
             console.log(e)
         }

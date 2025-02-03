@@ -56,7 +56,7 @@ const RatingBox = ({appID, setShowRating, fetchAppointments}) => {
 
     const submitRating = async (id) => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/user/rateAppointment/${id}`, rating);
+            const response = await axios.post(`https://cleanez-api.vercel.app/api/user/rateAppointment/${id}`, rating);
 
             console.log(response);
 
