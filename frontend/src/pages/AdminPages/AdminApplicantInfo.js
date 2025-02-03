@@ -13,7 +13,7 @@ const AdminApplicantInfo = () => {
     const fetchApplicantInfo = async () => {
         try {
             console.log(id);
-            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/getApplicant/${id}`)
+            const response = await axios.get(`http://localhost:5000/api/admin/getApplicant/${id}`)
 
             console.log(response.data.applicant);
             setApplicantInfo(response.data.applicant);
@@ -59,7 +59,7 @@ const AdminApplicantInfo = () => {
         try {
             setIsSubmitting(true);
 
-            await axios.put(`https://cleanez-api.vercel.app/api/admin/rejectApplicant/${id}`);
+            await axios.put(`http://localhost:5000/api/admin/rejectApplicant/${id}`);
             
             console.log("Rejection Succesful");
 
@@ -76,7 +76,7 @@ const AdminApplicantInfo = () => {
         try {
             setIsSubmitting(true);
 
-            await axios.put(`https://cleanez-api.vercel.app/api/admin/acceptApplicant/${id}`);
+            await axios.put(`http://localhost:5000/api/admin/acceptApplicant/${id}`);
 
             console.log("Acceptance Succesful");
 

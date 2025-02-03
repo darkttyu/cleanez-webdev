@@ -21,7 +21,7 @@ const UserDashboard = () => {
         try {
             const token = localStorage.getItem("token");
             
-            const response = await axios.get(`https://cleanez-api.vercel.app/api/user/getAllUserAppointments`,
+            const response = await axios.get(`http://localhost:5000/api/user/getAllUserAppointments`,
                 {
                     headers: { 
                         'Authorization': `Bearer ${token}`
@@ -37,7 +37,7 @@ const UserDashboard = () => {
 
     const cancelAppointment = async (id) => {
         try {
-            const repsonse = await axios.put(`https://cleanez-api.vercel.app/api/user/cancelAppointment/${id}`);
+            const repsonse = await axios.put(`http://localhost:5000/api/user/cancelAppointment/${id}`);
             console.log(repsonse);
 
             setShowAppInfo(false);
@@ -49,7 +49,7 @@ const UserDashboard = () => {
 
     const completeAppointment = async (id) => {
         try {
-            const response = await axios.put(`https://cleanez-api.vercel.app/api/user/setAppointmentAsCompleted/${id}`);
+            const response = await axios.put(`http://localhost:5000/api/user/setAppointmentAsCompleted/${id}`);
             console.log(response);
 
             setShowAppInfo(false);

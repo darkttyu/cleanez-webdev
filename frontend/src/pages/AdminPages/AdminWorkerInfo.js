@@ -27,7 +27,7 @@ const AdminWorkerInfo = () => {
     const fetchWorkerInfo = async () => {
         try {
             console.log(id);
-            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/clickedWorker/${id}`)
+            const response = await axios.get(`http://localhost:5000/api/admin/clickedWorker/${id}`)
 
             const workerDay = response.data.worker.workerAvailability.day;
             const workerTime = response.data.worker.workerAvailability.startTime;
@@ -55,7 +55,7 @@ const AdminWorkerInfo = () => {
 
     const fetchServices = async () => {
         try {
-            const response = await axios.get(`https://cleanez-api.vercel.app/api/appointment/getServices`);
+            const response = await axios.get(`http://localhost:5000/api/appointment/getServices`);
 
             // console.log(response.data.services);
             setServiceList(response.data.services);
@@ -190,7 +190,7 @@ const AdminWorkerInfo = () => {
             });
 
             const response = await axios.put(
-                `https://cleanez-api.vercel.app/api/admin/editWorkerSchedule/${workerInfo.workerId}`,
+                `http://localhost:5000/api/admin/editWorkerSchedule/${workerInfo.workerId}`,
                 newWorkerInfo
             )
 

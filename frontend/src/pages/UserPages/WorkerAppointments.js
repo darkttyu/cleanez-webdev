@@ -15,7 +15,7 @@ const WorkerAppointments = () => {
         try {
             const token = localStorage.getItem("token");
             
-            const response = await axios.get(`https://cleanez-api.vercel.app/api/worker/getWorkerAppointments`,
+            const response = await axios.get(`http://localhost:5000/api/worker/getWorkerAppointments`,
                 {
                     headers: { 
                         'Authorization': `Bearer ${token}`
@@ -45,7 +45,7 @@ const WorkerAppointments = () => {
         try {
             const token = localStorage.getItem("token");
             console.log("ID and Token: ", id, token);
-            const response = await axios.put(`https://cleanez-api.vercel.app/api/worker/markAppointmentAsPaid/${id}`, 
+            const response = await axios.put(`http://localhost:5000/api/worker/markAppointmentAsPaid/${id}`, 
                 {},
                 {
                     headers: { 

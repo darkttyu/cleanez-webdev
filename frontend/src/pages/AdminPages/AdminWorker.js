@@ -15,7 +15,7 @@ const AdminWorker = () => {
 
     const fetchAllWorkers = async (page, size = 10, search = '') => {
         try {
-            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/findAllWorkers`, 
+            const response = await axios.get(`http://localhost:5000/api/admin/findAllWorkers`, 
                 {params: { 
                     page: page, 
                     pageSize: size ,
@@ -46,7 +46,7 @@ const AdminWorker = () => {
     const handleDeleteButton = async (id) => {
         console.log(id);
         try {
-            const response = await axios.delete(`https://cleanez-api.vercel.app/api/admin/deleteWorker/${id}`);
+            const response = await axios.delete(`http://localhost:5000/api/admin/deleteWorker/${id}`);
 
             console.log(response);
 
