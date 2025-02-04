@@ -121,7 +121,7 @@ const AdminUserNew = () => {
         try {
             setIsSubmitting(true);
             if (areInputsValid()){
-                const response = await axios.post('http://localhost:5000/api/admin/addUser', userInfo);
+                const response = await axios.post('https://cleanez-api.vercel.app/api/admin/addUser', userInfo);
 
                 console.log(response);
             } else {

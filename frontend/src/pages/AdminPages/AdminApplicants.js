@@ -15,7 +15,7 @@ const AdminApplicants = () => {
 
     const fetchAllApplicants = async (page, size = 10, search = '') => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/getAllApplicants`,
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/getAllApplicants`,
                 {params: { 
                     page: page, 
                     pageSize: size ,

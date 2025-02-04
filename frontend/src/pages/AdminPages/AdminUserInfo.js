@@ -27,7 +27,7 @@ const AdminUserInfo = () => {
     const fetchUserInfo = async () => {
         try {
             console.log(id);
-            const response = await axios.get(`http://localhost:5000/api/admin/clickedUser/${id}`)
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/clickedUser/${id}`)
 
             console.log(response.data.user);
             setUserInfo(response.data.user);
@@ -92,7 +92,7 @@ const AdminUserInfo = () => {
 
             const formData = await updateData(newUserInfo, profileFile);
 
-            const response = await axios.put(`http://localhost:5000/api/admin/editUserInfo/${id}`, formData);
+            const response = await axios.put(`https://cleanez-api.vercel.app/api/admin/editUserInfo/${id}`, formData);
 
             console.log(response);
 

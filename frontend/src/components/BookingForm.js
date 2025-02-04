@@ -309,7 +309,7 @@ const ServiceBooking = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComp
     // Fetch Area and Workers for selected Service
     const fetchAreaAndWorkers = async (service) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/appointment/getSpecificService/${service}`, {
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/appointment/getSpecificService/${service}`, {
                 headers: { 
                     'Content-Type': 'application/json',
                 }
@@ -712,7 +712,7 @@ const AvailableCleaners = ({bookingInfo, setBookingInfo, setIsInfoComplete}) => 
         const fetchAvailableWorkers = async () => {
             // --- --- Successfull Fetching
             try {
-                const response = await axios.post(`http://localhost:5000/api/appointment/getAvailableWorkers`, workerIdentifier, {
+                const response = await axios.post(`https://cleanez-api.vercel.app/api/appointment/getAvailableWorkers`, workerIdentifier, {
                     headers: { 'Content-Type': 'application/json' }
                   });
                   
@@ -848,7 +848,7 @@ const Review = ({bookingInfo}) => {
             const names = [];
             for (let i = 0; i < bookingInfo.assignedWorkers.length; i++) {
                 try {
-                    const response = await axios.get(`http://localhost:5000/api/appointment/getWorkerInformation/${bookingInfo.assignedWorkers[i]}`);
+                    const response = await axios.get(`https://cleanez-api.vercel.app/api/appointment/getWorkerInformation/${bookingInfo.assignedWorkers[i]}`);
 
                     const first  = response.data.worker.userInformation.firstName;
                     const last = response.data.worker.userInformation.lastName;

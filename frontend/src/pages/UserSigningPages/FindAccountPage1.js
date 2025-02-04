@@ -28,7 +28,7 @@ const FindAccountPanel = () => {
 
         try {
             const response = await axios.post(
-                'http://localhost:5000/api/auth/forgot-password', 
+                'https://cleanez-api.vercel.app/api/auth/forgot-password', 
                 { email }, 
                 { headers: { 'Content-Type': 'application/json' } }
             );

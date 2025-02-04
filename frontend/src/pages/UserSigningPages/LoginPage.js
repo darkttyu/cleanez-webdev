@@ -59,7 +59,7 @@ const LoginPanel = ({route}) => {
         e.preventDefault();
         // --- --- Successfull Login
         try {
-            const response = await axios.post(`http://localhost:5000/api/auth/${route}`, loginCredentials, {
+            const response = await axios.post(`https://cleanez-api.vercel.app/api/auth/${route}`, loginCredentials, {
                 headers: { 'Content-Type': 'application/json' }
               });
 

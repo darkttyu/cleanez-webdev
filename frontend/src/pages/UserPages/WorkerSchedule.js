@@ -38,7 +38,7 @@ const WorkerSchedule = () => {
     const fetchWorkerDetail = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(`http://localhost:5000/api/worker/getWorkerDetails`, {
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/worker/getWorkerDetails`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
 
@@ -52,7 +52,7 @@ const WorkerSchedule = () => {
 
     const fetchServices = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/appointment/getServices`);
+            const response = await axios.get(`https://cleanez-api.vercel.app/api/appointment/getServices`);
 
             // console.log(response.data.services);
             setServiceList(response.data.services);
@@ -197,7 +197,7 @@ const WorkerSchedule = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.put(`http://localhost:5000/api/worker/editWorkerServiceInformation`,
+            const response = await axios.put(`https://cleanez-api.vercel.app/api/worker/editWorkerServiceInformation`,
                 newWorkerSchedule,
                 {headers: {
                     'Authorization': `Bearer ${token}`,

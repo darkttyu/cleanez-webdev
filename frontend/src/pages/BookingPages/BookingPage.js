@@ -88,7 +88,7 @@ const BookingPage = () => {
     useEffect(() => {
         const fetchServicesList = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/appointment/getServices`, {
+                const response = await axios.get(`https://cleanez-api.vercel.app/api/appointment/getServices`, {
                     headers: { 
                         'Content-Type': 'application/json',
                     }
@@ -169,7 +169,7 @@ const BookingPage = () => {
             const token = localStorage.getItem("token");
             console.log("Token from the backend: ", token);
             const response = await axios.post(
-                `http://localhost:5000/api/appointment/setAppointment`,
+                `https://cleanez-api.vercel.app/api/appointment/setAppointment`,
                 bookingInfo,
                 {
                     headers: { 
