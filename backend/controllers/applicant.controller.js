@@ -40,7 +40,7 @@ export const submitApplicationForm = async (req, res) => {
       return res.status(400).json({success: false, message: "Applicant is Already a Worker.", worker: worker})
     }
   
-  const appointment = await Appointment.findOne({userId: userId, appointmentStatus: "Pending"})
+  const appointment = await Appointment.findOne({userId: userId, appointmentStatus: "Scheduled"})
     if(appointment){
       return res.status(400).json({success: false, message: "User has scheduled appointments. Appointment Rejected", appointment: appointment})
     }
