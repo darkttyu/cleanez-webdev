@@ -57,7 +57,7 @@ const LoginPanel = ({route}) => {
     // --- Verifies Login Data after Submission
     const handleLogInSubmission = async (e) => {
         e.preventDefault();
-        // --- --- Successfull Login
+        // --- --- Successfull Login    
         try {
             const response = await axios.post(`http://localhost:5000/api/auth/${route}`, loginCredentials, {
                 headers: { 'Content-Type': 'application/json' }
@@ -81,17 +81,18 @@ const LoginPanel = ({route}) => {
             }
         // --- --- Failed Login
         } catch (error) {
-            console.error('Error:', error.response ? error.response.data : error.message);
-            if (error.response.status === 400) {
-                setShowError("show-error");
-            }  
+            console.log(error);
+            // if (error.response.status === 400) {
+            //     setShowError("show-error");
+            // }  
         }
     }
 
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
-        <form className="prompt" method="POST" onSubmit={handleLogInSubmission}>
+        <form className="prompt" method="POST" onSubmit={handleLogInSubmission}
+        >
             {/* TOP HALF PROMPT/S */}
             <div className="main-prompt">
                 <div className="prompt-pages">

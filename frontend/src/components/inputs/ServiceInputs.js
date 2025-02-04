@@ -1,8 +1,10 @@
+import SVGIcons from "../../SVGIcons";
+
 const ServiceType = ({ value, data, onChange }) => {
     return (  
-        <div className="text-container">
+        <div className="floating-input-container">
             <select 
-                className="input" 
+                className="input-bar no-logo" 
                 name="serviceName" 
                 value={value}  
                 id="service-input" 
@@ -16,18 +18,23 @@ const ServiceType = ({ value, data, onChange }) => {
                     <option key={index} value={s.serviceName}>{s.serviceName}</option>
                 ))}
             </select>
-            <label className="text-label" htmlFor="service-input">
+            <label className="floating-label" htmlFor="service-input">
                 Service Type
             </label>
+            <SVGIcons 
+            className="select-arrow"
+            selected="inputArrow"
+            size="14px"
+            color="var(--monoc4-50)"/>
         </div>
     );
 }
 
 const AreaSize = ({ value, data, onChange }) => {
     return (  
-        <div className="text-container">
+        <div className="floating-input-container">
             <select 
-                className="input" 
+                className="input-bar no-logo" 
                 name="sizeOfArea" 
                 value={value}  
                 id="area-size-input" 
@@ -41,18 +48,23 @@ const AreaSize = ({ value, data, onChange }) => {
                     <option key={index} value={s.sizeOfArea}>{s.sizeOfArea}</option>
                 ))}
             </select>
-            <label className="text-label" htmlFor="area-size-input">
+            <label className="floating-label" htmlFor="area-size-input">
                 Size of Area
             </label>
+            <SVGIcons 
+            className="select-arrow"
+            selected="inputArrow"
+            size="14px"
+            color="var(--monoc4-50)"/>
         </div>
     );
 }
 
 const WorkerNumbers = ({ value, data, onChange }) => {
     return (  
-        <div className="text-container">
+        <div className="floating-input-container">
             <select 
-                className="input" 
+                className="input-bar no-logo" 
                 name="numberOfWorkers" 
                 value={value}  
                 id="worker-numbers-input" 
@@ -66,9 +78,14 @@ const WorkerNumbers = ({ value, data, onChange }) => {
                     <option key={index} value={n}>{n}</option>
                 ))}
             </select>
-            <label className="text-label" htmlFor="worker-numbers-input">
+            <label className="floating-label" htmlFor="worker-numbers-input">
                 No. of Workers
             </label>
+            <SVGIcons 
+            className="select-arrow"
+            selected="inputArrow"
+            size="14px"
+            color="var(--monoc4-50)"/>
         </div>
     );
 }

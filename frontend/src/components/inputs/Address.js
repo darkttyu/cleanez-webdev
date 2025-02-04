@@ -1,9 +1,10 @@
 const InputAddress = ({value, onChange, disabled=false}) => {
     return (  
-        <div className="text-container">
+        <div 
+        className="floating-input-container">
             {/* INPUT HERE */}
             <input 
-            className="input" 
+            className="input-bar no-logo" 
             type="text" 
             placeholder="Block / No. / Street" 
             name="block"
@@ -13,10 +14,11 @@ const InputAddress = ({value, onChange, disabled=false}) => {
             id="address-input" />
             {/* LABEL HERE */}
             <label 
-            className="text-label" 
+            className="floating-label" 
             htmlFor="address-input">
                 Block / No. / Street
             </label>
+            {/* ICON HERE */}
         </div> 
     );
 }

@@ -1,4 +1,6 @@
-import '../styles/UserSigning.css';
+import '../styles/UserSigning.css'
+import '../styles/InputStyles.css';
+
 import bg from "../images/assets/bg-signing-nograin.svg";
 import logoIcon from "../images/logos/Logo-1-2.svg";
 import logoText from "../images/logos/Logo-4-1.svg";

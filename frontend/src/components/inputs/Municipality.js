@@ -1,9 +1,11 @@
+import SVGIcons from "../../SVGIcons";
+
 const InputMunicipality = ({value, data, onChange, disabled=false}) => {
     return(
-        <div className="text-container">
+        <div className="floating-input-container">
             {/* INPUT HERE */}
             <select 
-                className="input" 
+                className="input-bar no-logo" 
                 type="text" 
                 name="municipal"
                 value= { value }
@@ -26,10 +28,15 @@ const InputMunicipality = ({value, data, onChange, disabled=false}) => {
             </select>
             {/* LABEL HERE */}
             <label 
-            className="text-label" 
+            className="floating-label" 
             htmlFor="address-input">
                 Municipal
             </label>
+            <SVGIcons 
+            className="select-arrow"
+            selected="inputArrow"
+            size="14px"
+            color="var(--monoc4-50)"/>
         </div> 
     );
 }
