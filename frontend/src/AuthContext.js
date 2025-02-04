@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
                 let response;
                 if (role === 'User' || role === 'Applicant') {
                     console.log("Log in in as a User");
-                    response = await axios.get(`http://localhost:5000/api/user/getAccountInformation`,{
+                    response = await axios.get(`https://cleanez-api.vercel.app/api/user/getAccountInformation`,{
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     if (isMounted) {
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
                     }
                 } else if (role === 'Worker') {
                     console.log("Log in in as a Worker");
-                    response = await axios.get(`http://localhost:5000/api/worker/getWorkerAccountInformation`,{
+                    response = await axios.get(`https://cleanez-api.vercel.app/api/worker/getWorkerAccountInformation`,{
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     if (isMounted) {
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         setUser(null); // Clear user data on logout
 
-        const response = await axios.post('http://localhost:5000/api/auth/logout',
+        const response = await axios.post('https://cleanez-api.vercel.app/api/auth/logout',
             {
             headers: { 'Content-Type': 'application/json' }
           });
