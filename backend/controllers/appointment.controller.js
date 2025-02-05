@@ -252,7 +252,7 @@ export const setAppointment = async (req, res) => {
     );
     
       if(duplicateAppointment) {
-        return res.status(400).json({success: false, message: "Appointment already exists.", duplicateAppointment: duplicateAppointment})
+        return res.status(400).json({success: false, message: "Appointment already exists. / Appointment was cancelled. Rebooking not Allowed.", duplicateAppointment: duplicateAppointment})
       }
 
     // Checks if the appointment exists based on the specified date and time regardless of service. Avoids conflicting schedules.
@@ -267,14 +267,11 @@ export const setAppointment = async (req, res) => {
 
     const appointmentServiceList = await Appointment.find({"userId": userId, "serviceDetails.serviceCategory": serviceDetails.serviceCategory}); // Gets all the appointments that the user booked for that specific service.
 
-    // console.log(appointmentServiceList)
-
     // Checks if a user has made an appointment for a specific service for the current day. This limits the appointment of each service / day to 1.
     const currentDateConflict = appointmentServiceList.some(appointment => 
       moment(appointment.createdAt).startOf('day').isSame(moment().startOf('day'))
     );
     
-      // console.log(currentDateConflict);
       if(currentDateConflict){
         return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service for today.", currentDateConflict: currentDateConflict});
       }
