@@ -1,6 +1,7 @@
 import "../styles/Footer.css"
 import SVG from "../SVGIcons";
 import logo from "../images/logos/foot-logo.svg"
+import shortLogo from "../images/logos/Logo-4-1.svg"
 import { Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 
@@ -11,6 +12,7 @@ const Footer = () => {
      return (  
           <footer className="footer">
                <img className="footer-logo" src={logo} alt="" />
+               <img className="footer-logo-compact" src={shortLogo} alt="" />
                <div className="footer-content">
                     <div className="footer-menu">
                          <a href="#home" className="">Home</a>
@@ -19,6 +21,7 @@ const Footer = () => {
                          <a href="">Privacy Policy</a>
                     </div>
                     <div className="footer-misc">
+                         
                          <p className="register">
                               Want to be part of our team? <Link to={user?'/application':'/login'}>Apply Now</Link>.</p>
                          <p className="copyright">&copy; Copyright 2024. All rights reserved. CleanEZ.</p>

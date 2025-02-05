@@ -71,7 +71,7 @@ const LoginPanel = ({route}) => {
             if (route === "login") {
                 const token = response.data.token; // Token from the response
                 localStorage.setItem("token", token); // Token saved in Local Storage
-                localStorage.setItem("role", response.data.user.role);
+            localStorage.setItem("role", response.data.user.role);
                 login(response.data.user)
                 navigate(`/home`);
             } else if (route === "adminLogin") { // Token saved in Local Storage

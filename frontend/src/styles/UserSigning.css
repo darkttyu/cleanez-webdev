@@ -1,13 +1,19 @@
 @import '../index.css';
 
 
-.background {
+.forgot-pass {
+     color: black;
+}
+
+.signing-background {
      height  : 100vh;
      width   : 100vw;
      overflow: hidden;
+     position: fixed;
+     z-index : -1;
 }
 
-.background img {
+.signing-background img {
      object-fit: cover;
      height    : 100vh;
      width     : 100vw;
@@ -291,4 +297,88 @@
 
 .page .success-message span {
      color: #06E36D;
+}
+
+.text-logo {
+     display: none;
+     height : 48px;
+}
+
+@media screen and (max-height: 738px) {
+     .signing-panel {
+          top       : 0;
+          transform : translate(-50%, 0);
+          height    : 100%;
+          min-height: 704px;
+     }
+}
+
+@media screen and (max-width: 800px) {
+     .signing-panel {
+          flex-direction: column;
+     }
+
+     .signing-panel .branding {
+          height          : fit-content;
+          padding         : 16px;
+          cursor          : pointer;
+          background-color: #f8f8f8;
+     }
+
+     .signing-panel .branding .logo,
+     .signing-panel .branding .text {
+          display: none;
+     }
+
+     .text-logo {
+          display: block;
+     }
+
+     .signing-panel .branding:hover .text {
+          transform: scale(100%);
+     }
+
+     .prompt {
+          height: 100%;
+
+     }
+
+     .main-prompt {
+          display        : flex;
+          justify-content: center;
+          align-items    : center;
+
+     }
+
+     .page {
+          justify-content: start;
+          position       : relative;
+          height         : 100%;
+          padding        : 0 24px;
+     }
+
+     .page .buttons {
+          position: absolute;
+          bottom  : 24px;
+     }
+
+     .page:nth-of-type(2n) {
+          gap: 12px;
+     }
+}
+
+@media screen and (max-width:424px) {
+     .signing-panel {
+          width        : 100%;
+          border-radius: 0px;
+     }
+
+     .prompt {
+          width: fit-content;
+     }
+
+     .page {
+          min-width: 100vw;
+     }
+
 }
