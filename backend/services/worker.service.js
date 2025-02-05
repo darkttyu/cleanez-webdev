@@ -155,8 +155,8 @@ export const viewAppointment = async (appointmentId) => {
   const workerUserIds = await Promise.all(
     workerId.map(async (id) => {
       const worker = await Worker.findById(id); // Fetch worker details by ID
-      return worker.userId; // Return the userId of the worker
-    })
+      return worker ? worker.userId : null; // Return the userId of the worker
+    }).filter((worker) => worker.userId !== null)
   );
 
   // Fetch full names of workers from the User collection using their userIds
