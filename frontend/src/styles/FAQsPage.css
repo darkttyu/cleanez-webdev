@@ -26,7 +26,7 @@
 
 .sub-quote {
     font-family: var(--font2);
-    font-size  : 28px;
+    font-size  : 24px;
     color      : var(--monoc4);
 }
 
@@ -48,7 +48,7 @@
 .questions-container {
     display         : flex;
     flex-direction  : column;
-    padding         : 100px;
+    padding         : 90px;
     background-color: var(--color1f);
     gap             : 24px;
     align-items     : center;
@@ -58,7 +58,8 @@
     display         : flex;
     flex-direction  : column;
     background-color: var(--monoc1);
-    width           : 768px;
+    max-width       : 768px;
+    width           : 95%;
     padding         : 16px;
     border-radius   : 8px;
     box-shadow      : 0 4px 4px #00000040;

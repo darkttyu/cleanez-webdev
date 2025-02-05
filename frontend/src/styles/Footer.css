@@ -10,6 +10,14 @@ footer {
     font-family    : var(--font2);
 }
 
+.footer a {
+    color: rgb(6, 158, 77);
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
 .footer-logo {
     height: 70%;
 }
@@ -55,4 +63,48 @@ footer {
     display        : flex;
     justify-content: flex-end;
     gap            : 16px;
+}
+
+.footer-logo-compact {
+    display: none;
+}
+
+@media screen and (max-width: 1080px) {
+    .footer-logo {
+        display: none;
+    }
+
+    .footer-logo-compact {
+        display: block;
+        width  : 250px;
+    }
+}
+
+@media screen and (max-width: 920px) {
+    .footer-logo-compact {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 720px) {
+    .footer {
+        flex-direction: column-reverse;
+        padding       : 56px 0;
+        gap           : 56px;
+        height        : fit-content;
+    }
+
+    .footer-contacts {
+        align-items: center;
+    }
+
+    .footer-contacts .links svg {
+        aspect-ratio: 1/1;
+        height      : 32px;
+        width       : 32px;
+    }
+
+    .footer-menu {
+        display: none;
+    }
 }

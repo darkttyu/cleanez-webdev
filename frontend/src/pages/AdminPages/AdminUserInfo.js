@@ -174,13 +174,15 @@ const AdminUserInfo = () => {
                 
                 <div className="schedule-inputs" id="service-inputs">
                     {/* FIRST NAME */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" 
+                        htmlFor="fname-input">
                             First Name
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text"  
+                        id="fname-input"
                         value={(newUserInfo) ? newUserInfo.firstName : userInfo.firstName}
                         disabled={!editMode}
                         onChange={(e) => {
@@ -192,12 +194,14 @@ const AdminUserInfo = () => {
                     </div>
 
                     {/* LAST NAME */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact"
+                        htmlFor="lname-input" >
                             Last Name
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
+                        id="lname-input"
                         type="text" 
                         value={(newUserInfo) ? newUserInfo.lastName : userInfo.lastName}
                         disabled={!editMode}
@@ -210,96 +214,96 @@ const AdminUserInfo = () => {
                     </div>
                                                 
                     {/* BIRTHDAY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Birthdate
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={userInfo.birthDate}
                         disabled/>
                     </div>
                                        
                     {/* GENDER */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Gender
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={userInfo.gender}
                         disabled/>
                     </div>
                                        
                     {/* PHONE NUMBER */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Phone Number
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={userInfo.phoneNumber}
                         disabled/>
                     </div>
                                      
                     {/* EMAIL */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Email Address
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={userInfo.email}
                         disabled/>
                     </div>
                                   
                     {/* BLOCK */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Block / No. / Street
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={userInfo.address.block}
                         disabled/>
                     </div>
                     
                     {/* PROVINCE */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Province
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={userInfo.address.province}
                         disabled/>
                     </div>
 
                     {/* MUNICIPALITY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Municipality
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={userInfo.address.municipal}
                         disabled/>
                     </div>
 
                     {/* BARANGAY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Barangay
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={userInfo.address.barangay}
                         disabled/>

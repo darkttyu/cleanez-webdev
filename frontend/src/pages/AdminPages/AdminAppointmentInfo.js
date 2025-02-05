@@ -34,72 +34,72 @@ const AdminAppointmentInfo = () => {
                     <div className="appointment-container" id="service-inputs">
                         <div className="appointment-inputs grid-3">
                             {/* FIRST NAME */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     First Name
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.customerFirstName}
                                 disabled/>
                             </div>
                             
                             {/* LAST NAME */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Last Name
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.customerLastName}
                                 disabled/>
                             </div>
                             
                             {/* PHONE NUMBER */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Phone Number
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={`+63 ${appointmentInfo.phoneNumber}`}
                                 disabled/>
                             </div>
                             
                             {/* SERVICE CATEGORY */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Service Category
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo " 
                                 type="text"  
                                 value={appointmentInfo.serviceCategory}
                                 disabled/>
                             </div>
                             
                             {/* AREA ASSIGNED */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Area Assigned
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.areaAssigned}
                                 disabled/>
                             </div>
                             
                             {/* SERVICE COST */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Service Cost
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.serviceCost}
                                 disabled/>
@@ -107,72 +107,72 @@ const AdminAppointmentInfo = () => {
                         </div>
                         <div className="appointment-inputs grid-2">
                             {/* DATE */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Date
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.appointmentDate}
                                 disabled/>
                             </div>
                             
                             {/* TIME */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Time
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.appointmentTime}
                                 disabled/>
                             </div>
                             
                             {/* BLOCK */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Block / No. / Street
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.address.block}
                                 disabled/>
                             </div>
                             
                             {/* BARANGAY */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Barangay
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.address.barangay}
                                 disabled/>
                             </div>
                             
                             {/* MUNICIPALITY */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Municipality
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.address.municipal}
                                 disabled/>
                             </div>
                             
                             {/* PROVINCE */}
-                            <div className="profile-input-container">
-                                <label className="profile-label" >
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" >
                                     Province
                                 </label>
                                 <input 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 type="text"  
                                 value={appointmentInfo.address.province}
                                 disabled/>

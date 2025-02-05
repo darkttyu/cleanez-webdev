@@ -1,28 +1,19 @@
 @import '../index.css';
 
-h1 {
-     font-family: var(--font1);
-     font-size  : 28px;
-     font-weight: 700;
-     text-align : center;
+
+.forgot-pass {
+     color: black;
 }
 
-
-
-p {
-     font-family: var(--font2);
-     font-size  : 14px;
-     color      : var(--monoc4-50);
-     text-align : center;
-}
-
-.background {
+.signing-background {
      height  : 100vh;
      width   : 100vw;
      overflow: hidden;
+     position: fixed;
+     z-index : -1;
 }
 
-.background img {
+.signing-background img {
      object-fit: cover;
      height    : 100vh;
      width     : 100vw;
@@ -168,93 +159,6 @@ p {
      width         : 100%;
 }
 
-.input {
-     width        : 100%;
-     border       : 1px solid var(--monoc4-50);
-     border-radius: 32px;
-     padding      : 10px 20px;
-     font-family  : var(--font2);
-     font-size    : 16px;
-     transition   : border 0.6s cubic-bezier(0.37, 0, 0.63, 1);
-     min-height   : 46px;
-}
-
-
-.inputs .input:focus {
-     outline-color: var(--color1d);
-     border       : 1px solid var(--color1d);
-}
-
-.text-container {
-     position: relative;
-}
-
-.text-container .text-label {
-     display    : none;
-     font-family: var(--font2);
-     font-size  : 16px;
-     color      : var(--monoc4-00);
-     position   : absolute;
-     top        : 50%;
-     left       : 20px;
-     transform  : translateY(-50%);
-     transition : all 0.3s cubic-bezier(0.37, 0, 0.63, 1),
-}
-
-.text-container .input:not(:placeholder-shown)+.text-label {
-     display    : inline;
-     font-size  : 16px;
-     font-weight: 500;
-     color      : var(--monoc3);
-     top        : 1px;
-     text-shadow: -1px -1px 3px #ffffff, 1px -1px 3px #ffffff, -1px 1px 3px #ffffff, 1px 1px 3px #ffffff;
-}
-
-.text-container .input:focus+.text-label {
-     display    : inline;
-     color      : #59a965;
-     font-size  : 16px;
-     font-weight: 500;
-}
-
-.text-container .input:placeholder-shown+.text-label {
-     color: var(--monoc4-00);
-}
-
-#security-code-input {
-     display        : flex;
-     justify-content: center;
-     gap            : 4px;
-}
-
-.code-input {
-     overflow     : hidden;
-     font-size    : 32px;
-     width        : 44px;
-     min-width    : 10px;
-     border       : 1px solid var(--monoc4-50);
-     border-radius: 12px;
-     padding      : 12px 12px;
-     text-align   : center;
-}
-
-.radio-container {
-     display        : flex;
-     justify-content: space-between;
-     flex-wrap      : wrap;
-}
-
-.radio-line {
-     display    : inline-flex;
-     gap        : 8px;
-     align-items: center;
-}
-
-.radio-input {
-     width : 20px;
-     height: 20px;
-}
-
 .buttons {
      position : relative;
      max-width: 350px;
@@ -393,4 +297,88 @@ p {
 
 .page .success-message span {
      color: #06E36D;
+}
+
+.text-logo {
+     display: none;
+     height : 48px;
+}
+
+@media screen and (max-height: 738px) {
+     .signing-panel {
+          top       : 0;
+          transform : translate(-50%, 0);
+          height    : 100%;
+          min-height: 704px;
+     }
+}
+
+@media screen and (max-width: 800px) {
+     .signing-panel {
+          flex-direction: column;
+     }
+
+     .signing-panel .branding {
+          height          : fit-content;
+          padding         : 16px;
+          cursor          : pointer;
+          background-color: #f8f8f8;
+     }
+
+     .signing-panel .branding .logo,
+     .signing-panel .branding .text {
+          display: none;
+     }
+
+     .text-logo {
+          display: block;
+     }
+
+     .signing-panel .branding:hover .text {
+          transform: scale(100%);
+     }
+
+     .prompt {
+          height: 100%;
+
+     }
+
+     .main-prompt {
+          display        : flex;
+          justify-content: center;
+          align-items    : center;
+
+     }
+
+     .page {
+          justify-content: start;
+          position       : relative;
+          height         : 100%;
+          padding        : 0 24px;
+     }
+
+     .page .buttons {
+          position: absolute;
+          bottom  : 24px;
+     }
+
+     .page:nth-of-type(2n) {
+          gap: 12px;
+     }
+}
+
+@media screen and (max-width:424px) {
+     .signing-panel {
+          width        : 100%;
+          border-radius: 0px;
+     }
+
+     .prompt {
+          width: fit-content;
+     }
+
+     .page {
+          min-width: 100vw;
+     }
+
 }

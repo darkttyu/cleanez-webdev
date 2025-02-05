@@ -123,6 +123,14 @@ td {
   z-index : -1;
 }
 
+h1 {
+  font-family: var(--font1);
+  font-size  : 28px;
+  font-weight: 700;
+  text-align : center;
+  color      : #20063B;
+}
+
 h2 {
   font-family: var(--font1);
   font-size  : 24px;
