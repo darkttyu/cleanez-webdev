@@ -192,7 +192,7 @@ export const markAppointmentAsCancelled = async(appointmentId) => {
     const currentTime = moment();
     const hourDifference = currentTime.diff(appointmentDate, 'hours');
 
-      //Sends an error message if the user attempts to cancel an appointment 1 Day after booking.
+      //Sends an error message if the user attempts to cancel an appointment 2 hors after booking.
       if(hourDifference >= 2) {
         throw new Error("Cannot Cancel an Appointment 2 hours after Booking.");
       }
