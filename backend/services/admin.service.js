@@ -692,7 +692,7 @@ export const serviceAcceptApplicant = async(userId) => {
         serviceCategory: applicant.applicationDetails.serviceCategory,
         isApplicantVerified: "Verified",
         workerAvailability: {
-          areaAssigned: '',
+          areaAssigned: areaDetails.sizeOfArea,
           day: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
           startTime: areaDetails.startTime
         },
@@ -705,6 +705,7 @@ export const serviceAcceptApplicant = async(userId) => {
         userId,
         {
           role: "Worker",
+          $unset: { applicationDetails: {} }
         }
       )
   

@@ -35,8 +35,7 @@ const workerSchema = new mongoose.Schema({
   workerAvailability: {
     areaAssigned: {
       type: String, 
-      required: false,
-      defailt: '', 
+      required: true,
     },
     day: {
       type: [String],
