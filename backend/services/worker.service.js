@@ -3,6 +3,7 @@ import { Worker } from "../models/worker.model.js";
 import { Appointment } from "../models/appointment.model.js";
 import moment from "moment";
 import { sendWorkerPaidAppointmentEmail } from "../nodemailer/sendMail.js";
+import { nextDay } from "date-fns";
 
 const formatTime = (time) => {
   // Extract hours and minutes from the input time
@@ -155,9 +156,9 @@ export const viewAppointment = async (appointmentId) => {
   const workerUserIds = await Promise.all(
     workerId.map(async (id) => {
       const worker = await Worker.findById(id); // Fetch worker details by ID
-      return worker.userId; // Return the userId of the worker
+      return worker ? worker.userId : null; // Return the userId of the worker
     })
-  );
+  ).filter((userId) => userId !== null);
 
   // Fetch full names of workers from the User collection using their userIds
   const workers = await Promise.all(

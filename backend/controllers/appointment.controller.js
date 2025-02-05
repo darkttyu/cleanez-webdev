@@ -108,12 +108,9 @@ export const getAvailableWorkers = async (req, res) => {
   const formatDate = formatDay(date);
 
   try {
-    // Retrieves all workers that match the service category, area assigned, day, and start time.
+    // Retrieves all workers that match the service category
     let workers = await Worker.find({
       "serviceCategory": serviceCategory, 
-      "workerAvailability.areaAssigned": sizeOfArea, 
-      "workerAvailability.day": { $in: [formatDate] },  
-      "workerAvailability.startTime": { $in: [startTime] }
     }).lean(); // .lean ensures that plain objects will be returned instead of mongoose documents.
 
     // If no workers are found, respond with an error message.
@@ -124,11 +121,10 @@ export const getAvailableWorkers = async (req, res) => {
     // Initialize an array to store available workers.
     let availableWorkers = []
 
-    // Loops through each workers assignedAppointments to check if they are available at the specified date and time.
+    // Loops through each workers assignedAppointments to check if they are available at the specified date
     workers.forEach(worker => {
       const isConflict = worker.assignedAppointments.some(appointment => 
-        new Date(appointment.date).getTime() === new Date(date).getTime() 
-        && appointment.startTime === startTime
+        new Date(appointment.date).getTime() === new Date(date).getTime()
       );
 
       if(!isConflict) {
@@ -270,14 +266,14 @@ export const setAppointment = async (req, res) => {
     // console.log(appointmentServiceList)
 
     // Checks if a user has made an appointment for a specific service for the current day. This limits the appointment of each service / day to 1.
-    const currentDateConflict = appointmentServiceList.some(appointment => 
-      moment(appointment.createdAt).startOf('day').isSame(moment().startOf('day'))
-    );
+    // const currentDateConflict = appointmentServiceList.some(appointment => 
+    //   moment(appointment.createdAt).startOf('day').isSame(moment().startOf('day'))
+    // );
     
-      // console.log(currentDateConflict);
-      if(currentDateConflict){
-        return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service for today.", currentDateConflict: currentDateConflict});
-      }
+    //   // console.log(currentDateConflict);
+    //   if(currentDateConflict){
+    //     return res.status(400).json({success: false, message: "User has already scheduled an appointment for that Service for today.", currentDateConflict: currentDateConflict});
+    //   }
 
     // Checks if the appointment exists given a specific day, time, and service. This avoids overbooking if a user decides to 
     // book the same service on a different day
