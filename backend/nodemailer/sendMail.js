@@ -33,7 +33,7 @@ export const sendVerificationEmail = async (firstName, email, verificationToken)
 
     console.log("Verification email sent successfully:", info.messageId);
   } catch (error) {
-    throw new Error("Error sending verification email:", error.message);
+    console.error("Error sending verification email:", error);
   }
 };
 

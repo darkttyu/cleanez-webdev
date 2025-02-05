@@ -526,31 +526,33 @@ export const serviceDeleteUser = async (userId) => {
             throw new Error("Bad Request. Worker does not exist.");
           }
 
-        const deleteWorker = await Worker.findOneAndDelete({userId: id});
-          if(!deleteWorker){
-            throw new Error("Bad Request. Error in Deleting Worker Information.")
-          }
-      }
-  
-  const userAppointmentCount = await Appointment.countDocuments({userId: id, 
-    $or:[
-      { appointmentStatus: "Scheduled" }, 
-      { paymentStatus: "Pending" }
-    ] 
-  });
-
-    if(userAppointmentCount > 0){
-      throw new Error("Bad Request. User still has Pending Appointments.")
-    }
-
-  const deleteUserInformation = await User.findOneAndDelete({_id: id}); 
-    if(!deleteUserInformation){
-      throw new Error("Bad Request. Error in Deleting User with User ID: ${userId}")
-    }
-  
-    // Sends an account deletion email to the user
-    sendAccountDeletion(deleteUserInformation.firstName, deleteUserInformation.email);
-    return deleteUserInformation;
+          const userAppointmentCount = await Appointment.countDocuments({
+            $or:[
+              { "appointmentStatus": "Scheduled" }, 
+              { "paymentStatus": "Pending" }
+            ],
+            assignedWorkers: { $in: [worker._id] }
+          });
+        
+            console.log("Appointment Count: ", userAppointmentCount);
+            if(userAppointmentCount > 0){
+              throw new Error("Bad Request. User still has Pending Appointments.")
+            } else {
+              const deleteWorker = await Worker.findOneAndDelete({userId: id});
+                if(!deleteWorker){
+                  throw new Error("Bad Request. Error in Deleting Worker Information.")
+                }
+        
+              const deleteUserInformation = await User.findOneAndDelete({_id: id}); 
+                if(!deleteUserInformation){
+                  throw new Error("Bad Request. Error in Deleting User with User ID: ${userId}")
+                }
+          
+              // Sends an account deletion email to the user
+              sendAccountDeletion(deleteUserInformation.firstName, deleteUserInformation.email);
+              return true;
+              }
+        }
 };
 
 export const serviceUpdateUserStatus = async (userId) => {
