@@ -9,7 +9,8 @@ import { addUser, addWorker, clickedUser, deleteUser, editUserInfo,
   markAppointmentAsComplete,
   markAppointmentAsCancelled,
   getAppointment,
-  getEmails
+  getEmails,
+  generateDailyReport
 } from '../controllers/admin.controller.js';
 import { uploadProfile } from "../middleware/profileUpload.js";
 
@@ -20,6 +21,7 @@ router.get("/getAppointments", getAppointments);
 router.put("/markAppointmentAsComplete/:id", markAppointmentAsComplete);
 router.put("/markAppointmentAsCancelled/:id", markAppointmentAsCancelled)
 router.get("/getAppointment/:id", getAppointment);
+router.get("/generateDailyReport", generateDailyReport)
 
 // Applicants Tab
 router.get("/getAllApplicants", getAllApplicants);

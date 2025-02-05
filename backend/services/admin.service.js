@@ -9,6 +9,7 @@ import * as generator from 'generate-password';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from "url";
+import moment from 'moment';
 
 const formatTime = (time) => {
   // Extract hours and minutes from the input time
@@ -974,3 +975,89 @@ export const fetchAppointment = async (appointmentId) => {
   return appointmentDetails;
 };
 
+export const serviceGenerateDailyReport = async() => {
+  const startOfDay = moment().startOf('day').toDate(); // Start of today (midnight)
+  const endOfDay = moment().endOf('day').toDate(); // End of today (just before midnight tomorrow)
+
+  const totalAppointments = await Appointment.countDocuments({
+    createdAt: {
+      $gte: startOfDay,
+      $lt: endOfDay
+    }
+  });
+
+  const totalCancelledAppointments = await Appointment.countDocuments({
+    $and: [
+      { appointmentStatus: "Cancelled" },
+      { paymentStatus: "Cancelled" }
+    ],
+    createdAt: {
+      $gte: startOfDay,
+      $lt: endOfDay
+    }
+  });
+
+  const residentialAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Residential Cleaning",
+    createdAt: {
+      $gte: startOfDay,
+      $lt: endOfDay
+    }
+  });
+
+  const deepAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Deep Cleaning",
+    createdAt: {
+      $gte: startOfDay,
+      $lt: endOfDay
+    }
+  });
+
+  const moveAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Move In / Out Cleaning",
+    createdAt: {
+      $gte: startOfDay,
+      $lt: endOfDay
+    }
+  });
+
+  const officeAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Office Cleaning",
+    createdAt: {
+      $gte: startOfDay,
+      $lt: endOfDay
+    }
+  });
+
+  const windowAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Window Cleaning",
+    createdAt: {
+      $gte: startOfDay,
+      $lt: endOfDay
+    }
+  });
+  
+  const data = {
+    totalAppointments: totalAppointments,
+    totalCancelledAppointments: totalCancelledAppointments,
+    residentialAppointmentCount: residentialAppointmentCount,
+    deepAppointmentCount: deepAppointmentCount,
+    moveAppointmentCount: moveAppointmentCount,
+    officeAppointmentCount: officeAppointmentCount,
+    windowAppointmentCount: windowAppointmentCount
+  };
+
+  return data;
+};
+
+export const serviceGenerateWeeklyReport = async() => {
+
+};
+
+export const serviceGenerateMonthlyReport = async() => {
+
+};
+
+export const serviceGenerateYearlyReport = async () => {
+
+};

@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
 import { Appointment } from "../models/appointment.model.js";
-import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule} from "../services/admin.service.js";
+import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule, serviceGenerateDailyReport} from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -313,6 +313,20 @@ export const getAppointment = async (req, res) => {
     return res.status(400).json({succes: false, message: error.message})
   }
 };
+
+export const generateDailyReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateDailyReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Daily Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Daily Report.", data: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
 
 /*
 export const addField = async (req, res) => {
