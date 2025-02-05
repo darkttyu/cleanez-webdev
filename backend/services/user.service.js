@@ -141,7 +141,7 @@ export const viewUserAppointment = async(appointmentId) => {
     for (const workerId of appointment.assignedWorkers) {
       const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
           if (!worker) {
-            continue;
+            throw new Error("Worker Not Found.")
           }
 
           const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
