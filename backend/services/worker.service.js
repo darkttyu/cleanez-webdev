@@ -23,7 +23,7 @@ const formatTime = (time) => {
 export const fetchWorker = async(id) => {
   const user = await User.findById({ _id: new Object(id) });
     if(!user){
-      throw new Error("Bad Request. User does not exist.");
+      throw new Error("User does not exist.");
     }
       if(user.role !== "Worker"){
         throw new Error("Bad Request. User is not a worker.");
@@ -45,7 +45,7 @@ export const fetchWorker = async(id) => {
 export const fetchWorkerDetails = async(id) => {
   const worker = await Worker.findOne({"userId": new Object(id)});
     if(!worker){
-      throw new Error("Bad Request. Worker Information does not exist.");
+      throw new Error("Worker Information does not exist.");
     }
     
   // console.log(worker);
@@ -56,7 +56,7 @@ export const updateWorker = async(id, body, profile) => {
   const user = await User.findOne({ _id: new Object(id) });
 
     if(!user){
-      throw new Error("Bad Request. User does not exist.");
+      throw new Error("User does not exist.");
     }
       if(user.role !== "Worker"){
         throw new Error("Bad Request. Account is not Verified as a Worker.");
@@ -89,7 +89,7 @@ export const updateWorker = async(id, body, profile) => {
 
     const updatedWorker = await User.findByIdAndUpdate(id, updatedData, { new: true }); // Updates worker information to the database.
       if(!updatedWorker){
-        throw new Error("Bad Request. Error in Updating Worker Data.");
+        throw new Error("Error in Updating Worker Data.");
       }
     
     return updatedWorker;
@@ -100,7 +100,7 @@ export const fetchAppointments = async(id) => {
   const worker = await Worker.findOne({ userId: new Object(id) });
 
     if(!worker){
-      throw new Error("Not Found. Worker not Found.");
+      throw new Error("Worker not Found.");
     }
 
     // Extracts the IDs of assigned appointments from the worker's data and stores them in an array.
@@ -145,7 +145,7 @@ export const viewAppointment = async (appointmentId) => {
 
   // Throw an error if the appointment does not exist
   if (!fullAppointment) {
-    throw new Error("Bad Request. Appointment does not exist.");
+    throw new Error("Appointment does not exist.");
   }
   
   // Extract worker IDs from the assignedWorkers array in the appointment
@@ -204,7 +204,7 @@ export const markAppointment = async (appointmentId) => {
     { new: true } 
   );
     if(!appointment){
-      throw new Error("Bad Request. Appointment does not exist.");
+      throw new Error("Appointment does not exist.");
     }
 
     // Extract worker IDs from the assignedWorkers array in the appointment
@@ -254,7 +254,7 @@ export const updateWorkerService = async(id, body) => {
     const worker = await Worker.findOne({ userId: new Object(id) }); // Gets the worker information from the id 
       // Worker Validations
       if(!worker){
-        throw new Error("Not Found. Worker not Found.")
+        throw new Error("Worker not Found.")
       }
 
         // Checks if the worker still has assigned appointments 
@@ -281,7 +281,7 @@ export const updateWorkerService = async(id, body) => {
           )
       
             if(!updatedWorkerService){
-              throw new Error("Bad Request. Error in Updating Worker Service Information.")
+              throw new Error("Error in Updating Worker Service Information.")
             }
       
           return updatedWorkerService;

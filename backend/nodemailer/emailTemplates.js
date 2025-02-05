@@ -509,6 +509,7 @@ export const SEND_WORKER_BOOKING_CONFIRMATION =  `
     <p style="font-weight: bold;">Booking Details:</p>
     <ul>
       <li><strong>Client Name:</strong> <span style="font-weight: bold; color: #4CAF50;">{custFName} {custLName}</span></li>
+      <li><strong>Client Email:</strong> <span style="font-weight: bold; color: #4CAF50;">{custEmail}</span></li>
       <li><strong>Address:</strong> <span style="font-weight: bold; color: #4CAF50;">{block} Brgy. {barangay} {municipal} {province}</span></li>
       <li><strong>Service:</strong> <span style="font-weight: bold; color: #4CAF50;">{serviceType}</span></li>
       <li><strong>Size of Area:</strong> <span style="font-weight: bold; color: #4CAF50;">{sizeOfArea}</span></li>
