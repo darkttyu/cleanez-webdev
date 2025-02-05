@@ -95,7 +95,7 @@ export const fetchUsers = async() => {
   const users = await User.find({role: "User"});
    
     if(!users){
-      throw new Error("Users not Found.");
+      throw new Error("Not Found. Users not Found.");
     }
  
   const userData = users.map(user => ({
@@ -122,27 +122,27 @@ export const postWorker = async(body) => {
         isVerified: true,
       });
         if (workerAlreadyExists) {
-          throw new Error("Worker already exists");
+          throw new Error("Bad Request. Worker already exists");
         }
       
       // Checks if an applicant / worker to be added still has an appointment
       const applicantAppointment = await Appointment.find({"userId": userId, appointmentStatus: "Pending"})
         if(applicantAppointment.length >= 1){
-          throw new Error("User has scheduled appointments. Insertion Rejected");
+          throw new Error("Bad Request. User has scheduled appointments. Insertion Rejected");
         }
   
       // gets service details based on the service category
       const getServiceDetails = await Service.findOne({ serviceName: serviceCategory });
   
         if (!getServiceDetails) { 
-          throw new Error("Service Category does not exist.");
+          throw new Error("Not Found. Service Category does not exist.");
         }
   
       // gets area details based on the worker's assigned area    
       const getAreaDetail = getServiceDetails.areaDetails.find((area) => area.sizeOfArea === workerAvailability.areaAssigned);
   
         if (!getAreaDetail) { 
-          throw new Error("Area Assigned does not exist.");
+          throw new Error("Not Found. Area Assigned does not exist.");
         }
   
       // gets the start time based on the worker's assigned area
@@ -168,7 +168,7 @@ export const postWorker = async(body) => {
       });
   
         if (!updateUserRole) {
-          throw new Error("Failed to Update User Role." );
+          throw new Error("Bad Request. Failed to Update User Role." );
         }
   
       adminWelcomeWorkerEmail(updateUserRole.firstName, updateUserRole.email); // Sends welcome email.
@@ -187,7 +187,7 @@ export const fetchWorker = async(userId) => {
   // console.log(JSON.stringify(worker, null, 2)); // Debugging: Prints worker details.
 
     if(!worker){
-      throw new Error("Error Retrieving Worker Information.")
+      throw new Error("Bad Request. Error Retrieving Worker Information.")
     }
 
   return worker;
@@ -198,7 +198,7 @@ export const updateSchedule = async(userId, body) => {
   const { workerAvailability } = body;
   const currentWorker = await Worker.findById(userId);
     if (!currentWorker) {
-      throw new Error("Worker does not exist");
+      throw new Error("Error. Worker does not exist");
     }
 
   // Updates the worker's schedule information.
@@ -212,7 +212,7 @@ export const updateSchedule = async(userId, body) => {
   );
 
     if (!updatedWorkerInfo) {
-      throw new Error("Failed to update worker.");
+      throw new Error("Bad Request. Failed to update worker.");
     }
   
   return updatedWorkerInfo;
@@ -221,12 +221,12 @@ export const updateSchedule = async(userId, body) => {
 export const updateStatus = async(userId) => {
   const checkWorker = await Worker.findOne({ userId });
     if(!checkWorker){
-      throw new Error("Worker does not exist.");
+      throw new Error("Bad Request. Worker does not exist.");
     }
 
   const user = await User.findById(userId);
     if(!user){
-      throw new Error("User not Found.");
+      throw new Error("Not Found. User not Found.");
     }
   
       if(user.status === "Active"){
@@ -239,7 +239,7 @@ export const updateStatus = async(userId) => {
         );
 
           if(!updatedWorkerStatus){
-            throw new Error("Failed to set Worker Status to Active.")
+            throw new Error("Error. Failed to set Worker Status to Active.")
           }
 
           // Sends Activation Email
@@ -258,7 +258,7 @@ export const updateStatus = async(userId) => {
         );
 
           if(!updatedWorkerStatus){
-            throw new Error("Failed to Soft Delete Worker.")
+            throw new Error("Error. Failed to Soft Delete Worker.")
           }
 
           // Sends deactivation email
@@ -280,7 +280,7 @@ export const serviceDeleteWorker = async(userId) => {
   const deletedWorker = await Worker.findOneAndDelete({userId: userId}) // removes worker record;
 
     if(!deletedWorker){
-      throw new Error("Worker not Found.");
+      throw new Error("Bad Request. Worker not Found.");
     }
 
   const updateUserRole = await User.findByIdAndUpdate(
@@ -290,7 +290,7 @@ export const serviceDeleteWorker = async(userId) => {
     });
 
     if(!updateUserRole){
-      throw new Error("Error in Updating User Role.");
+      throw new Error("Bad Request. Error in Updating User Role.");
     }
 
     sendAccountDeletion(updateUserRole.firstName, updateUserRole.email);
@@ -324,7 +324,7 @@ export const fetchUserList = async (arrayIndex, pageSize, keyword) => {
 
   // Gets all the User information and stores it in an array of objects
       if(!userList){
-        throw new Error("Error in Fetching Users.");
+        throw new Error("Bad Request. Error in Fetching Users List.");
       }
 
   // Map allows us to manipulate arrays and transforming them into a new array.
@@ -386,12 +386,12 @@ export const postUser = async (body) => {
 
     // Checks if all fields are filled out
     if(!firstName || !lastName || !email || !phoneNumber ||   !birthDate || !gender || !address) {
-      throw new Error("All fields are required.");
+      throw new Error("Bad Request. All fields are required.");
     }
   
   const userAlreadyExists = await User.findOne({email});
     if(userAlreadyExists){
-      throw new Error("User already exists.")
+      throw new Error("User Conflict. User already exists.")
     }
   
   // Generates random password
@@ -429,7 +429,7 @@ export const getUser = async (userId) => {
   const user = await User.findOne({_id: new Object(userId)}) 
 
     if(!user){
-      throw new Error("Bad Request. User does not exist.");
+      throw new Error("Not Found. User does not exist.");
     }
     
     // Filters the user info to only show the necessary fields
@@ -507,7 +507,7 @@ export const updateUser = async (userId, body, profile) => {
   );
 
       if(!updatedUserInfo) {
-        throw new Error("Failed to update user.");
+        throw new Error("Bad Request. Failed to update user.");
       }
       
       return updatedUserInfo
@@ -722,7 +722,7 @@ export const serviceRejectApplicant = async(userId) => {
   const applicant = await User.findOne({_id: new Object(userId), role: "Applicant"})
 
     if(!applicant) {
-      throw new Error("Applicant not Found.");
+      throw new Error("Bad Request. Applicant not Found.");
     }
     
     const updateUserRole = await User.findByIdAndUpdate(
@@ -812,7 +812,7 @@ export const serviceMarkAppointmentAsCompleted = async (appointmentId) => {
   )
 
     if(!appointment){
-      throw new Error("Appointment does not exist.");
+      throw new Error("Bad Request. Appointment does not exist.");
     }
 
         // Extract worker IDs from the assignedWorkers array in the appointment
@@ -928,7 +928,7 @@ export const serviceMarkAppointmentAsCancelled = async (appointmentId) => {
 export const fetchAppointment = async (appointmentId) => {
   const appointment = await Appointment.findById(appointmentId);
     if(!appointment){
-      throw new Error("Bad Request. Errr in Fetching Appointment Details.");
+      throw new Error("Bad Request. Error in Fetching Appointment Details.");
     }
   
     let slicedDate = '';

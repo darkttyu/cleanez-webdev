@@ -22,7 +22,7 @@ const formatTime = (time) => {
 export const fetchUser = async(id) => {
   const user = await User.findById(id);
     if(!user){
-      throw new Error("User does not exist.");
+      throw new Error("Not Found. User does not exist.");
     }
 
     return user;
@@ -33,7 +33,7 @@ export const updateUser = async(id, body, profile) => {
   const { block, province, municipal, barangay } = address;
     const user = await User.findById({ _id: new Object(id) });
       if(!user){
-        throw new Error("User does not exist");
+        throw new Error("Bad Request. User does not exist");
       } 
         
         if(profile && profile.length > 0){
@@ -133,7 +133,7 @@ export const fetchAppointments = async(id) => {
 export const viewUserAppointment = async(appointmentId) => {
   const appointment = await Appointment.findById(appointmentId).lean();
     if(!appointment){
-      throw new Error("Appointment not Found.")
+      throw new Error("Not Found. Appointment not Found.")
     }
 
     const assignedWorkersNames = [];
@@ -141,12 +141,12 @@ export const viewUserAppointment = async(appointmentId) => {
     for (const workerId of appointment.assignedWorkers) {
       const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
           if (!worker) {
-            throw new Error("Worker Not Found.")
+            throw new Error("Not Found. Worker Not Found.")
           }
 
           const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
             if (!user) {
-              throw new Error("User Not Found.")
+              throw new Error("Bad Request. User Not Found.")
             }
             
             const { firstName, lastName } = user;
@@ -174,7 +174,7 @@ export const markAppointmentAsComplete = async(appointmentId) => {
   );
 
     if(!appointment){ 
-      throw new Error("Error in Marking Appointment as Complete.");
+      throw new Error("Bad Request. Error in Marking Appointment as Complete.");
     }
 
       return appointment;
@@ -184,7 +184,7 @@ export const markAppointmentAsCancelled = async(appointmentId) => {
   // Fetches the Appointment Information
   const appointment = await Appointment.findById(appointmentId).lean();
     if(!appointment) {
-      throw new Error("Error in Fetching Appointment.");
+      throw new Error("Bad Request. Error in Fetching Appointment.");
     }
 
     // Compares the hours today to the hours of the time of creation
@@ -194,17 +194,17 @@ export const markAppointmentAsCancelled = async(appointmentId) => {
 
       //Sends an error message if the user attempts to cancel an appointment 2 hors after booking.
       if(hourDifference >= 2) {
-        throw new Error("Cannot Cancel an Appointment 2 hours after Booking.");
+        throw new Error("Error. Cannot Cancel an Appointment 2 hours after Booking.");
       }
 
     const user = await User.findById(appointment.userId);
       if(!user) {
-        throw new Error("Error in Fetching User.");
+        throw new Error("Bad Request. Error in Fetching User.");
       }
 
       // Checks if the user exceeds the limit of cancellation
       if(user.cancelledAppointment >= 30) {
-        throw new Error("Cannot Cancel Appointment. Limit Exceeded.")
+        throw new Error("Bad Request. Cannot Cancel Appointment. Limit Exceeded.")
       }
     
     // Updates the status of the appointment
