@@ -53,9 +53,9 @@ const AdminUsers = () => {
         // console.log(id);
         try {
             const response = await axios.delete(`http://localhost:5000/api/admin/deleteUser/${id}`);
-            // console.log(response);
-
-            fetchAllUsers(1, 10);
+            if(response.status === 200){
+                fetchAllUsers(1, 10);
+            }
         } catch (e) {
             console.log(e);
         }
