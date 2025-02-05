@@ -233,7 +233,7 @@ export const sendWorkerAppointmentConfirmation = async (firstName, email, custFN
       to: [email], 
       subject: "You have been Booked!",
       html: SEND_WORKER_BOOKING_CONFIRMATION.replace("{workerFirstName}", firstName).replace("{custFName}", custFName)
-      .replace("{custLName}", custLName).replace("{block}", block).replace("{barangay}", barangay)
+      .replace("{custLName}", custLName).replace("{custEmail}", email).replace("{block}", block).replace("{barangay}", barangay)
       .replace("{municipal}", municipal).replace("{province}", province).replace("{serviceType}", serviceType)
       .replace("{sizeOfArea}", sizeOfArea).replace("{bookingDate}", date).replace("{bookingTime}", time)
       .replace("{workerList}", assignedWorkers.join(', ')).replace("{earnings}", earnings)

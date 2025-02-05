@@ -18,6 +18,7 @@ const profileUpload = multer({
     // List of allowed MIME types for file uploads
     const allowedTypes = [
       'image/jpeg', // JPEG images
+      'image/png'
     ];
 
     // Check if the uploaded file type is allowed
