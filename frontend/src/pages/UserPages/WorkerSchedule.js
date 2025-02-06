@@ -8,6 +8,8 @@ import SVGIcons from "../../SVGIcons";
 
 import PopupError from "../../components/PopupError";
 
+import LoadingScreen2 from "../../components/LoadingScreen2";
+
 const WorkerSchedule = () => {
     const [workerDetails, setWorkerDetails] = useState(null);
     const [serviceList, setServiceList] = useState([]);
@@ -16,6 +18,9 @@ const WorkerSchedule = () => {
 
     const [dayValues, setDayValues] = useState([]);
     const [timeValues, setTimeValues] = useState([]);
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [fadeOut, setFadeOut] = useState(false);
 
     const [newWorkerSchedule, setNewWorkerSchedule] = useState({
         serviceCategory: "0",
@@ -29,9 +34,26 @@ const WorkerSchedule = () => {
     const [editMode, setEditMode] = useState(false);
 
     useEffect(() => {
-        fetchWorkerDetail();
-        fetchServices();
-    }, []);
+        document.title = "CleanEZ | Schedule"
+        
+        loadResources()
+    }, [])
+
+    
+    const loadResources = async () => {
+        await document.fonts.ready;
+
+        await fetchWorkerDetail();
+        await fetchServices();
+
+        setTimeout(() => {
+            setFadeOut(true);
+
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
+        }, 3000);
+    };
 
     useEffect(() => {
         console.log(timeList);
@@ -233,211 +255,219 @@ const WorkerSchedule = () => {
 
 
     return (  
-        <div className="schedule-page">
-            {showErrorModal? 
-                <PopupError 
-                errTitle="Unable to Save Profile"
-                errMessage={errMessage}
-                buttons={[
-                    {func: handleScheduleCancel, text: "Cancel", className: "red"},
-                    {func: handleContinue, text: "Continue", className: "green"},
-                ]}/> :
-                <></>
+        <>
+            {isLoading? 
+            <LoadingScreen2 fadeOut={fadeOut}/> :
+            <>
+            </>
             }
-            <section className="schedule-container">
-                <h2>Service</h2>
-                <div className="schedule-inputs" id="service-inputs">
-                    {/* SERVICE TYPE */}
-                    <div className="basic-input-container">
-                        <label className="basic-label compact" htmlFor="service-input">
-                            Service Type
-                        </label>
-                        <SVGIcons 
-                        className="select-arrow"
-                        selected="inputArrow"
-                        size="14px"
-                        color="var(--monoc4-50)"/>
-                        <select 
-                        className="input-bar no-logo" 
-                        name="serviceName" 
-                        value={newWorkerSchedule.serviceCategory}  
-                        id="service-input" 
-                        disabled ={true} //CHANGE LATER
-                        onChange={(e) => {
-                            const newServiceCategory = e.target.value;
-
-                            // Update the schedule and reset area selection
-                            setNewWorkerSchedule({
-                                ...newWorkerSchedule,
-                                serviceCategory: newServiceCategory,
-                                workerAvailability: {
-                                    ...newWorkerSchedule.workerAvailability,
-                                    areaAssigned: "0", // Reset area selection
-                                },
-                            });
-                        }}
-                    >
-                        {/* SELECT OPTIONS */}
-                        {serviceList.map((s, index) => (
-                            <option key={index} value={s.serviceName}>{s.serviceName}</option>
-                        ))}
-                    </select>
-                    </div>
-
-                    {/* AREA TYPE */}
-                    <div className="basic-input-container">
-                        <label className="basic-label compact" htmlFor="area-size-input">
-                            Size of Area
-                        </label>
-                        <SVGIcons 
-                        className="select-arrow"
-                        selected="inputArrow"
-                        size="14px"
-                        color="var(--monoc4-50)"/>
-                        <select 
+            <div className="schedule-page">
+                {showErrorModal? 
+                    <PopupError 
+                    errTitle="Unable to Save Profile"
+                    errMessage={errMessage}
+                    buttons={[
+                        {func: handleScheduleCancel, text: "Cancel", className: "red"},
+                        {func: handleContinue, text: "Continue", className: "green"},
+                    ]}/> :
+                    <></>
+                }
+                <section className="schedule-container">
+                    <h2>Service</h2>
+                    <div className="schedule-inputs" id="service-inputs">
+                        {/* SERVICE TYPE */}
+                        <div className="basic-input-container">
+                            <label className="basic-label compact" htmlFor="service-input">
+                                Service Type
+                            </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
+                            <select 
                             className="input-bar no-logo" 
-                            name="sizeOfArea" 
-                            value={newWorkerSchedule.workerAvailability.areaAssigned} 
-                            id="area-size-input" 
-                            disabled ={!editMode}
+                            name="serviceName" 
+                            value={newWorkerSchedule.serviceCategory}  
+                            id="service-input" 
+                            disabled ={true} //CHANGE LATER
                             onChange={(e) => {
+                                const newServiceCategory = e.target.value;
+
+                                // Update the schedule and reset area selection
                                 setNewWorkerSchedule({
                                     ...newWorkerSchedule,
+                                    serviceCategory: newServiceCategory,
                                     workerAvailability: {
                                         ...newWorkerSchedule.workerAvailability,
-                                        areaAssigned: e.target.value,
-                                        startTime: []
+                                        areaAssigned: "0", // Reset area selection
                                     },
-                                }) 
+                                });
                             }}
                         >
                             {/* SELECT OPTIONS */}
-                            <option value="0">Select Size of Area</option>
-                            {areaList.map((area, index) => (
-                                <option key={index} value={area.sizeOfArea}>{area.sizeOfArea}</option>
+                            {serviceList.map((s, index) => (
+                                <option key={index} value={s.serviceName}>{s.serviceName}</option>
                             ))}
                         </select>
+                        </div>
+
+                        {/* AREA TYPE */}
+                        <div className="basic-input-container">
+                            <label className="basic-label compact" htmlFor="area-size-input">
+                                Size of Area
+                            </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
+                            <select 
+                                className="input-bar no-logo" 
+                                name="sizeOfArea" 
+                                value={newWorkerSchedule.workerAvailability.areaAssigned} 
+                                id="area-size-input" 
+                                disabled ={!editMode}
+                                onChange={(e) => {
+                                    setNewWorkerSchedule({
+                                        ...newWorkerSchedule,
+                                        workerAvailability: {
+                                            ...newWorkerSchedule.workerAvailability,
+                                            areaAssigned: e.target.value,
+                                            startTime: []
+                                        },
+                                    }) 
+                                }}
+                            >
+                                {/* SELECT OPTIONS */}
+                                <option value="0">Select Size of Area</option>
+                                {areaList.map((area, index) => (
+                                    <option key={index} value={area.sizeOfArea}>{area.sizeOfArea}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                </div>
-            </section>
-            <section className="schedule-container">
-                <h2>Worker Schedule</h2>
-                <div className="schedule-inputs" id="schedule-inputs">
-                    <table className="schedule-table">
-                        <thead className="schedule-thead">
-                            <tr className="schedule-tr">
-                                <th className="service-header">Service Category</th>
-                                <th><label htmlFor="SUN">SUN</label></th>
-                                <th><label htmlFor="MON">MON</label></th>
-                                <th><label htmlFor="TUE">TUE</label></th>
-                                <th><label htmlFor="WED">WED</label></th>
-                                <th><label htmlFor="THU">THU</label></th>
-                                <th><label htmlFor="FRI">FRI</label></th>
-                                <th><label htmlFor="SAT">SAT</label></th>
-                            </tr>
-                        </thead>
-                        <tbody className="schedule-tbody">
-                            <tr className="schedule-tr">
-                                <td>{newWorkerSchedule.serviceCategory}</td>
-                                <td>
-                                    <input type="checkbox" name="worker-days" id="SUN" value="Sunday"
-                                    onChange={handleDayChanges}
-                                    disabled ={!editMode}
-                                    checked={newWorkerSchedule?.workerAvailability?.day.includes("Sunday")}/>
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="worker-days" id="MON" value="Monday"
-                                    onChange={handleDayChanges}
-                                    disabled ={!editMode}
-                                    checked={newWorkerSchedule?.workerAvailability?.day.includes("Monday")}/>
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="worker-days" id="TUE" value="Tuesday"
-                                    onChange={handleDayChanges}
-                                    disabled ={!editMode}
-                                    checked={newWorkerSchedule?.workerAvailability?.day.includes("Tuesday")}/>
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="worker-days" id="WED" value="Wednesday"
-                                    onChange={handleDayChanges}
-                                    disabled ={!editMode}
-                                    checked={newWorkerSchedule?.workerAvailability?.day.includes("Wednesday")}/>
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="worker-days" id="THU" value="Thursday"
-                                    onChange={handleDayChanges}
-                                    disabled ={!editMode}
-                                    checked={newWorkerSchedule?.workerAvailability?.day.includes("Thursday")}/>
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="worker-days" id="FRI" value="Friday"
-                                    onChange={handleDayChanges}
-                                    disabled ={!editMode}
-                                    checked={newWorkerSchedule?.workerAvailability?.day.includes("Friday")}/>
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="worker-days" id="SAT" value="Saturday"
-                                    onChange={handleDayChanges}
-                                    disabled ={!editMode}
-                                    checked={newWorkerSchedule?.workerAvailability?.day.includes("Saturday")}/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            <section className="schedule-container">
-                <h2>Time Availability</h2>
-                <div className="schedule-inputs" id="timeavail-inputs">
-                {timeList.map((time, index) => (
-                <div className="time-button-container" key={index}>
-                    <input 
-                    type="checkbox" 
-                    name="worker-times"
-                    id={time} 
-                    className="worker-time-checkbox"
-                    value={time}
-                    onChange={handleTimeChanges}
-                    disabled ={!editMode}
-                    checked={newWorkerSchedule?.workerAvailability?.startTime.includes(time)}/>
-                    <label 
-                    htmlFor={time} 
-                    className="worker-time-button">
-                        {convertTime(time)}
-                    </label>
-                </div>
-                ))}
-                </div>
-            </section>
-            <div className="schedule-actions">
-            {!editMode ?
-                <button
-                type="button"
-                className="act-btn complete"
-                onClick={(e) => setEditMode(true)}>
-                    Edit Schedule
-                    <SVGIcons 
-                    selected="buttonEdit"
-                    size="20px"
-                    color="white"/>
-                </button> :
-                <>
-                    <button
-                    type="button"
-                    className="act-btn cancel"
-                    onClick={handleScheduleCancel}>
-                        Cancel
-                    </button>
+                </section>
+                <section className="schedule-container">
+                    <h2>Worker Schedule</h2>
+                    <div className="schedule-inputs" id="schedule-inputs">
+                        <table className="schedule-table">
+                            <thead className="schedule-thead">
+                                <tr className="schedule-tr">
+                                    <th className="service-header">Service Category</th>
+                                    <th><label htmlFor="SUN">SUN</label></th>
+                                    <th><label htmlFor="MON">MON</label></th>
+                                    <th><label htmlFor="TUE">TUE</label></th>
+                                    <th><label htmlFor="WED">WED</label></th>
+                                    <th><label htmlFor="THU">THU</label></th>
+                                    <th><label htmlFor="FRI">FRI</label></th>
+                                    <th><label htmlFor="SAT">SAT</label></th>
+                                </tr>
+                            </thead>
+                            <tbody className="schedule-tbody">
+                                <tr className="schedule-tr">
+                                    <td>{newWorkerSchedule.serviceCategory}</td>
+                                    <td>
+                                        <input type="checkbox" name="worker-days" id="SUN" value="Sunday"
+                                        onChange={handleDayChanges}
+                                        disabled ={!editMode}
+                                        checked={newWorkerSchedule?.workerAvailability?.day.includes("Sunday")}/>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="worker-days" id="MON" value="Monday"
+                                        onChange={handleDayChanges}
+                                        disabled ={!editMode}
+                                        checked={newWorkerSchedule?.workerAvailability?.day.includes("Monday")}/>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="worker-days" id="TUE" value="Tuesday"
+                                        onChange={handleDayChanges}
+                                        disabled ={!editMode}
+                                        checked={newWorkerSchedule?.workerAvailability?.day.includes("Tuesday")}/>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="worker-days" id="WED" value="Wednesday"
+                                        onChange={handleDayChanges}
+                                        disabled ={!editMode}
+                                        checked={newWorkerSchedule?.workerAvailability?.day.includes("Wednesday")}/>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="worker-days" id="THU" value="Thursday"
+                                        onChange={handleDayChanges}
+                                        disabled ={!editMode}
+                                        checked={newWorkerSchedule?.workerAvailability?.day.includes("Thursday")}/>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="worker-days" id="FRI" value="Friday"
+                                        onChange={handleDayChanges}
+                                        disabled ={!editMode}
+                                        checked={newWorkerSchedule?.workerAvailability?.day.includes("Friday")}/>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="worker-days" id="SAT" value="Saturday"
+                                        onChange={handleDayChanges}
+                                        disabled ={!editMode}
+                                        checked={newWorkerSchedule?.workerAvailability?.day.includes("Saturday")}/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                <section className="schedule-container">
+                    <h2>Time Availability</h2>
+                    <div className="schedule-inputs" id="timeavail-inputs">
+                    {timeList.map((time, index) => (
+                    <div className="time-button-container" key={index}>
+                        <input 
+                        type="checkbox" 
+                        name="worker-times"
+                        id={time} 
+                        className="worker-time-checkbox"
+                        value={time}
+                        onChange={handleTimeChanges}
+                        disabled ={!editMode}
+                        checked={newWorkerSchedule?.workerAvailability?.startTime.includes(time)}/>
+                        <label 
+                        htmlFor={time} 
+                        className="worker-time-button">
+                            {convertTime(time)}
+                        </label>
+                    </div>
+                    ))}
+                    </div>
+                </section>
+                <div className="schedule-actions">
+                {!editMode ?
                     <button
                     type="button"
                     className="act-btn complete"
-                    onClick={handleScheduleSave}>
-                        Save Changes
-                    </button>
-                </>
-            }
+                    onClick={(e) => setEditMode(true)}>
+                        Edit Schedule
+                        <SVGIcons 
+                        selected="buttonEdit"
+                        size="20px"
+                        color="white"/>
+                    </button> :
+                    <>
+                        <button
+                        type="button"
+                        className="act-btn cancel"
+                        onClick={handleScheduleCancel}>
+                            Cancel
+                        </button>
+                        <button
+                        type="button"
+                        className="act-btn complete"
+                        onClick={handleScheduleSave}>
+                            Save Changes
+                        </button>
+                    </>
+                }
+                </div>
             </div>
-        </div>
+        </>
+        
     );
 }
  

@@ -11,9 +11,13 @@ import axios from "axios";
 
 import PopupError from "../../components/PopupError";
 
+import LoadingScreen2 from "../../components/LoadingScreen2";
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const WorkerProfile = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [fadeOut, setFadeOut] = useState(false);
+
     const inputRef = useRef();
 
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
@@ -27,7 +31,6 @@ const WorkerProfile = () => {
     const [profileFile, setProfileFile] = useState(null);
     // --- Editing Mode Toggler
     const [isDisabled, setIsDisabled] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
     // --- Address Variables
     const [regionData, setRegionData] = useState([]);
     const [provinceData, setProvinceData] = useState([]);
@@ -74,6 +77,36 @@ const WorkerProfile = () => {
         document.title = 'CleanEZ | Profile'
         fetchWorkerInfo();
     }, [])
+
+
+    const loadResources = async () => {
+        await document.fonts.ready;
+
+        const imageUrls = [header];
+        const imagePromises = imageUrls.map((src) => {
+            return new Promise((resolve) => {
+            const img = new Image();
+            img.src = src;
+            img.onload = resolve;
+            });
+        });
+
+        await Promise.all(imagePromises);
+
+        setTimeout(() => {
+            setFadeOut(true);
+
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
+        }, 3000);
+    };
+
+    useEffect(() => {
+        if (accountInfo && profileURL && regionData) {
+            loadResources();
+        }
+    }, [accountInfo, profileURL, regionData])
 
     // Tracks Account Info Changes
     useEffect(() => {
@@ -264,8 +297,7 @@ const WorkerProfile = () => {
                 }
             );
 
-            fetchWorkerInfo();
-            setIsDisabled(!isDisabled);
+            window.location.reload();
         } catch (e) {
             console.log(e);
             setErrMessage(`${e.message} Would you like to continue editing?`);
@@ -283,63 +315,52 @@ const WorkerProfile = () => {
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
-        <div className="profile-page">
-            {showErrorModal? 
-                <PopupError 
-                errTitle="Unable to Save Profile"
-                errMessage={errMessage}
-                buttons={[
-                    {func: handleCancel, text: "Cancel", className: "red"},
-                    {func: handleContinue, text: "Continue", className: "green"},
-                ]}/> :
-                <></>
-            }
-            {accountInfo ?
+        <>
+            {isLoading? 
+            <LoadingScreen2 fadeOut={fadeOut}/> :
             <>
-                <img src={header} alt="" className="profile-header"/>
+            </>
+            }
 
-                <div className="profile-main">
-                    <div className="profile-image-text">
-                        <div className="profile-image-container">
-                            <input type="file" 
-                            className="profile-upload-input"
-                            accept="image/jpeg"
-                            style={{display: "none"}} 
-                            ref={inputRef}
-                            onChange={handleProfileChange}/>
-                            <img src={profileURL} alt="" className="profile-image"/>
-                            {!isDisabled ? (
-                                <button
-                                className="profile-upload-button" 
-                                type="button"
-                                onClick={handleProfileClick}>
-                                    <SVGIcons 
-                                    selected="profileButton"
-                                    size="60px"
-                                    color="white"/>
-                                </button>  
-                            ):(
-                                <></>
-                            )}
-                        </div>
-                        <div className="profile-text">
-                            <div className="profile-info">
-                                <p className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</p>
-                                <div className="profile-rating-earning">
-                                    <p className="profile-rating">
+            <div className="profile-page">
+                {showErrorModal? 
+                    <PopupError 
+                    errTitle="Unable to Save Profile"
+                    errMessage={errMessage}
+                    buttons={[
+                        {func: handleCancel, text: "Cancel", className: "red"},
+                        {func: handleContinue, text: "Continue", className: "green"},
+                    ]}/> :
+                    <></>
+                }
+                <img src={header} alt="" className="profile-header"/>
+                {accountInfo ?
+                <>
+                    
+
+                    <div className="profile-main">
+                        <div className="profile-image-edit">
+                            <div className="profile-image-container">
+                                <input type="file" 
+                                className="profile-upload-input"
+                                accept="image/jpeg"
+                                style={{display: "none"}} 
+                                ref={inputRef}
+                                onChange={handleProfileChange}/>
+                                <img src={profileURL} alt="" className="profile-image"/>
+                                {!isDisabled ? (
+                                    <button
+                                    className="profile-upload-button" 
+                                    type="button"
+                                    onClick={handleProfileClick}>
                                         <SVGIcons 
-                                        selected="starRatingSolid"
-                                        size="20px"
-                                        color="#07de6b"/>
-                                        {parseFloat(workerRating).toFixed(1)} / 5.0
-                                    </p>
-                                    <p className="profile-earning">
-                                        <span className="peso-earning">&#8369;</span>
-                                        {parseFloat(workerEarnings).toFixed(2)}
-                                    </p>
-                                </div>
-                                
-                                
+                                        selected="profileButton"
+                                        size="60px"
+                                        color="white"/>
+                                    </button>  
+                                ):(
+                                    <></>
+                                )}
                             </div>
                             <div className="profile-edit-options">
                             {isDisabled ? (
@@ -368,287 +389,300 @@ const WorkerProfile = () => {
                             )}
                             </div>
                         </div>
-                    </div>
-                    
-                    <hr />
-
-                    <section className="profile-information">
-                        {/* Birthday */}
-                        <div className="basic-input-container">
-                            {/* LABEL HERE */}
-                            <label 
-                            className="basic-label compact"
-                            htmlFor="birthdate-input">
-                                Birthday
-                            </label>
-                            {/* INPUT HERE */}
-                            <input 
-                            className="input-bar no-logo" 
-                            type="date" 
-                            placeholder="Birthdate" 
-                            name="birthDate" 
-                            value={accountInfo.birthDate.slice(0, 10)}
-                            onChange={(e) => {
-                                setAccountInfo({
-                                    ...accountInfo,
-                                    birthDate: e.target.value
-                                })
-                            }}
-                            disabled={isDisabled}
-                            id="birthdate-input" 
-                            min="1860-01-01" 
-                            max="2025-12-30"/>
-                        </div> 
-
-                        {/* Gender */}
-                        <div className="basic-input-container">
-                            <label className="basic-label compact" htmlFor="gender-input">
-                                Gender
-                            </label>
-                            <SVGIcons 
-                            className="select-arrow"
-                            selected="inputArrow"
-                            size="14px"
-                            color="var(--monoc4-50)"/>
-                            <select 
-                            className="input-bar no-logo" 
-                            name="gender" 
-                            value = {accountInfo.gender}
-                            id="gender-input" 
-                            onChange={(e) => {
-                                setAccountInfo({
-                                    ...accountInfo,
-                                    gender: e.target.value
-                                })
-                            }}
-                            disabled={isDisabled}
-                            >
-                                {/* SELECT OPTIONS */}
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Disclosed">Rather Not Say</option>
-                            </select>
-                        </div> 
-
-                        {/* Phone Number */}
-                        <div className="basic-input-container">
-                            {/* LABEL HERE */}
-                            <label 
-                            className="basic-label compact"
-                            htmlFor="phone-input">
-                                Phone Number
-                            </label>
-                            {/* INPUT HERE */}
-                            <input 
-                            className="input-bar no-logo" 
-                            type="text" 
-                            placeholder="Phone Number" 
-                            name="phone" 
-                            value={accountInfo.phoneNumber}
-                            onChange={(e) => {
-                                setAccountInfo({
-                                    ...accountInfo,
-                                    phoneNumber: e.target.value
-                                })
-                            }}
-                            disabled={true}
-                            id="phone-input" />
-                        </div> 
-
-                        {/* Email */}
-                        <div className="basic-input-container">
-                            {/* LABEL HERE */}
-                            <label 
-                            className="basic-label compact"
-                            htmlFor="email-input">
-                                Email
-                            </label>
-                            {/* INPUT HERE */}
-                            <input 
-                            className="input-bar no-logo" 
-                            type="email" 
-                            placeholder="Email" 
-                            name="email" 
-                            value={accountInfo.email}
-                            onChange={(e) => {
-                                setAccountInfo({
-                                    ...accountInfo,
-                                    email: e.target.value
-                                })
-                            }}
-                            disabled={true}
-                            id="email-input" />
-                        </div> 
-
-                        {/* Block No. */}
-                        <div className="basic-input-container">
-                            {/* LABEL HERE */}
-                            <label 
-                            className="basic-label compact" 
-                            htmlFor="address-input">
-                                Block / No. / Street
-                            </label>
-                            {/* INPUT HERE */}
-                            <input 
-                            className="input-bar no-logo" 
-                            type="text" 
-                            placeholder="Block / No. / Street" 
-                            name="block"
-                            value={accountInfo.address.block} 
-                            onChange={(e) => {
-                                setAccountInfo({
-                                    ...accountInfo,
-                                    address: {
-                                        ...accountInfo.address,
-                                        block: e.target.value
-                                    }
-                                })
-                            }}
-                            disabled={isDisabled}
-                            id="address-input" />
-                        </div> 
-
-                        {/* Province */}
-                        <div className="basic-input-container">
-                            <label className="basic-label compact" htmlFor="address-input">
-                                Province
-                            </label>
-                            <SVGIcons 
-                            className="select-arrow"
-                            selected="inputArrow"
-                            size="14px"
-                            color="var(--monoc4-50)"/>
-                            <select 
+                        <p className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</p>     
+                        <hr />
+                        <div className="profile-rating-earning">
+                            <p className="profile-rating">
+                                <SVGIcons 
+                                selected="starRatingSolid"
+                                size="20px"
+                                color="#07de6b"/>
+                                {parseFloat(workerRating).toFixed(1)} / 5.0
+                            </p>
+                            <p className="profile-earning">
+                                <span className="peso-earning">&#8369;</span>
+                                {parseFloat(workerEarnings).toFixed(2)}
+                            </p>
+                        </div>
+                        <section className="profile-information">
+                            {/* Birthday */}
+                            <div className="basic-input-container">
+                                {/* LABEL HERE */}
+                                <label 
+                                className="basic-label compact"
+                                htmlFor="birthdate-input">
+                                    Birthday
+                                </label>
+                                {/* INPUT HERE */}
+                                <input 
                                 className="input-bar no-logo" 
-                                name="province" 
-                                value = {selectedProv}
-                                id="province-input" 
+                                type="date" 
+                                placeholder="Birthdate" 
+                                name="birthDate" 
+                                value={accountInfo.birthDate.slice(0, 10)}
                                 onChange={(e) => {
-                                    setSelectedProv(e.target.value);
-                                    listMunicipalities(e.target.value) 
+                                    setAccountInfo({
+                                        ...accountInfo,
+                                        birthDate: e.target.value
+                                    })
+                                }}
+                                disabled={isDisabled}
+                                id="birthdate-input" 
+                                min="1860-01-01" 
+                                max="2025-12-30"/>
+                            </div> 
+
+                            {/* Gender */}
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" htmlFor="gender-input">
+                                    Gender
+                                </label>
+                                <SVGIcons 
+                                className="select-arrow"
+                                selected="inputArrow"
+                                size="14px"
+                                color="var(--monoc4-50)"/>
+                                <select 
+                                className="input-bar no-logo" 
+                                name="gender" 
+                                value = {accountInfo.gender}
+                                id="gender-input" 
+                                onChange={(e) => {
+                                    setAccountInfo({
+                                        ...accountInfo,
+                                        gender: e.target.value
+                                    })
+                                }}
+                                disabled={isDisabled}
+                                >
+                                    {/* SELECT OPTIONS */}
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Disclosed">Rather Not Say</option>
+                                </select>
+                            </div> 
+
+                            {/* Phone Number */}
+                            <div className="basic-input-container">
+                                {/* LABEL HERE */}
+                                <label 
+                                className="basic-label compact"
+                                htmlFor="phone-input">
+                                    Phone Number
+                                </label>
+                                {/* INPUT HERE */}
+                                <input 
+                                className="input-bar no-logo" 
+                                type="text" 
+                                placeholder="Phone Number" 
+                                name="phone" 
+                                value={accountInfo.phoneNumber}
+                                onChange={(e) => {
+                                    setAccountInfo({
+                                        ...accountInfo,
+                                        phoneNumber: e.target.value
+                                    })
+                                }}
+                                disabled={true}
+                                id="phone-input" />
+                            </div> 
+
+                            {/* Email */}
+                            <div className="basic-input-container">
+                                {/* LABEL HERE */}
+                                <label 
+                                className="basic-label compact"
+                                htmlFor="email-input">
+                                    Email
+                                </label>
+                                {/* INPUT HERE */}
+                                <input 
+                                className="input-bar no-logo" 
+                                type="email" 
+                                placeholder="Email" 
+                                name="email" 
+                                value={accountInfo.email}
+                                onChange={(e) => {
+                                    setAccountInfo({
+                                        ...accountInfo,
+                                        email: e.target.value
+                                    })
+                                }}
+                                disabled={true}
+                                id="email-input" />
+                            </div> 
+
+                            {/* Block No. */}
+                            <div className="basic-input-container">
+                                {/* LABEL HERE */}
+                                <label 
+                                className="basic-label compact" 
+                                htmlFor="address-input">
+                                    Block / No. / Street
+                                </label>
+                                {/* INPUT HERE */}
+                                <input 
+                                className="input-bar no-logo" 
+                                type="text" 
+                                placeholder="Block / No. / Street" 
+                                name="block"
+                                value={accountInfo.address.block} 
+                                onChange={(e) => {
                                     setAccountInfo({
                                         ...accountInfo,
                                         address: {
                                             ...accountInfo.address,
-                                            province: e.target.value.slice(4),
-                                            municipal: "0",
-                                            barangay: "0"
+                                            block: e.target.value
                                         }
-                                    })  
+                                    })
                                 }}
                                 disabled={isDisabled}
-                            >
-                                {/* SELECT OPTIONS */}
-                                <option value="0">Select Province</option>
-                                {provinceData.map((p, index) => (
-                                    <option 
-                                        key={index} 
-                                        value={p.province_code + p.province_name}
-                                    >
-                                        {p.province_name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div> 
+                                id="address-input" />
+                            </div> 
 
-                        {/* Municipality */}
-                        <div className="basic-input-container">
-                            {/* LABEL HERE */}
-                            <label 
-                            className="basic-label compact" 
-                            htmlFor="address-input">
-                                Municipal
-                            </label>
-                            <SVGIcons 
-                            className="select-arrow"
-                            selected="inputArrow"
-                            size="14px"
-                            color="var(--monoc4-50)"/>
-                            {/* INPUT HERE */}
-                            <select 
-                            className="input-bar no-logo" 
-                            type="text" 
-                            name="municipal"
-                            value= {selectedCity}
-                            id="municipality-input"
-                            onChange={(e) => {
-                                setSelectedCity(e.target.value);
-                                listBarangays(e.target.value)
-                                setAccountInfo({
-                                    ...accountInfo,
-                                    address: {
-                                        ...accountInfo.address,
-                                        municipal: e.target.value.slice(6),
-                                        barangay: "0"
-                                    }
-                                })   
-                            }}
-                            disabled={isDisabled}
-                            >
-                                {/* SELECT OPTIONS */}
-                                <option value="0">Select Municipality</option>
-                                {municipalData.map((m, index) => (
-                                    <option 
-                                    key={index} 
-                                    value={m.city_code + m.city_name}
+                            {/* Province */}
+                            <div className="basic-input-container">
+                                <label className="basic-label compact" htmlFor="address-input">
+                                    Province
+                                </label>
+                                <SVGIcons 
+                                className="select-arrow"
+                                selected="inputArrow"
+                                size="14px"
+                                color="var(--monoc4-50)"/>
+                                <select 
+                                    className="input-bar no-logo" 
+                                    name="province" 
+                                    value = {selectedProv}
+                                    id="province-input" 
+                                    onChange={(e) => {
+                                        setSelectedProv(e.target.value);
+                                        listMunicipalities(e.target.value) 
+                                        setAccountInfo({
+                                            ...accountInfo,
+                                            address: {
+                                                ...accountInfo.address,
+                                                province: e.target.value.slice(4),
+                                                municipal: "0",
+                                                barangay: "0"
+                                            }
+                                        })  
+                                    }}
+                                    disabled={isDisabled}
                                 >
-                                    {m.city_name}
-                                </option>
-                                ))}
-                            </select>
-                        </div> 
+                                    {/* SELECT OPTIONS */}
+                                    <option value="0">Select Province</option>
+                                    {provinceData.map((p, index) => (
+                                        <option 
+                                            key={index} 
+                                            value={p.province_code + p.province_name}
+                                        >
+                                            {p.province_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div> 
 
-                        {/* Barangay */}
-                        <div className="basic-input-container">
-                            {/* LABEL HERE */}
-                            <label 
-                            className="basic-label compact" 
-                            htmlFor="address-input">
-                                Barangay
-                            </label>
-                            <SVGIcons 
-                            className="select-arrow"
-                            selected="inputArrow"
-                            size="14px"
-                            color="var(--monoc4-50)"/>
-                            {/* INPUT HERE */}
-                            <select 
-                            className="input-bar no-logo" 
-                            type="text" 
-                            name="barangay" 
-                            value={selectedBrgy}
-                            id="barangay-input"
-                            onChange={(e) => {
-                                setSelectedBrgy(e.target.value);
-                                setAccountInfo({
-                                    ...accountInfo,
-                                    address: {
-                                        ...accountInfo.address,
-                                        barangay: e.target.value.slice(9)
-                                    }
-                                })   
-                            }}
-                            disabled={isDisabled}
-                            >
-                                {/* SELECT OPTIONS */}
-                                <option value="0">Select Barangay</option>
-                                {barangayData.map((b, index) => (
-                                    <option 
+                            {/* Municipality */}
+                            <div className="basic-input-container">
+                                {/* LABEL HERE */}
+                                <label 
+                                className="basic-label compact" 
+                                htmlFor="address-input">
+                                    Municipal
+                                </label>
+                                <SVGIcons 
+                                className="select-arrow"
+                                selected="inputArrow"
+                                size="14px"
+                                color="var(--monoc4-50)"/>
+                                {/* INPUT HERE */}
+                                <select 
+                                className="input-bar no-logo" 
+                                type="text" 
+                                name="municipal"
+                                value= {selectedCity}
+                                id="municipality-input"
+                                onChange={(e) => {
+                                    setSelectedCity(e.target.value);
+                                    listBarangays(e.target.value)
+                                    setAccountInfo({
+                                        ...accountInfo,
+                                        address: {
+                                            ...accountInfo.address,
+                                            municipal: e.target.value.slice(6),
+                                            barangay: "0"
+                                        }
+                                    })   
+                                }}
+                                disabled={isDisabled}
+                                >
+                                    {/* SELECT OPTIONS */}
+                                    <option value="0">Select Municipality</option>
+                                    {municipalData.map((m, index) => (
+                                        <option 
                                         key={index} 
-                                        value={b.brgy_code + b.brgy_name}
+                                        value={m.city_code + m.city_name}
                                     >
-                                        {b.brgy_name}
+                                        {m.city_name}
                                     </option>
-                                ))}
-                            </select>
-                        </div> 
-                    </section>
-                </div>
-            </> :
-            <></>
-            }
-            
-        </div>
+                                    ))}
+                                </select>
+                            </div> 
+
+                            {/* Barangay */}
+                            <div className="basic-input-container">
+                                {/* LABEL HERE */}
+                                <label 
+                                className="basic-label compact" 
+                                htmlFor="address-input">
+                                    Barangay
+                                </label>
+                                <SVGIcons 
+                                className="select-arrow"
+                                selected="inputArrow"
+                                size="14px"
+                                color="var(--monoc4-50)"/>
+                                {/* INPUT HERE */}
+                                <select 
+                                className="input-bar no-logo" 
+                                type="text" 
+                                name="barangay" 
+                                value={selectedBrgy}
+                                id="barangay-input"
+                                onChange={(e) => {
+                                    setSelectedBrgy(e.target.value);
+                                    setAccountInfo({
+                                        ...accountInfo,
+                                        address: {
+                                            ...accountInfo.address,
+                                            barangay: e.target.value.slice(9)
+                                        }
+                                    })   
+                                }}
+                                disabled={isDisabled}
+                                >
+                                    {/* SELECT OPTIONS */}
+                                    <option value="0">Select Barangay</option>
+                                    {barangayData.map((b, index) => (
+                                        <option 
+                                            key={index} 
+                                            value={b.brgy_code + b.brgy_name}
+                                        >
+                                            {b.brgy_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div> 
+                        </section>
+                    </div>
+                </> :
+                <></>
+                }
+                
+            </div>
+        </>
+        
     );
 }
  

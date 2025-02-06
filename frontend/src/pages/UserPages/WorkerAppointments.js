@@ -6,12 +6,21 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
 
+
+import LoadingScreen2 from "../../components/LoadingScreen2";
+
 const WorkerAppointments = () => {
     const [appointments, setAppointments] = useState([]);
     const [showAppInfo, setShowAppInfo] = useState(false);
     const [appID, setAppID] = useState('');
 
+    const [isLoading, setIsLoading] = useState(true);
+    const [isDataLoading, setIsDataLoading] = useState(false);
+    const [fadeOut, setFadeOut] = useState(false);
+
+
     const fetchAppointments = async () => {
+        setIsDataLoading(true);
         try {
             const token = localStorage.getItem("token");
             
@@ -28,14 +37,32 @@ const WorkerAppointments = () => {
             setAppointments(response.data.data);
         } catch (e) {
             console.log(e);
+        } finally {
+            setIsDataLoading(false);
         }
     }
 
     useEffect(() => {
-        fetchAppointments();
+        document.title = "CleanEZ | Appointments"
+        
+        loadResources()
     }, [])
 
     
+    const loadResources = async () => {
+        await document.fonts.ready;
+
+        await fetchAppointments();
+
+        setTimeout(() => {
+            setFadeOut(true);
+
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
+        }, 3000);
+    };
+
     const showAppointment = (id) => {
         setShowAppInfo(true);
         setAppID(id);
@@ -68,12 +95,16 @@ const WorkerAppointments = () => {
 
     return (  
         <>  
+            {isLoading || isDataLoading ? (
+                <LoadingScreen2 fadeOut={fadeOut}/>)
+            : <></>}
+
             {showAppInfo ? 
             <WorkerAppointmentInfo 
             appID={appID} 
             setShowAppInfo={setShowAppInfo}
             paidAppointment={paidAppointment}/> :
-             <></>}
+            <></>}
             <div className="dashboard-page">
                 <section className="dashboard-upcoming-container">
                     <h2>Upcoming Appointments</h2>
@@ -117,6 +148,9 @@ const WorkerAppointments = () => {
                     </div>
                 </section>
             </div>
+
+
+            
         </>
     );
 }

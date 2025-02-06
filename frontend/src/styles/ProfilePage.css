@@ -1,6 +1,7 @@
 @import "../index.css";
 
 
+
 .profile-page {
     position: relative;
     width   : 100%;
@@ -22,10 +23,11 @@
     padding-bottom: 64px;
 }
 
-.profile-image-text {
+.profile-image-edit {
     display        : flex;
     height         : 156px;
     justify-content: space-between;
+    align-items    : flex-end;
     gap            : 12px;
     margin-bottom  : 24px;
     border         : none;
@@ -57,10 +59,9 @@
 }
 
 .profile-rating-earning {
-    display : flex;
-    position: absolute;
-    bottom  : -100%;
-    gap     : 24px;
+    display: flex;
+    gap    : 24px;
+    width  : 100%;
 }
 
 .profile-rating,
@@ -74,6 +75,10 @@
     font-weight: 600;
     color      : var(--monoc4-50);
     line-height: 24px;
+}
+
+.profile-rating {
+    min-width: 100px;
 }
 
 .peso-earning {

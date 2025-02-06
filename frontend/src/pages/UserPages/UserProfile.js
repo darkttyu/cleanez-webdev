@@ -74,33 +74,30 @@ const UserProfile = () => {
         fetchUserInfo();
     }, [])
     
-    useEffect(() => {
-        const loadResources = async () => {
-            await document.fonts.ready;
+    const loadResources = async () => {
+        await document.fonts.ready;
 
-            const imageUrls = [header];
-            const imagePromises = imageUrls.map((src) => {
-                return new Promise((resolve) => {
-                const img = new Image();
-                img.src = src;
-                img.onload = resolve;
-                });
+        const imageUrls = [header];
+        const imagePromises = imageUrls.map((src) => {
+            return new Promise((resolve) => {
+            const img = new Image();
+            img.src = src;
+            img.onload = resolve;
             });
+        });
 
-            await Promise.all(imagePromises);
+        await Promise.all(imagePromises);
+
+        setTimeout(() => {
+            setFadeOut(true);
 
             setTimeout(() => {
-                setFadeOut(true);
+                setIsLoading(false);
+            }, 500);
+        }, 3000);
+    };
 
-                setTimeout(() => {
-                    setIsLoading(false);
-                }, 500);
-            }, 3000);
-
-            
-        };
-
-
+    useEffect(() => {
         if (accountInfo && profileURL && regionData) {
             loadResources();
         }
@@ -290,9 +287,8 @@ const UserProfile = () => {
                     }
                 }
             );
-
-            fetchUserInfo();
-            setIsDisabled(!isDisabled);
+            
+            window.location.reload();
         } catch (e) {
             console.log(e);
             setErrMessage(`${e.message? e.message : ''} Would you like to continue editing?`);
@@ -333,7 +329,7 @@ const UserProfile = () => {
                 {accountInfo ?
                 <>
                 <div className="profile-main">
-                    <div className="profile-image-text">
+                    <div className="profile-image-edit">
                         <div className="profile-image-container">
                             <input type="file" 
                             className="profile-upload-input"
@@ -355,37 +351,35 @@ const UserProfile = () => {
                             ):(
                                 <></>
                             )}
-                        </div>
-                        <div className="profile-text">
-                            <p className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</p>
-                            <div className="profile-edit-options">
-                            {isDisabled ? (
-                                <button 
-                                className="profile-edit"
-                                onClick={editProfile}>
-                                    Edit Profile
-                                    <SVGIcons 
-                                    selected="buttonEdit"
-                                    size="20px"
-                                    color="var(--monoc4)"/>
+                        </div>                         
+                        <div className="profile-edit-options">
+                        {isDisabled ? (
+                            <button 
+                            className="profile-edit"
+                            onClick={editProfile}>
+                                Edit Profile
+                                <SVGIcons 
+                                selected="buttonEdit"
+                                size="20px"
+                                color="var(--monoc4)"/>
+                            </button>
+                        ):(
+                            <>
+                                <button
+                                className="profile-cancel"
+                                onClick={handleCancel}>
+                                    Cancel
                                 </button>
-                            ):(
-                                <>
-                                    <button
-                                    className="profile-cancel"
-                                    onClick={handleCancel}>
-                                        Cancel
-                                    </button>
-                                    <button
-                                    className="profile-save"
-                                    onClick={handleSave}>
-                                        Save
-                                    </button>
-                                </>
-                            )}
-                            </div>
+                                <button
+                                className="profile-save"
+                                onClick={handleSave}>
+                                    Save
+                                </button>
+                            </>
+                        )}
                         </div>
                     </div>
+                    <div className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</div>
                     
                     <hr />
 

@@ -82,6 +82,22 @@ const UserAppointments = () => {
             </>
             }
 
+            {showRating ?
+            <RatingBox
+            appID={appID}
+            setShowRating={setShowRating}
+            fetchAppointments={fetchAppointments}/> :
+            <></>
+            }
+
+            {showAppInfo ? 
+            <UserAppointmentInfo 
+            appID={appID} 
+            setShowAppInfo={setShowAppInfo}
+            setShowRating={setShowRating}/> : 
+            <></>
+            }
+
             <div className="dashboard-page">
                 <section className="dashboard-upcoming-container">
                     <h2>Appointments History</h2>

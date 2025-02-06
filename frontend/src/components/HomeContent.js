@@ -157,7 +157,7 @@ const About = () => {
 
 const Founders = () => {
     const founders = [
-        {name: "Jedd Eishen Aguilar", pos: "Placeholder Position", image: founder1,
+        {name: "Jedd Eishen Aguilar", pos: "Tecnical Writer / QA", image: founder1,
             contacts: {
                 linkedin: "https://www.linkedin.com/in/jedd-eishen-aguilar-350b85284/",
                 twitter: "https://x.com/bujeeeeeedd",
@@ -166,7 +166,7 @@ const Founders = () => {
                 email: "aguilar.jeddeishen@gmail.com"
             }
         },
-        {name: "Kassandra Rychelle Balona", pos: "Placeholder Position", image: founder2,
+        {name: "Kassandra Rychelle Balona", pos: "UI / UX Designer", image: founder2,
             contacts: {
                 linkedin: "https://www.linkedin.com/in/kasrych/",
                 twitter: "https://x.com/kasrych",
@@ -175,7 +175,7 @@ const Founders = () => {
                 email: "kassandrarychelle@gmail.com"
             }
         },
-        {name: "Carl Matthew Fernandez", pos: "Placeholder Position", image: founder3,
+        {name: "Carl Matthew Fernandez", pos: "Lead Developer", image: founder3,
             contacts: {
                 linkedin: "https://www.linkedin.com/in/darkttyu/",
                 twitter: "https://x.com/darkttyu",
@@ -184,7 +184,7 @@ const Founders = () => {
                 email: "ctrlfrz0710@gmail.com"
             }
         },
-        {name: "Rein Andre Furagganan", pos: "Placeholder Position", image: founder4,
+        {name: "Rein Andre Furagganan", pos: "Frontend Developer", image: founder4,
             contacts: {
                 linkedin: "https://www.linkedin.com/in/reinadf164/",
                 twitter: "https://x.com/reinchisdog",
