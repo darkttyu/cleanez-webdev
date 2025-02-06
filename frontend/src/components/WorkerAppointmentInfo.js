@@ -82,8 +82,8 @@ const WorkerAppointmentInfo  = ({appID, setShowAppInfo, paidAppointment}) => {
 
     return (  
         <div 
-        className="appointment-info-container">
-            <section className="appointment-info-box">
+        className="modal-container">
+            <section className="appoint-modal-box">
                 <div className="appointment-data">
                     {/* Title and Status */}
                     <div className="appointment-title-status">

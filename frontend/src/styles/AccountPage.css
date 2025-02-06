@@ -1,20 +1,6 @@
 @import "../index.css";
 
 /* APPOINTMENT POPUP */
-.appointment-info-container {
-    position               : fixed;
-    background-color       : #60606077;
-    top                    : 0;
-    z-index                : 99999;
-    min-height             : inherit;
-    width                  : 100%;
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter        : blur(4px);
-    display                : flex;
-    justify-content        : center;
-    padding                : 24px 0;
-}
-
 .appointment-info-box {
     display         : flex;
     flex-direction  : column;
@@ -22,6 +8,8 @@
     background-color: #F8F8F8;
     border-radius   : 16px;
     padding         : 24px 40px;
+    overflow        : visible;
+    max-height      : 50%;
 }
 
 .appointment-title-status {
@@ -35,9 +23,12 @@
 }
 
 .appointment-data {
-    display       : flex;
-    flex-direction: column;
-    gap           : 20px;
+    display           : flex;
+    flex-direction    : column;
+    gap               : 20px;
+    overflow          : scroll;
+    scrollbar-width   : none;
+    -ms-overflow-style: none;
 }
 
 .appointment-data h2 {

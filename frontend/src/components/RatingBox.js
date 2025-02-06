@@ -69,11 +69,11 @@ const RatingBox = ({appID, setShowRating, fetchAppointments}) => {
 
     return (  
         <div 
-        className="appointment-info-container">
-            <div className="rating-box">
-                <img className="rating-header" src={header} alt="" />
-                <div className="rating-main">
-                    <div className="rating-icon">
+        className="modal-container">
+            <div className="small-modal-box">
+                <img className="modal-header" src={header} alt="" />
+                <div className="small-modal-main">
+                    <div className="modal-icon">
                         <img src={icon} alt="" />
                     </div>
                     <div className="rating-prompt">

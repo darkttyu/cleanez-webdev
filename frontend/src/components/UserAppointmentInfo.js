@@ -4,6 +4,7 @@ import SVGIcons from "../SVGIcons";
 
 
 const UserAppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppointment, completeAppointment}) => {
+    const [dataLoaded, isDataLoaded] = useState(false);
     const [data, setData] = useState({
         _id: "",
         userId: "",
@@ -44,6 +45,8 @@ const UserAppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppoin
                 setData(response.data.data);
             } catch (e) {
                 console.log(e);
+            } finally {
+                isDataLoaded(true);
             }
         }
 
@@ -101,9 +104,9 @@ const UserAppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppoin
     }, [data])
 
     return (  
-        <div 
-        className="modal-container">
-            <section className="appointment-info-box">
+        <div className="modal-container">
+            {dataLoaded ? 
+                <section className="appoint-modal-box">
                 <div className="appointment-data">
                     {/* Title and Status */}
                     <div className="appointment-title-status">
@@ -200,7 +203,11 @@ const UserAppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppoin
                         {showActionButtons(data.appointmentStatus, data.appointmentRating, data.paymentStatus)}
                     </div>
                 </div>
-            </section>
+                </section> :
+                <>
+                </>
+            }
+            
         </div>
     );
 }
