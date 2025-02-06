@@ -3,7 +3,11 @@ import SVGIcons from "../../SVGIcons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import LoadingScreen3 from "../../components/LoadingScreen3";
+
 const AdminAppointments = () => {
+    const [isLoading, setIsLoading] =useState(true);
+
     const navigate = useNavigate();
     
     const [AppointmentList, setAppointmentList] = useState([]);
@@ -14,6 +18,7 @@ const AdminAppointments = () => {
     const [searchWord, setSearchWord] = useState('');
 
     const fetchAllAppointments = async (page, size, search) => {
+        setIsLoading(true);
             console.log("Page: ", page);
             console.log("Size: ", size);
             console.log("Search: ", search);
@@ -29,6 +34,8 @@ const AdminAppointments = () => {
             setAppointmentList(response.data.appointmentList);
         } catch (e) {
             console.log(e);
+        } finally {
+            setIsLoading(false);
         }
         
     }
@@ -110,8 +117,16 @@ const AdminAppointments = () => {
                                 <th className="dashboard-th tb-center">Actions</th>
                             </tr>
                         </thead>
+                        
+                        
                         <tbody>
-                        {currentList?.map((appt, index) => (
+                            
+                        {isLoading ? 
+                        <tr>
+                            <td colSpan="6"><LoadingScreen3/></td> 
+                        </tr>
+                         :
+                        currentList?.map((appt, index) => (
                             <tr 
                             key={index} 
                             className="dashboard-tbody-tr"
@@ -153,10 +168,11 @@ const AdminAppointments = () => {
                                 }
                                 </td>
                             </tr> 
-                        ))}
-                            
+                        ))
+                        }
                        
                         </tbody>
+
                     </table>
                     <div className="dashboard-list-navigation">
                         <SVGIcons 

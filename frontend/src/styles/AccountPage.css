@@ -205,6 +205,7 @@
 }
 
 .dashboard-list-table {
+    position: relative;
     width   : 100%;
     overflow: auto;
 }
