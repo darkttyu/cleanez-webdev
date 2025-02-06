@@ -29,6 +29,7 @@ const UserDashboard = () => {
                 }
             );
 
+            console.log(response.data.data);
             setUpcomingData(response.data.data);
         } catch (e) {
             console.log(e);

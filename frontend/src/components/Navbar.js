@@ -32,15 +32,12 @@ const Navbar = () => {
     }
 
     const handleOpen = (e) => {
-        e.preventDefault();
         setOpenSidebar(true);
         
         setClosing(false);
     }   
 
     const handleClose = (e) => {
-        e.preventDefault();
-        
         setClosing(true); // Start closing animation
     
         setTimeout(() => {
