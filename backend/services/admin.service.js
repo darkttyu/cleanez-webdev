@@ -264,8 +264,8 @@ export const updateStatus = async(userId) => {
 
           // Sends deactivation email
           await sendWorkerDeactivationEmail(
-            updatedWorkerInfo.firsName, 
-            updatedWorkerInfo.email
+            updatedWorkerStatus.firsName, 
+            updatedWorkerStatus.email
           )
 
           return updatedWorkerStatus;
