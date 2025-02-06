@@ -365,7 +365,7 @@ export const setAppointment = async (req, res) => {
             const workerTime = formatTime(scheduleDetails.startTime);
             const earnings = serviceCost / serviceDetails.numberOfWorkers
             
-            customerInfo = await User.findById(userId);
+            const customerInfo = await User.findById(userId);
 
             // Sends the appointment confirmation email to the worker
             sendWorkerAppointmentConfirmation(
