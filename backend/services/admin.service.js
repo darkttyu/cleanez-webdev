@@ -1021,6 +1021,14 @@ export const serviceGenerateDailyReport = async() => {
     }
   });
 
+  const postRenovationAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Post-Renovation Cleaning",
+    createdAt: {
+      $gte: startOfDay,
+      $lt: endOfDay
+    }
+  });
+
   const officeAppointmentCount = await Appointment.countDocuments({
     "serviceDetails.serviceCategory": "Office Cleaning",
     createdAt: {
@@ -1049,13 +1057,24 @@ export const serviceGenerateDailyReport = async() => {
     for(const appointmentInfo of appointmentsPaid){
       totalEarnings += appointmentInfo.serviceCost
     }
-    
+  
+  const totalApplicants = await User.countDocuments({
+    role: "Applicant",
+    "applicationDetails.applicationCreatedAt": {
+      $gte: startOfDay, 
+      $lt: endOfDay
+    }
+  });
+
   const data = {
     totalAppointments: totalAppointments,
     totalCancelledAppointments: totalCancelledAppointments,
+    totalEarnings: totalEarnings,
+    totalApplicants: totalApplicants,
     residentialAppointmentCount: residentialAppointmentCount,
     deepAppointmentCount: deepAppointmentCount,
     moveAppointmentCount: moveAppointmentCount,
+    postRenovationCount: postRenovationAppointmentCount,
     officeAppointmentCount: officeAppointmentCount,
     windowAppointmentCount: windowAppointmentCount
   };
@@ -1064,13 +1083,644 @@ export const serviceGenerateDailyReport = async() => {
 };
 
 export const serviceGenerateWeeklyReport = async() => {
+  moment.updateLocale('en', { week: { dow: 0 } });
+  const startOfWeek = moment().startOf('week').toDate(); // Start of Sunday 12:00 AM
+  const endOfWeek = moment().endOf('week').toDate(); // End of today (just before midnight tomorrow)
 
+  const totalAppointments = await Appointment.countDocuments({
+    createdAt: {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+
+  const totalCancelledAppointments = await Appointment.countDocuments({
+    $and: [
+      { appointmentStatus: "Cancelled" },
+      { paymentStatus: "Cancelled" }
+    ],
+    createdAt: {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+
+  const residentialAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Residential Cleaning",
+    createdAt: {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+
+  const deepAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Deep Cleaning",
+    createdAt: {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+
+  const moveAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Move In / Out Cleaning",
+    createdAt: {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+
+  const postRenovationAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Post-Renovation Cleaning",
+    createdAt: {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+
+  const officeAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Office Cleaning",
+    createdAt: {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+
+  const windowAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Window Cleaning",
+    createdAt: {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+  
+  const appointmentsPaid = await Appointment.find({
+    paymentStatus: "Paid",
+    updatedAt: {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+
+    let totalEarnings = 0;
+    for(const appointmentInfo of appointmentsPaid){
+      totalEarnings += appointmentInfo.serviceCost
+    }
+  
+  const totalApplicants = await User.countDocuments({
+    role: "Applicant",
+    "applicationDetails.applicationCreatedAt": {
+      $gte: startOfWeek,
+      $lt: endOfWeek
+    }
+  });
+  
+  const data = {
+    totalAppointments: totalAppointments,
+    totalCancelledAppointments: totalCancelledAppointments,
+    totalEarnings: totalEarnings,
+    totalApplicants: totalApplicants,
+    residentialAppointmentCount: residentialAppointmentCount,
+    deepAppointmentCount: deepAppointmentCount,
+    moveAppointmentCount: moveAppointmentCount,
+    postRenovationCount: postRenovationAppointmentCount,
+    officeAppointmentCount: officeAppointmentCount,
+    windowAppointmentCount: windowAppointmentCount
+  };
+
+  return data;
 };
 
 export const serviceGenerateMonthlyReport = async() => {
+  const startOfMonth = moment().startOf('month').toDate(); // 1st day of the month
+  const endOfMonth = moment().endOf('month').toDate(); // Last day of the month
 
+  const totalAppointments = await Appointment.countDocuments({
+    createdAt: {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+
+  const totalCancelledAppointments = await Appointment.countDocuments({
+    $and: [
+      { appointmentStatus: "Cancelled" },
+      { paymentStatus: "Cancelled" }
+    ],
+    createdAt: {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+
+  const residentialAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Residential Cleaning",
+    createdAt: {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+
+  const deepAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Deep Cleaning",
+    createdAt: {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+
+  const moveAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Move In / Out Cleaning",
+    createdAt: {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+
+  const postRenovationAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Post-Renovation Cleaning",
+    createdAt: {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+
+  const officeAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Office Cleaning",
+    createdAt: {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+
+  const windowAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Window Cleaning",
+    createdAt: {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+  
+  const appointmentsPaid = await Appointment.find({
+    paymentStatus: "Paid",
+    updatedAt: {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+
+    let totalEarnings = 0;
+    for(const appointmentInfo of appointmentsPaid){
+      totalEarnings += appointmentInfo.serviceCost
+    }
+  
+  const totalApplicants = await User.countDocuments({
+    role: "Applicant",
+    "applicationDetails.applicationCreatedAt": {
+      $gte: startOfMonth,
+      $lt: endOfMonth
+    }
+  });
+  
+  const data = {
+    totalAppointments: totalAppointments,
+    totalCancelledAppointments: totalCancelledAppointments,
+    totalEarnings: totalEarnings,
+    totalApplicants: totalApplicants,
+    residentialAppointmentCount: residentialAppointmentCount,
+    deepAppointmentCount: deepAppointmentCount,
+    moveAppointmentCount: moveAppointmentCount,
+    postAppointmentCount: postRenovationAppointmentCount,
+    officeAppointmentCount: officeAppointmentCount,
+    windowAppointmentCount: windowAppointmentCount
+  };
+
+  return data;
 };
 
-export const serviceGenerateYearlyReport = async () => {
+export const serviceGenerateQuarterlyReport = async() => {
+  const startOfYear = moment().startOf('year').toDate(); // 1st day of the year
+  const endOfQuarter = moment().startOf('year').add(3, 'months').endOf('month').toDate(); // Last day of the 3rd month
 
+  const totalAppointments = await Appointment.countDocuments({
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+
+  const totalCancelledAppointments = await Appointment.countDocuments({
+    $and: [
+      { appointmentStatus: "Cancelled" },
+      { paymentStatus: "Cancelled" }
+    ],
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+
+  const residentialAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Residential Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+
+  const deepAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Deep Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+
+  const moveAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Move In / Out Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+
+  const postRenovationAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Post-Renovation Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+
+  const officeAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Office Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+
+  const windowAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Window Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+  
+  const appointmentsPaid = await Appointment.find({
+    paymentStatus: "Paid",
+    updatedAt: {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+
+    let totalEarnings = 0;
+    for(const appointmentInfo of appointmentsPaid){
+      totalEarnings += appointmentInfo.serviceCost
+    }
+  
+  const totalApplicants = await User.countDocuments({
+    role: "Applicant",
+    "applicationDetails.applicationCreatedAt": {
+      $gte: startOfYear,
+      $lt: endOfQuarter
+    }
+  });
+  
+  const data = {
+    totalAppointments: totalAppointments,
+    totalCancelledAppointments: totalCancelledAppointments,
+    totalEarnings: totalEarnings,
+    totalApplicants: totalApplicants,
+    residentialAppointmentCount: residentialAppointmentCount,
+    deepAppointmentCount: deepAppointmentCount,
+    moveAppointmentCount: moveAppointmentCount,
+    postAppointmentCount: postRenovationAppointmentCount,
+    officeAppointmentCount: officeAppointmentCount,
+    windowAppointmentCount: windowAppointmentCount
+  };
+
+  return data;
+};
+
+export const serviceGenerateBiAnnualReport = async() => {
+  const startOfYear = moment().startOf('year').toDate(); // 1st day of the year
+  const endOfSixMonths = moment().startOf('year').add(6, 'months').endOf('month').toDate(); // Last day of the 6th month
+
+  const totalAppointments = await Appointment.countDocuments({
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+
+  const totalCancelledAppointments = await Appointment.countDocuments({
+    $and: [
+      { appointmentStatus: "Cancelled" },
+      { paymentStatus: "Cancelled" }
+    ],
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+
+  const residentialAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Residential Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+
+  const deepAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Deep Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+
+  const moveAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Move In / Out Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+
+  const postRenovationAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Post-Renovation Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+
+  const officeAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Office Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+
+  const windowAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Window Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+  
+  const appointmentsPaid = await Appointment.find({
+    paymentStatus: "Paid",
+    updatedAt: {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+
+    let totalEarnings = 0;
+    for(const appointmentInfo of appointmentsPaid){
+      totalEarnings += appointmentInfo.serviceCost
+    }
+  
+  const totalApplicants = await User.countDocuments({
+    role: "Applicant",
+    "applicationDetails.applicationCreatedAt": {
+      $gte: startOfYear,
+      $lt: endOfSixMonths
+    }
+  });
+  
+  const data = {
+    totalAppointments: totalAppointments,
+    totalCancelledAppointments: totalCancelledAppointments,
+    totalEarnings: totalEarnings,
+    totalApplicants: totalApplicants,
+    residentialAppointmentCount: residentialAppointmentCount,
+    deepAppointmentCount: deepAppointmentCount,
+    moveAppointmentCount: moveAppointmentCount,
+    postAppointmentCount: postRenovationAppointmentCount,
+    officeAppointmentCount: officeAppointmentCount,
+    windowAppointmentCount: windowAppointmentCount
+  };
+
+  return data;
+};
+
+export const serviceGenerateNineMonthReport = async() => {
+  const startOfYear = moment().startOf('year').toDate(); // 1st day of the year
+  const endOfNineMonths = moment().startOf('year').add(9, 'months').endOf('month').toDate(); // Last day of the 6th month
+
+  const totalAppointments = await Appointment.countDocuments({
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+
+  const totalCancelledAppointments = await Appointment.countDocuments({
+    $and: [
+      { appointmentStatus: "Cancelled" },
+      { paymentStatus: "Cancelled" }
+    ],
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+
+  const residentialAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Residential Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+
+  const deepAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Deep Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+
+  const moveAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Move In / Out Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+
+  const postRenovationAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Post-Renovation Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+
+  const officeAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Office Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+
+  const windowAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Window Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+  
+  const appointmentsPaid = await Appointment.find({
+    paymentStatus: "Paid",
+    updatedAt: {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+
+    let totalEarnings = 0;
+    for(const appointmentInfo of appointmentsPaid){
+      totalEarnings += appointmentInfo.serviceCost
+    }
+  
+  const totalApplicants = await User.countDocuments({
+    role: "Applicant",
+    "applicationDetails.applicationCreatedAt": {
+      $gte: startOfYear,
+      $lt: endOfNineMonths
+    }
+  });
+  
+  const data = {
+    totalAppointments: totalAppointments,
+    totalCancelledAppointments: totalCancelledAppointments,
+    totalEarnings: totalEarnings,
+    totalApplicants: totalApplicants,
+    residentialAppointmentCount: residentialAppointmentCount,
+    deepAppointmentCount: deepAppointmentCount,
+    moveAppointmentCount: moveAppointmentCount,
+    postAppointmentCount: postRenovationAppointmentCount,
+    officeAppointmentCount: officeAppointmentCount,
+    windowAppointmentCount: windowAppointmentCount
+  };
+
+  return data;
+};
+
+export const serviceGenerateAnnualReport = async () => {
+  const startOfYear = moment().startOf('year').toDate(); // 1st day of the year
+  const endOfTheYear = moment().startOf('year').add(12, 'months').endOf('month').toDate(); // Last day of the 6th month
+
+  const totalAppointments = await Appointment.countDocuments({
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+
+  const totalCancelledAppointments = await Appointment.countDocuments({
+    $and: [
+      { appointmentStatus: "Cancelled" },
+      { paymentStatus: "Cancelled" }
+    ],
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+
+  const residentialAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Residential Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+
+  const deepAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Deep Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+
+  const moveAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Move In / Out Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+
+  const postRenovationAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Post-Renovation Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+
+  const officeAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Office Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+
+  const windowAppointmentCount = await Appointment.countDocuments({
+    "serviceDetails.serviceCategory": "Window Cleaning",
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+  
+  const appointmentsPaid = await Appointment.find({
+    paymentStatus: "Paid",
+    updatedAt: {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+
+    let totalEarnings = 0;
+    for(const appointmentInfo of appointmentsPaid){
+      totalEarnings += appointmentInfo.serviceCost
+    }
+  
+  const totalApplicants = await User.countDocuments({
+    role: "Applicant",
+    "applicationDetails.applicationCreatedAt": {
+      $gte: startOfYear,
+      $lt: endOfTheYear
+    }
+  });
+  
+  const data = {
+    totalAppointments: totalAppointments,
+    totalCancelledAppointments: totalCancelledAppointments,
+    totalEarnings: totalEarnings,
+    totalApplicants: totalApplicants,
+    residentialAppointmentCount: residentialAppointmentCount,
+    deepAppointmentCount: deepAppointmentCount,
+    moveAppointmentCount: moveAppointmentCount,
+    postAppointmentCount: postRenovationAppointmentCount,
+    officeAppointmentCount: officeAppointmentCount,
+    windowAppointmentCount: windowAppointmentCount
+  };
+
+  return data;
 };

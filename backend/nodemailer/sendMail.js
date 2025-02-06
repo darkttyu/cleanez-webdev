@@ -73,7 +73,7 @@ export const adminWelcomeWorkerEmail = async(firstName, email) => {
       from: sender,
       to: [email],
       subject: "Welcome to CleanEZ",
-      html: ADMIN_WELCOMING_EMAIL.replace("{firstName}", firstName)
+      html: WELCOME_WORKER.replace("{firstName}", firstName)
     });
 
     console.log("Worker Welcoming Email sent Successfully:", info.messageId);

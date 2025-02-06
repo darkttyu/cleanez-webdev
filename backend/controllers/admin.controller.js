@@ -1,8 +1,5 @@
-import { User } from "../models/user.model.js";
-import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
-import { Appointment } from "../models/appointment.model.js";
-import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule, serviceGenerateDailyReport} from "../services/admin.service.js";
+import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule, serviceGenerateDailyReport, serviceGenerateWeeklyReport, serviceGenerateMonthlyReport, serviceGenerateQuarterlyReport, serviceGenerateBiAnnualReport, serviceGenerateNineMonthReport, serviceGenerateAnnualReport} from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -321,12 +318,89 @@ export const generateDailyReport = async (req, res) => {
         return res.status(400).json({success: false, message: "Error in Generating Daily Report."});
       }
 
-      return res.status(200).json({success: true, message: "Generated Daily Report.", data: data});
+      return res.status(200).json({success: true, message: "Generated Daily Report.", dailyReport: data});
   } catch (error) {
     return res.status(400).json({success: false, message: error.message})
   }
 };
 
+export const generateWeeklyReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateWeeklyReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Weekly Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Weekly Report.", weeklyReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateMonthlyReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateMonthlyReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Monthly Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Monthly Report.", monthlyReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateQuarterlyReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateQuarterlyReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Quarterly Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Quarterly Report.", quarterlyReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateBiAnnualReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateBiAnnualReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Biannual Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Biannual Report.", biannualReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateNineMonthReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateNineMonthReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Nine-Month Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Nine-Month Report.", nineMonthReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateAnnualReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateAnnualReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Annual Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Annual Report.", annualReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
 
 /*
 export const addField = async (req, res) => {
@@ -378,18 +452,18 @@ export const addField = async (req, res) => {
 //   return res.status(200).json({success: true, message: updatedProfile})
 // }
 
-export const getEmails = async (req, res) => {
-  let emails = []
-  try {
-    const users = await User.find().lean();
-      if(!users) {
-        throw new Error("Users not Found")
-      }
+// export const getEmails = async (req, res) => {
+//   let emails = []
+//   try {
+//     const users = await User.find().lean();
+//       if(!users) {
+//         throw new Error("Users not Found")
+//       }
 
-    emails = users.map(user => [user.email, user.role]);
+//     emails = users.map(user => [user.email, user.role]);
 
-    return res.status(200).json({success: true, email: emails})
-  } catch (error) {
-    return res.status(400).json({success: false, message: error.message});
-  }
-};
+//     return res.status(200).json({success: true, email: emails})
+//   } catch (error) {
+//     return res.status(400).json({success: false, message: error.message});
+//   }
+// };
