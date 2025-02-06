@@ -268,6 +268,12 @@
     color           : white;
 }
 
+.dashboard-graph {
+    border-radius: 16px;
+    overflow     : hidden;
+    box-shadow   : 0 4px 4px #00000020;
+}
+
 .schedule-page {
     display         : flex;
     flex-direction  : column;

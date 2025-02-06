@@ -17,6 +17,9 @@ import founder2 from '../images/assets/founder2.jpg';
 import founder3 from '../images/assets/founder3.jpg';
 import founder4 from '../images/assets/founder4.jpg';
 
+import PopupService from "./PopupService";
+import { useState } from "react";
+
 const Header = () => {
     const homeContent = [
         {
@@ -69,6 +72,14 @@ const Header = () => {
 }
 
 const Services = () => {
+    const [showModal, setShowModal] = useState(false);
+    const [modalIndex, setModalIndex] = useState(null);
+
+    const handleClick = (index) => {
+        setModalIndex(index);
+        setShowModal(true);
+    }
+
     const role = localStorage.getItem('role');
     const servicesContent = [
         {
@@ -106,10 +117,15 @@ const Services = () => {
 
     return ( 
         <section className="main-section services" id="services">
+            {showModal? 
+                <PopupService index={modalIndex} setShowModal={setShowModal}/> :
+                <></>
+            }
             <h3>Our Services</h3>
             <div className="service-items">
             {servicesContent.map((service, index) => (
-                    <div className="service-item" key={index}>
+                    <div className="service-item" key={index}
+                    onClick={() => handleClick(index)}>
                         <img className="service-image" src={service.image} alt="" /> 
                         <div className="service-details">
                             <div className="information">
@@ -118,11 +134,6 @@ const Services = () => {
                             </div>
                             <div className="pricings">
                                 <p>Starts at <span>{service.price}</span></p>
-                                {role !== 'Worker' ?
-                                <a href="">Book Now</a> :
-                                <></>
-                                }
-                                
                             </div>
                         </div> 
                     </div>

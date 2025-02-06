@@ -115,7 +115,7 @@ td {
   background-color: #ab244f;
 }
 
-.act-btn.rate {
+.act-btn.rate:hover {
   background-color: #d1b33b;
 }
 

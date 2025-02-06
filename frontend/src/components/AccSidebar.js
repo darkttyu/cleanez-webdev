@@ -153,7 +153,7 @@ const AdminSide = ({setNavTitle}) => {
             to='dashboard'
             onClick={(e) => handleClick('Dashboard')}>
                 <SVGIcons 
-                selected="sidebarAppointments"
+                selected="sidebarGraph"
                 size="24px"
                 color={`${activeLink === 'Dashboard' ? 'white' : 'var(--monoc4)'}`}/>
                 <p className="sidebar-link-title">Dashboard</p>
