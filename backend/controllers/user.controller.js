@@ -27,6 +27,10 @@ export const editAccountInformation = async (req, res) => {
 export const getAllUserAppointments = async (req, res) => {
     try {
       const allAppointmentInformation = await fetchAppointments(req.userId);
+        if(allAppointmentInformation.length === 0){
+          return res.status(404).json({success: false, message: "There are no upcoming appointments.", data: []});
+        } 
+
       return res.status(200).json({success: true, message: "Successfully Fetched All Upcoming Appointments.", data: allAppointmentInformation})
     } catch (error) {
       return res.status(400).json({success: false, message: error.message})
@@ -36,6 +40,10 @@ export const getAllUserAppointments = async (req, res) => {
 export const viewAppointment = async (req, res) => {
   try {
     const appointment = await viewUserAppointment(req.params.id);
+      if(appointment.length === 0){
+        return res.status(404).json({success: false, message: "Appointment Not Found.", data: []});
+      }
+
     return res.status(200).json({success: true, message: "Fetched Specific Appointment Information.", data: appointment});
   } catch (error) {
     return res.status(400).json({success: false, message: error.message})
@@ -47,14 +55,13 @@ export const setAppointmentAsCompleted = async (req, res) => {
     const markedAppointment = await markAppointmentAsComplete(req.params.id);
     return res.status(200).json({success: true, message: "Appointment Marked as Completed.", data: markedAppointment})
   } catch (error) {
-    return res.status(500).json({success: false, message: error.message});
+    return res.status(400).json({success: false, message: error.message});
   }
 };
 
 export const cancelAppointment = async (req, res) => {
   try {
     const appointment = await markAppointmentAsCancelled(req.params.id);
-    // SEND CANCELLATION EMAIL TO USER AND WORKER 
     return res.status(200).json({ success: true, message: "Successfully Cancelled the Appointment.", data: appointment })
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });
@@ -67,14 +74,17 @@ export const rateAppointment = async (req, res) => {
     const ratedAppointment = await insertAppointmentRating(req.body, req.params.id)
     return res.status(200).json({success: true, message: "Worker Rating Updated.", data: ratedAppointment});
   } catch (error) {
-    return res.status(500).json({success: false, message: error.message})
+    return res.status(400).json({success: false, message: error.message})
   }
 };
 
 // Appointments
 export const viewAppointmentHistory = async (req, res) => {
     try {
-      const userAppointments = await viewAllAppointments(req.userId);      
+      const userAppointments = await viewAllAppointments(req.userId);
+        if(userAppointments.length === 0){
+          return res.status(404).json({success: false, message: "Empty Appointment History", data: []})
+        }      
       return res.status(200).json({ success: true, message: "Appointment History Fetched Successfully.", appointments: userAppointments})
 
     } catch (error) {
