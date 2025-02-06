@@ -289,7 +289,9 @@ const UserProfile = () => {
                         'Authorization': `Bearer ${token}`
                     }
                 }
-            );
+            ); 
+
+            console.log(formData);
 
             fetchUserInfo();
             setIsDisabled(!isDisabled);
