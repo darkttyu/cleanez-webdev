@@ -128,17 +128,45 @@
     background-color: #f8f8f8;
     display         : flex;
     flex-direction  : row;
-    align-items     : flex-start;
     justify-content : center;
+    align-items     : center;
     padding         : 25px;
-    gap             : 60px;
-    pointer-events  : none;
-    width           : 90%;
+    gap             : 48px;
+    min-width       : 90%;
+    max-width       : 1000px;
+    max-height      : calc(100vh - 20px);
 }
 
 .service-modal-box .text-container {
+    width             : 558px;
+    height            : 500px;
+    overflow-y        : auto;
+    display           : flex;
+    flex-direction    : column;
+    align-items       : flex-start;
+    justify-content   : flex-start;
+    gap               : 30px;
+    scrollbar-width   : none;
+    -ms-overflow-style: none;
+    font-family       : var(--font2);
+    font-size         : 16px;
+}
+
+.service-modal-box .picture-container {
+    width        : 394px;
+    align-self   : stretch;
+    object-fit   : fill;
+    position     : relative;
+    border-radius: 8px;
+    overflow     : hidden;
+}
+
+.service-modal-box .picture {
+    position  : absolute;
     height    : 100%;
-    overflow-y: scroll;
+    width     : 100%;
+    position  : relative;
+    object-fit: cover;
 }
 
 .service-modal-box .title {
@@ -163,4 +191,58 @@
 
 .service-modal-box .price {
     color: #069e4d;
+}
+
+.service-modal-box .details {
+    align-self : stretch;
+    position   : relative;
+    line-height: 1.2em;
+}
+
+.service-modal-box .info {
+    align-self     : stretch;
+    display        : flex;
+    flex-direction : column;
+    align-items    : flex-start;
+    justify-content: flex-start;
+    gap            : 16px;
+}
+
+.service-modal-box .info-title {
+    font-size: 16px;
+}
+
+.service-modal-box .list {
+    list-style-type    : disc;
+    list-style-position: inside;
+}
+
+.service-modal-box .list>li {
+    margin-bottom: 0.2em;
+}
+
+.service-modal-box .offer-title {
+    font-weight: 600;
+    color      : #069e4d;
+}
+
+.service-modal-box .book-btn {
+    box-shadow      : 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius   : 15px;
+    background-color: #06e36d;
+    padding         : 10px;
+    cursor          : pointer;
+    text-align      : center;
+    color           : #fff;
+    font-family     : Sora;
+    margin-bottom   : 20px;
+    transition      : all 0.2s ease-in-out;
+    font-weight     : 600;
+    width           : 100%;
+}
+
+.service-modal-box .book-btn:hover {
+
+    background-color: #3e9c5d;
+
 }

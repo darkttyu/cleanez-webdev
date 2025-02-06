@@ -84,6 +84,16 @@ const AdminUsers = () => {
         fetchAllUsers(currentPage, 10, searchWord);
     }, [currentPage])
 
+    const handleStatus = async (id) => {
+        try {
+            const response = await axios.put(`http://localhost:5000/api/admin/softDeleteUser/${id}`);
+
+            console.log(response);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     return (  
         <div className="dashboard-page">
             <section className="dashboard-upcoming-container">
@@ -124,7 +134,7 @@ const AdminUsers = () => {
                             <tr 
                             key={index} 
                             className="dashboard-tbody-tr"
-                            onClick={(e) => {navigate(`${user.userId}`)}}>
+                            onDoubleClick={(e) => {navigate(`${user.userId}`)}}>
                                 <td className="dashboard-tbody-td tb-left">
                                     {user.firstname} {user.lastName}
                                 </td>
@@ -133,7 +143,8 @@ const AdminUsers = () => {
                                 </td>
                                 <td className="dashboard-tbody-td tb-center">
                                     <div className={`dashboard-status 
-                                    ${String(user.status).toLowerCase()}`}>
+                                    ${String(user.status).toLowerCase()}`}
+                                    onClick={() => handleStatus(user.userId)}>
                                         {user.status}
                                     </div>
                                 </td>

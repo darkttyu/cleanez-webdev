@@ -1,13 +1,19 @@
 import {Link} from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
+import services1 from '../images/assets/services1.jpg';
+import services2 from '../images/assets/services2.jpg';
+import services3 from '../images/assets/services3.jpg';
+import services4 from '../images/assets/services4.jpg';
+import services5 from '../images/assets/services5.jpg';
+import services6 from '../images/assets/services6.png';
 
 const PopupService = ({index, setShowModal}) => {
     const {user} = useAuth();
 
     const service = [
         {
-            image: '',
+            image: services1,
             title: 'Residential Cleaning',
             price: '₱1,000',
             desc: 'Make your home shining, shimmering, splendid with CleanEZ Residential services. Our team will handle all the cleaning, leaving every corner of your home spotless and fresh, making it feel brand new.',
@@ -33,7 +39,7 @@ const PopupService = ({index, setShowModal}) => {
             </>
         },
         {
-            image: '',
+            image: services2,
             title: 'Deep Cleaning',
             price: '₱2,000',
             desc: 'Turn your home to its best look with CleanEZ Deep Cleaning services. Designed for a thorough top-to-bottom clean, our service targets all dirts and grime that are missed during regular cleaning.',
@@ -59,7 +65,7 @@ const PopupService = ({index, setShowModal}) => {
             </>
         },
         {
-            image: '',
+            image: services3,
             title: 'Move-In / Move-Out Cleaning',
             price: '₱2,500',
             desc: 'With CleanEZs Moving Cleaning service, we aim to make this process of moving in and out easier, ensuring that your new space is in spectacular condition. Whether you are moving in or out, trust us to handle all the cleaning, so you don’t have to worry about anything.',
@@ -79,7 +85,7 @@ const PopupService = ({index, setShowModal}) => {
             </>
         },
         {
-            image: '',
+            image: services4,
             title: 'Post-Renovation Cleaning',
             price: '₱5,000',
             desc: 'After a home renovation, your home may look stunning, but it often comes with leftover mess all over your home. With CleanEZs Post Renovation Cleaning service, we aim to transform your home into a fresh and new look, free from construction dust and residues.',
@@ -98,7 +104,7 @@ const PopupService = ({index, setShowModal}) => {
             </>
         },
         {
-            image: '',
+            image: services5,
             title: 'Office Cleaning',
             price: '₱1,000',
             desc: 'A clean office provides a productive and healthy environment, and with our Office Cleaning service, we are here to help keep your workplaces spotless and professional, ensuring that it will be welcoming for clients, employees, and visitors alike.',
@@ -124,7 +130,7 @@ const PopupService = ({index, setShowModal}) => {
             </>
         },
         {
-            image: '',
+            image: services6,
             title: 'Window Cleaning',
             price: '₱40',
             desc: 'et the sunlight shine bright with CleanEZs Window Cleaning Service, we ensure that your windows will be spotless and crystal clear, giving your home or office a brighter, cleaner look inside and out.',
@@ -151,9 +157,11 @@ const PopupService = ({index, setShowModal}) => {
         <div className="modal-container"
         onClick={() => setShowModal(false)}>
             <div className='service-modal-box'>
-                <div className="picture-container">
-                    <img src={service[index].image} alt="Service Image" />
+                <div className='picture-container'>
+                    <img src={service[index].image} alt="Service Image" 
+                className='picture'/>
                 </div>
+                
                 <div className="text-container">
                     <h2 className="title">{service[index].title}</h2>
                     <div className="price-container">
@@ -178,7 +186,7 @@ const PopupService = ({index, setShowModal}) => {
                             {service[index].rates}
                         </ul>
                     </div>
-                    <Link to={user ? `/booking` : "/login"}className="nav-link book-btn">
+                    <Link to={user ? `/booking` : "/login"}className="book-btn">
                     Book Now
                     </Link>
 
