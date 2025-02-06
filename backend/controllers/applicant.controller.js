@@ -71,7 +71,7 @@ export const submitApplicationForm = async (req, res) => {
 
   // Save the updated user object to the database
   await user.save();
-  sendApplicantConfirmationEmail(user.firstName, user.lastName, user.email);
+  await sendApplicantConfirmationEmail(user.firstName, user.lastName, user.email);
 
   // Respond with a success message upon successful submission
   res.status(200).json({success: true, message: "Application Form Submitted Successfully"});

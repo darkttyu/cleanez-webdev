@@ -368,7 +368,7 @@ export const setAppointment = async (req, res) => {
             const customerInfo = await User.findById(userId);
 
             // Sends the appointment confirmation email to the worker
-            sendWorkerAppointmentConfirmation(
+            await sendWorkerAppointmentConfirmation(
               user.firstName, user.email, customerFirstName, 
               customerLastName, address.block, address.municipal,
               address.province, address.barangay, serviceDetails.serviceCategory,
@@ -390,7 +390,7 @@ export const setAppointment = async (req, res) => {
       
     const userTime = formatTime(scheduleDetails.startTime);
     // Sends the appointment confirmation email to the customer
-    sendUserAppointmentConfirmation(user.firstName, user.email, customerFirstName, customerLastName, 
+    await sendUserAppointmentConfirmation(user.firstName, user.email, customerFirstName, customerLastName, 
       address.block, address.province, address.municipal, address.barangay, 
       serviceDetails.serviceCategory, serviceDetails.sizeOfArea, scheduleDetails.date, 
       userTime, serviceCost); 

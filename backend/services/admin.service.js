@@ -172,7 +172,7 @@ export const postWorker = async(body) => {
           throw new Error("Failed to Update User Role." );
         }
   
-      adminWelcomeWorkerEmail(updateUserRole.firstName, updateUserRole.email); // Sends welcome email.
+      await adminWelcomeWorkerEmail(updateUserRole.firstName, updateUserRole.email); // Sends welcome email.
   
       return worker;
 };
@@ -244,7 +244,7 @@ export const updateStatus = async(userId) => {
           }
 
           // Sends Activation Email
-          sendWorkerActivationEmail(
+          await sendWorkerActivationEmail(
             updatedWorkerStatus.firstName, 
             updatedWorkerStatus.email);
 
@@ -263,7 +263,7 @@ export const updateStatus = async(userId) => {
           }
 
           // Sends deactivation email
-          sendWorkerDeactivationEmail(
+          await sendWorkerDeactivationEmail(
             updatedWorkerInfo.firsName, 
             updatedWorkerInfo.email
           )
@@ -294,7 +294,7 @@ export const serviceDeleteWorker = async(userId) => {
       throw new Error("Error in Updating User Role.");
     }
 
-    sendAccountDeletion(updateUserRole.firstName, updateUserRole.email);
+    await sendAccountDeletion(updateUserRole.firstName, updateUserRole.email);
     return true;
 };
 
@@ -421,7 +421,7 @@ export const postUser = async (body) => {
 
     await user.save();
 
-    adminWelcomeEmail(user.firstName, user.email, user.phoneNumber, userGeneratedPassword);
+    await adminWelcomeEmail(user.firstName, user.email, user.phoneNumber, userGeneratedPassword);
 
     return user;
 };
@@ -477,7 +477,7 @@ export const updateUser = async (userId, body, profile) => {
         }
       };
   
-  const userAppointmentCount = Appointment.countDocuments({userId: new Object(userId), 
+  const userAppointmentCount = await Appointment.countDocuments({userId: new Object(userId), 
     $or: [
         { appointmentStatus: "Scheduled" }, 
         { paymentStatus: "Pending" }
@@ -550,7 +550,7 @@ export const serviceDeleteUser = async (userId) => {
                 }
           
               // Sends an account deletion email to the user
-              sendAccountDeletion(deleteUserInformation.firstName, deleteUserInformation.email);
+              await sendAccountDeletion(deleteUserInformation.firstName, deleteUserInformation.email);
               return true;
               }
         } else {
@@ -572,7 +572,7 @@ export const serviceDeleteUser = async (userId) => {
                   throw new Error("Bad Request. Error in Deleting User with User ID: ${userId}")
                 }
 
-                sendAccountDeletion(deleteUserInformation.firstName, deleteUserInformation.email);
+                await sendAccountDeletion(deleteUserInformation.firstName, deleteUserInformation.email);
                 return true;
         }
 };
@@ -605,7 +605,7 @@ export const serviceUpdateUserStatus = async (userId) => {
             throw new Error("Bad Request. Error in Updating User Status.");
           }
 
-          sendUserDeactivationEmail(updatedUserStatus.firstName, updatedUserStatus.email);
+          await sendUserDeactivationEmail(updatedUserStatus.firstName, updatedUserStatus.email);
           return true;
       } else {
         const updatedUserStatus = await User.findByIdAndUpdate(
@@ -617,7 +617,7 @@ export const serviceUpdateUserStatus = async (userId) => {
           if(!updatedUserStatus){
             throw new Error("Bad Request. Error in Updating User Status.");
           }
-          sendUserActivationEmail(updatedUserStatus.firstName, updatedUserStatus.email);
+          await sendUserActivationEmail(updatedUserStatus.firstName, updatedUserStatus.email);
           return true;
       }
 };
@@ -738,7 +738,7 @@ export const serviceAcceptApplicant = async(userId) => {
         }
   
         await worker.save();
-        sendApplicationAcceptanceEmail(applicant.firstName, applicant.email);
+        await sendApplicationAcceptanceEmail(applicant.firstName, applicant.email);
         return true;
 };
 
@@ -761,7 +761,7 @@ export const serviceRejectApplicant = async(userId) => {
         throw new Error("Bad Request. Error in Removing Application Details and Role Reset..")
       }
 
-      sendApplicationRejectionEmail(applicant.firstName, applicant.email);
+      await sendApplicationRejectionEmail(applicant.firstName, applicant.email);
       return true;
 
 };
@@ -871,7 +871,7 @@ export const serviceMarkAppointmentAsCompleted = async (appointmentId) => {
           await Promise.all(
             validWorkerUserIds.map(async (id) => {
               const workerInfo = await User.findById(id);
-              sendWorkerPaidAppointmentEmail(workerInfo.firstName, workerInfo.lastName, workerInfo.email, appointment.customerFirstName, 
+              await sendWorkerPaidAppointmentEmail(workerInfo.firstName, workerInfo.lastName, workerInfo.email, appointment.customerFirstName, 
                 appointment.customerLastName, appointment.serviceDetails.serviceCategory, appointment.scheduleDetails.date, 
                 appointment.address.block, appointment.address.municipal, appointment.address.province, appointment.address.barangay,
                 appointment.serviceCost)
@@ -931,7 +931,7 @@ export const serviceMarkAppointmentAsCancelled = async (appointmentId) => {
             const user = await User.findById(workerInfo.userId);
 
             // SEND CANCELLATION EMAIL TO WORKERS
-            sendWorkerAppointmentCancellationEmail(user.email, user.firstName, user.lastName, appointment.serviceDetails.serviceCategory,
+            await sendWorkerAppointmentCancellationEmail(user.email, user.firstName, user.lastName, appointment.serviceDetails.serviceCategory,
               slicedDate, formattedTime, appointment.customerFirstName, appointment.customerLastName)
           }
       }
@@ -946,7 +946,7 @@ export const serviceMarkAppointmentAsCancelled = async (appointmentId) => {
       const user = await User.findById(appointment.userId);
 
       // SEND CANCELLATION EMAIL TO USER
-      sendUserAppointmentCancellationEmail(user.email, appointment.customerFirstName, appointment.customerLastName, appointment.serviceDetails.serviceCategory, slicedDate, formattedTime, appointment.address.block, appointment.address.barangay, appointment.address.municipal, appointment.address.province)
+      await sendUserAppointmentCancellationEmail(user.email, appointment.customerFirstName, appointment.customerLastName, appointment.serviceDetails.serviceCategory, slicedDate, formattedTime, appointment.address.block, appointment.address.barangay, appointment.address.municipal, appointment.address.province)
       return true;
 };
 
