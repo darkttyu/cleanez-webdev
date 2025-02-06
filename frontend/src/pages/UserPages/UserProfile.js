@@ -12,8 +12,13 @@ import axios from "axios";
 import PopupError from "../../components/PopupError";
 
 
+import LoadingScreen2 from "../../components/LoadingScreen2";
+
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const UserProfile = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [fadeOut, setFadeOut] = useState(false);
+
     const inputRef = useRef();
 
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
@@ -25,7 +30,6 @@ const UserProfile = () => {
     const [profileFile, setProfileFile] = useState(null);
     // --- Editing Mode Toggler
     const [isDisabled, setIsDisabled] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
     // --- Address Variables
     const [regionData, setRegionData] = useState([]);
     const [provinceData, setProvinceData] = useState([]);
@@ -70,6 +74,36 @@ const UserProfile = () => {
         fetchUserInfo();
     }, [])
     
+    useEffect(() => {
+        const loadResources = async () => {
+            await document.fonts.ready;
+    
+            const imageUrls = [header];
+            const imagePromises = imageUrls.map((src) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = src;
+                    img.onload = resolve;
+                });
+            });
+    
+            await Promise.all(imagePromises);
+    
+            setTimeout(() => {
+                setFadeOut(true);
+    
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 500);
+            }, 3000);
+        };
+    
+        if (accountInfo && profileURL && regionData) {
+            loadResources();
+        }
+    }, [fetchUserInfo]);
+    
+
     // Tracks Account Info Changes
     useEffect(() => {
         if (accountInfo) {
@@ -275,7 +309,13 @@ const UserProfile = () => {
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
-        <div className="profile-page">
+        <>
+            {isLoading? 
+            <LoadingScreen2 fadeOut={fadeOut}/> :
+            <>
+            </>
+            }
+            <div className="profile-page">
             {showErrorModal? 
                 <PopupError 
                 errTitle="Unable to Save Profile"
@@ -286,6 +326,7 @@ const UserProfile = () => {
                 ]}/> :
                 <></>
             }
+
             {accountInfo ?
             <>
                 <img src={header} alt="" className="profile-header"/>
@@ -623,7 +664,9 @@ const UserProfile = () => {
             <></>
             }
             
-        </div>
+            </div>
+        </>
+        
     );
 }
  

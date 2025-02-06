@@ -30,6 +30,8 @@ const HomePage = () => {
     useEffect(() => {
         document.title = 'CleanEZ | Home'
 
+        const page = document.body;
+
         const loadResources = async () => {
             await document.fonts.ready;
 
