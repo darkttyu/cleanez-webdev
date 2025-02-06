@@ -57,6 +57,8 @@ const LoginPanel = ({route}) => {
     // --- Verifies Login Data after Submission
     const handleLogInSubmission = async (e) => {
         e.preventDefault();
+
+        setIsDisabled(true);
         // --- --- Successfull Login    
         try {
             const response = await axios.post(`http://localhost:5000/api/auth/${route}`, loginCredentials, {
@@ -82,9 +84,11 @@ const LoginPanel = ({route}) => {
         // --- --- Failed Login
         } catch (error) {
             console.log(error);
-            // if (error.response.status === 400) {
-            //     setShowError("show-error");
-            // }  
+            if (error.response.status === 400) {
+                setShowError("show-error");
+            }  
+        } finally {
+            setIsDisabled(false);
         }
     }
 
@@ -103,7 +107,7 @@ const LoginPanel = ({route}) => {
                             <MailAndPhone value={loginCredentials.login} onChange={handleLogInData}/>
                             <Password value={loginCredentials.password} onChange={handleLogInData}/>
                         </div>
-                        <p className={`error-message ${showError}`}>Login failed. Please check your email/phone and password.</p>
+                        <p className={`error-message ${showError}`}>Invalid login credentials. Please try again.</p>
                         {/* BUTTON HERE */}
                         <div className="buttons">
                             {(route === "adminLogin") ? 

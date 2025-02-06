@@ -197,11 +197,12 @@
     }
 
     .nav-sidebar-top {
-        display    : flex;
-        height     : 90px;
-        align-items: center;
-        padding    : 0 42px;
-        gap        : 38px
+        display        : flex;
+        height         : 90px;
+        justify-content: center;
+        align-items    : center;
+        padding        : 0 42px;
+        gap            : 38px
     }
 
     .nav-sb-links {
@@ -279,10 +280,6 @@
         100% {
             transform: translateY(-100%);
         }
-    }
-
-    .nav-sidebar-top {
-        justify-content: center;
     }
 
     .nav-logo {

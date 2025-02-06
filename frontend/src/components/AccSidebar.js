@@ -24,24 +24,6 @@ const UserSide = ({setNavTitle}) => {
         setActiveLink(title)
     }
 
-    const handleClickOutside = (event) => {
-        if (popupRef.current && !popupRef.current.contains(event.target)) {
-            setReturnPopup(false);
-        }
-    };
-
-    useEffect(() => {
-        if (returnPopup) {
-            document.addEventListener("mousedown", handleClickOutside);
-        } else {
-            document.removeEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [returnPopup]);
-
     return (  
         <>
             <li><Link 

@@ -52,7 +52,9 @@ const Navbar = () => {
             <div 
             className={`nav-sidebar ${openSidebar? 'open' : 'close'} ${closing? 'closing' : ''}`}>
                 <div className='nav-sidebar-top'>
-                    <Link to={user ? `/booking` : "/login"} className="nav-side-link book-btn">Book Now</Link>
+                {role !== 'Worker' ?
+                    <Link to={user ? `/booking` : "/login"}className="nav-side-link book-btn">Book Now</Link> :
+                    <></>}
                     <button className='nav-burger'
                     onClick={handleClose}>
                         <SVGIcons 

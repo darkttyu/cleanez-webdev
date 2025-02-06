@@ -231,6 +231,12 @@ const UserProfile = () => {
             const token = localStorage.getItem("token");
             const formData = await updateData(accountInfo, profileFile);
 
+            if (accountInfo.address.province === "0" ||
+                accountInfo.address.municipal === "0" ||
+                accountInfo.address.barangay === "0") {
+                    throw new Error("Empty prompts detected: Please fill out everything on the form.");
+            }
+
             const updateResponse = await 
             axios.put(`http://localhost:5000/api/user/editAccountInformation`, 
                 formData, 
@@ -244,7 +250,7 @@ const UserProfile = () => {
             fetchUserInfo();
             setIsDisabled(!isDisabled);
         } catch (e) {
-            console.log(e)
+            console.log(e.message);
         }
     }
 
@@ -288,6 +294,10 @@ const UserProfile = () => {
                                 className="profile-edit"
                                 onClick={editProfile}>
                                     Edit Profile
+                                    <SVGIcons 
+                                    selected="buttonEdit"
+                                    size="20px"
+                                    color="var(--monoc4)"/>
                                 </button>
                             ):(
                                 <>

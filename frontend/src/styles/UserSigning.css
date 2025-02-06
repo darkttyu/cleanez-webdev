@@ -308,6 +308,10 @@
      height : 48px;
 }
 
+.success-message .description {
+     text-align: center;
+}
+
 @media screen and (max-height: 738px) {
      .signing-panel {
           top       : 0;
@@ -400,4 +404,5 @@
      .external-prompt .description {
           width: fit-content;
      }
+
 }

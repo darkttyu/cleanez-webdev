@@ -50,10 +50,21 @@
     align-self     : last baseline;
 }
 
+.profile-info {
+    position: relative;
+}
+
 .profile-rating {
+    position   : absolute;
+    bottom     : -100%;
     display    : flex;
     align-items: center;
     gap        : 8px;
+    font-family: var(--font1);
+    font-size  : 16px;
+    font-weight: 600;
+    color      : var(--monoc4-50);
+    line-height: 24px;
 }
 
 .profile-name {
@@ -84,11 +95,15 @@
 }
 
 .profile-edit {
-    color     : var(--monoc4);
-    transition: all 0.2s ease-in-out;
+    display    : flex;
+    align-items: center;
+    gap        : 8px;
+    color      : var(--monoc4);
+    transition : all 0.2s ease-in-out;
 }
 
-.profile-edit:hover {
+.profile-edit:hover,
+.profile-cancel:hover {
     cursor          : pointer;
     background-color: #e4e4e4;
 }
@@ -111,4 +126,13 @@
 .profile-save {
     color           : white;
     background-color: #06E36D;
+    cursor          : pointer;
+}
+
+.profile-save:hover {
+    background-color: #13bc62;
+}
+
+.profile-save:disabled {
+    opacity: 0.8;
 }
