@@ -18,6 +18,7 @@ const WorkerProfile = () => {
     // --- Account Information
     const [accountInfo, setAccountInfo] = useState(null);
     const [workerEarnings, setWorkerEarnings] = useState("");
+    const [workerRating, setWorkerRating] = useState("");
     // --- Profile URL for loading current Profile Picture
     const [profileURL, setProfileURL] = useState(null);
     // --- Profile File Information
@@ -57,9 +58,10 @@ const WorkerProfile = () => {
                 }
             );
 
-            // console.log(getResponse.data.user);
+            console.log(getResponse.data.user);
             setAccountInfo(getResponse.data.user.user);
             setWorkerEarnings(getResponse.data.user.totalEarnings);
+            setWorkerRating(getResponse.data.user.rating);
         } catch (e) {
 
         }
@@ -287,7 +289,16 @@ const WorkerProfile = () => {
                             )}
                         </div>
                         <div className="profile-text">
-                            <p className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</p>
+                            <div className="profile-info">
+                                <p className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</p>
+                                <p className="profile-rating">
+                                    <SVGIcons 
+                                    selected="starRatingSolid"
+                                    size="20px"
+                                    color="#07de6b"/>
+                                    {parseFloat(workerRating).toFixed(1)} / 5.0
+                                </p>
+                            </div>
                             <div className="profile-edit-options">
                             {isDisabled ? (
                                 <button 
