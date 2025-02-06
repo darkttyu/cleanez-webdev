@@ -1,5 +1,5 @@
 import { Service } from "../models/service.model.js";
-import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule, serviceGenerateDailyReport, serviceGenerateWeeklyReport, serviceGenerateMonthlyReport, serviceGenerateQuarterlyReport, serviceGenerateBiAnnualReport, serviceGenerateNineMonthReport, serviceGenerateAnnualReport} from "../services/admin.service.js";
+import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule, serviceGenerateDailyReport, serviceGenerateWeeklyReport, serviceGenerateMonthlyReport, serviceGenerateQuarterlyReport, serviceGenerateBiAnnualReport, serviceGenerateNineMonthReport, serviceGenerateAnnualReport, graphWeeklyReport, graphMonthlyReport} from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -401,6 +401,29 @@ export const generateAnnualReport = async (req, res) => {
     return res.status(400).json({success: false, message: error.message})
   }
 };
+
+export const generateGraphWeeklyReport = async (req, res) => {
+  try {
+    const data = await graphWeeklyReport();
+    return res.status(200).json({success:true, message: "Weekly Report Generated", weelyReport: data});
+  } catch (error) {
+    return res.status(400).json({success:false, message: error.message});
+  }
+};
+
+export const generateGraphMonthlyReport = async (req, res) => {
+  try {
+    const data = await graphMonthlyReport();
+    return res.status(200).json({success:true, message: "Monthly Report Generated", monthlyReport: data});
+  } catch (error) {
+    return res.status(400).json({success:false, message: error.message});
+  }
+};
+
+
+
+
+
 
 /*
 export const addField = async (req, res) => {

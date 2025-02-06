@@ -15,7 +15,9 @@ import { addUser, addWorker, clickedUser, deleteUser, editUserInfo,
   generateQuarterlyReport,
   generateBiAnnualReport,
   generateNineMonthReport,
-  generateAnnualReport
+  generateAnnualReport,
+  generateGraphWeeklyReport,
+  generateGraphMonthlyReport
 } from '../controllers/admin.controller.js';
 import { uploadProfile } from "../middleware/profileUpload.js";
 
@@ -33,6 +35,8 @@ router.get("/generateQuarterlyReport", generateQuarterlyReport);
 router.get("/generateBiAnnualReport", generateBiAnnualReport);
 router.get("/generateNineMonthReport", generateNineMonthReport);
 router.get("/generateAnnualReport", generateAnnualReport);
+router.get("/generateGraphWeeklyReport", generateGraphWeeklyReport);
+router.get("/generateGraphMonthlyReport", generateGraphMonthlyReport);
 
 // Applicants Tab
 router.get("/getAllApplicants", getAllApplicants);
