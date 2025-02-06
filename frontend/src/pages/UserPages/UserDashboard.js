@@ -73,8 +73,6 @@ const UserDashboard = () => {
 
     
     useEffect(() => {
-        const page = document.querySelector('.account-page-right');
-
         const loadResources = async () => {
             
             await document.fonts.ready;
@@ -90,7 +88,6 @@ const UserDashboard = () => {
 
             
         };
-
 
         if (upcomingData) {
             loadResources();

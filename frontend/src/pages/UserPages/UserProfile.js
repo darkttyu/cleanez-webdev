@@ -309,13 +309,7 @@ const UserProfile = () => {
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
-        <>
-            {isLoading? 
-            <LoadingScreen2 fadeOut={fadeOut}/> :
-            <>
-            </>
-            }
-            <div className="profile-page">
+        <div className="profile-page">
             {showErrorModal? 
                 <PopupError 
                 errTitle="Unable to Save Profile"
@@ -325,6 +319,12 @@ const UserProfile = () => {
                     {func: handleContinue, text: "Continue", className: "green"},
                 ]}/> :
                 <></>
+            }
+
+            {isLoading? 
+            <LoadingScreen2 fadeOut={fadeOut}/> :
+            <>
+            </>
             }
 
             {accountInfo ?
@@ -664,9 +664,7 @@ const UserProfile = () => {
             <></>
             }
             
-            </div>
-        </>
-        
+        </div>
     );
 }
  
