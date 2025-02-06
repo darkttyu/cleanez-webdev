@@ -127,7 +127,7 @@ export const postWorker = async(body) => {
         }
       
       // Checks if an applicant / worker to be added still has an appointment
-      const applicantAppointment = await Appointment.find({"userId": userId, appointmentStatus: "Pending"})
+      const applicantAppointment = await Appointment.find({"userId": userId, appointmentStatus: "Scheduled"})
         if(applicantAppointment.length >= 1){
           throw new Error("User has scheduled appointments. Insertion Rejected");
         }
@@ -553,6 +553,27 @@ export const serviceDeleteUser = async (userId) => {
               sendAccountDeletion(deleteUserInformation.firstName, deleteUserInformation.email);
               return true;
               }
+        } else {
+            const userAppointmentCount = await Appointment.countDocuments({
+              userId: user._id,
+              $or:[
+                { "appointmentStatus": "Scheduled" }, 
+                { "paymentStatus": "Pending" }
+              ],
+            });
+          
+              console.log("Appointment Count: ", userAppointmentCount);
+              if(userAppointmentCount > 0){
+                throw new Error("Bad Request. User still has Pending Appointments.")
+              }
+
+              const deleteUserInformation = await User.findOneAndDelete({_id: id}); 
+                if(!deleteUserInformation){
+                  throw new Error("Bad Request. Error in Deleting User with User ID: ${userId}")
+                }
+
+                sendAccountDeletion(deleteUserInformation.firstName, deleteUserInformation.email);
+                return true;
         }
 };
 
