@@ -101,7 +101,7 @@ const UserProfile = () => {
         if (accountInfo && profileURL && regionData) {
             loadResources();
         }
-    }, [fetchUserInfo]);
+    }, [accountInfo, profileURL, regionData]);
     
 
     // Tracks Account Info Changes
@@ -308,14 +308,9 @@ const UserProfile = () => {
     }
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
-    return (  
-        <>
-            {isLoading? 
-            <LoadingScreen2 fadeOut={fadeOut}/> :
-            <>
-            </>
-            }
+    return (        
             <div className="profile-page">
+            
             {showErrorModal? 
                 <PopupError 
                 errTitle="Unable to Save Profile"
@@ -325,6 +320,12 @@ const UserProfile = () => {
                     {func: handleContinue, text: "Continue", className: "green"},
                 ]}/> :
                 <></>
+            }
+
+            {isLoading? 
+                <LoadingScreen2 fadeOut={fadeOut}/> :
+                <>
+                </>
             }
 
             {accountInfo ?
@@ -665,8 +666,6 @@ const UserProfile = () => {
             }
             
             </div>
-        </>
-        
     );
 }
  

@@ -22,6 +22,7 @@
 .loading-screen.bg-white {
     position        : sticky;
     top             : 0;
+    margin          : -90px 0 0 0;
     background-color: #f8f8f8;
     z-index         : 1;
 }
