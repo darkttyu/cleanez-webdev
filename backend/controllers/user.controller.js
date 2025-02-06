@@ -83,7 +83,7 @@ export const viewAppointmentHistory = async (req, res) => {
     try {
       const userAppointments = await viewAllAppointments(req.userId);
         if(userAppointments.length === 0){
-          return res.status(404).json({success: false, message: "Empty Appointment History", data: []})
+          return res.status(404).json({success: false, message: "Empty Appointment History", appointments: []})
         }      
       return res.status(200).json({ success: true, message: "Appointment History Fetched Successfully.", appointments: userAppointments})
 

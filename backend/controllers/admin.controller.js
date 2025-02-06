@@ -15,6 +15,9 @@ export const findAllWorkers = async (req, res) => {
     const arrayIndex = (page - 1) * pageSize
 
     const workers = await fetchWorkers(arrayIndex, pageSize, keyword);
+      if(workers.length === 0){
+        return res.status(404).json({success: false, message: "Worker not Found.", worker: []})
+      }
     return res.status(200).json({ success: true, message: "Successfully Fetched Worker List", worker: workers});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -24,6 +27,9 @@ export const findAllWorkers = async (req, res) => {
 export const getUserDetails = async (req, res) => {
   try {
     const user = await fetchUsers();
+      if(!user){
+        return res.status(404).json({success: false, message: "Error in Getting User Details.", users: []})
+      }
     return res.status(200).json({success: true, users: user})
   } catch (error) {
     return res.status(400).json({success: false, message: error.message})
@@ -42,6 +48,9 @@ export const addWorker = async (req, res) => {
 export const clickedWorker = async (req, res) => {
   try {
     const worker = await fetchWorker(req.params.id);
+      if(worker.length === 0){
+        return res.status(404).json({success: false, message: "Error Fetching Worker Information.", worker: []})
+      }
     return res.status(200).json({ success: true, message: "Successfully Fetched Worker", worker: worker});
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -88,6 +97,9 @@ export const findAllUsers = async (req, res) => {
     const arrayIndex = (page - 1) * pageSize
 
     const users = await fetchUserList(arrayIndex, pageSize, keyword);
+      if(users.length === 0){
+        return res.status(404).json({success: false, message: "No users Found.", userList: []})
+      }
     return res.status(200).json({success: true, message: "Fetched Users", userList: users})
   
   } catch (error) {
@@ -100,7 +112,6 @@ export const findAllUsers = async (req, res) => {
 export const addUser = async (req, res) => {  
   try {
     const newUser = await postUser(req.body);
-    
     res.status(201).json({success: true,message: "User Created Successfully", user: { ...newUser._doc, password: undefined, }
       })
 
@@ -115,7 +126,6 @@ export const clickedUser = async(req, res) => {
     res.status(200).json({success: true, message:"Successfully Fetched User Information", user: user });
 
   } catch (error) {
-    console.log("Error in Fetching Specific User", error);
     res.status(400).json({success:false, message: error.message });
   }
   
@@ -213,6 +223,9 @@ export const getAllApplicants = async (req, res) => {
     const arrayIndex = (page - 1) * pageSize
 
     const applicants = await fetchApplicants(arrayIndex, pageSize, keyword);
+      if(applicants.length === 0){
+        return res.status(404).json({success: false, message: "Applicants Not Found.", applicants: []})
+      }
     return res.status(200).json({success: true, message: "Fetched Applicants Lists.", applicants: applicants});
   } catch (error) {
     return res.status(400).json({success: false, error: message.error});
@@ -272,6 +285,8 @@ export const getAppointments = async (req, res) => {
     const appointment = await fetchAppointments(arrayIndex, pageSize, keyword);
       if(appointment){
         return res.status(200).json({success: true, message: "Fetched Appointments List.", appointmentList: appointment});
+      } else {
+        return res.status(404).json({success: false, message: "No Appointments Found.", appointmentList: []})
       }
   } catch (error) {
     return res.status(400).json({success: false, message: error.message});
