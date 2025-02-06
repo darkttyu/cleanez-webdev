@@ -71,10 +71,6 @@ const FindAccountPanel = () => {
         e.preventDefault();
 
         try {
-<<<<<<< HEAD
-            const response = await axios.post(`https://cleanez-api.vercel.app/api/auth/reset-password/${token.id}`, finalPassword)
-            setDisable(true);
-=======
             if(verifyPasswords(passwordNew, passwordConfirm)){
                 console.log(passwordConfirm);
                 setFinalPassword({
@@ -84,8 +80,7 @@ const FindAccountPanel = () => {
                 return;
             }
 
-            const response = await axios.post(`http://localhost:5000/api/auth/reset-password/${token.id}`, finalPassword)
->>>>>>> cleanEZ
+            const response = await axios.post(`https://cleanez-api.vercel.app/api/auth/reset-password/${token.id}`, finalPassword)
             setIsSubmitting(true);
             console.log(response);
 
