@@ -311,28 +311,27 @@ const UserProfile = () => {
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
-        <div className="profile-page">
-            {showErrorModal? 
-                <PopupError 
-                errTitle="Unable to Save Profile"
-                errMessage={errMessage}
-                buttons={[
-                    {func: handleCancel, text: "Cancel", className: "red"},
-                    {func: handleContinue, text: "Continue", className: "green"},
-                ]}/> :
-                <></>
-            }
-
+        <>
             {isLoading? 
             <LoadingScreen2 fadeOut={fadeOut}/> :
             <>
             </>
             }
 
-            {accountInfo ?
-            <>
+            <div className="profile-page">
+                {showErrorModal? 
+                    <PopupError 
+                    errTitle="Unable to Save Profile"
+                    errMessage={errMessage}
+                    buttons={[
+                        {func: handleCancel, text: "Cancel", className: "red"},
+                        {func: handleContinue, text: "Continue", className: "green"},
+                    ]}/> :
+                    <></>
+                }
                 <img src={header} alt="" className="profile-header"/>
-
+                {accountInfo ?
+                <>
                 <div className="profile-main">
                     <div className="profile-image-text">
                         <div className="profile-image-container">
@@ -662,11 +661,13 @@ const UserProfile = () => {
                         </div> 
                     </section>
                 </div>
-            </> :
-            <></>
-            }
-            
-        </div>
+                </> :
+                <></>
+                }
+                
+            </div>
+        </>
+        
     );
 }
  

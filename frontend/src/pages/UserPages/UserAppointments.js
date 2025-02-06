@@ -7,7 +7,12 @@ import { useAuth } from "../../AuthContext";
 import axios from "axios";
 
 
+import LoadingScreen2 from "../../components/LoadingScreen2";
+
 const UserAppointments = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [fadeOut, setFadeOut] = useState(false);
+
     const [appointments, setAppointments] = useState([]);
     const [showAppInfo, setShowAppInfo] = useState(false);
     const [showRating, setShowRating] = useState(false);
@@ -34,9 +39,31 @@ const UserAppointments = () => {
     }
 
     useEffect(() => {
+        document.title = 'CleanEZ | Profile'
         fetchAppointments();
     }, [])
 
+    useEffect(() => {
+        const loadResources = async () => {
+            
+            await document.fonts.ready;
+
+            setTimeout(() => {
+                setFadeOut(true);
+
+                setTimeout(() => {
+                    setIsLoading(false);
+
+                }, 500);
+            }, 3000);
+
+            
+        };
+
+        if (appointments) {
+            loadResources();
+        }
+    }, [fetchAppointments])
     
     const showAppointment = (id) => {
         setShowAppInfo(true);
@@ -49,18 +76,12 @@ const UserAppointments = () => {
 
     return (  
         <>  
-            {showRating ?
-            <RatingBox
-            appID={appID}
-            setShowRating={setShowRating}
-            fetchAppointments={fetchAppointments}/> :
-            <></>
+            {isLoading? 
+            <LoadingScreen2 fadeOut={fadeOut}/> :
+            <>
+            </>
             }
-            {showAppInfo ? 
-            <UserAppointmentInfo 
-            appID={appID} 
-            setShowAppInfo={setShowAppInfo}
-            setShowRating={setShowRating}/> : <></>}
+
             <div className="dashboard-page">
                 <section className="dashboard-upcoming-container">
                     <h2>Appointments History</h2>
