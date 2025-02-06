@@ -118,11 +118,13 @@ export const fetchAppointments = async(id) => {
             if(scheduleDetails.date instanceof Date){
                 slicedDate = scheduleDetails.date.toISOString().slice(0,10);
             }
+            
+        const formattedTime = formatTime(scheduleDetails.startTime);
             return {
               _id,
               customerName: customerFirstName + " " + customerLastName,
               scheduledDate: slicedDate,
-              scheduledTime: scheduleDetails.startTime,
+              scheduledTime: formattedTime,
               appointmentStatus,
               paymentStatus
             };
@@ -155,13 +157,15 @@ export const viewAppointment = async (appointmentId) => {
   const workerUserIds = await Promise.all(
     workerId.map(async (id) => {
       const worker = await Worker.findById(id); // Fetch worker details by ID
-      return worker.userId; // Return the userId of the worker
+        return worker ? worker.userId : null; // Return the userId of the worker
     })
   );
 
+  const validWorkerUserIds = workerUserIds.filter(userId => userId !== null);
+
   // Fetch full names of workers from the User collection using their userIds
   const workers = await Promise.all(
-    workerUserIds.map(async (id) => {
+    validWorkerUserIds.map(async (id) => {
       const worker = await User.findById(id); // Fetch user details by ID
       return worker.firstName + " " + worker.lastName; // Return the worker's full name
     })

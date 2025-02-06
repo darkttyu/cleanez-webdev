@@ -36,6 +36,9 @@ export const editWorkerAccountInformation = async (req, res) => {
 export const getWorkerAppointments = async (req, res) => {
   try {
     const upcomingAppointments =  await fetchAppointments(req.userId);
+      if(upcomingAppointments.length === 0){
+        return res.status(404).json({success: false, message: "You have no upcoming appointments assigned.", data: []});
+      }
     return res.status(200).json({ success: true, message: "Successfully Fetched Upcoming Appointments.", data: upcomingAppointments});
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message })
@@ -45,6 +48,9 @@ export const getWorkerAppointments = async (req, res) => {
 export const viewWorkerAppointment = async (req, res) => {
     try {
       const appointment = await viewAppointment(req.params.id);
+        if(!appointment){
+          return res.status(404).json({success: false, message: "Bad Request. Appointment not Found.", data: []})
+        }
       
       return res.status(200).json({ success: true, message: "Successfully Viewed Appointment.", data: appointment });
     } catch (error) {
