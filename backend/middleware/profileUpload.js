@@ -17,8 +17,7 @@ const profileUpload = multer({
   fileFilter: (req, file, cb) => {
     // List of allowed MIME types for file uploads
     const allowedTypes = [
-      'image/jpeg', // JPEG images
-      'image/png'
+      'image/jpeg'// JPEG images
     ];
 
     // Check if the uploaded file type is allowed
