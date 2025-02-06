@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SVGIcons from '../../SVGIcons'
 
+import PopupError from "../../components/PopupError";
+
 const AdminApplicantInfo = () => {
     let { id } = useParams();
     const navigate = useNavigate();

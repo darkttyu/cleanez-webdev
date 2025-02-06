@@ -54,7 +54,7 @@ const UserProfile = () => {
             const token = localStorage.getItem("token");
 
             const getResponse = await 
-            axios.get(`https://cleanez-api.vercel.app/api/user/getAccountInformation`, 
+            axios.get(`http://localhost:5000/api/user/getAccountInformation`, 
                 {
                     headers: { 
                         'Authorization': `Bearer ${token}`
@@ -64,7 +64,7 @@ const UserProfile = () => {
 
             setAccountInfo(getResponse.data.user);
         } catch (e) {
-            throw new Error("Cannot Fetch User.")
+
         }
     }
 
@@ -77,32 +77,34 @@ const UserProfile = () => {
     useEffect(() => {
         const loadResources = async () => {
             await document.fonts.ready;
-    
+
             const imageUrls = [header];
             const imagePromises = imageUrls.map((src) => {
                 return new Promise((resolve) => {
-                    const img = new Image();
-                    img.src = src;
-                    img.onload = resolve;
+                const img = new Image();
+                img.src = src;
+                img.onload = resolve;
                 });
             });
-    
+
             await Promise.all(imagePromises);
-    
+
             setTimeout(() => {
                 setFadeOut(true);
-    
+
                 setTimeout(() => {
                     setIsLoading(false);
                 }, 500);
             }, 3000);
+
+            
         };
-    
+
+
         if (accountInfo && profileURL && regionData) {
             loadResources();
         }
-    }, [fetchUserInfo]);
-    
+    }, [accountInfo, profileURL, regionData])
 
     // Tracks Account Info Changes
     useEffect(() => {
@@ -280,7 +282,7 @@ const UserProfile = () => {
             }
 
             const updateResponse = await 
-            axios.put(`https://cleanez-api.vercel.app/api/user/editAccountInformation`, 
+            axios.put(`http://localhost:5000/api/user/editAccountInformation`, 
                 formData, 
                 {
                     headers: { 
