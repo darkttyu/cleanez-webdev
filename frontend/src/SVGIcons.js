@@ -158,6 +158,20 @@ const SVGIcons = ({selected, size, color , strokewidth, stroke, onClick, classNa
                     <path d="M3 18.4v-2.796a4.3 4.3 0 0 0 .713.31A26.226 26.226 0 0 0 12 17.25c2.892 0 5.68-.468 8.287-1.335.252-.084.49-.189.713-.311V18.4c0 1.452-1.047 2.728-2.523 2.923-2.12.282-4.282.427-6.477.427a49.19 49.19 0 0 1-6.477-.427C4.047 21.128 3 19.852 3 18.4Z" fill={color}/>
                </>
           },
+          sidebarApplicants: {
+               viewBox: '0 0 16 16',
+               path: <>
+                    <path fill-opacity=".4" d="M12.995 8.195c0 .937-.312 1.912-.78 2.693l1.99 1.99c.976-1.327 1.6-2.966 1.6-4.683 0-1.795-.624-3.434-1.561-4.76l-2.068 2.028c.468.781.78 1.679.78 2.732z" fill={color}/>
+                    <path d="M8 13.151a4.995 4.995 0 1 1 0-9.99c1.015 0 1.951.273 2.732.82l1.95-2.03a7.805 7.805 0 1 0 .04 12.449l-1.951-2.03a5.07 5.07 0 0 1-2.732.781z" fill={color}/>
+               </>
+          },
+          sidebarMore: {
+               viewBox: '0 0 16 16',
+               path:   <>
+                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" fill={color}/>
+               </>
+               
+          },
           navBurger: {
                viewBox: "0 0 16 16",
                path: <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" fill={color}    />
@@ -173,8 +187,6 @@ const SVGIcons = ({selected, size, color , strokewidth, stroke, onClick, classNa
      return (  
           <svg
                className= {className? className : ''}
-               strokeWidth = {strokewidth? strokewidth : 0}
-               stroke = {stroke? stroke : ""}
                width = {size}
                height = {size}
                viewBox = {icon.viewBox}

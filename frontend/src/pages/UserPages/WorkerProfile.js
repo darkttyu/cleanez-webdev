@@ -317,16 +317,16 @@ const WorkerProfile = () => {
 
                     <section className="profile-information">
                         {/* Birthday */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label"
+                            className="basic-label compact"
                             htmlFor="birthdate-input">
                                 Birthday
                             </label>
                             {/* INPUT HERE */}
                             <input 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="date" 
                             placeholder="Birthdate" 
                             name="birthDate" 
@@ -344,12 +344,17 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Gender */}
-                        <div className="profile-input-container">
-                            <label className="profile-label" htmlFor="gender-input">
+                        <div className="basic-input-container">
+                            <label className="basic-label compact" htmlFor="gender-input">
                                 Gender
                             </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
                             <select 
-                            className="input" 
+                            className="input-bar no-logo" 
                             name="gender" 
                             value = {accountInfo.gender}
                             id="gender-input" 
@@ -369,16 +374,16 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Phone Number */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label"
+                            className="basic-label compact"
                             htmlFor="phone-input">
                                 Phone Number
                             </label>
                             {/* INPUT HERE */}
                             <input 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="text" 
                             placeholder="Phone Number" 
                             name="phone" 
@@ -394,16 +399,16 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Email */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label"
+                            className="basic-label compact"
                             htmlFor="email-input">
                                 Email
                             </label>
                             {/* INPUT HERE */}
                             <input 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="email" 
                             placeholder="Email" 
                             name="email" 
@@ -419,16 +424,16 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Block No. */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label" 
+                            className="basic-label compact" 
                             htmlFor="address-input">
                                 Block / No. / Street
                             </label>
                             {/* INPUT HERE */}
                             <input 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="text" 
                             placeholder="Block / No. / Street" 
                             name="block"
@@ -447,12 +452,17 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Province */}
-                        <div className="profile-input-container">
-                            <label className="profile-label" htmlFor="address-input">
+                        <div className="basic-input-container">
+                            <label className="basic-label compact" htmlFor="address-input">
                                 Province
                             </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
                             <select 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 name="province" 
                                 value = {selectedProv}
                                 id="province-input" 
@@ -485,16 +495,21 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Municipality */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label" 
+                            className="basic-label compact" 
                             htmlFor="address-input">
                                 Municipal
                             </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
                             {/* INPUT HERE */}
                             <select 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="text" 
                             name="municipal"
                             value= {selectedCity}
@@ -527,16 +542,21 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Barangay */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label" 
+                            className="basic-label compact" 
                             htmlFor="address-input">
                                 Barangay
                             </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
                             {/* INPUT HERE */}
                             <select 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="text" 
                             name="barangay" 
                             value={selectedBrgy}

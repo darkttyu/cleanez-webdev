@@ -32,6 +32,7 @@ import AdminWorkerNew from './pages/AdminPages/AdminWorkerNew';
 import AdminAppointments from './pages/AdminPages/AdminAppointments';
 import AdminAppointmentInfo from './pages/AdminPages/AdminAppointmentInfo';
 import './styles/ProfilePage.css'
+import './styles/AccPageLayout.css'
 
 function App() {
     const { user } = useAuth();
