@@ -1037,6 +1037,10 @@ export const serviceGenerateDailyReport = async() => {
     }
   });
   
+  const workersPaid = await Appointment.find({
+    paymentStatus: "Paid"
+  });
+
   const data = {
     totalAppointments: totalAppointments,
     totalCancelledAppointments: totalCancelledAppointments,
