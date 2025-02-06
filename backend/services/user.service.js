@@ -257,7 +257,7 @@ export const insertAppointmentRating = async(body, appointmentId) => {
   const { appointmentRating } = body;
 
     if(!appointment){
-      return res.status(400).json({success: false, message: "Appointment not Found."})
+     throw new Error("Appointment not Found.")
     }
 
   let workerList = [];
