@@ -33,17 +33,25 @@ select.input-bar {
     border-radius        : 32px;
 }
 
+select.input-bar:disabled {
+    background-color: #efefef4d;
+    border-color    : #22222280;
+    color           : #545454;
+    opacity         : 1;
+}
 
 .select-arrow {
     position      : absolute;
-    top           : 50%;
+    bottom        : 10px;
     right         : 20px;
     transform     : translateY(-50%);
     pointer-events: none;
     transition    : all 0.4s ease-in-out;
+    z-index       : 2;
 }
 
-.floating-input-container:focus-within .select-arrow {
+.floating-input-container:focus-within .select-arrow,
+.basic-input-container:focus-within .select-arrow {
     transform: rotate(180deg) translateY(50%);
 }
 

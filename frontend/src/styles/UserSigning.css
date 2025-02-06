@@ -1,8 +1,7 @@
 @import '../index.css';
 
-
 .forgot-pass {
-     color: black;
+     color: var(--monoc4);
 }
 
 .signing-background {
