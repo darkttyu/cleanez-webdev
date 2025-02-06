@@ -225,18 +225,18 @@ export const sendUserAppointmentConfirmation = async (firstName, email, custFNam
   }
 };
 
-export const sendWorkerAppointmentConfirmation = async (firstName, email, custFName, custLName, custEmail, block, municipal, province, barangay
-  , serviceType, sizeOfArea, date, time, assignedWorkers, earnings) => {
+export const sendWorkerAppointmentConfirmation = async (firstName, email, custFName, custLName, block, municipal, province, barangay
+  , serviceType, sizeOfArea, date, time, assignedWorkers, earnings, custEmail) => {
   try {
     const info = await transporter.sendMail({
       from: sender, 
       to: [email], 
       subject: "You have been Booked!",
       html: SEND_WORKER_BOOKING_CONFIRMATION.replace("{workerFirstName}", firstName).replace("{custFName}", custFName)
-      .replace("{custLName}", custLName).replace("{custEmail}", custEmail).replace("{block}", block).replace("{barangay}", barangay)
+      .replace("{custLName}", custLName).replace("{block}", block).replace("{barangay}", barangay)
       .replace("{municipal}", municipal).replace("{province}", province).replace("{serviceType}", serviceType)
       .replace("{sizeOfArea}", sizeOfArea).replace("{bookingDate}", date).replace("{bookingTime}", time)
-      .replace("{workerList}", assignedWorkers.join(', ')).replace("{earnings}", earnings)
+      .replace("{workerList}", assignedWorkers.join(', ')).replace("{earnings}", earnings).replace("{custEmail}", custEmail)
     })
     console.log("Worker Appointment Confirmation Sent Successfully: ", info.messageId);
   } catch (error) {

@@ -370,10 +370,10 @@ export const setAppointment = async (req, res) => {
             // Sends the appointment confirmation email to the worker
             sendWorkerAppointmentConfirmation(
               user.firstName, user.email, customerFirstName, 
-              customerLastName, customerInfo.email, address.block, address.municipal,
+              customerLastName, address.block, address.municipal,
               address.province, address.barangay, serviceDetails.serviceCategory,
               serviceDetails.sizeOfArea, scheduleDetails.date, 
-              workerTime, assignedWorkersNames, earnings); 
+              workerTime, assignedWorkersNames, earnings, customerInfo.email); 
             
               console.log("Successfully Sent Worker Confirmation"); 
           }
