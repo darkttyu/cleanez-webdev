@@ -272,15 +272,16 @@ const UserProfile = () => {
             const token = localStorage.getItem("token");
             const formData = await updateData(accountInfo, profileFile);
 
-            if (accountInfo.address.province == "0" ||
-                accountInfo.address.municipal == "0" ||
-                accountInfo.address.barangay == "0" ||
-                accountInfo.address.province == "" ||
-                accountInfo.address.municipal == "" ||
-                accountInfo.address.barangay == "") {
+            if (accountInfo.address.province === "0" ||
+                accountInfo.address.municipal === "0" ||
+                accountInfo.address.barangay === "0" ||
+                accountInfo.address.province === "" ||
+                accountInfo.address.municipal === "" ||
+                accountInfo.address.barangay === "") {
                     throw new Error("Empty prompts detected: Please fill out everything on the form.");
             }
 
+            console.log(formData);
             const updateResponse = await 
             axios.put(`https://cleanez-api.vercel.app/api/user/editAccountInformation`, 
                 formData, 
@@ -290,8 +291,6 @@ const UserProfile = () => {
                     }
                 }
             ); 
-
-            console.log(formData);
 
             fetchUserInfo();
             setIsDisabled(!isDisabled);
