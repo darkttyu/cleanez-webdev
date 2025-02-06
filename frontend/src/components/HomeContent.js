@@ -11,6 +11,9 @@ import services3 from '../images/assets/services3.jpg';
 import services4 from '../images/assets/services4.jpg';
 import services5 from '../images/assets/services5.jpg';
 import services6 from '../images/assets/services6.png';
+
+import founder1 from '../images/assets/founder1.jpg';
+import founder2 from '../images/assets/founder2.jpg';
 import founder3 from '../images/assets/founder3.jpg';
 import founder4 from '../images/assets/founder4.jpg';
 
@@ -154,7 +157,7 @@ const About = () => {
 
 const Founders = () => {
     const founders = [
-        {name: "Jedd Eishen Aguilar", pos: "Placeholder Position", image: placeholder,
+        {name: "Jedd Eishen Aguilar", pos: "Placeholder Position", image: founder1,
             contacts: {
                 linkedin: "https://www.linkedin.com/in/jedd-eishen-aguilar-350b85284/",
                 twitter: "https://x.com/bujeeeeeedd",
@@ -163,7 +166,7 @@ const Founders = () => {
                 email: "aguilar.jeddeishen@gmail.com"
             }
         },
-        {name: "Kassandra Rychelle Balona", pos: "Placeholder Position", image: placeholder,
+        {name: "Kassandra Rychelle Balona", pos: "Placeholder Position", image: founder2,
             contacts: {
                 linkedin: "https://www.linkedin.com/in/kasrych/",
                 twitter: "https://x.com/kasrych",

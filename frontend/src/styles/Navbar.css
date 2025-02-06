@@ -3,6 +3,7 @@
 /* =================== NAVIGATION BAR =================== */
 .navbar {
     display         : flex;
+    justify-content : space-between;
     padding         : 0px 42px;
     align-items     : center;
     background-color: #EBFFE9;
@@ -12,10 +13,6 @@
     position        : sticky;
     top             : 0;
     z-index         : 999;
-}
-
-.navbar.space-between {
-    justify-content: space-between;
 }
 
 .nav-logo {
@@ -39,7 +36,7 @@
     font-size          : 18px;
 }
 
-.nav-link.book-btn {
+.book-btn {
     background-color: #62C370;
     color           : #fff;
 }
@@ -104,4 +101,193 @@
 .nav-title {
     font-size  : 24px;
     font-weight: 600px;
+}
+
+.nav-burger {
+    display: none;
+}
+
+.nav-sidebar {
+    display: none;
+}
+
+.nav-side-link {
+    padding            : 8px 16px;
+    border-radius      : 12px;
+    color              : var(--monoc4);
+    font-family        : var(--font1);
+    font-optical-sizing: auto;
+    font-weight        : 600;
+    font-style         : normal;
+    font-size          : 18px;
+}
+
+.nav-logo-short {
+    display: none;
+}
+
+@media screen and (max-width: 1260px) {
+
+    .nav-link:nth-of-type(1),
+    .nav-link:nth-of-type(2),
+    .nav-link:nth-of-type(3),
+    .nav-link:nth-of-type(4),
+    .nav-link.login {
+        display: none;
+    }
+
+    .nav-burger {
+        cursor    : pointer;
+        display   : block;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .nav-burger:hover {
+        transform: scaleX(110%);
+    }
+
+    @keyframes sideOpen {
+        0% {
+            right: -100%;
+        }
+
+        100% {
+            right: 0;
+        }
+    }
+
+    @keyframes sideClose {
+        0% {
+            opacity  : 1;
+            transform: translateX(0);
+        }
+
+        100% {
+            opacity  : 0;
+            transform: translateX(100%);
+        }
+    }
+
+    .nav-sidebar {
+        position        : fixed;
+        top             : 0;
+        bottom          : 0;
+        right           : 0;
+        width           : 300px;
+        height          : 100vh;
+        background-color: white;
+        z-index         : 99999;
+        display         : flex;
+        flex-direction  : column;
+        border-left     : 1px solid black;
+    }
+
+
+    .nav-sidebar.open {
+        display  : block;
+        animation: sideOpen 0.6s ease-in-out;
+    }
+
+    .nav-sidebar.close {
+        display: none;
+    }
+
+    .nav-sidebar.closing {
+        animation: sideClose 0.6s ease-in-out forwards;
+    }
+
+    .nav-sidebar-top {
+        display        : flex;
+        height         : 90px;
+        justify-content: center;
+        align-items    : center;
+        padding        : 0 42px;
+        gap            : 38px
+    }
+
+    .nav-sb-links {
+        display        : flex;
+        flex-direction : column;
+        justify-content: space-between;
+        gap            : 24px;
+
+    }
+
+    .nav-sb-link {
+        padding            : 8px 16px;
+        border-radius      : 12px;
+        color              : var(--monoc4);
+        font-family        : var(--font1);
+        font-optical-sizing: auto;
+        font-weight        : 600;
+        font-style         : normal;
+        font-size          : 18px;
+        width              : 100%;
+        text-align         : center;
+    }
+
+    .nav-sb-link:hover {
+        background-color: #f3f3f3;
+    }
+
+    .nav-bot-links,
+    .nav-mid-links {
+        display       : flex;
+        flex-direction: column;
+
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .nav-link:nth-of-type(5) {
+        display: none;
+    }
+
+    .navbar {
+        height: 72px;
+    }
+
+    .nav-logo {
+        height: 48px;
+    }
+}
+
+@media screen and (max-width:500px) {
+    .navbar {
+        padding: 0 12px;
+    }
+
+    .nav-sidebar {
+        width: 100%;
+    }
+
+    @keyframes sideOpen {
+        0% {
+            top: -100%;
+        }
+
+        100% {
+            top: 0;
+        }
+    }
+
+    @keyframes sideClose {
+        0% {
+            top: translateY(0);
+        }
+
+        100% {
+            transform: translateY(-100%);
+        }
+    }
+
+    .nav-logo {
+        display: none;
+    }
+
+    .nav-logo-short {
+        display: block;
+        height : 48px;
+    }
 }

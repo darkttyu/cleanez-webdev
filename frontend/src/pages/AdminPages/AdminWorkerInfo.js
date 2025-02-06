@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SVGIcons from '../../SVGIcons'
 
+import PopupError from "../../components/PopupError";
+
 const AdminWorkerInfo = () => {
     let { id } = useParams();
     const navigate = useNavigate();
@@ -209,8 +211,28 @@ const AdminWorkerInfo = () => {
         }
     }
 
+
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage("");
+    }
+
     return (  
         <div className="schedule-page">
+            {showErrorModal? 
+                <PopupError 
+                errTitle="Unable to Save Profile"
+                errMessage={errMessage}
+                buttons={[
+                    {func: handleCancel, text: "Cancel", className: "red"},
+                    {func: handleContinue, text: "Continue", className: "green"},
+                ]}/> :
+                <></>
+            }
+
             {workerInfo ?
             <>
                 <h2>{workerInfo.firstName} {workerInfo.lastName}</h2>
@@ -319,6 +341,10 @@ const AdminWorkerInfo = () => {
                     className="act-btn complete"
                     onClick={(e) => setEditMode(true)}>
                         Edit Schedule
+                        <SVGIcons 
+                        selected="buttonEdit"
+                        size="20px"
+                        color="white"/>
                     </button> :
                     <div className="appointment-actions">
                         <button

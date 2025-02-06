@@ -9,6 +9,8 @@ import { useAuth } from "../../AuthContext";
 import {regions, provinces, cities, barangays} from "select-philippines-address";
 import axios from "axios";
 
+import PopupError from "../../components/PopupError";
+
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const WorkerProfile = () => {
@@ -18,6 +20,7 @@ const WorkerProfile = () => {
     // --- Account Information
     const [accountInfo, setAccountInfo] = useState(null);
     const [workerEarnings, setWorkerEarnings] = useState("");
+    const [workerRating, setWorkerRating] = useState("");
     // --- Profile URL for loading current Profile Picture
     const [profileURL, setProfileURL] = useState(null);
     // --- Profile File Information
@@ -57,9 +60,10 @@ const WorkerProfile = () => {
                 }
             );
 
-            // console.log(getResponse.data.user);
+            console.log(getResponse.data.user);
             setAccountInfo(getResponse.data.user.user);
             setWorkerEarnings(getResponse.data.user.totalEarnings);
+            setWorkerRating(getResponse.data.user.rating);
         } catch (e) {
 
         }
@@ -75,7 +79,8 @@ const WorkerProfile = () => {
     useEffect(() => {
         if (accountInfo && isDisabled) {
             setProfileURL(profileConvert(accountInfo.profilePicture.data.data));
-        } else if (accountInfo && !isDisabled){
+        } 
+        if (accountInfo){
             provinceAuto();
             municipalAuto();
             barangayAuto();
@@ -207,7 +212,7 @@ const WorkerProfile = () => {
 
     // --- Cancel Button
     const handleCancel = () => {
-        setAccountInfo(accountInfo);
+        fetchWorkerInfo();
         setProfileURL(profileConvert(accountInfo.profilePicture.data.data))
         setProfileFile(null);
         setIsDisabled(!isDisabled);
@@ -218,6 +223,9 @@ const WorkerProfile = () => {
         if (inputRef.current) {
             inputRef.current.value = '';
         }
+
+        setShowErrorModal(false);
+        setErrMessage("");
     }
 
     const updateData = async (accInfo, profile) => {
@@ -237,6 +245,15 @@ const WorkerProfile = () => {
             const token = localStorage.getItem("token");
             const formData = await updateData(accountInfo, profileFile);
 
+            if (accountInfo.address.province == "0" ||
+                accountInfo.address.municipal == "0" ||
+                accountInfo.address.barangay == "0" ||
+                accountInfo.address.province == "" ||
+                accountInfo.address.municipal == "" ||
+                accountInfo.address.barangay == "") {
+                    throw new Error("Empty prompts detected: Please fill out everything on the form.");
+            }
+
             const updateResponse = await 
             axios.put(`https://cleanez-api.vercel.app/api/worker/editWorkerAccountInformation`, 
                 formData, 
@@ -250,14 +267,33 @@ const WorkerProfile = () => {
             fetchWorkerInfo();
             setIsDisabled(!isDisabled);
         } catch (e) {
-            console.log(e)
+            console.log(e);
+            setErrMessage(`${e.message} Would you like to continue editing?`);
+            setShowErrorModal(true);
         }
     }
 
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage("");
+    }
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <div className="profile-page">
+            {showErrorModal? 
+                <PopupError 
+                errTitle="Unable to Save Profile"
+                errMessage={errMessage}
+                buttons={[
+                    {func: handleCancel, text: "Cancel", className: "red"},
+                    {func: handleContinue, text: "Continue", className: "green"},
+                ]}/> :
+                <></>
+            }
             {accountInfo ?
             <>
                 <img src={header} alt="" className="profile-header"/>
@@ -287,13 +323,34 @@ const WorkerProfile = () => {
                             )}
                         </div>
                         <div className="profile-text">
-                            <p className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</p>
+                            <div className="profile-info">
+                                <p className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</p>
+                                <div className="profile-rating-earning">
+                                    <p className="profile-rating">
+                                        <SVGIcons 
+                                        selected="starRatingSolid"
+                                        size="20px"
+                                        color="#07de6b"/>
+                                        {parseFloat(workerRating).toFixed(1)} / 5.0
+                                    </p>
+                                    <p className="profile-earning">
+                                        <span className="peso-earning">&#8369;</span>
+                                        {parseFloat(workerEarnings).toFixed(2)}
+                                    </p>
+                                </div>
+                                
+                                
+                            </div>
                             <div className="profile-edit-options">
                             {isDisabled ? (
                                 <button 
                                 className="profile-edit"
                                 onClick={editProfile}>
                                     Edit Profile
+                                    <SVGIcons 
+                                    selected="buttonEdit"
+                                    size="20px"
+                                    color="var(--monoc4)"/>
                                 </button>
                             ):(
                                 <>
@@ -317,16 +374,16 @@ const WorkerProfile = () => {
 
                     <section className="profile-information">
                         {/* Birthday */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label"
+                            className="basic-label compact"
                             htmlFor="birthdate-input">
                                 Birthday
                             </label>
                             {/* INPUT HERE */}
                             <input 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="date" 
                             placeholder="Birthdate" 
                             name="birthDate" 
@@ -344,12 +401,17 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Gender */}
-                        <div className="profile-input-container">
-                            <label className="profile-label" htmlFor="gender-input">
+                        <div className="basic-input-container">
+                            <label className="basic-label compact" htmlFor="gender-input">
                                 Gender
                             </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
                             <select 
-                            className="input" 
+                            className="input-bar no-logo" 
                             name="gender" 
                             value = {accountInfo.gender}
                             id="gender-input" 
@@ -369,16 +431,16 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Phone Number */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label"
+                            className="basic-label compact"
                             htmlFor="phone-input">
                                 Phone Number
                             </label>
                             {/* INPUT HERE */}
                             <input 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="text" 
                             placeholder="Phone Number" 
                             name="phone" 
@@ -394,16 +456,16 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Email */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label"
+                            className="basic-label compact"
                             htmlFor="email-input">
                                 Email
                             </label>
                             {/* INPUT HERE */}
                             <input 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="email" 
                             placeholder="Email" 
                             name="email" 
@@ -419,16 +481,16 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Block No. */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label" 
+                            className="basic-label compact" 
                             htmlFor="address-input">
                                 Block / No. / Street
                             </label>
                             {/* INPUT HERE */}
                             <input 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="text" 
                             placeholder="Block / No. / Street" 
                             name="block"
@@ -447,12 +509,17 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Province */}
-                        <div className="profile-input-container">
-                            <label className="profile-label" htmlFor="address-input">
+                        <div className="basic-input-container">
+                            <label className="basic-label compact" htmlFor="address-input">
                                 Province
                             </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
                             <select 
-                                className="input" 
+                                className="input-bar no-logo" 
                                 name="province" 
                                 value = {selectedProv}
                                 id="province-input" 
@@ -485,16 +552,21 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Municipality */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label" 
+                            className="basic-label compact" 
                             htmlFor="address-input">
                                 Municipal
                             </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
                             {/* INPUT HERE */}
                             <select 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="text" 
                             name="municipal"
                             value= {selectedCity}
@@ -527,16 +599,21 @@ const WorkerProfile = () => {
                         </div> 
 
                         {/* Barangay */}
-                        <div className="profile-input-container">
+                        <div className="basic-input-container">
                             {/* LABEL HERE */}
                             <label 
-                            className="profile-label" 
+                            className="basic-label compact" 
                             htmlFor="address-input">
                                 Barangay
                             </label>
+                            <SVGIcons 
+                            className="select-arrow"
+                            selected="inputArrow"
+                            size="14px"
+                            color="var(--monoc4-50)"/>
                             {/* INPUT HERE */}
                             <select 
-                            className="input" 
+                            className="input-bar no-logo" 
                             type="text" 
                             name="barangay" 
                             value={selectedBrgy}

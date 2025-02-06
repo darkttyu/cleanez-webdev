@@ -1,7 +1,11 @@
-import '../styles/UserSigning.css';
+import '../styles/InputStyles.css';
+import '../styles/UserSigning.css'
+
+
 import bg from "../images/assets/bg-signing-nograin.svg";
 import logoIcon from "../images/logos/Logo-1-2.svg";
 import logoText from "../images/logos/Logo-4-1.svg";
+import textLogo from "../images/logos/nav-logo.png";
 import LoadingScreen1 from './LoadingScreen1';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -14,7 +18,7 @@ const SigningPanel = ({inputPanel}) => {
         const loadResources = async () => {
             await document.fonts.ready;
 
-            const imageUrls = [bg, logoIcon, logoText];
+            const imageUrls = [bg, logoIcon, logoText, textLogo];
             const imagePromises = imageUrls.map((src) => {
                 return new Promise((resolve) => {
                 const img = new Image();
@@ -52,14 +56,20 @@ const SigningPanel = ({inputPanel}) => {
                         <img 
                         className="logo" 
                         src={logoIcon} alt="" />
-                    </Link>
                         <img 
                         className="text" 
                         src={logoText} alt="" />
+                    </Link>
+                    <Link to="/">
+                        <img 
+                        className="text-logo" 
+                        src={textLogo} alt="" />
+                    </Link>
+                        
                 </div>
                 {inputPanel}
             </div>
-            <figure className="background">
+            <figure className="signing-background">
                 <img src={bg} alt="" />
             </figure>
         </>

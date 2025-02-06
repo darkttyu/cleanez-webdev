@@ -31,12 +31,12 @@ const AccountLayout = () => {
     return (  
         <div className="account-page-layout">
             <AccSidebar setNavTitle={setNavTitle}/>
-            <div className="account-page-right">
+            <main className="account-page-right">
                 <nav className="navbar">
                 <h1 className='nav-title'>{navTitle}</h1>
                 </nav>
                 <Outlet />
-            </div>
+            </main>
         </div>
     );
 }

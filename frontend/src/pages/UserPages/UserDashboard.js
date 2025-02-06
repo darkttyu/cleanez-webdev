@@ -7,7 +7,13 @@ import { useAuth } from "../../AuthContext";
 import axios from "axios";
 
 
+import LoadingScreen2 from "../../components/LoadingScreen2";
+
+
 const UserDashboard = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [fadeOut, setFadeOut] = useState(false);
+
     const [upcomingData, setUpcomingData] = useState({
         completeAppointmentCount: 0,
         userAppointmentCount: 0,
@@ -29,6 +35,7 @@ const UserDashboard = () => {
                 }
             );
 
+            console.log(response.data.data);
             setUpcomingData(response.data.data);
         } catch (e) {
             console.log(e);
@@ -60,17 +67,41 @@ const UserDashboard = () => {
     }
 
     useEffect(() => {
+        document.title = 'CleanEZ | Dashboard'
         fetchAppointments();
     }, [])
 
     
+    useEffect(() => {
+        const page = document.querySelector('.account-page-right');
+
+        const loadResources = async () => {
+            
+            await document.fonts.ready;
+
+            setTimeout(() => {
+                setFadeOut(true);
+
+                setTimeout(() => {
+                    setIsLoading(false);
+
+                }, 500);
+            }, 3000);
+
+            
+        };
+
+
+        if (upcomingData) {
+            loadResources();
+        }
+    }, [fetchAppointments])
+
     const showAppointment = (id) => {
         setShowAppInfo(true);
         setAppID(id);
     }
 
-
-    
     useEffect(() => {
         console.log(showAppInfo);
     }, [showAppInfo])
@@ -78,6 +109,12 @@ const UserDashboard = () => {
 
     return (  
         <>
+            {isLoading? 
+            <LoadingScreen2 fadeOut={fadeOut}/> :
+            <>
+            </>
+            }
+
             {showRating ?
             <RatingBox
             appID={appID}
@@ -120,9 +157,7 @@ const UserDashboard = () => {
                             </thead>
                             <tbody>
                             {upcomingData.upcomingAppointment.map((data, index) => (
-                                !(data.paymentStatus === "Paid" ||
-                                 data.appointmentStatus === "Cancelled"
-                                ) ? 
+                                !(data.appointmentStatus === "Cancelled") ? 
                                     <tr 
                                     key={index} 
                                     className="dashboard-tbody-tr"

@@ -52,10 +52,17 @@ const AdminUsers = () => {
     const handleDeleteButton = async (id) => {
         // console.log(id);
         try {
+<<<<<<< HEAD
             const response = await axios.delete(`https://cleanez-api.vercel.app/api/admin/deleteUser/${id}`);
             // console.log(response);
 
             fetchAllUsers(1, 10);
+=======
+            const response = await axios.delete(`http://localhost:5000/api/admin/deleteUser/${id}`);
+            if(response.status === 200){
+                fetchAllUsers(1, 10);
+            }
+>>>>>>> cleanEZ
         } catch (e) {
             console.log(e);
         }

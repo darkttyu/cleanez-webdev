@@ -1,9 +1,9 @@
 const InputFirstName = ({value, onChange, disabled=false}) => {
     return (  
-        <div className="text-container">
+        <div className="floating-input-container">
             {/* INPUT HERE */}
             <input 
-            className="input" 
+            className="input-bar no-logo" 
             type="text" 
             placeholder="First Name" 
             name="firstName" 
@@ -13,7 +13,7 @@ const InputFirstName = ({value, onChange, disabled=false}) => {
             id="firstname-input" />
             {/* LABEL HERE */}
             <label 
-            className="text-label" 
+            className="floating-label" 
             htmlFor="firstname-input">
                 First Name
             </label>

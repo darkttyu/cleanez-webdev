@@ -118,11 +118,13 @@ export const fetchAppointments = async(id) => {
             if(scheduleDetails.date instanceof Date){
                 slicedDate = scheduleDetails.date.toISOString().slice(0,10);
             }
+            
+        const formattedTime = formatTime(scheduleDetails.startTime);
             return {
               _id,
               customerName: customerFirstName + " " + customerLastName,
               scheduledDate: slicedDate,
-              scheduledTime: scheduleDetails.startTime,
+              scheduledTime: formattedTime,
               appointmentStatus,
               paymentStatus
             };
@@ -155,13 +157,15 @@ export const viewAppointment = async (appointmentId) => {
   const workerUserIds = await Promise.all(
     workerId.map(async (id) => {
       const worker = await Worker.findById(id); // Fetch worker details by ID
-      return worker.userId; // Return the userId of the worker
+        return worker ? worker.userId : null; // Return the userId of the worker
     })
   );
 
+  const validWorkerUserIds = workerUserIds.filter(userId => userId !== null);
+
   // Fetch full names of workers from the User collection using their userIds
   const workers = await Promise.all(
-    workerUserIds.map(async (id) => {
+    validWorkerUserIds.map(async (id) => {
       const worker = await User.findById(id); // Fetch user details by ID
       return worker.firstName + " " + worker.lastName; // Return the worker's full name
     })
@@ -209,21 +213,23 @@ export const markAppointment = async (appointmentId) => {
 
     // Extract worker IDs from the assignedWorkers array in the appointment
     const workerId = appointment.assignedWorkers.map((worker) => worker._id);
-      
+    
     // Fetch the userId of each worker using their worker ID
     const workerUserIds = await Promise.all(
       workerId.map(async (id) => {
         const worker = await Worker.findById(id); // Fetch worker details by ID
-        return worker.userId; // Return the userId of the worker
+        return worker ? worker.userId : null; // Return the userId of the worker
       })
   );
-
+  
+    const validWorkerUserIds = workerUserIds.filter(userId => userId !== null);
     // Divides the service cost to the number of assigned workers for the service.
     // Adds the amount to the totalEarnings of each worker.
     // Also removes the appointment from the assigned workers, meaning that they have completed the service.
+
     const distributedAmount = appointment.serviceCost / appointment.assignedWorkers.length;
       await Promise.all(
-        workerUserIds.map(async (id) => {
+        validWorkerUserIds.map(async (id) => {
           await Worker.findOneAndUpdate(
             { userId: new Object(id) }, 
             {
@@ -236,7 +242,7 @@ export const markAppointment = async (appointmentId) => {
       );
     
       await Promise.all(
-        workerUserIds.map(async (id) => {
+        validWorkerUserIds.map(async (id) => {
           const workerInfo = await User.findById(id);
           sendWorkerPaidAppointmentEmail(workerInfo.firstName, workerInfo.lastName, workerInfo.email, appointment.customerFirstName, 
             appointment.customerLastName, appointment.serviceDetails.serviceCategory, appointment.scheduleDetails.date, 
@@ -289,22 +295,5 @@ export const updateWorkerService = async(id, body) => {
         } else {
           throw new Error("Bad Request. You must fill both fields or unselect them all.")
         }
-};
-
-// Earnings 
-export const getDailyEarnings = async () => {
-
-};
-
-export const getWeeklyEarnings = async () => {
-
-};
-
-export const getMonthlyEarnings = async() => {
-
-};
-
-export const getYearlyEarnings = async() => {
-
 };
 

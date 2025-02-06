@@ -54,19 +54,7 @@ const UserAppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppoin
         const status = String(currStatus).toLowerCase();
         const payment = String(currPayment).toLowerCase();
 
-        if (status === "completed" && currRating === 0) {
-            return (
-                <button 
-                className="act-btn rate"
-                onClick={(e) => {
-                    setShowAppInfo(false);
-                    setShowRating(true);
-                }}>
-                    Rate Workers
-                </button>
-            );
-        }
-        else if (status === "completed" && currRating > 0) {
+        if (status === "completed" && currRating > 0) {
             return (
                 <></>
             );
@@ -94,6 +82,17 @@ const UserAppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppoin
                     </button>
                 </>
             )
+        } else if (status === "completed" && currRating === 0) {
+            return (
+                <button 
+                className="act-btn rate"
+                onClick={(e) => {
+                    setShowAppInfo(false);
+                    setShowRating(true);
+                }}>
+                    Rate Workers
+                </button>
+            );
         }
     }
 

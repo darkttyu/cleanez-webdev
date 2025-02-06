@@ -57,7 +57,9 @@ const LoginPanel = ({route}) => {
     // --- Verifies Login Data after Submission
     const handleLogInSubmission = async (e) => {
         e.preventDefault();
-        // --- --- Successfull Login
+
+        setIsDisabled(true);
+        // --- --- Successfull Login    
         try {
             const response = await axios.post(`https://cleanez-api.vercel.app/api/auth/${route}`, loginCredentials, {
                 headers: { 'Content-Type': 'application/json' }
@@ -71,7 +73,7 @@ const LoginPanel = ({route}) => {
             if (route === "login") {
                 const token = response.data.token; // Token from the response
                 localStorage.setItem("token", token); // Token saved in Local Storage
-                localStorage.setItem("role", response.data.user.role);
+            localStorage.setItem("role", response.data.user.role);
                 login(response.data.user)
                 navigate(`/home`);
             } else if (route === "adminLogin") { // Token saved in Local Storage
@@ -81,17 +83,20 @@ const LoginPanel = ({route}) => {
             }
         // --- --- Failed Login
         } catch (error) {
-            console.error('Error:', error.response ? error.response.data : error.message);
+            console.log(error);
             if (error.response.status === 400) {
                 setShowError("show-error");
             }  
+        } finally {
+            setIsDisabled(false);
         }
     }
 
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
-        <form className="prompt" method="POST" onSubmit={handleLogInSubmission}>
+        <form className="prompt" method="POST" onSubmit={handleLogInSubmission}
+        >
             {/* TOP HALF PROMPT/S */}
             <div className="main-prompt">
                 <div className="prompt-pages">
@@ -102,7 +107,7 @@ const LoginPanel = ({route}) => {
                             <MailAndPhone value={loginCredentials.login} onChange={handleLogInData}/>
                             <Password value={loginCredentials.password} onChange={handleLogInData}/>
                         </div>
-                        <p className={`error-message ${showError}`}>Login failed. Please check your email/phone and password.</p>
+                        <p className={`error-message ${showError}`}>Invalid login credentials. Please try again.</p>
                         {/* BUTTON HERE */}
                         <div className="buttons">
                             {(route === "adminLogin") ? 

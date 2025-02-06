@@ -14,17 +14,21 @@ const FindAccountPanel = () => {
 
     const [email, setEmail] = useState('');
 
-    const [disableSubmit, setDisableSubmit] = useState(true);
+    const [disableSubmit, setDisableSubmit] = useState(false);
     const [isSuccesful, setIsSuccesful] = useState(false);
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
     };
 
+    // --- Error Message Shower
+    const [showError, setShowError] = useState("");
+
     const handleResetPassEmail = async (e) => {
         e.preventDefault();
         
-        setDisableSubmit(false);
+        setShowError("");
+        setDisableSubmit(true);
 
         try {
             const response = await axios.post(
@@ -41,8 +45,9 @@ const FindAccountPanel = () => {
             }, 5000);
         } catch (error) {
             console.error("Error verifying email:", error.message);
+            setShowError("show-error");
         } finally {
-            setDisableSubmit(true);
+            setDisableSubmit(false);
         }
     };
 
@@ -62,7 +67,7 @@ const FindAccountPanel = () => {
                             color="#06E36D"
                             />
                             <h2>Password Reset Successfully Requested.</h2>
-                            <p className="description">Please check your e-mail ( <strong><span>{email}</span></strong> ) to reset your password.
+                            <p className="description">Please check your e-mail: <strong><span>{email}</span></strong> to reset your password.
                             <br /><br />
                             You are now being redirected to the Home Page in 5 seconds...</p>
                         </div>
@@ -75,14 +80,17 @@ const FindAccountPanel = () => {
                         <div className="inputs">
                             <MailAndPhone value={email} onChange={handleEmailChange}/>
                         </div>
+                        <p className={`error-message ${showError}`}>That email/number does not exist. Please try a different one.</p>
                         {/* BUTTON HERE */}
                         <div className="buttons">
                             <Link to="/login" className="prompt-btn cancel">Cancel</Link>
                             <button 
                             className="prompt-btn" 
-                            disabled={!disableSubmit}
+                            disabled={disableSubmit}
                             type="submit">
-                                {disableSubmit ? "Verify" : "Verifying..."}
+                                {!disableSubmit ? 
+                                "Verify" : 
+                                "Verifying..."}
                             </button>
                         </div>
                     </div>

@@ -66,6 +66,9 @@ const AdminApplicantInfo = () => {
             navigate('/admin/applicants');
         } catch (e) {
             console.log(e);
+            setErrMessage(`${e.message? e.message : ''} Would you like to try again?`);
+            setShowErrorModal(true);
+
         } finally {
             setIsSubmitting(false);
         }
@@ -83,6 +86,8 @@ const AdminApplicantInfo = () => {
             navigate('/admin/applicants');
         } catch (e) {
             console.log(e);
+            setErrMessage(`${e.message? e.message : ''} Would you like to try again?`);
+            setShowErrorModal(true);
         } finally {
             setIsSubmitting(false);
         }
@@ -111,159 +116,182 @@ const AdminApplicantInfo = () => {
         }
     }
 
+
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage(true);
+    }
+
+    const handleCancel = () => {
+        navigate(`/admin/applicants/${id}`);
+    }
+
     return (  
         <div className="schedule-page">
+        {showErrorModal? 
+            <PopupError 
+            errTitle="Unable to Proceed to Rejecting/Accepting Applicant"
+            errMessage={errMessage}
+            buttons={[
+                {func: handleCancel, text: "Cancel", className: "red"},
+                {func: handleContinue, text: "Continue", className: "green"},
+            ]}/> :
+            <></>
+        }
         {applicantInfo ? 
             <div className="schedule-container">
                 <h2>Applicant Data</h2>
                 <div className="schedule-inputs" id="service-inputs">
                     {/* FIRST NAME */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             First Name
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text"  
                         value={applicantInfo.firstName}
                         disabled/>
                     </div>
 
                     {/* LAST NAME */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Last Name
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.lastName}
                         disabled/>
                     </div>
 
                     {/* SERVICE CATEGORY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Service Category
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.applicantDetails.serviceCategory}
                         disabled/>
                     </div>
                     
                     {/* AREA ASSIGNED */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Area Size Assigned
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.applicantDetails.areaAssigned}
                         disabled/>
                     </div>
                                         
                     {/* BIRTHDAY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Birthdate
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.birthDate.replaceAll('/', ' / ')}
                         disabled/>
                     </div>
                                        
                     {/* GENDER */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Gender
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.gender}
                         disabled/>
                     </div>
                                        
                     {/* PHONE NUMBER */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Phone Number
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={`+63 ${applicantInfo.phoneNumber}`}
                         disabled/>
                     </div>
                                      
                     {/* EMAIL */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Email Address
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.email}
                         disabled/>
                     </div>
                                   
                     {/* BLOCK */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Block / No. / Street
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.address.block}
                         disabled/>
                     </div>
                     
                     {/* PROVINCE */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Province
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.address.province}
                         disabled/>
                     </div>
 
                     {/* MUNICIPALITY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Municipality
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.address.municipal}
                         disabled/>
                     </div>
 
                     {/* BARANGAY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Barangay
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         value={applicantInfo.address.barangay}
                         disabled/>
                     </div>
 
                     {/* FILES */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" >
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" >
                             Resume and Valid IDs
                         </label>
                         <div 

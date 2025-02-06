@@ -1,9 +1,12 @@
+import SVGIcons from "../../SVGIcons";
+
+
 const InputProvince = ({ value, data, onChange, disabled=false}) => {
     
     return (  
-        <div className="text-container">
+        <div className="floating-input-container">
             <select 
-                className="input" 
+                className="input-bar no-logo" 
                 name="province" 
                 value = {value}
                 id="province-input" 
@@ -23,9 +26,15 @@ const InputProvince = ({ value, data, onChange, disabled=false}) => {
                     </option>
                 ))}
             </select>
-            <label className="text-label" htmlFor="address-input">
+            <label className="floating-label" htmlFor="address-input">
                 Province
             </label>
+
+            <SVGIcons 
+            className="select-arrow"
+            selected="inputArrow"
+            size="14px"
+            color="var(--monoc4-50)"/>
         </div> 
     );
 }

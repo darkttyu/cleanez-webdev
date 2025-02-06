@@ -9,7 +9,15 @@ import { addUser, addWorker, clickedUser, deleteUser, editUserInfo,
   markAppointmentAsComplete,
   markAppointmentAsCancelled,
   getAppointment,
-  getEmails
+  generateDailyReport,
+  generateWeeklyReport,
+  generateMonthlyReport,
+  generateQuarterlyReport,
+  generateBiAnnualReport,
+  generateNineMonthReport,
+  generateAnnualReport,
+  generateGraphWeeklyReport,
+  generateGraphMonthlyReport
 } from '../controllers/admin.controller.js';
 import { uploadProfile } from "../middleware/profileUpload.js";
 
@@ -18,8 +26,17 @@ const router = express.Router();
 // Appointments Tab
 router.get("/getAppointments", getAppointments);
 router.put("/markAppointmentAsComplete/:id", markAppointmentAsComplete);
-router.put("/markAppointmentAsCancelled/:id", markAppointmentAsCancelled)
+router.put("/markAppointmentAsCancelled/:id", markAppointmentAsCancelled);
 router.get("/getAppointment/:id", getAppointment);
+router.get("/generateDailyReport", generateDailyReport);
+router.get("/generateWeeklyReport", generateWeeklyReport);
+router.get("/generateMonthlyReport", generateMonthlyReport);
+router.get("/generateQuarterlyReport", generateQuarterlyReport);
+router.get("/generateBiAnnualReport", generateBiAnnualReport);
+router.get("/generateNineMonthReport", generateNineMonthReport);
+router.get("/generateAnnualReport", generateAnnualReport);
+router.get("/generateGraphWeeklyReport", generateGraphWeeklyReport);
+router.get("/generateGraphMonthlyReport", generateGraphMonthlyReport);
 
 // Applicants Tab
 router.get("/getAllApplicants", getAllApplicants);
@@ -48,7 +65,7 @@ router.put("/updateUserStatus/:id", updateUserStatus); // Sets Status of User to
 
 // router.put("/addField", addField);
 // router.put("/updateProfile", uploadProfile, updateProfile)
-router.get("/getEmails", getEmails);
+// router.get("/getEmails", getEmails);
 
 // Service 
 router.post("/insertService", insertService);

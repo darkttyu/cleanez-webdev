@@ -430,10 +430,10 @@ const ServiceBooking = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComp
                 />
                 {(bookingInfo.serviceDetails.serviceCategory === "Window Cleaning")?
                 (
-                    <div className="text-container">
+                    <div className="floating-input-container">
                         {/* INPUTS HERE */}
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="number" 
                         value={windowNumber}
                         placeholder="Number of Windows" 
@@ -443,7 +443,7 @@ const ServiceBooking = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComp
                         onChange={(e) => {onWindowChange(e.target.value)}}/>
                         {/* LABEL HERE */}
                         <label 
-                        className="text-label" 
+                        className="floating-label" 
                         htmlFor="windownumber-input">
                             Number of Windows
                         </label>
@@ -595,6 +595,38 @@ const Schedule = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete})
         ResetButtons();
         e.target.classList.add('active');
     }
+
+    // const handleTimeChanges = (e) => {
+    //     const {value, checked} = e.target;
+
+    //     if (checked) {
+    //         setBookingInfo((prev) => {[...prev, value]});
+    //     } else {
+    //         setTimeValues((prev) => prev.filter((val) => val !== value));
+    //     }
+    // }
+
+    const handleTimeChanges = (e) => {
+        const {value, checked} = e.target;
+
+        if (checked) {
+            setBookingInfo({
+                ...bookingInfo,
+                scheduleDetails: {
+                    ...bookingInfo.scheduleDetails,
+                    startTime: value
+                }
+            });
+        } else {
+            setBookingInfo({
+                ...bookingInfo,
+                scheduleDetails: {
+                    ...bookingInfo.scheduleDetails,
+                    startTime: bookingInfo.scheduleDetails.startTime.filter((val) => val !== value)
+                }
+            });
+        }
+    }
     
     // --- Pass Scheduling Information to Parent
     useEffect(() => {
@@ -616,7 +648,7 @@ const Schedule = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete})
         <div className="booking-page" id="schedule-booking-page">
             <h2>Schedule Your Appointment</h2>
             <div className="booking-grid col-three">
-                <div className="input-container">
+                <div className="basic-input-container">
                     {/* LABEL HERE */}
                     <p className="basic-label">
                         Date
@@ -624,7 +656,7 @@ const Schedule = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete})
                     {/* INPUT HERE */}
                     <input 
                     value = {bookingInfo.scheduleDetails.date}
-                    className="input" 
+                    className="input-bar no-logo" 
                     type="date" 
                     name="bookDate" 
                     onChange={(e) => handleDateInput(e.target.value)}
@@ -639,15 +671,23 @@ const Schedule = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComplete})
                         Time 
                     </p>
                     <div className="time-booking-container">
-                        {newTimeList.map((time, index) => (
-                            <button 
-                            type="button"
-                            key={index} 
-                            className="time-booking-button"
-                            onClick={(e) => handleTimeButtonClick(e, timeList[index])}>
+                    {newTimeList.map((time, index) => (
+                        <div className="time-button-container" key={index}>
+                            <input 
+                            type="radio" 
+                            name="worker-times"
+                            id={time} 
+                            className="worker-time-checkbox"
+                            value={timeList[index]}
+                            onChange={handleTimeChanges}
+                            checked={bookingInfo?.scheduleDetails.startTime === timeList[index]}/>
+                            <label 
+                            htmlFor={time} 
+                            className="worker-time-button">
                                 {time}
-                            </button>
-                        ))}
+                            </label>
+                        </div>
+                    ))}
                     </div>
                 </div>) : 
                 (<></>)}

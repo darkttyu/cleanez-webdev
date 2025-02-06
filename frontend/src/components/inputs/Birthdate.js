@@ -1,9 +1,9 @@
 const InputBirthdate = ({value, onChange}) => {
     return (  
-        <div className="input-container">
+        <div className=".floating-input-container">
             {/* INPUT HERE */}
             <input 
-            className="input" 
+            className="input-bar no-logo" 
             type="date" 
             placeholder="Birthdate" 
             name="birthDate" 
@@ -14,7 +14,7 @@ const InputBirthdate = ({value, onChange}) => {
             max="2025-12-30"/>
             {/* LABEL HERE */}
             <label 
-            className="text-label"
+            className="floating-label"
             htmlFor="birthdate-input">
             </label>
         </div> 

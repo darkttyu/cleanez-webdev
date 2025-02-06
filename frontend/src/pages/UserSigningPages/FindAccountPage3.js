@@ -18,7 +18,6 @@ const FindAccountPanel = () => {
     const [passwordConfirm, setPasswordConfirm] = useState("");
 
     const [errorMessage, setErrorMessage] = useState("");
-    const [disable, setDisable] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccesful, setIsSuccesful] = useState(false);
 
@@ -36,8 +35,6 @@ const FindAccountPanel = () => {
     }, []);
 
     const verifyPasswords = (pass1, pass2) => {
-        setDisable(true);
-
         if (pass1 === "" || pass2 === "") {
             setErrorMessage("");
             return false;
@@ -66,28 +63,29 @@ const FindAccountPanel = () => {
             setErrorMessage("Passwords you have entered do not match. Please try again.");
             return false;
         }
-
-        setDisable(false);
         setErrorMessage("");
         return true;
     }
-
-    useEffect(() => {
-        if(verifyPasswords(passwordNew, passwordConfirm)){
-            console.log(passwordConfirm);
-            setFinalPassword({
-                password: passwordConfirm
-            });
-        }
-
-    }, [passwordNew, passwordConfirm])
     
     const handleSubmission = async (e) => {
         e.preventDefault();
 
         try {
+<<<<<<< HEAD
             const response = await axios.post(`https://cleanez-api.vercel.app/api/auth/reset-password/${token.id}`, finalPassword)
             setDisable(true);
+=======
+            if(verifyPasswords(passwordNew, passwordConfirm)){
+                console.log(passwordConfirm);
+                setFinalPassword({
+                    password: passwordConfirm
+                });
+            } else {
+                return;
+            }
+
+            const response = await axios.post(`http://localhost:5000/api/auth/reset-password/${token.id}`, finalPassword)
+>>>>>>> cleanEZ
             setIsSubmitting(true);
             console.log(response);
 
@@ -96,9 +94,8 @@ const FindAccountPanel = () => {
                 navigate("/login");
             }, 5000);
         } catch (e) {
-            console.log(e);
+            setErrorMessage(e.response.data.message);
         } finally {
-            setDisable(false);
             setIsSubmitting(false);
         }
     }
@@ -140,7 +137,7 @@ const FindAccountPanel = () => {
                             <div className="buttons">
                                 <button 
                                 className="prompt-btn"
-                                disabled = {disable}
+                                disabled = {isSubmitting}
                                 onClick={handleSubmission}>
                                 {isSubmitting ?  
                                     "Resetting..." :   

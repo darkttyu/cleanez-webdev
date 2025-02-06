@@ -102,7 +102,8 @@ const AdminWorker = () => {
                             key={index} 
                             className="dashboard-tbody-tr"
                             onClick={(e) => {
-                                navigate(worker.userId._id)
+                                console.log("clicked");
+                                navigate(worker.userId._id);
                                 // console.log("userId._id: ", worker.userId._id)
                                 // console.log("_id: ", worker._id)
                             }}>

@@ -129,6 +129,8 @@ const AdminUserNew = () => {
             }     
         } catch (e) {
             console.log(e);
+            setErrMessage(`${e.message? e.message : ''} Would you like to try again?`);
+            setShowErrorModal(true);
         } finally {
             setIsSubmitting(true);
             setTimeout(() => {
@@ -176,18 +178,40 @@ const AdminUserNew = () => {
         )
     }
 
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage(true);
+    }
+
+    const handleCancel = () => {
+        navigate(`/admin/users`);
+    }
+
     return (  
         <div className="schedule-page">
+            {showErrorModal? 
+                <PopupError 
+                errTitle="Unable to Create a New User"
+                errMessage={errMessage}
+                buttons={[
+                    {func: handleCancel, text: "Cancel", className: "red"},
+                    {func: handleContinue, text: "Continue", className: "green"},
+                ]}/> :
+                <></>
+            }
             <div className="schedule-container">
                 <h2>Create a new User Data</h2>
                 <div className="schedule-inputs" id="service-inputs">
                     {/* FIRST NAME */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="firstname-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="firstname-input">
                             First Name
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         placeholder="First Name" 
                         name="firstName" 
@@ -202,12 +226,12 @@ const AdminUserNew = () => {
                     </div>
 
                     {/* LAST NAME */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="lastname-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="lastname-input">
                             Last Name
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         placeholder="Last Name" 
                         name="lastName" 
@@ -222,12 +246,12 @@ const AdminUserNew = () => {
                     </div>
                                                 
                     {/* BIRTHDAY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="birthdate-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="birthdate-input">
                             Birthdate
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="date" 
                         placeholder="Birthdate" 
                         name="birthDate" 
@@ -244,12 +268,17 @@ const AdminUserNew = () => {
                     </div>
                                        
                     {/* GENDER */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="gender-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="gender-input">
                             Gender
                         </label>
+                        <SVGIcons 
+                        className="select-arrow"
+                        selected="inputArrow"
+                        size="14px"
+                        color="var(--monoc4-50)"/>
                         <select 
-                        className="input" 
+                        className="input-bar no-logo" 
                         name="gender" 
                         value = {userInfo.gender}
                         id="gender-input" 
@@ -269,12 +298,17 @@ const AdminUserNew = () => {
                     </div>
                                        
                     {/* PHONE NUMBER */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="sms-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="sms-input">
                             Phone Number
                         </label>
+                        <SVGIcons 
+                        className="input-logo"
+                        selected="inputPhone"
+                        size="20px"
+                        color="var(--monoc4-50)"/>
                         <input 
-                        className="input" 
+                        className="input-bar with-logo" 
                         type="text" 
                         placeholder="Phone Number" 
                         name="phoneNumber"
@@ -289,12 +323,17 @@ const AdminUserNew = () => {
                     </div>
                                      
                     {/* EMAIL */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="mail-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="mail-input">
                             Email Address
                         </label>
+                        <SVGIcons 
+                        className="input-logo"
+                        selected="inputMail"
+                        size="20px"
+                        color="var(--monoc4-50)"/>
                         <input 
-                        className="input" 
+                        className="input-bar with-logo" 
                         type="text" 
                         placeholder="Email" 
                         name="email" 
@@ -309,12 +348,12 @@ const AdminUserNew = () => {
                     </div>
                                   
                     {/* BLOCK */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="address-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="address-input">
                             Block / No. / Street
                         </label>
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         placeholder="Block / No. / Street" 
                         name="block"
@@ -332,12 +371,17 @@ const AdminUserNew = () => {
                     </div>
                     
                     {/* PROVINCE */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="province-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="province-input">
                             Province
                         </label>
+                        <SVGIcons 
+                        className="select-arrow"
+                        selected="inputArrow"
+                        size="14px"
+                        color="var(--monoc4-50)"/>
                         <select 
-                        className="input" 
+                        className="input-bar no-logo" 
                         name="province" 
                         value = {selectedProv}
                         id="province-input" 
@@ -365,12 +409,17 @@ const AdminUserNew = () => {
                     </div>
 
                     {/* MUNICIPALITY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="municipality-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="municipality-input">
                             Municipality
                         </label>
+                        <SVGIcons 
+                        className="select-arrow"
+                        selected="inputArrow"
+                        size="14px"
+                        color="var(--monoc4-50)"/>
                         <select 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         name="municipal"
                         value= {selectedCity}
@@ -399,12 +448,17 @@ const AdminUserNew = () => {
                     </div>
 
                     {/* BARANGAY */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="barangay-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="barangay-input">
                             Barangay
                         </label>
+                        <SVGIcons 
+                        className="select-arrow"
+                        selected="inputArrow"
+                        size="14px"
+                        color="var(--monoc4-50)"/>
                         <select 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="text" 
                         name="barangay" 
                         value={selectedBrgy}

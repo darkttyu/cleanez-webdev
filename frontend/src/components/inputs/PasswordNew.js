@@ -1,9 +1,9 @@
 const InputPasswordNew = ({value, onChange}) => {
     return (
-       <div className="text-container">
+       <div className="floating-input-container">
             {/* INPUT HERE */}
             <input 
-            className="input" 
+            className="input-bar no-logo" 
             type="password" 
             placeholder="New Password (8 characters above)" 
             name="new-password-input" 
@@ -12,7 +12,7 @@ const InputPasswordNew = ({value, onChange}) => {
             onChange={onChange}/>
             {/* LABEL HERE */}
             <label 
-            className="text-label" 
+            className="floating-label" 
             htmlFor="password-input">
                 New Password
             </label>

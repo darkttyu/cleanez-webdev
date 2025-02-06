@@ -141,7 +141,7 @@ export const viewUserAppointment = async(appointmentId) => {
     for (const workerId of appointment.assignedWorkers) {
       const worker = await Worker.findById(workerId).lean(); // Retrieves the worker information from the database.
           if (!worker) {
-            throw new Error("Worker Not Found.")
+            continue;
           }
 
           const user = await User.findById(worker.userId).lean(); // Retrieves the user information from the database with a role of Worker
@@ -257,7 +257,7 @@ export const insertAppointmentRating = async(body, appointmentId) => {
   const { appointmentRating } = body;
 
     if(!appointment){
-      return res.status(400).json({success: false, message: "Appointment not Found."})
+     throw new Error("Appointment not Found.")
     }
 
   let workerList = [];
@@ -270,7 +270,10 @@ export const insertAppointmentRating = async(body, appointmentId) => {
     for(const workerId of workerList) {
           
       const workerInfo = await Worker.findById(workerId);
-
+        if(!workerInfo){
+          continue;
+        }
+        
       if(workerInfo && workerInfo.assignedAppointments) {
         await Worker.findByIdAndUpdate(
           workerId,

@@ -1,9 +1,9 @@
 const InputPasswordConfirm = ({value, onChange}) => {
     return (
-        <div className="text-container">
+        <div className="floating-input-container">
             {/* INPUT HERE */}
             <input 
-            className="input" 
+            className="input-bar no-logo" 
             type="password" 
             placeholder="Confirm Password" 
             name="confirm-password-input" 
@@ -12,7 +12,7 @@ const InputPasswordConfirm = ({value, onChange}) => {
             onChange={(onChange)}/>
             {/* LABEL HERE */}
             <label 
-            className="text-label"
+            className="floating-label"
              htmlFor="password-input">
                 Confirm Password
             </label>

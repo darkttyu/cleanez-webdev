@@ -1,8 +1,5 @@
-import { User } from "../models/user.model.js";
-import { Worker } from "../models/worker.model.js";
 import { Service } from "../models/service.model.js";
-import { Appointment } from "../models/appointment.model.js";
-import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule} from "../services/admin.service.js";
+import { fetchApplicants, fetchAppointment, fetchAppointments, fetchUserList, fetchUsers, fetchWorker, fetchWorkers, getUser, postWorker, serviceAcceptApplicant, serviceDeleteUser, serviceDeleteWorker, serviceMarkAppointmentAsCancelled, serviceMarkAppointmentAsCompleted, serviceRejectApplicant, serviceUpdateUserStatus, updateStatus, updateUser, viewApplicant ,postUser, updateSchedule, serviceGenerateDailyReport, serviceGenerateWeeklyReport, serviceGenerateMonthlyReport, serviceGenerateQuarterlyReport, serviceGenerateBiAnnualReport, serviceGenerateNineMonthReport, serviceGenerateAnnualReport, graphWeeklyReport, graphMonthlyReport} from "../services/admin.service.js";
 
 
 // Worker Controllers
@@ -18,6 +15,9 @@ export const findAllWorkers = async (req, res) => {
     const arrayIndex = (page - 1) * pageSize
 
     const workers = await fetchWorkers(arrayIndex, pageSize, keyword);
+      if(workers.length === 0){
+        return res.status(404).json({success: false, message: "Worker not Found.", worker: []})
+      }
     return res.status(200).json({ success: true, message: "Successfully Fetched Worker List", worker: workers});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -27,6 +27,9 @@ export const findAllWorkers = async (req, res) => {
 export const getUserDetails = async (req, res) => {
   try {
     const user = await fetchUsers();
+      if(!user){
+        return res.status(404).json({success: false, message: "Error in Getting User Details.", users: []})
+      }
     return res.status(200).json({success: true, users: user})
   } catch (error) {
     return res.status(400).json({success: false, message: error.message})
@@ -45,6 +48,9 @@ export const addWorker = async (req, res) => {
 export const clickedWorker = async (req, res) => {
   try {
     const worker = await fetchWorker(req.params.id);
+      if(worker.length === 0){
+        return res.status(404).json({success: false, message: "Error Fetching Worker Information.", worker: []})
+      }
     return res.status(200).json({ success: true, message: "Successfully Fetched Worker", worker: worker});
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -91,6 +97,9 @@ export const findAllUsers = async (req, res) => {
     const arrayIndex = (page - 1) * pageSize
 
     const users = await fetchUserList(arrayIndex, pageSize, keyword);
+      if(users.length === 0){
+        return res.status(404).json({success: false, message: "No users Found.", userList: []})
+      }
     return res.status(200).json({success: true, message: "Fetched Users", userList: users})
   
   } catch (error) {
@@ -103,7 +112,6 @@ export const findAllUsers = async (req, res) => {
 export const addUser = async (req, res) => {  
   try {
     const newUser = await postUser(req.body);
-    
     res.status(201).json({success: true,message: "User Created Successfully", user: { ...newUser._doc, password: undefined, }
       })
 
@@ -118,7 +126,6 @@ export const clickedUser = async(req, res) => {
     res.status(200).json({success: true, message:"Successfully Fetched User Information", user: user });
 
   } catch (error) {
-    console.log("Error in Fetching Specific User", error);
     res.status(400).json({success:false, message: error.message });
   }
   
@@ -216,6 +223,9 @@ export const getAllApplicants = async (req, res) => {
     const arrayIndex = (page - 1) * pageSize
 
     const applicants = await fetchApplicants(arrayIndex, pageSize, keyword);
+      if(applicants.length === 0){
+        return res.status(404).json({success: false, message: "Applicants Not Found.", applicants: []})
+      }
     return res.status(200).json({success: true, message: "Fetched Applicants Lists.", applicants: applicants});
   } catch (error) {
     return res.status(400).json({success: false, error: message.error});
@@ -275,6 +285,8 @@ export const getAppointments = async (req, res) => {
     const appointment = await fetchAppointments(arrayIndex, pageSize, keyword);
       if(appointment){
         return res.status(200).json({success: true, message: "Fetched Appointments List.", appointmentList: appointment});
+      } else {
+        return res.status(404).json({success: false, message: "No Appointments Found.", appointmentList: []})
       }
   } catch (error) {
     return res.status(400).json({success: false, message: error.message});
@@ -313,6 +325,120 @@ export const getAppointment = async (req, res) => {
     return res.status(400).json({succes: false, message: error.message})
   }
 };
+
+export const generateDailyReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateDailyReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Daily Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Daily Report.", dailyReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateWeeklyReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateWeeklyReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Weekly Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Weekly Report.", weeklyReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateMonthlyReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateMonthlyReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Monthly Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Monthly Report.", monthlyReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateQuarterlyReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateQuarterlyReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Quarterly Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Quarterly Report.", quarterlyReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateBiAnnualReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateBiAnnualReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Biannual Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Biannual Report.", biannualReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateNineMonthReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateNineMonthReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Nine-Month Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Nine-Month Report.", nineMonthReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateAnnualReport = async (req, res) => {
+  try {
+    const data = await serviceGenerateAnnualReport();
+      if(!data){
+        return res.status(400).json({success: false, message: "Error in Generating Annual Report."});
+      }
+
+      return res.status(200).json({success: true, message: "Generated Annual Report.", annualReport: data});
+  } catch (error) {
+    return res.status(400).json({success: false, message: error.message})
+  }
+};
+
+export const generateGraphWeeklyReport = async (req, res) => {
+  try {
+    const data = await graphWeeklyReport();
+    return res.status(200).json({success:true, message: "Weekly Report Generated", weelyReport: data});
+  } catch (error) {
+    return res.status(400).json({success:false, message: error.message});
+  }
+};
+
+export const generateGraphMonthlyReport = async (req, res) => {
+  try {
+    const data = await graphMonthlyReport();
+    return res.status(200).json({success:true, message: "Monthly Report Generated", monthlyReport: data});
+  } catch (error) {
+    return res.status(400).json({success:false, message: error.message});
+  }
+};
+
+
+
+
+
 
 /*
 export const addField = async (req, res) => {
@@ -364,18 +490,18 @@ export const addField = async (req, res) => {
 //   return res.status(200).json({success: true, message: updatedProfile})
 // }
 
-export const getEmails = async (req, res) => {
-  let emails = []
-  try {
-    const users = await User.find().lean();
-      if(!users) {
-        throw new Error("Users not Found")
-      }
+// export const getEmails = async (req, res) => {
+//   let emails = []
+//   try {
+//     const users = await User.find().lean();
+//       if(!users) {
+//         throw new Error("Users not Found")
+//       }
 
-    emails = users.map(user => [user.email, user.role]);
+//     emails = users.map(user => [user.email, user.role]);
 
-    return res.status(200).json({success: true, email: emails})
-  } catch (error) {
-    return res.status(400).json({success: false, message: error.message});
-  }
-};
+//     return res.status(200).json({success: true, email: emails})
+//   } catch (error) {
+//     return res.status(400).json({success: false, message: error.message});
+//   }
+// };

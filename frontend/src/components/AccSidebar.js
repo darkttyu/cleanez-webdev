@@ -1,7 +1,8 @@
-import {useState, useEffect } from "react";
+import {useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SVGIcons from "../SVGIcons";
 import logo from '../images/logos/nav-logo.png';
+import shortLogo from '../images/logos/Profile-Icon3.svg';
 import { useAuth } from "../AuthContext";
 import axios from "axios";
 
@@ -31,8 +32,11 @@ const UserSide = ({setNavTitle}) => {
             }
             to='profile'
             onClick={(e) => handleClick('Profile')}>
-                
-                Profile
+                <SVGIcons 
+                selected="sidebarProfile"
+                size="24px"
+                color={`${activeLink === 'Profile' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Profile</p>
             </Link></li>
             <li><Link 
             className={
@@ -40,8 +44,11 @@ const UserSide = ({setNavTitle}) => {
             }
             to='dashboard'
             onClick={(e) => handleClick('Dashboard')}>
-                
-                Dashboard
+                <SVGIcons 
+                selected="sidebarDashboard"
+                size="24px"
+                color={`${activeLink === 'Dashboard' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Dashboard</p>
             </Link></li>
             <li><Link 
             className={
@@ -49,8 +56,11 @@ const UserSide = ({setNavTitle}) => {
             }
             to='appointments'
             onClick={(e) => handleClick('Appointments')}>
-                
-                Appointments
+                <SVGIcons 
+                selected="sidebarAppointments"
+                size="24px"
+                color={`${activeLink === 'Appointments' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Appointments</p>
             </Link></li>
         </>
     );
@@ -82,7 +92,11 @@ const WorkerSide = ({setNavTitle}) => {
             }
             to='profile'
             onClick={(e) => handleClick('Profile')}>
-                Profile
+                <SVGIcons 
+                selected="sidebarProfile"
+                size="24px"
+                color={`${activeLink === 'Profile' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Profile</p>
             </Link></li>
             <li><Link 
             className={
@@ -90,8 +104,11 @@ const WorkerSide = ({setNavTitle}) => {
             }
             to='appointments'
             onClick={(e) => handleClick('Appointments')}>
-                
-                Appointments
+                <SVGIcons 
+                selected="sidebarAppointments"
+                size="24px"
+                color={`${activeLink === 'Appointments' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Appointments</p>
             </Link></li>
             <li><Link 
             className={
@@ -99,8 +116,11 @@ const WorkerSide = ({setNavTitle}) => {
             }
             to='schedule'
             onClick={(e) => handleClick('Schedule')}>
-                
-                Schedule
+                <SVGIcons 
+                selected="sidebarSchedule"
+                size="24px"
+                color={`${activeLink === 'Schedule' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Schedule</p>
             </Link></li>
         </>
     );
@@ -132,7 +152,11 @@ const AdminSide = ({setNavTitle}) => {
             }
             to='appointments'
             onClick={(e) => handleClick('Appointments')}>
-                Appointments
+                <SVGIcons 
+                selected="sidebarAppointments"
+                size="24px"
+                color={`${activeLink === 'Appointments' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Appointments</p>
             </Link></li>
             <li><Link 
             className={
@@ -140,7 +164,11 @@ const AdminSide = ({setNavTitle}) => {
             }
             to='applicants'
             onClick={(e) => handleClick('Applicants')}>
-                Applicants
+                <SVGIcons 
+                selected="sidebarApplicants"
+                size="24px"
+                color={`${activeLink === 'Applicants' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Applicants</p>
             </Link></li>
             <li><Link 
             className={
@@ -148,7 +176,11 @@ const AdminSide = ({setNavTitle}) => {
             }
             to='workers'
             onClick={(e) => handleClick('Workers')}>
-                Workers
+                <SVGIcons 
+                selected="sidebarWorkers"
+                size="24px"
+                color={`${activeLink === 'Workers' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Workers</p>
             </Link></li>
             <li><Link 
             className={
@@ -156,7 +188,11 @@ const AdminSide = ({setNavTitle}) => {
             }
             to='users'
             onClick={(e) => handleClick('Users')}>
-                Users
+                <SVGIcons 
+                selected="sidebarProfile"
+                size="24px"
+                color={`${activeLink === 'Users' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Users</p>
             </Link></li>
         </>
     );
@@ -165,7 +201,8 @@ const AdminSide = ({setNavTitle}) => {
 const AccSidebar = ({setNavTitle}) => {
     const { logout } = useAuth();
     const navigate = useNavigate();
-
+    const [returnPopup, setReturnPopup] = useState(false);
+    const popupRef = useRef(null);
     const role = localStorage.getItem("role");
 
     const accountSideDisplay = () => {
@@ -205,6 +242,24 @@ const AccSidebar = ({setNavTitle}) => {
         }
     }
 
+    const handleClickOutside = (event) => {
+        if (popupRef.current && !popupRef.current.contains(event.target)) {
+            setReturnPopup(false);
+        }
+    };
+
+    useEffect(() => {
+        if (returnPopup) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [returnPopup]);
+
     return (  
         <div className="account-page-left">
             <Link 
@@ -217,6 +272,7 @@ const AccSidebar = ({setNavTitle}) => {
                 handleLogOut
             }>
                 <img className="sidebar-logo" src={logo} alt="Logo" />
+                <img className="sidebar-logo-short" src={shortLogo} alt="Logo" />
             </Link>
             <div className="sidebar-content">
                 <ul className="sidebar-links">
@@ -238,6 +294,38 @@ const AccSidebar = ({setNavTitle}) => {
                     onClick={handleLogOut}>
                         Log Out
                     </Link>
+
+                    {returnPopup? 
+                        <div className="sidebar-return-popup-container" ref={popupRef}>
+                            {role !== 'Admin' ? 
+                            <Link 
+                            className="sidebar-return-popup"
+                            to="/home">
+                                Return to Home
+                            </Link> :
+                            <></>
+                            }
+                            
+                            <Link 
+                            className="sidebar-return-popup"
+                            to="/home"
+                            onClick={handleLogOut}>
+                                Log Out
+                            </Link>
+                    </div> :
+                    <></>
+                    }
+                    
+
+                    <button
+                    className="sidebar-return more"
+                    type="button"
+                    onClick={() => setReturnPopup(!returnPopup)}>
+                        <SVGIcons 
+                        selected="sidebarMore"
+                        color="var(--monoc4)"
+                        size="28px"/>
+                    </button>
                 </div>
             </div>
             

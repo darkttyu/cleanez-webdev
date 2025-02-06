@@ -344,12 +344,6 @@ export const WELCOME_WORKER = `
       <li style="font-weight: bold;">Competitive Pay: <span style="font-weight: 100;">Earn fair compensation for your hard work.</span></li>
       <li style="font-weight: bold;">Reliable Platform: <span style="font-weight: 100;">Our system ensures secure and seamless connections with clients.</span></li>
     </ul>
-    <p>Here’s your login information to access the worker portal:</p>
-    <ul>
-        <li><strong>Email:</strong> <span style="font-weight: bold; color: #4CAF50;">{workerEmail}</span></li>
-        <li><strong>Password:</strong> <span style="font-weight: bold; color: #4CAF50;">{workerPassword}</span></li>
-    </ul>
-    <p style="text-align: justify;">We recommend logging in immediately and updating your password for security purposes. Through the portal, you can manage your tasks, track earnings, and stay updated on upcoming opportunities.</p>
     <p>Visit our website <a href="https://cleanez.net" style="color: #4CAF50;">cleanez.net</a> or contact us at <a href="mailto:info.cleanez24@gmail.com" style="color: #4CAF50;">info.cleanez24@gmail.com</a> for any questions or assistance.</p>
     <p>Thank you for joining CleanEZ. Together, we’ll create spotless spaces and happy clients!</p>
     <p>Best regards,<br><span style="font-weight: bold; color: #4CAF50;">CleanEZ Team</span></p>
