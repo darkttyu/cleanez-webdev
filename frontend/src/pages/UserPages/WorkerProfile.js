@@ -325,13 +325,21 @@ const WorkerProfile = () => {
                         <div className="profile-text">
                             <div className="profile-info">
                                 <p className="profile-name">{accountInfo.firstName} {accountInfo.lastName}</p>
-                                <p className="profile-rating">
-                                    <SVGIcons 
-                                    selected="starRatingSolid"
-                                    size="20px"
-                                    color="#07de6b"/>
-                                    {parseFloat(workerRating).toFixed(1)} / 5.0
-                                </p>
+                                <div className="profile-rating-earning">
+                                    <p className="profile-rating">
+                                        <SVGIcons 
+                                        selected="starRatingSolid"
+                                        size="20px"
+                                        color="#07de6b"/>
+                                        {parseFloat(workerRating).toFixed(1)} / 5.0
+                                    </p>
+                                    <p className="profile-earning">
+                                        <span className="peso-earning">&#8369;</span>
+                                        {parseFloat(workerEarnings).toFixed(2)}
+                                    </p>
+                                </div>
+                                
+                                
                             </div>
                             <div className="profile-edit-options">
                             {isDisabled ? (

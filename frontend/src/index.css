@@ -66,15 +66,19 @@ td {
 }
 
 .act-btn {
-  padding      : 10px;
-  border-radius: 16px;
-  justify-self : center;
-  font-weight  : 500;
-  box-shadow   : 0 4px 4px #00000040;
-  transition   : all 0.2s ease-out;
-  cursor       : pointer;
-  min-width    : 100px;
-  text-align   : center;
+  padding        : 10px;
+  border-radius  : 16px;
+  justify-self   : center;
+  font-weight    : 500;
+  box-shadow     : 0 4px 4px #00000040;
+  transition     : all 0.2s ease-out;
+  cursor         : pointer;
+  min-width      : 100px;
+  text-align     : center;
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+  gap            : 8px;
 }
 
 .act-btn.add-new {
@@ -103,12 +107,16 @@ td {
   color           : white;
 }
 
-.act-btn:hover {
-  filter        : brightness(83%) saturate(144%);
-  -webkit-filter: brightness(83%) saturate(144%);
-  -moz-filter   : brightness(83%) saturate(144%);
-  box-shadow    : 0 0px 0px #00000040;
-  color         : #222222;
+.act-btn.complete:hover {
+  background-color: #16bd64;
+}
+
+.act-btn.cancel:hover {
+  background-color: #ab244f;
+}
+
+.act-btn.rate {
+  background-color: #d1b33b;
 }
 
 .btn-stretch {

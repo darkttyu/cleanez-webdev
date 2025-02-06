@@ -56,9 +56,16 @@
     position: relative;
 }
 
-.profile-rating {
-    position   : absolute;
-    bottom     : -100%;
+.profile-rating-earning {
+    display : flex;
+    position: absolute;
+    bottom  : -100%;
+    gap     : 24px;
+}
+
+.profile-rating,
+.profile-earning {
+
     display    : flex;
     align-items: center;
     gap        : 8px;
@@ -67,6 +74,11 @@
     font-weight: 600;
     color      : var(--monoc4-50);
     line-height: 24px;
+}
+
+.peso-earning {
+    font-size: 20px;
+    color    : #07de6b;
 }
 
 .profile-name {

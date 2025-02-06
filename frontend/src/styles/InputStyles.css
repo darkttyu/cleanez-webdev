@@ -17,6 +17,9 @@ input:-webkit-autofill:active {
     min-height   : 46px;
 }
 
+.input-bar:disabled {
+    color: #8a8a8a;
+}
 
 
 .input-bar:-webkit-autofill {
@@ -36,7 +39,7 @@ select.input-bar {
 select.input-bar:disabled {
     background-color: #efefef4d;
     border-color    : #22222280;
-    color           : #545454;
+    color           : #8a8a8a;
     opacity         : 1;
 }
 
@@ -80,8 +83,8 @@ select.input-bar:disabled {
 .input-logo {
     position : absolute;
     left     : 24px;
-    top      : 50%;
-    transform: translate(-50%, -50%);
+    bottom   : 13px;
+    transform: translate(-50%, -0%);
 }
 
 

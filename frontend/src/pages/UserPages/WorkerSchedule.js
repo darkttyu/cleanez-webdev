@@ -6,6 +6,8 @@ import axios from "axios";
 import SVGIcons from "../../SVGIcons";
 
 
+import PopupError from "../../components/PopupError";
+
 const WorkerSchedule = () => {
     const [workerDetails, setWorkerDetails] = useState(null);
     const [serviceList, setServiceList] = useState([]);
@@ -193,6 +195,9 @@ const WorkerSchedule = () => {
             }
         });
         setEditMode(false);
+
+        setShowErrorModal(false);
+        setErrMessage("");
     };
 
     const handleScheduleSave = async () => {
@@ -211,12 +216,34 @@ const WorkerSchedule = () => {
             fetchWorkerDetail();
             setEditMode(false);
         } catch (e) {
-            console.log(e)
+            console.log(e);
+            setErrMessage(`${e.message? e.message : ''} Would you like to continue editing?`);
+            setShowErrorModal(true);
         }
     }
 
+
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage("");
+    }
+
+
     return (  
         <div className="schedule-page">
+            {showErrorModal? 
+                <PopupError 
+                errTitle="Unable to Save Profile"
+                errMessage={errMessage}
+                buttons={[
+                    {func: handleScheduleCancel, text: "Cancel", className: "red"},
+                    {func: handleContinue, text: "Continue", className: "green"},
+                ]}/> :
+                <></>
+            }
             <section className="schedule-container">
                 <h2>Service</h2>
                 <div className="schedule-inputs" id="service-inputs">
@@ -389,6 +416,10 @@ const WorkerSchedule = () => {
                 className="act-btn complete"
                 onClick={(e) => setEditMode(true)}>
                     Edit Schedule
+                    <SVGIcons 
+                    selected="buttonEdit"
+                    size="20px"
+                    color="white"/>
                 </button> :
                 <>
                     <button

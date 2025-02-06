@@ -259,7 +259,7 @@ const UserProfile = () => {
             setIsDisabled(!isDisabled);
         } catch (e) {
             console.log(e);
-            setErrMessage(`${e.message} Would you like to continue editing?`);
+            setErrMessage(`${e.message? e.message : ''} Would you like to continue editing?`);
             setShowErrorModal(true);
         }
     }
@@ -270,7 +270,7 @@ const UserProfile = () => {
 
     const handleContinue = () => {
         setShowErrorModal(false);
-        setErrMessage(true);
+        setErrMessage("");
     }
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 

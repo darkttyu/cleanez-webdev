@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SVGIcons from '../../SVGIcons'
+
+import PopupError from "../../components/PopupError";
 
 const AdminUserInfo = () => {
     // --- Convert Binary Data to Profile URL
@@ -15,6 +17,8 @@ const AdminUserInfo = () => {
 
     let { id } = useParams();
     const navigate = useNavigate();
+
+    const inputRef = useRef();
 
     const [userInfo, setUserInfo] = useState(null);
     const [newUserInfo, setNewUserInfo] = useState(null);
@@ -70,6 +74,9 @@ const AdminUserInfo = () => {
         setProfileURL(profileConvert(userInfo.profilePicture.data.data));
         setNewUserInfo(null);
         setEditMode(false);
+
+        setShowErrorModal(false);
+        setErrMessage("");
     }
 
     const updateData = async (accInfo, profile) => {
@@ -90,6 +97,11 @@ const AdminUserInfo = () => {
         try {
             setIsSubmitting(true);
 
+            if (String(newUserInfo.firstName).trim() === "" ||
+                String(newUserInfo.lastName).trim() === "") {
+                    throw new Error('Empty Inputs: Please fill all the entry fields before continuing.');
+            }
+
             const formData = await updateData(newUserInfo, profileFile);
 
             const response = await axios.put(`http://localhost:5000/api/admin/editUserInfo/${id}`, formData);
@@ -100,7 +112,9 @@ const AdminUserInfo = () => {
             setNewUserInfo(null);
             fetchUserInfo();
         } catch (e) {
-            console.log(e)
+            console.log(e);
+            setErrMessage(`${e.message? e.message : ''} Would you like to continue editing?`);
+            setShowErrorModal(true);
         } finally {
             setIsSubmitting(false);
         }
@@ -128,13 +142,49 @@ const AdminUserInfo = () => {
                     className="act-btn complete"
                     onClick={handleEditMode}>
                         Edit
+                        <SVGIcons 
+                        selected="buttonEdit"
+                        size="20px"
+                        color="white"/>
                     </button>
             )
         }
     }
 
+    const handleProfileChange = (event) => {
+        const file = event.target.files[0]
+
+        const imageURL = URL.createObjectURL(file);
+
+        setProfileURL(imageURL);
+        setProfileFile(file)
+        
+    }
+
+    const handleProfileClick = () => {
+        inputRef.current.click()
+    }
+
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage("");
+    }
+
     return (  
         <div className="schedule-page">
+        {showErrorModal? 
+            <PopupError 
+            errTitle="Unable to Save Profile"
+            errMessage={errMessage}
+            buttons={[
+                {func: handleCancel, text: "Cancel", className: "red"},
+                {func: handleContinue, text: "Continue", className: "green"},
+            ]}/> :
+            <></>
+        }
         {userInfo ? 
             <div className="schedule-container">
                 <div className="title-profile">
@@ -157,15 +207,23 @@ const AdminUserInfo = () => {
                     </div>
 
                     <div className="profile-image-container">
+                    <input type="file" 
+                            className="profile-upload-input"
+                            accept="image/jpeg"
+                            style={{display: "none"}}
+                            ref={inputRef}
+                            onChange={handleProfileChange}/>
                         <img src={profileURL} alt="" className="profile-image"/>
                         {editMode ? (
-                            <input type="file" 
-                            accept="image/jpeg"
-                            onChange={(e) => {
-                                const file = e.target.files[0]
-                                setProfileURL(URL.createObjectURL(file));
-                                setProfileFile(file)
-                            }}/>
+                            <button
+                            className="profile-upload-button" 
+                            type="button"
+                            onClick={handleProfileClick}>
+                                <SVGIcons 
+                                selected="profileButton"
+                                size="60px"
+                                color="white"/>
+                            </button>  
                         ):(
                             <></>
                         )}

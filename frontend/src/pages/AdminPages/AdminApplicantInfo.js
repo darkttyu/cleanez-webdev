@@ -66,6 +66,9 @@ const AdminApplicantInfo = () => {
             navigate('/admin/applicants');
         } catch (e) {
             console.log(e);
+            setErrMessage(`${e.message? e.message : ''} Would you like to try again?`);
+            setShowErrorModal(true);
+
         } finally {
             setIsSubmitting(false);
         }
@@ -83,6 +86,8 @@ const AdminApplicantInfo = () => {
             navigate('/admin/applicants');
         } catch (e) {
             console.log(e);
+            setErrMessage(`${e.message? e.message : ''} Would you like to try again?`);
+            setShowErrorModal(true);
         } finally {
             setIsSubmitting(false);
         }
@@ -111,8 +116,31 @@ const AdminApplicantInfo = () => {
         }
     }
 
+
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage(true);
+    }
+
+    const handleCancel = () => {
+        navigate(`/admin/applicants/${id}`);
+    }
+
     return (  
         <div className="schedule-page">
+        {showErrorModal? 
+            <PopupError 
+            errTitle="Unable to Proceed to Rejecting/Accepting Applicant"
+            errMessage={errMessage}
+            buttons={[
+                {func: handleCancel, text: "Cancel", className: "red"},
+                {func: handleContinue, text: "Continue", className: "green"},
+            ]}/> :
+            <></>
+        }
         {applicantInfo ? 
             <div className="schedule-container">
                 <h2>Applicant Data</h2>

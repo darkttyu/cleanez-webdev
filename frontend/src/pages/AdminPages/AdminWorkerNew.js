@@ -4,6 +4,8 @@ import axios from "axios";
 import SVGIcons from '../../SVGIcons'
 
 
+import PopupError from "../../components/PopupError";
+
 const AdminWorkerNew = () => {
     let { id } = useParams();
     const navigate = useNavigate();
@@ -117,12 +119,36 @@ const AdminWorkerNew = () => {
             navigate('/admin/users');
         } catch (e) {
             console.log(e)
+            setErrMessage(`${e.message} Would you like to continue editing?`);
+            setShowErrorModal(true);
         }
+    }
+
+
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage("");
+    }
+
+    const handleCancel = () => {
+        navigate(`/admin/users/${id}`);
     }
 
     return (  
         <div className="schedule-page">
-
+            {showErrorModal? 
+            <PopupError 
+            errTitle="Unable to Create New Worker"
+            errMessage={errMessage}
+            buttons={[
+                {func: handleCancel, text: "Cancel", className: "red"},
+                {func: handleContinue, text: "Continue", className: "green"},
+            ]}/> :
+            <></>
+            }   
             {userInfo ? 
             <>
                 <h2></h2>
@@ -250,7 +276,7 @@ const AdminWorkerNew = () => {
                     <button
                     type="button"
                     className="act-btn cancel"
-                    onClick={(e) => {navigate(`/admin/users/${id}`)}}>
+                    onClick={handleCancel}>
                         Cancel
                     </button>
                     {!isEmpty ?
