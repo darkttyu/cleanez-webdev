@@ -263,7 +263,8 @@
     color           : #222222;
 }
 
-.dashboard-status.cancelled {
+.dashboard-status.cancelled,
+.dashboard-status.inactive {
     background-color: #CC3363;
     color           : white;
 }

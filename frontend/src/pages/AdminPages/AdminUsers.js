@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import LoadingScreen3 from "../../components/LoadingScreen3";
+import PopupError from "../../components/PopupError";
 
 const AdminUsers = () => {
     const [isLoading, setIsLoading] =useState(true);
@@ -65,6 +66,8 @@ const AdminUsers = () => {
             }
         } catch (e) {
             console.log(e);
+            setErrMessage(e.message);
+            setShowErrorModal(true);
         }
     }
 
@@ -86,16 +89,39 @@ const AdminUsers = () => {
 
     const handleStatus = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/admin/updateUserStatus/${id}`);
+            const response = await axios.put(`https://cleanez-api.vercel.app/api/admin/updateUserStatus/${id}`);
 
             console.log(response);
         } catch (e) {
             console.log(e);
+            setErrMessage(e.message);
+            setShowErrorModal(true);
+        } finally {
+            fetchAllUsers(currentPage, 10, searchWord);
         }
     }
 
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage("");
+    }
+
     return (  
-        <div className="dashboard-page">
+        <>
+            {showErrorModal? 
+                <PopupError 
+                errTitle="Unable to Save Profile"
+                errMessage={errMessage}
+                buttons={[
+                    {func: () => {}, text: "", className: "none"},
+                    {func: handleContinue, text: "Cancel", className: "red"},
+                ]}/> :
+                <></>
+            }
+            <div className="dashboard-page">
             <section className="dashboard-upcoming-container">
                 <div className="admin-searchbar-container">
                     <input 
@@ -192,7 +218,10 @@ const AdminUsers = () => {
                     </div>
                 </div>
             </section>
-        </div>
+            </div>
+        </>
+
+        
     );
 }
  

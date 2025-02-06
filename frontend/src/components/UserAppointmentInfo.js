@@ -102,7 +102,7 @@ const UserAppointmentInfo = ({appID, setShowAppInfo, setShowRating, cancelAppoin
 
     return (  
         <div 
-        className="appointment-info-container">
+        className="modal-container">
             <section className="appointment-info-box">
                 <div className="appointment-data">
                     {/* Title and Status */}
