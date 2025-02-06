@@ -3,7 +3,11 @@ import SVGIcons from "../../SVGIcons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import LoadingScreen3 from "../../components/LoadingScreen3";
+
 const AdminWorker = () => {
+    const [isLoading, setIsLoading] =useState(true);
+
     const navigate = useNavigate();
     
     const [allWorkerList, setAllWorkerList] = useState([]);
@@ -14,6 +18,7 @@ const AdminWorker = () => {
     const [searchWord, setSearchWord] = useState('');
 
     const fetchAllWorkers = async (page, size = 10, search = '') => {
+        setIsLoading(true);
         try {
             const response = await axios.get(`https://cleanez-api.vercel.app/api/admin/findAllWorkers`, 
                 {params: { 
@@ -27,6 +32,8 @@ const AdminWorker = () => {
             setAllWorkerList(response.data.worker)
         } catch (e) {
             console.log(e);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -97,7 +104,13 @@ const AdminWorker = () => {
                             </tr>
                         </thead>
                         <tbody>
-                        {currentList?.map((worker, index) => (
+                        {isLoading ?
+                            <tr>
+                                <td colSpan="6"><LoadingScreen3 /></td>
+                            </tr> :
+
+                        
+                        currentList?.map((worker, index) => (
                             <tr 
                             key={index} 
                             className="dashboard-tbody-tr"

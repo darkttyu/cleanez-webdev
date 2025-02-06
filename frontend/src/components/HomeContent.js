@@ -220,7 +220,6 @@ const Founders = () => {
                                   <SVG selected="facebook" size="24px" color="#f3f3f3"/>
                              </a>
                         </div>
-                        <button className="contact-btn">Contact {founder.name.split(" ")[0]}</button>
                    </div>
               ))}
               </div>

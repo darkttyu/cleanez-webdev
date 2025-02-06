@@ -130,7 +130,7 @@ const AdminSide = ({setNavTitle}) => {
     const [activeLink, setActiveLink] = useState(() => {
         let path = String(window.location.pathname);
 
-        if (path === "/admin") return 'Appointments';
+        if (path === "/admin") return 'Dashboard';
 
         path = path.replace('/admin/', '');
         
@@ -146,6 +146,18 @@ const AdminSide = ({setNavTitle}) => {
 
     return (  
         <>
+            <li><Link 
+            className={
+                `link-item ${activeLink === 'Dashboard' ? 'active' : ''}`
+            }
+            to='dashboard'
+            onClick={(e) => handleClick('Dashboard')}>
+                <SVGIcons 
+                selected="sidebarAppointments"
+                size="24px"
+                color={`${activeLink === 'Dashboard' ? 'white' : 'var(--monoc4)'}`}/>
+                <p className="sidebar-link-title">Dashboard</p>
+            </Link></li>
             <li><Link 
             className={
                 `link-item ${activeLink === 'Appointments' ? 'active' : ''}`

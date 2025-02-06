@@ -31,6 +31,8 @@ import AdminWorkerInfo from './pages/AdminPages/AdminWorkerInfo';
 import AdminWorkerNew from './pages/AdminPages/AdminWorkerNew';
 import AdminAppointments from './pages/AdminPages/AdminAppointments';
 import AdminAppointmentInfo from './pages/AdminPages/AdminAppointmentInfo';
+import AdminDashboard from './pages/AdminPages/AdminDashboard';
+
 import './styles/ProfilePage.css'
 import './styles/AccPageLayout.css'
 
@@ -93,8 +95,9 @@ function App() {
                     <Route path='/application' element={<ApplicationPage/>}/>
                     <Route path='/application/success' element={<ApplicationSuccess/>}/>
                     <Route path='/admin' element={<AccountLayout/>}>
-                        <Route index element={<Navigate to='/admin/appointments'/>}/>
-                        {/* <Route path='dashboard' element={<WorkerSchedule/>}/> */}
+                        <Route index element={<Navigate to='/admin/dashboard'/>}/>
+                        <Route path='dashboard' element={<AdminDashboard/>}/>
+
                         <Route path='appointments' element={<AdminAppointments/>}/>
                         <Route path='appointments/:id' element={<AdminAppointmentInfo/>}/>
 

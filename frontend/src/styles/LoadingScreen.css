@@ -9,6 +9,28 @@
     overflow       : hidden;
 }
 
+.loading-screen.small {
+    background-color: white;
+    position        : relative;
+    height          : 192px;
+    z-index         : 3;
+}
+
+.loading-screen.small .ellipse-container {
+    display    : flex;
+    align-items: center;
+    height     : 16px;
+    animation  : ellipseAnimation 1s ease-in-out infinite;
+}
+
+.loading-screen.small .ellipse-loading .ellipse {
+    background-color: #20063B;
+    aspect-ratio    : 1/1;
+    height          : 12px;
+    border-radius   : 12px;
+}
+
+
 .loading-screen.fade-out {
     transform     : translateY(-100%);
     pointer-events: none;
@@ -20,12 +42,11 @@
 }
 
 .loading-screen.bg-white {
-    position        : absolute;
-    top             : 0;
-    background-color: #f8f8f8;
     position        : sticky;
-    z-index         : 3;
     top             : 0;
+    margin          : -90px 0 0 0;
+    background-color: #f8f8f8;
+    z-index         : 3;
 }
 
 .ellipse-loading {
@@ -49,6 +70,7 @@
     }
 }
 
+
 .ellipse-container {
     display    : flex;
     align-items: center;
@@ -56,15 +78,18 @@
     animation  : ellipseAnimation 1s ease-in-out infinite;
 }
 
-.ellipse-container:nth-of-type(2) {
+.ellipse-container:nth-of-type(2),
+.loading-screen.small .ellipse-container:nth-of-type(2) {
     animation-delay: 0.25s;
 }
 
-.ellipse-container:nth-of-type(3) {
+.ellipse-container:nth-of-type(3),
+.loading-screen.small .ellipse-container:nth-of-type(3) {
     animation-delay: 0.50s;
 }
 
-.ellipse-container:nth-of-type(4) {
+.ellipse-container:nth-of-type(4),
+.loading-screen.small .ellipse-container:nth-of-type(4) {
     animation-delay: 0.75s;
 }
 
