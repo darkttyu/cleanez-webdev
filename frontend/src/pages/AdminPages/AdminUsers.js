@@ -86,7 +86,7 @@ const AdminUsers = () => {
 
     const handleStatus = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/admin/softDeleteUser/${id}`);
+            const response = await axios.put(`http://localhost:5000/api/admin/updateUserStatus/${id}`);
 
             console.log(response);
         } catch (e) {
