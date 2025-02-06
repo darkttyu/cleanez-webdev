@@ -846,16 +846,17 @@ export const serviceMarkAppointmentAsCompleted = async (appointmentId) => {
         const workerUserIds = await Promise.all(
           workerId.map(async (id) => {
             const worker = await Worker.findById(id); // Fetch worker details by ID
-            return worker.userId; // Return the userId of the worker
+            return worker ? worker.userId : null; // Return the userId of the worker
           })
       );
-    
+
+        const validWorkerUserIds = workerUserIds.filter(userId => userId !== null);
         // Divides the service cost to the number of assigned workers for the service.
         // Adds the amount to the totalEarnings of each worker.
         // Also removes the appointment from the assigned workers, meaning that they have completed the service.
         const distributedAmount = appointment.serviceCost / appointment.assignedWorkers.length;
           await Promise.all(
-            workerUserIds.map(async (id) => {
+            validWorkerUserIds.map(async (id) => {
               await Worker.findOneAndUpdate(
                 { userId: new Object(id) }, 
                 {
@@ -868,7 +869,7 @@ export const serviceMarkAppointmentAsCompleted = async (appointmentId) => {
           );
         
           await Promise.all(
-            workerUserIds.map(async (id) => {
+            validWorkerUserIds.map(async (id) => {
               const workerInfo = await User.findById(id);
               sendWorkerPaidAppointmentEmail(workerInfo.firstName, workerInfo.lastName, workerInfo.email, appointment.customerFirstName, 
                 appointment.customerLastName, appointment.serviceDetails.serviceCategory, appointment.scheduleDetails.date, 
@@ -952,7 +953,7 @@ export const serviceMarkAppointmentAsCancelled = async (appointmentId) => {
 export const fetchAppointment = async (appointmentId) => {
   const appointment = await Appointment.findById(appointmentId);
     if(!appointment){
-      throw new Error("Bad Request. Errr in Fetching Appointment Details.");
+      throw new Error("Bad Request. Error in Fetching Appointment Details.");
     }
   
     let slicedDate = '';
