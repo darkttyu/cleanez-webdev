@@ -270,7 +270,10 @@ export const insertAppointmentRating = async(body, appointmentId) => {
     for(const workerId of workerList) {
           
       const workerInfo = await Worker.findById(workerId);
-
+        if(!workerInfo){
+          continue;
+        }
+        
       if(workerInfo && workerInfo.assignedAppointments) {
         await Worker.findByIdAndUpdate(
           workerId,
