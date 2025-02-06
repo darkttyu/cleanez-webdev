@@ -1796,46 +1796,38 @@ export const graphWeeklyReport = async () => {
 };
 
 export const graphMonthlyReport = async () => {
-  const monthlyAppointments = [];
-  const monthlyEarnings = [];
+  const startOfMonth = moment().startOf('month').toDate();
+  const endOfMonth = moment().endOf('month').toDate();
 
-    for(let i = 0; i < moment().daysInMonth(); i++){
-      // Get the start and end of the current day in the loop
-      const startOfDay = moment().startOf('month').add(i, 'days').startOf('day').toDate();
-      const endOfDay = moment(startOfDay).endOf('day').toDate();
+  // Fetch all appointments in a single query
+  const allAppointments = await Appointment.find({
+    createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+  });
 
-      const appointmentCount = await Appointment.countDocuments({
-        createdAt: { 
-          $gte: startOfDay, $lt: endOfDay
-        }
-      })
+  // Fetch all paid appointments in a single query
+  const paidAppointments = await Appointment.find({
+    paymentStatus: "Paid",
+    updatedAt: { $gte: startOfMonth, $lte: endOfMonth },
+  });
 
-      monthlyAppointments.push(appointmentCount);
-    }
+  const daysInMonth = moment().daysInMonth();
+  const monthlyAppointments = Array(daysInMonth).fill(0);
+  const monthlyEarnings = Array(daysInMonth).fill(0);
 
-    for(let i = 0; i < moment().daysInMonth(); i++){
-      // Get the start and end of the current day in the loop
-      const startOfDay = moment().startOf('month').add(i, 'days').startOf('day').toDate();
-      const endOfDay = moment(startOfDay).endOf('day').toDate();
+  // Process appointments
+  allAppointments.forEach((appointment) => {
+    const dayIndex = moment(appointment.createdAt).date() - 1;
+    monthlyAppointments[dayIndex] += 1;
+  });
 
-      const paidAppointments = await Appointment.find({
-        paymentStatus: "Paid",
-        updatedAt: { $gte: startOfDay, $lt: endOfDay }
-      })
+  // Process earnings
+  paidAppointments.forEach((appointment) => {
+    const dayIndex = moment(appointment.updatedAt).date() - 1;
+    monthlyEarnings[dayIndex] += appointment.serviceCost;
+  });
 
-      // Calculate total earnings for the day
-      let dailyEarnings = 0;
-        for (const appointment of paidAppointments) {
-          dailyEarnings += appointment.serviceCost; // Sum up all service costs
-        }
-
-        monthlyEarnings.push(dailyEarnings);
-      }
-
-  const data = {
-    monthlyAppointments: monthlyAppointments,
-    monthlyEarnings: monthlyEarnings
-  }
-  
-    return data;
+  return {
+    monthlyAppointments,
+    monthlyEarnings,
+  };
 };
