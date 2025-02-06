@@ -8,6 +8,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import PopupError from '../../components/PopupError';
+
 const BookingPage = () => {
     // Variables Initialization --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     // --- Context Authenticator
@@ -186,21 +188,49 @@ const BookingPage = () => {
         } catch (error) {
             if (error.response) {
                 // Server responded with a status other than 200 range
-                console.log(`${error.response.status} ${error.response.data.message}`);
+                setErrMessage(`${error.response.status} ${error.response.data.message}`);
             } else if (error.request) {
                 // Request was made but no response received
-                console.log("No response received from server:", error.request);
+                setErrMessage("No response received from server:", error.request);
             } else {
                 // Something happened setting up the request
-                console.log("Error creating the request:", error.message);
+                setErrMessage("Error creating the request:", error.message);
             }
+
+            setShowErrorModal(true);
+
         } finally {
             setDisabledSubmit(false);
         }
     }
 
+
+
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage("");
+    }
+
+    const handleCancel = () => {
+        navigate('/home');
+    }
+
     return (  
-        <>
+        <>  
+            {showErrorModal? 
+                <PopupError 
+                errTitle="Unable to Book an Appointment"
+                errMessage={errMessage}
+                buttons={[
+                    {func: handleCancel, text: "Return Home", className: "red"},
+                    {func: handleContinue, text: "Change Selection", className: "green"},
+                ]}/> :
+                <></>
+            }
+
             <nav className="navbar">
                 <Link to="/home">
                     <img className="nav-logo" src={NavLogo} alt="Logo" />

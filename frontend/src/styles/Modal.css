@@ -1,0 +1,123 @@
+@keyframes modalContAppear {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.modal-container {
+    position               : fixed;
+    background-color       : #60606077;
+    top                    : 0;
+    left                   : 0;
+    z-index                : 99999;
+    min-height             : 100vh;
+    min-width              : 100%;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter        : blur(4px);
+    display                : flex;
+    justify-content        : center;
+    align-items            : center;
+    padding                : 24px 0;
+    animation              : modalContAppear 0.4s ease-in;
+}
+
+.modal-header {
+    width     : 100%;
+    height    : 72px;
+    object-fit: cover;
+}
+
+.modal-icon {
+    background-color: white;
+    border-radius   : 50%;
+    position        : absolute;
+    top             : -66px;
+    aspect-ratio    : 1/1;
+    height          : 124px;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+
+.modal-icon img {
+    aspect-ratio: 1/1;
+    height      : 80%;
+}
+
+.modal-content {
+    display       : flex;
+    flex-direction: column;
+    gap           : 24px;
+}
+
+.modal-content * {
+    text-align: center;
+}
+
+.small-modal-box {
+    display         : flex;
+    flex-direction  : column;
+    background-color: #FFFFFF;
+    border-radius   : 16px;
+    overflow        : hidden;
+    min-height      : 326px;
+    height          : fit-content;
+    max-height      : 100%;
+    width           : 524px;
+}
+
+.small-modal-main {
+    display        : flex;
+    flex-direction : column;
+    justify-content: center;
+    align-items    : center;
+    gap            : 36px;
+    padding        : 64px 48px 24px 48px;
+    position       : relative;
+}
+
+.modal-buttons {
+    display              : grid;
+    width                : 100%;
+    grid-template-columns: 1fr 1fr;
+    gap                  : 8px;
+}
+
+.modal-buttons>.act-btn {
+    width: 100%;
+}
+
+.modal-btn {
+    padding      : 10px 0;
+    border-radius: 16px;
+    font-weight  : 500;
+    box-shadow   : 0 4px 4px #00000040;
+    transition   : all 0.2s ease-out;
+    cursor       : pointer;
+    text-align   : center;
+    width        : 100%;
+}
+
+.modal-btn.green {
+    background-color: #06E36D;
+    color           : white;
+}
+
+.modal-btn.green:hover {
+    background-color: #16bd64;
+}
+
+.modal-btn.red {
+    background-color: #CC3363;
+    color           : white;
+}
+
+.modal-btn.red:hover {
+    background-color: #ab244f;
+}
+
+.modal-btn.neutral {}

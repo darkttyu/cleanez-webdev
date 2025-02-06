@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
+import SVGIcons from "../../SVGIcons";
+
 
 const WorkerSchedule = () => {
     const [workerDetails, setWorkerDetails] = useState(null);
@@ -219,12 +221,17 @@ const WorkerSchedule = () => {
                 <h2>Service</h2>
                 <div className="schedule-inputs" id="service-inputs">
                     {/* SERVICE TYPE */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="service-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="service-input">
                             Service Type
                         </label>
+                        <SVGIcons 
+                        className="select-arrow"
+                        selected="inputArrow"
+                        size="14px"
+                        color="var(--monoc4-50)"/>
                         <select 
-                        className="input" 
+                        className="input-bar no-logo" 
                         name="serviceName" 
                         value={newWorkerSchedule.serviceCategory}  
                         id="service-input" 
@@ -251,12 +258,17 @@ const WorkerSchedule = () => {
                     </div>
 
                     {/* AREA TYPE */}
-                    <div className="profile-input-container">
-                        <label className="profile-label" htmlFor="area-size-input">
+                    <div className="basic-input-container">
+                        <label className="basic-label compact" htmlFor="area-size-input">
                             Size of Area
                         </label>
+                        <SVGIcons 
+                        className="select-arrow"
+                        selected="inputArrow"
+                        size="14px"
+                        color="var(--monoc4-50)"/>
                         <select 
-                            className="input" 
+                            className="input-bar no-logo" 
                             name="sizeOfArea" 
                             value={newWorkerSchedule.workerAvailability.areaAssigned} 
                             id="area-size-input" 

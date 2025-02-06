@@ -9,6 +9,8 @@ import { useAuth } from "../../AuthContext";
 import {regions, provinces, cities, barangays} from "select-philippines-address";
 import axios from "axios";
 
+import PopupError from "../../components/PopupError";
+
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const WorkerProfile = () => {
@@ -77,7 +79,8 @@ const WorkerProfile = () => {
     useEffect(() => {
         if (accountInfo && isDisabled) {
             setProfileURL(profileConvert(accountInfo.profilePicture.data.data));
-        } else if (accountInfo && !isDisabled){
+        } 
+        if (accountInfo){
             provinceAuto();
             municipalAuto();
             barangayAuto();
@@ -209,7 +212,7 @@ const WorkerProfile = () => {
 
     // --- Cancel Button
     const handleCancel = () => {
-        setAccountInfo(accountInfo);
+        fetchWorkerInfo();
         setProfileURL(profileConvert(accountInfo.profilePicture.data.data))
         setProfileFile(null);
         setIsDisabled(!isDisabled);
@@ -220,6 +223,9 @@ const WorkerProfile = () => {
         if (inputRef.current) {
             inputRef.current.value = '';
         }
+
+        setShowErrorModal(false);
+        setErrMessage("");
     }
 
     const updateData = async (accInfo, profile) => {
@@ -239,6 +245,15 @@ const WorkerProfile = () => {
             const token = localStorage.getItem("token");
             const formData = await updateData(accountInfo, profileFile);
 
+            if (accountInfo.address.province == "0" ||
+                accountInfo.address.municipal == "0" ||
+                accountInfo.address.barangay == "0" ||
+                accountInfo.address.province == "" ||
+                accountInfo.address.municipal == "" ||
+                accountInfo.address.barangay == "") {
+                    throw new Error("Empty prompts detected: Please fill out everything on the form.");
+            }
+
             const updateResponse = await 
             axios.put(`http://localhost:5000/api/worker/editWorkerAccountInformation`, 
                 formData, 
@@ -252,14 +267,33 @@ const WorkerProfile = () => {
             fetchWorkerInfo();
             setIsDisabled(!isDisabled);
         } catch (e) {
-            console.log(e)
+            console.log(e);
+            setErrMessage(`${e.message} Would you like to continue editing?`);
+            setShowErrorModal(true);
         }
     }
 
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage("");
+    }
 
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <div className="profile-page">
+            {showErrorModal? 
+                <PopupError 
+                errTitle="Unable to Save Profile"
+                errMessage={errMessage}
+                buttons={[
+                    {func: handleCancel, text: "Cancel", className: "red"},
+                    {func: handleContinue, text: "Continue", className: "green"},
+                ]}/> :
+                <></>
+            }
             {accountInfo ?
             <>
                 <img src={header} alt="" className="profile-header"/>
@@ -305,6 +339,10 @@ const WorkerProfile = () => {
                                 className="profile-edit"
                                 onClick={editProfile}>
                                     Edit Profile
+                                    <SVGIcons 
+                                    selected="buttonEdit"
+                                    size="20px"
+                                    color="var(--monoc4)"/>
                                 </button>
                             ):(
                                 <>

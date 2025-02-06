@@ -58,6 +58,13 @@
      z-index         : 2;
 }
 
+.signing-panel .branding a {
+     display        : flex;
+     flex-direction : column;
+     justify-content: center;
+     align-items    : center;
+}
+
 .signing-panel .branding .logo {
      max-width: 320px;
      width    : 100%;
@@ -387,6 +394,7 @@
 
      .page {
           min-width: 100vw;
+          width    : 100vw;
      }
 
      .buttons {
@@ -405,4 +413,11 @@
           width: fit-content;
      }
 
+     .page h2 {
+          font-size: 20px;
+     }
+
+     .page .description {
+          font-size: 14px;
+     }
 }
