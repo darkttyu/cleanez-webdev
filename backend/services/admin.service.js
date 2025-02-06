@@ -1038,13 +1038,18 @@ export const serviceGenerateDailyReport = async() => {
   });
   
   const appointmentsPaid = await Appointment.find({
-    paymentStatus: "Paid"
-    
+    paymentStatus: "Paid",
+    updatedAt: {
+      $gte: startOfDay,
+      $lt: endOfDay
+    }
   });
 
+    let totalEarnings = 0;
     for(const appointmentInfo of appointmentsPaid){
-
+      totalEarnings += appointmentInfo.serviceCost
     }
+    
   const data = {
     totalAppointments: totalAppointments,
     totalCancelledAppointments: totalCancelledAppointments,

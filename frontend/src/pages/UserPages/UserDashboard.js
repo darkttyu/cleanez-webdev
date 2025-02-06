@@ -121,8 +121,7 @@ const UserDashboard = () => {
                             </thead>
                             <tbody>
                             {upcomingData.upcomingAppointment.map((data, index) => (
-                                !(data.paymentStatus === "Paid" ||
-                                 data.appointmentStatus === "Cancelled"
+                                !(data.appointmentStatus === "Cancelled"
                                 ) ? 
                                     <tr 
                                     key={index} 
