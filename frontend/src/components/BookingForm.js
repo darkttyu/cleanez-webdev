@@ -430,10 +430,10 @@ const ServiceBooking = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComp
                 />
                 {(bookingInfo.serviceDetails.serviceCategory === "Window Cleaning")?
                 (
-                    <div className="text-container">
+                    <div className="floating-input-container">
                         {/* INPUTS HERE */}
                         <input 
-                        className="input" 
+                        className="input-bar no-logo" 
                         type="number" 
                         value={windowNumber}
                         placeholder="Number of Windows" 
@@ -443,7 +443,7 @@ const ServiceBooking = ({bookingInfo, setBookingInfo, serviceList, setIsInfoComp
                         onChange={(e) => {onWindowChange(e.target.value)}}/>
                         {/* LABEL HERE */}
                         <label 
-                        className="text-label" 
+                        className="floating-label" 
                         htmlFor="windownumber-input">
                             Number of Windows
                         </label>

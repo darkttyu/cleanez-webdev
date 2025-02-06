@@ -2,7 +2,7 @@
 
 /* APPOINTMENT POPUP */
 .appointment-info-container {
-    position               : absolute;
+    position               : fixed;
     background-color       : #60606077;
     top                    : 0;
     z-index                : 99999;

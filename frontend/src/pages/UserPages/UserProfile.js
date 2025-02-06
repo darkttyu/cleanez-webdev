@@ -9,6 +9,8 @@ import { useAuth } from "../../AuthContext";
 import {regions, provinces, cities, barangays} from "select-philippines-address";
 import axios from "axios";
 
+import PopupError from "../../components/PopupError";
+
 
 // Main Page Component --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 const UserProfile = () => {
@@ -201,7 +203,7 @@ const UserProfile = () => {
 
     // --- Cancel Button
     const handleCancel = () => {
-        setAccountInfo(accountInfo);
+        fetchUserInfo();
         setProfileURL(profileConvert(accountInfo.profilePicture.data.data))
         setProfileFile(null);
         setIsDisabled(!isDisabled);
@@ -212,6 +214,9 @@ const UserProfile = () => {
         if (inputRef.current) {
             inputRef.current.value = '';
         }
+
+        setShowErrorModal(false);
+        setErrMessage("");
     }
 
     const updateData = async (accInfo, profile) => {
@@ -231,9 +236,12 @@ const UserProfile = () => {
             const token = localStorage.getItem("token");
             const formData = await updateData(accountInfo, profileFile);
 
-            if (accountInfo.address.province === "0" ||
-                accountInfo.address.municipal === "0" ||
-                accountInfo.address.barangay === "0") {
+            if (accountInfo.address.province == "0" ||
+                accountInfo.address.municipal == "0" ||
+                accountInfo.address.barangay == "0" ||
+                accountInfo.address.province == "" ||
+                accountInfo.address.municipal == "" ||
+                accountInfo.address.barangay == "") {
                     throw new Error("Empty prompts detected: Please fill out everything on the form.");
             }
 
@@ -250,14 +258,34 @@ const UserProfile = () => {
             fetchUserInfo();
             setIsDisabled(!isDisabled);
         } catch (e) {
-            console.log(e.message);
+            console.log(e);
+            setErrMessage(`${e.message} Would you like to continue editing?`);
+            setShowErrorModal(true);
         }
     }
 
 
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
+
+    const handleContinue = () => {
+        setShowErrorModal(false);
+        setErrMessage(true);
+    }
+
     // Page Render --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
     return (  
         <div className="profile-page">
+            {showErrorModal? 
+                <PopupError 
+                errTitle="Unable to Save Profile"
+                errMessage={errMessage}
+                buttons={[
+                    {func: handleCancel, text: "Cancel", className: "red"},
+                    {func: handleContinue, text: "Continue", className: "green"},
+                ]}/> :
+                <></>
+            }
             {accountInfo ?
             <>
                 <img src={header} alt="" className="profile-header"/>
