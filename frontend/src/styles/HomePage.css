@@ -257,6 +257,7 @@
 }
 
 .about-container {
+  padding       : 112px 0;
   display       : flex;
   flex-direction: column;
   gap           : 48px;
@@ -363,4 +364,101 @@
 .contact-btn:hover {
   background-color: var(--color1e);
   color           : var(--monoc4);
+}
+
+@media screen and (max-width: 1248px) {
+  .founder-image {
+    width        : 180px;
+    height       : 248px;
+    object-fit   : cover;
+    border-radius: 8px;
+  }
+
+  p.founder-name,
+  p.founder-pos {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 1080px) {
+  .main-section.about {
+    padding   : 90px 0;
+    min-height: 100vh;
+  }
+
+  .about-container {
+    max-width: 80%;
+    height   : fit-content;
+  }
+
+  .about-container h4 {
+    font-size: 64px;
+  }
+
+  .about-container .subquote {
+    font-size: 20px;
+  }
+
+  .about-container .description {
+    font-size: 16px;
+  }
+
+  .founder-items {
+    display              : grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .founder-item {
+    flex-direction: column;
+  }
+
+  .founder-contacts {
+    display: none;
+  }
+}
+
+@media screen and (max-width:720px) {
+  .about-us.main-section {
+    justify-content: baseline
+  }
+
+  .founders.main-section {
+    padding: 90px 0;
+    height : fit-content;
+  }
+
+  .service-item {
+    padding      : 16px;
+    border-radius: 20px;
+    display      : flex;
+    height       : 164px;
+    width        : 586px;
+  }
+
+  .service-details {
+    padding        : 0px;
+    justify-content: space-between;
+  }
+
+  .service-details>.information {
+    height: 72px;
+
+    text-overflow: ellipsis;
+  }
+
+  .service-details>.information>p {
+    font-size    : 12px;
+    text-overflow: ellipsis;
+  }
+
+  .service-details>.pricings>p {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 652px) {
+  .service-image {
+    width: 128px;
+  }
+
 }

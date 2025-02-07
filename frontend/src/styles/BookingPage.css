@@ -11,14 +11,14 @@
 }
 
 .booking-progress {
-    width         : 996px;
+    width         : 80%;
     display       : flex;
     flex-direction: column;
     gap           : 24px;
 }
 
 .booking-progress .progress-bar {
-    width           : 996px;
+    width           : 80%px;
     height          : 8px;
     background-color: #d9d9d9;
     border-radius   : 8px;
@@ -538,4 +538,60 @@
 
 .file-text>p:first-of-type {
     text-decoration: underline;
+}
+
+@media screen and (max-width: 760px) {
+    .booking-grid.col-three {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-container {
+        width    : 100%;
+        min-width: 0;
+    }
+
+    .navbar h1,
+    .navbar .nav-divider {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 548px) {
+    .booking-grid.col-two {
+        grid-template-columns: 1fr;
+    }
+
+    .time-booking-container {
+        grid-template-columns: 1fr;
+    }
+
+    .time-button-container .worker-time-button {
+        min-width: 100%;
+    }
+
+    .booking-progress {
+        width: 100%;
+    }
+
+    .progress-bar {
+        min-width : 100%;
+        min-height: 32px;
+    }
+
+    .progress {
+        min-height: 100%;
+    }
+
+    .progress-number {
+        display: none;
+    }
+
+    .booking-content .instructions {
+        padding: 0 12px;
+    }
+
+    .booking-content {
+        gap: 12px
+    }
+
 }

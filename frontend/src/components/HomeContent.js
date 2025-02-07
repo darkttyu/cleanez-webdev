@@ -31,7 +31,7 @@ const Header = () => {
             subquote: "Let CleanEZ handle the dirty places.",
             image: homepage2
         } , {
-            quote: (<>No Stress, <br/>No Mess.</>),
+            quote: (<>No Mess, <br/>No Stress.</>),
             subquote: "With CleanEZ, your home will be at its best!",
             image: homepage3
         }
