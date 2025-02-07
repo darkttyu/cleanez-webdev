@@ -33,6 +33,8 @@ import AdminAppointments from './pages/AdminPages/AdminAppointments';
 import AdminAppointmentInfo from './pages/AdminPages/AdminAppointmentInfo';
 import AdminDashboard from './pages/AdminPages/AdminDashboard';
 
+import ErrorPage from './pages/ErrorPage';
+
 import './styles/ProfilePage.css'
 import './styles/AccPageLayout.css'
 
