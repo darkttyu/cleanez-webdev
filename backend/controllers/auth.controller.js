@@ -290,9 +290,9 @@ export const resetPassword = async (req, res) => {
     // Send reset success email
     await sendResetSuccessEmail(user.firstName, user.email);
 
-    res.status(200).json({ success: true, message: "Password Reset Successful." });
+    return res.status(200).json({ success: true, message: "Password Reset Successful." });
   } catch (error) {
-    res.status(400).json({ success: false, message: "Error in Resetting Password" });
+    return res.status(400).json({ success: false, message: "Error in Resetting Password" });
   }
 };
 
@@ -358,7 +358,7 @@ export const adminLogin = async (req, res) => {
     await admin.save();
 
     // Respond with success message and admin data (password excluded)
-    res.status(200).json({
+    return res.status(200).json({
       success: true, 
       message: "Logged In Successfully.",
       admin: {
