@@ -2,7 +2,7 @@
   <img src="https://drive.google.com/uc?export=view&id=19glRWOZo-_BIDAAgFyZ1YeDHoiJy9mhr" alt="Header Image" width="100%">
 </p>
 
-# CleanEase - A Platform for Finding Reliable Cleaning Professionals 🧼
+# CleanEZ - A Platform for Finding Reliable Cleaning Professionals 🧼
 
 ## Overview
 
@@ -42,7 +42,7 @@ CleanEase is a web and mobile platform built using the **MERN Stack (MongoDB, Ex
 - **📩 Email Service**: Nodemailer  
 
 ## 🔗 Directly Access Our Website!
-👉 [CleanEase Live Site](https://cleanez.vercel.app/home)
+👉 [CleanEZ Live Site](https://cleanez.vercel.app/home)
 
 ## 🏆 Contributors
 - **👨‍💻 Lead Developer** - Carl Fernandez  
